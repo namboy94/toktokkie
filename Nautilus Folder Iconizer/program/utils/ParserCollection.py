@@ -6,7 +6,7 @@ Created on Apr 25, 2015
 Modified on Apr 25, 2015
 
 @author Hermann Krumrey
-@version 1.0
+@version 1.1
 '''
 
 #imports
@@ -74,6 +74,7 @@ def iconParser(rootDirectory,warningFile):
     
     returnList = []
     rootDirectoryContent = os.listdir(rootDirectory)
+    rootDirectoryContent.sort(key=lambda x: x)
     
     for a in rootDirectoryContent:
         
@@ -107,6 +108,8 @@ def iconParser(rootDirectory,warningFile):
                 
         folderIcon = folderIconDirectory + "Main.png"
         changeIcon(showDirectory, folderIcon, "Main", warningFile, folderIconDirectory)
+        
+        completeCheck(folderIconDirectory, warningFile)
       
     return returnList
 
@@ -157,11 +160,14 @@ def changeIcon(folderDirectory, iconDirectory, iconName, warningFile, folderIcon
 """
 completeCheck
 checks if every .ico file has a partner .png file.
+@param folderIconDirectory - the directory of the folder icons
+@param warningFile - the file in which warnings are saved.
 """
 def completeCheck(folderIconDirectory,warningFile):
     icoArray = []
     for fil in os.listdir(folderIconDirectory):
-        if fil.endsWith(".ico"): icoArray.append(file)
+        if fil.endswith(".ico"):
+            icoArray.append(fil)
     for icoFile in icoArray:
         plainName = icoFile[:-4]
         pngName = plainName + ".png"
@@ -169,30 +175,30 @@ def completeCheck(folderIconDirectory,warningFile):
         for fil in os.listdir(folderIconDirectory):
             if fil == pngName:
                 hasPNG = True
-            if not hasPNG:
-                icoFile = folderIconDirectory + icoFile
-                pngFile = folderIconDirectory + pngName
-                os.system("convert \"" + icoFile + "\" \"" + pngFile + "\"")
-                newPngs = []
-                for newIcon in os.listdir(folderIconDirectory):
-                    if newIcon.endswith(".png") and plainName in newIcon:
-                        newPngDir = folderIconDirectory + newIcon
-                        newPngs.append(newPngDir)
-                newPngs.sort(key=lambda x: x)
-                largestPNG = ""
-                largestPNGSize = 0;
-                for png in newPngs:
-                    if os.path.getsize(png) > largestPNGSize:
-                        largestPNG = png
-                        largestPNGSize = os.path.getsize(png)
-                index = 0
-                while index < len(newPngs):
-                    if newPngs[index] != largestPNG:
-                        os.system("rm \"" + newPngs[index] + "\"")
-                    else:
-                        os.system("mv \"" + newPngs[index] + "\" \"" + pngFile + "\"")
-                    index = index + 1
-                if os.path.getsize(icoFile) > 1000000:
-                    workingWarningFile = open(warningFile, "a")
-                    workingWarningFile.write(icoFile + "\n")
-                    workingWarningFile.close()
+        if not hasPNG:
+            icoFile = folderIconDirectory + icoFile
+            pngFile = folderIconDirectory + pngName
+            os.system("convert \"" + icoFile + "\" \"" + pngFile + "\"")
+            newPngs = []
+            for newIcon in os.listdir(folderIconDirectory):
+                if newIcon.endswith(".png") and plainName in newIcon:
+                    newPngDir = folderIconDirectory + newIcon
+                    newPngs.append(newPngDir)
+            newPngs.sort(key=lambda x: x)
+            largestPNG = ""
+            largestPNGSize = 0;
+            for png in newPngs:
+                if os.path.getsize(png) > largestPNGSize:
+                    largestPNG = png
+                    largestPNGSize = os.path.getsize(png)
+            index = 0
+            while index < len(newPngs):
+                if newPngs[index] != largestPNG:
+                    os.system("rm \"" + newPngs[index] + "\"")
+                else:
+                    os.system("mv \"" + newPngs[index] + "\" \"" + pngFile + "\"")
+                index = index + 1
+            if os.path.getsize(icoFile) > 1000000:
+                workingWarningFile = open(warningFile, "a")
+                workingWarningFile.write(icoFile + "\n")
+                workingWarningFile.close()
