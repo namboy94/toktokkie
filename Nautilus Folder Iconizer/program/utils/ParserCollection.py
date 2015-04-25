@@ -6,7 +6,7 @@ Created on Apr 25, 2015
 Modified on Apr 25, 2015
 
 @author Hermann Krumrey
-@version 0.1
+@version 1.0
 '''
 
 #imports
@@ -62,3 +62,89 @@ def directoryChangeParser(configFileLocation):
         configFile = open(configFileLocation,"a")
         configFile.write(newDirectory)
         configFile.close()
+        
+"""
+iconParser
+parses through the parent folder of the folders whose icons should be changed and changes all their icons according
+to conventions set by the author of this program.
+@param rootDirectory - the parent directory to be parsed
+@param warningFile - the location of a file that contains warnings that occur during parsing
+"""
+def iconParser(rootDirectory,warningFile):
+    
+    returnList = []
+    rootDirectoryContent = os.listdir(rootDirectory)
+    
+    for a in rootDirectoryContent:
+                
+        showDirectory = rootDirectory + a + "/"
+        showDirectoryContent = os.listdir(showDirectory)
+        folderIconDirectory = showDirectory + "Folder Icon/"
+        
+        for b in showDirectoryContent:    
+            if b.lower() == "desktop.ini" or b.lower() == "thumbs.db" or b.endswith(".txt"): continue
+            if b != "Folder Icon":
+                innerDirectory = showDirectory + b + "/"
+                innerDirectoryContent = os.listdir(innerDirectory)
+                
+                for c in innerDirectoryContent:
+                    if c.lower() == "desktop.ini" or c.lower() == "thumbs.db" or c.endswith(".txt"): continue
+                    if c.endswith("+"):
+                        cedit = c[:-1]
+                    else:
+                        cedit = c    
+                    qualityLanguageDirectory = innerDirectory + c + "/"
+                    folderIcon = folderIconDirectory + cedit + ".png"
+                    changeIcon(qualityLanguageDirectory, folderIcon, c, warningFile, folderIconDirectory)
+                
+                folderIcon = folderIconDirectory + b + ".png"
+                changeIcon(innerDirectory, folderIcon, b, warningFile, folderIconDirectory)
+            else:
+                folderIcon = folderIconDirectory + "Folder.png"
+                changeIcon(folderIconDirectory, folderIcon, "Folder", warningFile, folderIconDirectory)
+                
+        folderIcon = folderIconDirectory + "Main.png"
+        changeIcon(showDirectory, folderIcon, "Main", warningFile, folderIconDirectory)
+      
+    return returnList
+
+"""
+changeIcon
+changes a single folder icon and generates PNGs if necessary.
+Also creates a warning file in the warnings.txt file if an ico file is over 1MB in size, often resulting in errors.
+@param folderDirectory - the directory of the folder whose icon should be changed
+@param iconDirectory - the full path name of the icon file
+@param iconName - the name of the icon
+@param warningFile - the location of the file that contains warnings
+@param folderIconDirectory - the directory of all folder icons for thios particular show
+"""
+def changeIcon(folderDirectory, iconDirectory, iconName, warningFile, folderIconDirectory):
+    if not os.path.isfile(iconDirectory):
+        icoFile = folderIconDirectory + iconName + ".ico"
+        pngFile = iconDirectory
+        os.system("convert \"" + icoFile + "\" \"" + pngFile + "\"")
+        newPngs = []
+        for newIcon in os.listdir(folderIconDirectory):
+            if newIcon.endswith(".png") and iconName in newIcon:
+                newPngDir = folderIconDirectory + newIcon
+                newPngs.append(newPngDir)
+        newPngs.sort(key=lambda x: x)
+        largestPNG = ""
+        largestPNGSize = 0;
+        for png in newPngs:
+            if os.path.getsize(png) > largestPNGSize:
+                largestPNG = png
+                largestPNGSize = os.path.getsize(png)
+        index = 0
+        while index < len(newPngs):
+            if newPngs[index] != largestPNG:
+                os.system("rm \"" + newPngs[index] + "\"")
+            else:
+                os.system("mv \"" + newPngs[index] + "\" \"" + pngFile + "\"")
+            index = index + 1
+        if os.path.getsize(icoFile) > 1000000:
+            workingWarningFile = open(warningFile, "a")
+            workingWarningFile.write(icoFile)
+            workingWarningFile.close()
+    print "Changing Folder " + folderDirectory + "'s icon to " + iconDirectory    
+    os.system("gvfs-set-attribute -t string '" + folderDirectory + "' metadata::custom-icon 'file://" + iconDirectory + "'")

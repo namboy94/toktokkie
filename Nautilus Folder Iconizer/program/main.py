@@ -6,12 +6,12 @@ Created on Apr 25, 2015
 Modified on Apr 25, 2015
 
 @author Hermann Krumrey
-@version 0.1
+@version 1.0
 '''
 
 #imports
 import sys
-from program.utils.ParserCollection import directoryChangeParser,getActiveDirectory
+from program.utils.ParserCollection import directoryChangeParser,getActiveDirectory,iconParser
 
 #fix pythonpath
 splitPath = sys.argv[0].split("/")
@@ -20,5 +20,8 @@ upperDirectory = sys.argv[0][:-lengthToCut]
 sys.path.append(upperDirectory)
 
 configFileLocation = upperDirectory + "/program/data/config.txt"
+warningFileLocation = upperDirectory + "/program/data/warnings.txt"
 activeDirectory = getActiveDirectory(configFileLocation)
 directoryChangeParser(configFileLocation)
+
+iconParser(activeDirectory, warningFileLocation)
