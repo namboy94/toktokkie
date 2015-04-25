@@ -76,6 +76,8 @@ def iconParser(rootDirectory,warningFile):
     rootDirectoryContent = os.listdir(rootDirectory)
     
     for a in rootDirectoryContent:
+        
+        if a.lower() == "desktop.ini" or a.lower() == "thumbs.db" or a.endswith(".txt"): continue
                 
         showDirectory = rootDirectory + a + "/"
         showDirectoryContent = os.listdir(showDirectory)
@@ -119,6 +121,9 @@ Also creates a warning file in the warnings.txt file if an ico file is over 1MB 
 @param folderIconDirectory - the directory of all folder icons for thios particular show
 """
 def changeIcon(folderDirectory, iconDirectory, iconName, warningFile, folderIconDirectory):
+    if iconName.endswith("+"):
+        iconName = iconName[:-1]
+        iconDirectory = folderIconDirectory + iconName + ".png"
     if not os.path.isfile(iconDirectory):
         icoFile = folderIconDirectory + iconName + ".ico"
         pngFile = iconDirectory
@@ -148,3 +153,46 @@ def changeIcon(folderDirectory, iconDirectory, iconName, warningFile, folderIcon
             workingWarningFile.close()
     print "Changing Folder " + folderDirectory + "'s icon to " + iconDirectory    
     os.system("gvfs-set-attribute -t string '" + folderDirectory + "' metadata::custom-icon 'file://" + iconDirectory + "'")
+    
+"""
+completeCheck
+checks if every .ico file has a partner .png file.
+"""
+def completeCheck(folderIconDirectory,warningFile):
+    icoArray = []
+    for fil in os.listdir(folderIconDirectory):
+        if fil.endsWith(".ico"): icoArray.append(file)
+    for icoFile in icoArray:
+        plainName = icoFile[:-4]
+        pngName = plainName + ".png"
+        hasPNG = False
+        for fil in os.listdir(folderIconDirectory):
+            if fil == pngName:
+                hasPNG = True
+            if not hasPNG:
+                icoFile = folderIconDirectory + icoFile
+                pngFile = folderIconDirectory + pngName
+                os.system("convert \"" + icoFile + "\" \"" + pngFile + "\"")
+                newPngs = []
+                for newIcon in os.listdir(folderIconDirectory):
+                    if newIcon.endswith(".png") and plainName in newIcon:
+                        newPngDir = folderIconDirectory + newIcon
+                        newPngs.append(newPngDir)
+                newPngs.sort(key=lambda x: x)
+                largestPNG = ""
+                largestPNGSize = 0;
+                for png in newPngs:
+                    if os.path.getsize(png) > largestPNGSize:
+                        largestPNG = png
+                        largestPNGSize = os.path.getsize(png)
+                index = 0
+                while index < len(newPngs):
+                    if newPngs[index] != largestPNG:
+                        os.system("rm \"" + newPngs[index] + "\"")
+                    else:
+                        os.system("mv \"" + newPngs[index] + "\" \"" + pngFile + "\"")
+                    index = index + 1
+                if os.path.getsize(icoFile) > 1000000:
+                    workingWarningFile = open(warningFile, "a")
+                    workingWarningFile.write(icoFile + "\n")
+                    workingWarningFile.close()

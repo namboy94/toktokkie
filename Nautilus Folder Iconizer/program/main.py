@@ -11,6 +11,7 @@ Modified on Apr 25, 2015
 
 #imports
 import sys
+import os
 from program.utils.ParserCollection import directoryChangeParser,getActiveDirectory,iconParser
 
 #fix pythonpath
@@ -19,9 +20,13 @@ lengthToCut = len(splitPath[len(splitPath) - 1]) + len(splitPath[len(splitPath) 
 upperDirectory = sys.argv[0][:-lengthToCut]
 sys.path.append(upperDirectory)
 
+#check for root
+#if os.geteuid() != 0:
+#    sys.exit("This program needs root priviliges.")
+
 configFileLocation = upperDirectory + "/program/data/config.txt"
 warningFileLocation = upperDirectory + "/program/data/warnings.txt"
 activeDirectory = getActiveDirectory(configFileLocation)
 directoryChangeParser(configFileLocation)
 
-#iconParser(activeDirectory, warningFileLocation)
+iconParser(activeDirectory, warningFileLocation)
