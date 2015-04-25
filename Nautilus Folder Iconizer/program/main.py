@@ -11,7 +11,7 @@ Modified on Apr 25, 2015
 
 #imports
 import sys
-from program.utils.ParserCollection import directoryChangeParser
+from program.utils.ParserCollection import directoryChangeParser,getActiveDirectory
 
 #fix pythonpath
 splitPath = sys.argv[0].split("/")
@@ -20,4 +20,5 @@ upperDirectory = sys.argv[0][:-lengthToCut]
 sys.path.append(upperDirectory)
 
 configFileLocation = upperDirectory + "/program/data/config.txt"
+activeDirectory = getActiveDirectory(configFileLocation)
 directoryChangeParser(configFileLocation)
