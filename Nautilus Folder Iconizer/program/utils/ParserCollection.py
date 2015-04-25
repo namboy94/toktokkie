@@ -35,7 +35,7 @@ def directoryChangeParser(configFileLocation):
     print "Do you want to change the directory? (y/n)"
     yesNoPrompt = True
     while yesNoPrompt is True:
-        answer = raw_input()
+        answer = raw_input("")
         if answer == "y":
             yesNoPrompt = False
             change = True
@@ -46,10 +46,10 @@ def directoryChangeParser(configFileLocation):
             print "Input was not understood. Please enter \"y\" or \"n\":"
     #change the directory
     if change is True:
-        newDirectory = raw_input("Please enter the new directory:")
+        print "Please enter the new directory:"
         directoryPrompt = True
-        while directoryPrompt == True:
-            newDirectory = raw_input()
+        while directoryPrompt is True:
+            newDirectory = raw_input("")
             if not newDirectory.endswith("/"):
                 newDirectory = newDirectory + "/"
             
@@ -144,7 +144,7 @@ def changeIcon(folderDirectory, iconDirectory, iconName, warningFile, folderIcon
             index = index + 1
         if os.path.getsize(icoFile) > 1000000:
             workingWarningFile = open(warningFile, "a")
-            workingWarningFile.write(icoFile)
+            workingWarningFile.write(icoFile + "\n")
             workingWarningFile.close()
     print "Changing Folder " + folderDirectory + "'s icon to " + iconDirectory    
     os.system("gvfs-set-attribute -t string '" + folderDirectory + "' metadata::custom-icon 'file://" + iconDirectory + "'")

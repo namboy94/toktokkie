@@ -24,4 +24,4 @@ warningFileLocation = upperDirectory + "/program/data/warnings.txt"
 activeDirectory = getActiveDirectory(configFileLocation)
 directoryChangeParser(configFileLocation)
 
-iconParser(activeDirectory, warningFileLocation)
+#iconParser(activeDirectory, warningFileLocation)
