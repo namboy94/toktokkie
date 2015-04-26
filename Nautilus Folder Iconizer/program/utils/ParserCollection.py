@@ -84,6 +84,8 @@ def iconParser(rootDirectory,warningFile):
         showDirectoryContent = os.listdir(showDirectory)
         folderIconDirectory = showDirectory + "Folder Icon/"
         
+        completeCheck(folderIconDirectory, warningFile)
+        
         for b in showDirectoryContent:    
             if b.lower() == "desktop.ini" or b.lower() == "thumbs.db" or b.endswith(".txt"): continue
             if not os.path.isdir(showDirectory + b): continue
@@ -99,19 +101,17 @@ def iconParser(rootDirectory,warningFile):
                         cedit = c    
                     qualityLanguageDirectory = innerDirectory + c + "/"
                     folderIcon = folderIconDirectory + cedit + ".png"
-                    changeIcon(qualityLanguageDirectory, folderIcon, c, warningFile, folderIconDirectory)
+                    changeIcon(qualityLanguageDirectory, folderIcon, c, folderIconDirectory)
                 
                 folderIcon = folderIconDirectory + b + ".png"
-                changeIcon(innerDirectory, folderIcon, b, warningFile, folderIconDirectory)
+                changeIcon(innerDirectory, folderIcon, b, folderIconDirectory)
             else:
                 folderIcon = folderIconDirectory + "Folder.png"
-                changeIcon(folderIconDirectory, folderIcon, "Folder", warningFile, folderIconDirectory)
+                changeIcon(folderIconDirectory, folderIcon, "Folder", folderIconDirectory)
                 
         folderIcon = folderIconDirectory + "Main.png"
-        changeIcon(showDirectory, folderIcon, "Main", warningFile, folderIconDirectory)
-        
-        completeCheck(folderIconDirectory, warningFile)
-      
+        changeIcon(showDirectory, folderIcon, "Main", folderIconDirectory)
+
     return returnList
 
 """
@@ -124,37 +124,10 @@ Also creates a warning file in the warnings.txt file if an ico file is over 1MB 
 @param warningFile - the location of the file that contains warnings
 @param folderIconDirectory - the directory of all folder icons for thios particular show
 """
-def changeIcon(folderDirectory, iconDirectory, iconName, warningFile, folderIconDirectory):
+def changeIcon(folderDirectory, iconDirectory, iconName, folderIconDirectory):
     if iconName.endswith("+"):
         iconName = iconName[:-1]
         iconDirectory = folderIconDirectory + iconName + ".png"
-    if not os.path.isfile(iconDirectory):
-        icoFile = folderIconDirectory + iconName + ".ico"
-        pngFile = iconDirectory
-        os.system("convert \"" + icoFile + "\" \"" + pngFile + "\"")
-        newPngs = []
-        for newIcon in os.listdir(folderIconDirectory):
-            if newIcon.endswith(".png") and iconName in newIcon:
-                newPngDir = folderIconDirectory + newIcon
-                newPngs.append(newPngDir)
-        newPngs.sort(key=lambda x: x)
-        largestPNG = ""
-        largestPNGSize = 0;
-        for png in newPngs:
-            if os.path.getsize(png) > largestPNGSize:
-                largestPNG = png
-                largestPNGSize = os.path.getsize(png)
-        index = 0
-        while index < len(newPngs):
-            if newPngs[index] != largestPNG:
-                os.system("rm \"" + newPngs[index] + "\"")
-            else:
-                os.system("mv \"" + newPngs[index] + "\" \"" + pngFile + "\"")
-            index = index + 1
-        if os.path.getsize(icoFile) > 1000000:
-            workingWarningFile = open(warningFile, "a")
-            workingWarningFile.write(icoFile + "\n")
-            workingWarningFile.close()
     print "Changing Folder " + folderDirectory + "'s icon to " + iconDirectory    
     os.system("gvfs-set-attribute -t string '" + folderDirectory + "' metadata::custom-icon 'file://" + iconDirectory + "'")
     
