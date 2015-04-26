@@ -86,6 +86,7 @@ def iconParser(rootDirectory,warningFile):
         
         for b in showDirectoryContent:    
             if b.lower() == "desktop.ini" or b.lower() == "thumbs.db" or b.endswith(".txt"): continue
+            if not os.path.isdir(showDirectory + b): continue
             if b != "Folder Icon":
                 innerDirectory = showDirectory + b + "/"
                 innerDirectoryContent = os.listdir(innerDirectory)

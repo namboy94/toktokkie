@@ -26,7 +26,7 @@ sys.path.append(upperDirectory)
 
 configFileLocation = upperDirectory + "/program/data/config.txt"
 warningFileLocation = upperDirectory + "/program/data/warnings.txt"
-activeDirectory = getActiveDirectory(configFileLocation)
 directoryChangeParser(configFileLocation)
+activeDirectory = getActiveDirectory(configFileLocation)
 
 iconParser(activeDirectory, warningFileLocation)
