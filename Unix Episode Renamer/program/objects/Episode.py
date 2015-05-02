@@ -28,17 +28,7 @@ class Episode(object):
     @param season - the number of the season this episode belongs to
     @param illegalCharacters - list of illegal characters
     '''
-    def __init__(self, name, location, episodeNumber, series, season, illegalCharacters):
-        
-        for illegalCharacter in illegalCharacters:
-            if name.contains(illegalCharacter):
-                name = name.replace(illegalCharacter, "")
-        
-        fileName = os.path.splitext(name)[0]
-        fileExtension = os.path.splitext(name)[1]
-        
-        if fileName.endswith("!") or fileName.endswith("."):
-            name = fileName + " " + fileExtension
+    def __init__(self, name, location, episodeNumber, series, season):
                     
         self.fileName = name
         self.parentPath = location
@@ -48,7 +38,16 @@ class Episode(object):
         self.series = series
         self.season = season
         
-    def rename(self, newFileName):
+    def rename(self, newFileName, illegalCharacters):
+        
+        for illegalCharacter in illegalCharacters:
+            if newFileName.contains(illegalCharacter):
+                newFileName = newFileName.replace(illegalCharacter, "")
+        
+        if newFileName.endswith("!") or newFileName.endswith("."):
+            newFileName = newFileName + " "
+        
+        
         newFilePath = self.parentPath + newFileName
         commandString = "mv \"" + self.filePath + "\" \"" + newFilePath + "\""
         os.system(commandString)
