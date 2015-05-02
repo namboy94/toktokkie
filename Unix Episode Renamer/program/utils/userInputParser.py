@@ -52,12 +52,15 @@ def parseUserInput(configFile):
     userInput = raw_input("")
     if userInput == "":
         workingDirectory = defaultDirectory
+        if not os.path.isdir(workingDirectory):
+            print "Invalid directory in config file. Please fix."
+            sys.exit(1)
     else:
         workingDirectory = userInput
         if not workingDirectory.endswith("/"):
             workingDirectory = workingDirectory + "/"
         if not os.path.isdir(workingDirectory):
-            print "Invalid Directory"
+            print "Invalid Directory input by user. Pleade fix."
             sys.exit(1)
         openedWorkingConfigFile = open(configFile, "w")
         openedWorkingConfigFile.close()
@@ -65,3 +68,5 @@ def parseUserInput(configFile):
         openedWorkingConfigFile.write(workingDirectory)
         openedWorkingConfigFile.close()
     
+    directoryContent = os.listdir(workingDirectory)
+    directoryContent.sort(key=lambda x: x)
