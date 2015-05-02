@@ -11,15 +11,17 @@ Modified on Apr 25, 2015
 
 #imports
 import sys
+import os
 
 """
 parseUserInput
 parses the user's input.
 """
-def parseUserInput():
+def parseUserInput(configFile):
     
     showName = raw_input("Please enter the show's name:   ")
 
+    #Asks for number of episodes, the first episode number and the season number.
     try:
         episodeNo = int(raw_input("Please enter the first episode's number   "))
         episodeAmountTotal = int(raw_input("Please enter the total amount of episodes   "))
@@ -41,4 +43,25 @@ def parseUserInput():
         print "Please enter valid integer values for season number, episode number and amount of episodes"
         sys.exit(1)
         
+    #asks for the directory of the files to be renamed (default value is from configFile)
+    openedWorkingConfigFile = open(configFile, "r")
+    defaultDirectory = openedWorkingConfigFile.readline()
+    openedWorkingConfigFile.close()
+    print "Please enter the directory to be used. A blank input will result in"
+    print "%s to be used." % (defaultDirectory)
+    userInput = raw_input("")
+    if userInput == "":
+        workingDirectory = defaultDirectory
+    else:
+        workingDirectory = userInput
+        if not workingDirectory.endswith("/"):
+            workingDirectory = workingDirectory + "/"
+        if not os.path.isdir(workingDirectory):
+            print "Invalid Directory"
+            sys.exit(1)
+        openedWorkingConfigFile = open(configFile, "w")
+        openedWorkingConfigFile.close()
+        openedWorkingConfigFile = open(configFile, "a")
+        openedWorkingConfigFile.write(workingDirectory)
+        openedWorkingConfigFile.close()
     
