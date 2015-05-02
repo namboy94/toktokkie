@@ -26,8 +26,14 @@ class Episode(object):
     @param episodeNumber - the number of the episode
     @param series - the name of the series this episode belongs to
     @param season - the number of the season this episode belongs to
+    @param illegalCharacters - list of illegal characters
     '''
-    def __init__(self, name, location, episodeNumber, series, season):
+    def __init__(self, name, location, episodeNumber, series, season, illegalCharacters):
+        
+        for illegalCharacter in illegalCharacters:
+            if name.contains(illegalCharacter):
+                name = name.replace(illegalCharacter, "")
+        
         self.fileName = name
         self.parentPath = location
         self.filePath = location + name
