@@ -9,6 +9,9 @@ Created on May 2, 2015
 @version 0.1
 '''
 
+#imports
+import os
+
 '''
 Episode
 The class that models the episode
@@ -25,4 +28,8 @@ class Episode(object):
     @param season - the number of the season this episode belongs to
     '''
     def __init__(self, name, location, episodeNumber, series, season):
-        
+        self.filePath = location + name
+        self.episodeName = os.path.splitext(self.filePath)[0]
+        self.episodeNumber = episodeNumber
+        self.series = series
+        self.season = season
