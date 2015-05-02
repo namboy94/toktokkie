@@ -105,3 +105,6 @@ def parseUserInput(configFile):
         episode.setRenameName(renameInput, illegalCharacters)
     
     #TODO EvaluatePrint def
+    
+    for episode in episodeList:
+        episode.rename()

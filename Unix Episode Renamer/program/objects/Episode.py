@@ -48,7 +48,7 @@ class Episode(object):
     This does not change the object's properties.
     @param newFileName - the new name of the file
     """
-    def rename(self, newFileName, illegalCharacters):
+    def rename(self):
         
         commandString = "mv \"" + self.filePath + "\" \"" + self.renameFile + "\""
         os.system(commandString)
