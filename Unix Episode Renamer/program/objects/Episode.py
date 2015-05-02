@@ -47,13 +47,19 @@ class Episode(object):
     Renames the physical reference of this object to a new file name.
     This does not change the object's properties.
     @param newFileName - the new name of the file
-    @param illegalCharacters - list of illegal characters
     """
     def rename(self, newFileName, illegalCharacters):
         
         commandString = "mv \"" + self.filePath + "\" \"" + self.renameFile + "\""
         os.system(commandString)
         
+    """
+    setRenameName
+    sets two 'self variables, that store the new episode name's name
+    and the resulting filepath
+    @param renameNameInput - the new name of the episode
+    @param illegalCharacters - list of illegal characters
+    """
     def setRenameName(self, renameNameInput, illegalCharacters):
         
         for illegalCharacter in illegalCharacters:
