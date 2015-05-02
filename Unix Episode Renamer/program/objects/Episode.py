@@ -38,6 +38,12 @@ class Episode(object):
         self.series = series
         self.season = season
         
+    """
+    rename
+    Renames the physical reference of this object to a new file name.
+    This does not change the object's properties.
+    @param newFileName - the new name of the file
+    """
     def rename(self, newFileName, illegalCharacters):
         
         for illegalCharacter in illegalCharacters:
@@ -47,7 +53,7 @@ class Episode(object):
         if newFileName.endswith("!") or newFileName.endswith("."):
             newFileName = newFileName + " "
         
+        newFilePath = self.parentPath + newFileName + os.path.splitext(self.filepath)[1]
         
-        newFilePath = self.parentPath + newFileName
         commandString = "mv \"" + self.filePath + "\" \"" + newFilePath + "\""
         os.system(commandString)
