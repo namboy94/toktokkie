@@ -95,8 +95,10 @@ def parseUserInput(configFile):
     #Appending to list
     while currentEpisode <= episodeAmountTotal:
         episodeName = directoryContent[nameIndex]
-        episodeObject = Episode(episodeName, workingDirectory, currentEpisode, showName, seasonNo)
+        episodeObject = Episode(episodeName, workingDirectory, currentEpisode, showName, seasonString)
         episodeList.append(episodeObject)
+        currentEpisode += 1
+        nameIndex += 1
     
     #Prompts for user input - new episode names
     for episode in episodeList:
@@ -108,5 +110,19 @@ def parseUserInput(configFile):
     for episode in episodeList:
         episode.confirmationPrint()
     
-    #for episode in episodeList:
-    #    episode.rename()
+    #prompt for validation
+    prompting = True
+    while prompting:
+        proceed = raw_input("Do you want to apply the changes?   ")
+        if proceed == "y":
+            renameBool = True
+            prompting = False
+        elif proceed == "n":
+            renameBool = False
+            prompting = False
+        else:
+            print "Invalid luser input.\n"
+    
+    if renameBool:
+        for episode in episodeList:
+            episode.rename()
