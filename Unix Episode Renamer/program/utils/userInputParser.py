@@ -99,4 +99,9 @@ def parseUserInput(configFile):
         episodeList.append(episodeObject)
     
     #Prompts for user input - new episode names
+    for episode in episodeList:
+        print "Please enter the new name for episode %s - %s" % (episode.episodeNumber, episode.fileName)
+        renameInput = raw_input("")
+        episode.setRenameName(renameInput, illegalCharacters)
     
+    #TODO EvaluatePrint def
