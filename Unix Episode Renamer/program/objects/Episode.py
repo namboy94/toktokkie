@@ -46,7 +46,6 @@ class Episode(object):
     rename
     Renames the physical reference of this object to a new file name.
     This does not change the object's properties.
-    @param newFileName - the new name of the file
     """
     def rename(self):
         
@@ -74,3 +73,12 @@ class Episode(object):
         renameFile = self.filePath + self.series + " - S" + self.season + "E" + self.episodeNumber
         renameFile = renameFile + " - " + renameNameInput + self.fileExtension
         self.renameFile = renameFile
+        
+    """
+    confirmationPrint
+    prints a summary of the rename method's future processes.
+    """
+    def confirmationPrint(self):
+        print "Episode    %s" % (self.episodeNumber)
+        print "OLD:       %s" % (self.episodeName)
+        print "NEW        %s\n" % (self.renameName)
