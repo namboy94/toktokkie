@@ -70,7 +70,7 @@ class Episode(object):
             
         self.renameName = renameNameInput
         
-        renameFile = self.filePath + self.series + " - S" + self.season + "E" + self.episodeNumber
+        renameFile = self.parentPath + self.series + " - S" + self.season + "E" + self.episodeNumber
         renameFile = renameFile + " - " + renameNameInput + self.fileExtension
         self.renameFile = renameFile
         
