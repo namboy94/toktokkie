@@ -28,8 +28,15 @@ class Episode(object):
     @param season - the number of the season this episode belongs to
     '''
     def __init__(self, name, location, episodeNumber, series, season):
+        self.fileName = name
+        self.parentPath = location
         self.filePath = location + name
         self.episodeName = os.path.splitext(self.filePath)[0]
         self.episodeNumber = episodeNumber
         self.series = series
         self.season = season
+        
+    def rename(self, newFileName):
+        newFilePath = self.parentPath + newFileName
+        commandString = "mv \"" + self.filePath + "\" \"" + newFilePath + "\""
+        os.system(commandString)
