@@ -44,6 +44,9 @@ def parseUserInput(configFile):
         print "Please enter valid integer values for season number, episode number and amount of episodes"
         sys.exit(1)
         
+    #Asks for the series name
+    seriesName = raw_input("Please enter the series' name:   ")
+    
     #asks for the directory of the files to be renamed (default value is from configFile)
     openedWorkingConfigFile = open(configFile, "r")
     defaultDirectory = openedWorkingConfigFile.readline()
@@ -61,7 +64,7 @@ def parseUserInput(configFile):
         if not workingDirectory.endswith("/"):
             workingDirectory = workingDirectory + "/"
         if not os.path.isdir(workingDirectory):
-            print "Invalid Directory input by user. Pleade fix."
+            print "Invalid Directory input by luser. Please fix (the user)."
             sys.exit(1)
         openedWorkingConfigFile = open(configFile, "w")
         openedWorkingConfigFile.close()
@@ -89,4 +92,4 @@ def parseUserInput(configFile):
     while currentEpisode <= episodeAmountTotal:
         episodeName = directoryContent[nameIndex]
         episodeObject = Episode(episodeName, workingDirectory, currentEpisode, seriesName, seasonNo)
-        
+        episodeList.append(episodeObject)
