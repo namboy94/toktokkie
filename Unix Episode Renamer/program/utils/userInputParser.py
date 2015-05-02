@@ -70,3 +70,13 @@ def parseUserInput(configFile):
     
     directoryContent = os.listdir(workingDirectory)
     directoryContent.sort(key=lambda x: x)
+    
+    #checks if the amount of files in workingDirectory equals the amount of episodes
+    #input at the beginning of the method. 
+    if len(directoryContent) != episodeAmount:
+        print "Not the same amount of episodes in the directory as previously input"
+        sys.exit(1)
+    
+    #searches for and eliminates illegal characters(primarily for compatibility of files with Windows)
+    illegalCharacters = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+    
