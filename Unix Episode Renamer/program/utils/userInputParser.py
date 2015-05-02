@@ -12,6 +12,7 @@ Modified on May 2, 2015
 #imports
 import sys
 import os
+from program.objects.Episode import Episode
 
 """
 parseUserInput
@@ -48,7 +49,7 @@ def parseUserInput(configFile):
     defaultDirectory = openedWorkingConfigFile.readline()
     openedWorkingConfigFile.close()
     print "Please enter the directory to be used. A blank input will result in"
-    print "%s to be used." % (defaultDirectory)
+    print "%s to be used.    " % (defaultDirectory)
     userInput = raw_input("")
     if userInput == "":
         workingDirectory = defaultDirectory
@@ -78,5 +79,14 @@ def parseUserInput(configFile):
         sys.exit(1)
     
     #searches for and eliminates illegal characters(primarily for compatibility of files with Windows)
+    #Afterwards, the episodes are saved as Episode objects
     illegalCharacters = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+    episodeList = []
     
+    currentEpisode = episodeNo
+    nameIndex = 0
+    
+    while currentEpisode <= episodeAmountTotal:
+        episodeName = directoryContent[nameIndex]
+        episodeObject = Episode(episodeName, workingDirectory, currentEpisode, seriesName, seasonNo)
+        
