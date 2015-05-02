@@ -11,6 +11,7 @@ Modified on Apr 25, 2015
 
 #imports
 import sys
+from program.utils.userInputParser import parseUserInput
 
 #fix pythonpath
 splitPath = sys.argv[0].split("/")
@@ -18,3 +19,6 @@ lengthToCut = len(splitPath[len(splitPath) - 1]) + len(splitPath[len(splitPath) 
 upperDirectory = sys.argv[0][:-lengthToCut]
 sys.path.append(upperDirectory)
 
+configFile = upperDirectory + "program/data/config.txt"
+
+parseUserInput(configFile)

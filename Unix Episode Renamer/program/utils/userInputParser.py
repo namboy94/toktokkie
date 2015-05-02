@@ -108,5 +108,5 @@ def parseUserInput(configFile):
     for episode in episodeList:
         episode.confirmationPrint()
     
-    for episode in episodeList:
-        episode.rename()
+    #for episode in episodeList:
+    #    episode.rename()
