@@ -19,6 +19,6 @@ lengthToCut = len(splitPath[len(splitPath) - 1]) + len(splitPath[len(splitPath) 
 upperDirectory = sys.argv[0][:-lengthToCut]
 sys.path.append(upperDirectory)
 
-configFile = upperDirectory + "program/data/config.txt"
+configFile = upperDirectory + "/program/data/config.txt"
 
 parseUserInput(configFile)
