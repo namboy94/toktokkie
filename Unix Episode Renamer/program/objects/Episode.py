@@ -62,7 +62,7 @@ class Episode(object):
     def setRenameName(self, renameNameInput, illegalCharacters):
         
         for illegalCharacter in illegalCharacters:
-            if renameNameInput.contains(illegalCharacter):
+            if illegalCharacter in renameNameInput:
                 renameNameInput = renameNameInput.replace(illegalCharacter, "")
         
         if renameNameInput.endswith("!") or renameNameInput.endswith("."):

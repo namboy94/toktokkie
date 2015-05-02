@@ -27,7 +27,7 @@ def parseUserInput(configFile):
     #Asks for show name and replaces all illegal characters in the show's name with a whitespace
     showName = raw_input("Please enter the show's name:   ")
     for illegalCharacter in illegalCharacters:
-        if showName.contains(illegalCharacter):
+        if illegalCharacter in showName:
             showName = showName.replace(illegalCharacter, "")
     
     #Asks for number of episodes, the first episode number and the season number.
