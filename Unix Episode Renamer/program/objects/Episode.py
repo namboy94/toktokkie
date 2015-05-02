@@ -23,10 +23,9 @@ class Episode(object):
     Constructs a new episode object
     @param name - the name of the episode
     @param location - the directory of the file
-    @param episodeNumber - the number of the episode
+    @param episodeNumber - the number of the episode (int)
     @param series - the name of the series this episode belongs to
-    @param season - the number of the season this episode belongs to
-    @param illegalCharacters - list of illegal characters
+    @param season - the number of the season this episode belongs to (string)
     '''
     def __init__(self, name, location, episodeNumber, series, season):
                     
@@ -34,26 +33,38 @@ class Episode(object):
         self.parentPath = location
         self.filePath = location + name
         self.episodeName = os.path.splitext(self.filePath)[0]
-        self.episodeNumber = episodeNumber
+        self.fileExtension = os.path.splitext(self.filePath)[1]
         self.series = series
         self.season = season
+        
+        if episodeNumber < 10:
+            self.episodeNumber = "0" + str(episodeNumber)
+        else:
+            self.episodeNumber = str(episodeNumber)
         
     """
     rename
     Renames the physical reference of this object to a new file name.
     This does not change the object's properties.
     @param newFileName - the new name of the file
+    @param illegalCharacters - list of illegal characters
     """
     def rename(self, newFileName, illegalCharacters):
         
-        for illegalCharacter in illegalCharacters:
-            if newFileName.contains(illegalCharacter):
-                newFileName = newFileName.replace(illegalCharacter, "")
-        
-        if newFileName.endswith("!") or newFileName.endswith("."):
-            newFileName = newFileName + " "
-        
-        newFilePath = self.parentPath + newFileName + os.path.splitext(self.filepath)[1]
-        
-        commandString = "mv \"" + self.filePath + "\" \"" + newFilePath + "\""
+        commandString = "mv \"" + self.filePath + "\" \"" + self.renameFile + "\""
         os.system(commandString)
+        
+    def setRenameName(self, renameNameInput, illegalCharacters):
+        
+        for illegalCharacter in illegalCharacters:
+            if renameNameInput.contains(illegalCharacter):
+                renameNameInput = renameNameInput.replace(illegalCharacter, "")
+        
+        if renameNameInput.endswith("!") or renameNameInput.endswith("."):
+            renameNameInput = renameNameInput + " "
+            
+        self.renameName = renameNameInput
+        
+        renameFile = self.filePath + self.series + " - S" + self.season + "E" + self.episodeNumber
+        renameFile = renameFile + " - " + renameNameInput + self.fileExtension
+        self.renameFile = renameFile
