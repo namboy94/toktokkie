@@ -34,6 +34,12 @@ class Episode(object):
             if name.contains(illegalCharacter):
                 name = name.replace(illegalCharacter, "")
         
+        fileName = os.path.splitext(name)[0]
+        fileExtension = os.path.splitext(name)[1]
+        
+        if fileName.endswith("!") or fileName.endswith("."):
+            name = fileName + " " + fileExtension
+                    
         self.fileName = name
         self.parentPath = location
         self.filePath = location + name

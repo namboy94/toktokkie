@@ -77,6 +77,7 @@ def parseUserInput(configFile):
         openedWorkingConfigFile.write(workingDirectory)
         openedWorkingConfigFile.close()
     
+    #Sorts the list of files in the directory
     directoryContent = os.listdir(workingDirectory)
     directoryContent.sort(key=lambda x: x)
     
@@ -91,7 +92,11 @@ def parseUserInput(configFile):
     currentEpisode = episodeNo
     nameIndex = 0
     
+    #Appending to list
     while currentEpisode <= episodeAmountTotal:
         episodeName = directoryContent[nameIndex]
         episodeObject = Episode(episodeName, workingDirectory, currentEpisode, showName, seasonNo)
         episodeList.append(episodeObject)
+    
+    #Prompts for user input - new episode names
+    
