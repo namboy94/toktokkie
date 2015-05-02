@@ -20,8 +20,16 @@ parses the user's input.
 """
 def parseUserInput(configFile):
     
+    #illegal characters list for ensuring compatibility on Windows systems
+    #theoretically, any character can be autoremoved with this
+    illegalCharacters = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+    
+    #Asks for show name and replaces all illegal characters in the show's name with a whitespace
     showName = raw_input("Please enter the show's name:   ")
-
+    for illegalCharacter in illegalCharacters:
+        if showName.contains(illegalCharacter):
+            showName = showName.replace(illegalCharacter, "")
+    
     #Asks for number of episodes, the first episode number and the season number.
     try:
         episodeNo = int(raw_input("Please enter the first episode's number   "))
@@ -42,10 +50,7 @@ def parseUserInput(configFile):
             seasonString = str(seasonNo)
     except TypeError:
         print "Please enter valid integer values for season number, episode number and amount of episodes"
-        sys.exit(1)
-        
-    #Asks for the series name
-    seriesName = raw_input("Please enter the series' name:   ")
+        sys.exit(1) 
     
     #asks for the directory of the files to be renamed (default value is from configFile)
     openedWorkingConfigFile = open(configFile, "r")
@@ -81,15 +86,12 @@ def parseUserInput(configFile):
         print "Not the same amount of episodes in the directory as previously input"
         sys.exit(1)
     
-    #searches for and eliminates illegal characters(primarily for compatibility of files with Windows)
-    #Afterwards, the episodes are saved as Episode objects
-    illegalCharacters = ["<", ">", ":", "\"", "/", "\\", "|", "?", "*"]
+    #Initializes all Episode objects and appends them to a list
     episodeList = []
-    
     currentEpisode = episodeNo
     nameIndex = 0
     
     while currentEpisode <= episodeAmountTotal:
         episodeName = directoryContent[nameIndex]
-        episodeObject = Episode(episodeName, workingDirectory, currentEpisode, seriesName, seasonNo)
+        episodeObject = Episode(episodeName, workingDirectory, currentEpisode, showName, seasonNo)
         episodeList.append(episodeObject)
