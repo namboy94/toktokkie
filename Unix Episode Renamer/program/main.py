@@ -23,6 +23,15 @@ if platform.system() == "Linux":
     
     configFile = upperDirectory + "/program/data/config.txt"
 
+elif platform.system() == "Windows":
+    #fix pythonpath
+    splitPath = sys.argv[0].split("\\")
+    lengthToCut = len(splitPath[len(splitPath) - 1]) + len(splitPath[len(splitPath) - 2]) + 2
+    upperDirectory = sys.argv[0][:-lengthToCut]
+    sys.path.append(upperDirectory)
+    
+    configFile = upperDirectory + "\\program\\data\\config.txt"
+
 else:
     print "Sorry, this operating system is not supported"
     sys.exit(1)
