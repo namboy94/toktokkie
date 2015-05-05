@@ -11,14 +11,20 @@ Modified on May 2, 2015
 
 #imports
 import sys
+import platform
 from program.utils.userInputParser import parseUserInput
 
-#fix pythonpath
-splitPath = sys.argv[0].split("/")
-lengthToCut = len(splitPath[len(splitPath) - 1]) + len(splitPath[len(splitPath) - 2]) + 2
-upperDirectory = sys.argv[0][:-lengthToCut]
-sys.path.append(upperDirectory)
+if platform.system() == "Linux":
+    #fix pythonpath
+    splitPath = sys.argv[0].split("/")
+    lengthToCut = len(splitPath[len(splitPath) - 1]) + len(splitPath[len(splitPath) - 2]) + 2
+    upperDirectory = sys.argv[0][:-lengthToCut]
+    sys.path.append(upperDirectory)
+    
+    configFile = upperDirectory + "/program/data/config.txt"
 
-configFile = upperDirectory + "/program/data/config.txt"
+else:
+    print "Sorry, this operating system is not supported"
+    sys.exit(1)
 
 parseUserInput(configFile)
