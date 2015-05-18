@@ -3,10 +3,10 @@ ParserCollection
 collection of parsing methods.
 
 Created on Apr 25, 2015
-Modified on Apr 25, 2015
+Modified on May 19, 2015
 
 @author Hermann Krumrey
-@version 1.2
+@version 1.3
 '''
 
 #imports
@@ -70,7 +70,7 @@ to conventions set by the author of this program.
 @param rootDirectory - the parent directory to be parsed
 @param warningFile - the location of a file that contains warnings that occur during parsing
 """
-def iconParser(rootDirectory,warningFile):
+def iconParser(rootDirectory,warningFile,defaultIcons):
     
     returnList = []
     rootDirectoryContent = os.listdir(rootDirectory)
@@ -83,6 +83,7 @@ def iconParser(rootDirectory,warningFile):
         showDirectory = rootDirectory + a + "/"
         showDirectoryContent = os.listdir(showDirectory)
         folderIconDirectory = showDirectory + "Folder Icon/"
+        addDefaultFolderIcons(folderIconDirectory, defaultIcons)
         
         completeCheck(folderIconDirectory, warningFile)
         
@@ -176,3 +177,26 @@ def completeCheck(folderIconDirectory,warningFile):
                 workingWarningFile = open(warningFile, "a")
                 workingWarningFile.write(icoFile + "\n")
                 workingWarningFile.close()
+
+"""
+addDefaultFolderIcons
+adds the default folder icons to the folder icon folder if they don't exist yet.
+@param folderIconDirectory - the directory of the folder icons
+@param defaultIconDirectory - the directory of the default icons
+"""
+def addDefaultFolderIcons(folderIconDirectory, defaultIconDirectory):
+    
+    folderContent = os.listdir(folderIconDirectory)
+    defaultIcons = os.listdir(defaultIconDirectory)
+    
+    found = False
+    
+    for defaultIcon in defaultIcons:
+        for folderIconFile in folderContent:
+            if folderIconFile == defaultIcon :
+                found = True
+                break
+        if not found:
+            terminalCommand = "cp \"" + defaultIconDirectory + defaultIcon + "\" \"" + folderIconDirectory + defaultIcon + "\""
+            os.system(terminalCommand)
+            found = False

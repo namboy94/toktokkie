@@ -3,10 +3,10 @@ main
 The main program that ties the whole project together
 
 Created on Apr 25, 2015
-Modified on Apr 25, 2015
+Modified on May 19, 2015
 
 @author Hermann Krumrey
-@version 1.2
+@version 1.3
 '''
 
 #imports
@@ -26,7 +26,8 @@ sys.path.append(upperDirectory)
 
 configFileLocation = upperDirectory + "/program/data/config.txt"
 warningFileLocation = upperDirectory + "/program/data/warnings.txt"
+defaultIcons = upperDirectory + "/program/resources/"
 directoryChangeParser(configFileLocation)
 activeDirectory = getActiveDirectory(configFileLocation)
 
-iconParser(activeDirectory, warningFileLocation)
+iconParser(activeDirectory, warningFileLocation, defaultIcons)
