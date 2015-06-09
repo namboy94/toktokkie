@@ -13,6 +13,7 @@ Modified on May 2, 2015
 import sys
 import platform
 from program.utils.userInputParser import parseUserInput
+from program.utils.InputGUI import InputGUI
 
 if platform.system() == "Linux":
     #fix pythonpath
@@ -36,4 +37,6 @@ else:
     print "Sorry, this operating system is not supported"
     sys.exit(1)
 
-parseUserInput(configFile)
+#parseUserInput(configFile)
+gui = InputGUI()
+gui.guiStart()
