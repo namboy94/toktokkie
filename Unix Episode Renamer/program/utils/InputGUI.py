@@ -19,8 +19,8 @@ class InputGUI(object):
     """
     Constructor fo the GUI
     """
-    def __init__(self):
-        print ""
+    def __init__(self, configFile):
+        self.configFile = configFile
         
     """
     starts the GUI
@@ -33,18 +33,18 @@ class InputGUI(object):
         self.gui.title("Episode Renamer")
         self.gui.wm_resizable(False, False)
         
-        #Add objects to gui
-        self.addLabel("Showname", 5, 5, 200, 40)
-        self.addLabel("First Episode", 5, 50, 200, 40)
-        self.addLabel("Last Episode", 5, 100, 200, 40)
-        self.addLabel("Directory", 5, 150, 200, 40)
-        
         #textbox variables
         showName = StringVar()
         firstEpisode = StringVar()
         lastEpisode = StringVar()
         directory = StringVar()
-
+        directory.set(open(self.configFile, "r").readline())
+        
+        #Add objects to gui
+        self.addLabel("Showname", 5, 5, 200, 40)
+        self.addLabel("First Episode", 5, 50, 200, 40)
+        self.addLabel("Last Episode", 5, 100, 200, 40)
+        self.addLabel("Directory", 5, 150, 200, 40)
         self.addTextBox(showName, 250, 5, 200, 40)
         self.addTextBox(firstEpisode, 250, 50, 200, 40)
         self.addTextBox(lastEpisode, 250, 100, 200, 40)

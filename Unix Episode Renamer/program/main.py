@@ -38,5 +38,5 @@ else:
     sys.exit(1)
 
 #parseUserInput(configFile)
-gui = InputGUI()
+gui = InputGUI(configFile)
 gui.guiStart()
