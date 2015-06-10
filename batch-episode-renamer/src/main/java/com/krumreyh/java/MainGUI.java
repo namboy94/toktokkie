@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -15,6 +16,12 @@ import javax.swing.JTextField;
  */
 public class MainGUI extends JFrame{
 
+	protected JTextField showNameField;
+	protected JTextField seasonField;
+	protected JTextField firstEpField;
+	protected JTextField lastEpField;
+	protected JTextField directoryField;
+	
 	/**
 	 * Constructor of the GUI that adds all UI elements
 	 */
@@ -28,24 +35,17 @@ public class MainGUI extends JFrame{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
 		
-		//variables
-		String showString = "";
-		String seasonString = "";
-		String firstEpString = "";
-		String lastEpString = "";
-		String directoryString = "";
-		
 		//Add UI Elements
 		addLabel("Show Name", 10, 10, 100, 50);
 		addLabel("Season", 10, 70, 100, 50);
 		addLabel("First Episode", 10, 130, 100, 50);
 		addLabel("Last Episode", 10, 190, 100, 50);
 		addLabel("Directory", 10, 250, 100, 50);
-		addTextField(showString, 120, 10, 270, 50);
-		addTextField(seasonString, 120, 70, 270, 50);
-		addTextField(firstEpString, 120, 130, 270, 50);
-		addTextField(lastEpString, 120, 190, 270, 50);
-		addTextField(directoryString, 120, 250, 270, 50);
+		this.showNameField = addTextField("", 120, 10, 270, 50);
+		this.seasonField = addTextField("", 120, 70, 270, 50);
+		this.firstEpField = addTextField("", 120, 130, 270, 50);
+		this.lastEpField = addTextField("", 120, 190, 270, 50);
+		this.directoryField = addTextField("", 120, 250, 270, 50);
 		addButton("Start Renaming", 25, 350, 350, 60, new StartButton());
 		
 		//Set GUI to visible
@@ -115,7 +115,29 @@ public class MainGUI extends JFrame{
 		 * The action performed by the button
 		 */
 		public void actionPerformed(ActionEvent e) {
+			validate();
+		}
+		
+		private void validate() {
 			
+			String showName = MainGUI.this.showNameField.getText();
+			String season = MainGUI.this.seasonField.getText();
+			String firstEp = MainGUI.this.firstEpField.getText();
+			String lastEp = MainGUI.this.lastEpField.getText();
+			String directory = MainGUI.this.directoryField.getText();
+			
+			try {
+				Renamer renamer = new Renamer();
+				renamer.validateShowName(showName);
+				renamer.validateEpisodeNumbers(firstEp, lastEp, directory);
+				renamer.validateSeasonNumber(season);
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(MainGUI.this, "Error, Please enter integer values where appropriate");
+			} catch (IllegalArgumentException e) {
+				JOptionPane.showMessageDialog(MainGUI.this, "Error, Illegal Arguments");
+			} catch (NullPointerException e) {
+				JOptionPane.showMessageDialog(MainGUI.this, "Error, Illegal Directory");
+			}
 		}
 	}
 }
