@@ -1,6 +1,7 @@
 package com.krumreyh.java;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Class that bundles all relevant methods to rename episodes
@@ -9,7 +10,12 @@ import java.io.File;
  */
 public class Renamer {
 
-	char[] illegalCharacters =  {'<', '>', ':', '\"', '/', '\\', '|', '?', '*'};
+	private char[] illegalCharacters =  {'<', '>', ':', '\"', '/', '\\', '|', '?', '*'};
+	private String showName;
+	private int season;
+	private int firstEp;
+	private int lastEp;
+	private String directory;
 	
 	/**
 	 * Constructor of the Renamer class that automagically tests the input parameters for validity
@@ -24,6 +30,12 @@ public class Renamer {
 		validateShowName(showName);
 		validateIntegerConversion(season);
 		validateEpisodeNumbers(firstEp, lastEp, directory);
+		
+		this.showName = showName;
+		this.season = Integer.parseInt(season);
+		this.firstEp = Integer.parseInt(firstEp);
+		this.lastEp = Integer.parseInt(lastEp);
+		this.directory = directory;
 	}
 	
 	/**
@@ -97,4 +109,13 @@ public class Renamer {
 		}
 	}
 	
+	/**
+	 * Gets an array of files containing the files in the directory used.
+	 * @return the files in an array of files
+	 */
+	private File[] getAndSortDirectoryContent() {
+		File[] listOfFiles = new File(this.directory).listFiles();
+		Arrays.sort(listOfFiles);
+		return listOfFiles;
+	}
 }
