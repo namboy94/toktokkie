@@ -127,16 +127,9 @@ public class MainGUI extends JFrame{
 			String directory = MainGUI.this.directoryField.getText();
 			
 			try {
-				Renamer renamer = new Renamer();
-				renamer.validateShowName(showName);
-				renamer.validateEpisodeNumbers(firstEp, lastEp, directory);
-				renamer.validateSeasonNumber(season);
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(MainGUI.this, "Error, Please enter integer values where appropriate");
+				Renamer renamer = new Renamer(showName, season, firstEp, lastEp, directory);
 			} catch (IllegalArgumentException e) {
-				JOptionPane.showMessageDialog(MainGUI.this, "Error, Illegal Arguments");
-			} catch (NullPointerException e) {
-				JOptionPane.showMessageDialog(MainGUI.this, "Error, Illegal Directory");
+				JOptionPane.showMessageDialog(MainGUI.this, e.getMessage());
 			}
 		}
 	}
