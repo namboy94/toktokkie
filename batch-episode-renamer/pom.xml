@@ -9,6 +9,14 @@
 
   <name>batch-episode-renamer</name>
   <url>http://maven.apache.org</url>
+  
+  <repositories>
+		<repository>
+			<id>krumreyh</id>
+			<name>krumreyh</name>
+			<url>https://krumreyh.asuscomm.com/index.php/s/cASzeGjCx8dNjJb/</url>
+		</repository>
+  </repositories>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

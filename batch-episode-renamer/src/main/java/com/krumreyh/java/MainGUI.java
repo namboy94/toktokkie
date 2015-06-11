@@ -2,6 +2,7 @@ package com.krumreyh.java;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -107,7 +108,7 @@ public class MainGUI extends JFrame{
 	
 	/**
 	 * Class that implements an actionlistener for the start rename button of the GUI
-	 * @author hermann
+	 * @author Hermann Krumrey
 	 *
 	 */
 	protected class StartButton implements ActionListener {
@@ -135,6 +136,7 @@ public class MainGUI extends JFrame{
 			promptForNewNames(episodes, newEpisodeNames);
 			
 			renamer.setNewEpisodeNames(newEpisodeNames);
+			renamer.startRename();
 		}
 		
 		/**

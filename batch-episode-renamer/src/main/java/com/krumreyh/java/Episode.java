@@ -14,6 +14,7 @@ public class Episode {
 	private int season;
 	private String name;
 	private String fullDirectoryPath;
+	private String fileExtension;
 	
 	/**
 	 * Constructor
@@ -25,6 +26,7 @@ public class Episode {
 		this.season = season;
 		this.name = episodeFile.getName();
 		this.fullDirectoryPath = episodeFile.getAbsolutePath();
+		this.fileExtension = getFileExtension(this.episodeFile);
 	}
 	
 	/**
@@ -34,5 +36,61 @@ public class Episode {
 	public String getName() {
 		return this.name;
 	}
-
+	
+	/**
+	 * Getter-method for the file's extension
+	 * @return the file extension of the episode file
+	 */
+	public String getFileExtension() {
+		return this.fileExtension;
+	}
+	
+	/**
+	 * Getter-method that return the file in which the episode is saved
+	 * @return the episode's file
+	 */
+	public File getFile() {
+		return this.episodeFile;
+	}
+	
+	/**
+	 * Returns the episode number as string, at least two digits long
+	 * @return the episode number
+	 */
+	public String getEpisode() {
+		return turnIntToString(this.episodeNumber);
+	}
+	
+	/**
+	 * Returns the season number as string, at least two digits long
+	 * @return the season number
+	 */
+	public String getSeason() {
+		return turnIntToString(this.season);
+	}
+	
+	/**
+	 * Turns an int into a string and appends a '0' to the beginning if th int is < 10
+	 * @return the int as string
+	 */
+	private String turnIntToString(int input) {
+		String output = "";
+		if (input < 10) {
+			output = "0" + input;
+		} else {
+			output = "" + input;
+		}
+		return output;
+	}
+	
+	/**
+	 * Analyzes a file for its file extension and returns it as String 
+	 * @param file - the file to be analyzed
+	 * @return the file extension as String
+	 */
+	private String getFileExtension(File file) {
+		String fileName = file.getName();
+		String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
+		return fileExtension;
+	}
 }

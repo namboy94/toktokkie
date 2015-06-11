@@ -1,6 +1,9 @@
 package com.krumreyh.java;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 /**
@@ -60,8 +63,16 @@ public class Renamer {
 		this.newEpisodeNames = newEpisodeNames;
 	}
 	
+	/**
+	 * Renames all episodes in the episodes Array with the names from the array newEpisodeNames
+	 * @throws IOException - if the system command fails
+	 */
 	public void startRename() {
-		
+		for (int i = 0; i < this.episodes.length; i++) {
+			String newFile = this.directory + this.showName + " - S" + this.episodes[i].getSeason();
+			newFile += "E" + this.episodes[i].getEpisode() + " - " + this.newEpisodeNames[i] + "." + this.episodes[i].getFileExtension();
+			this.episodes[i].getFile().renameTo(new File(newFile));
+		}
 	}
 	
 	/**
