@@ -3,7 +3,7 @@ package com.krumreyh.java;
 /**
  * Main Class of the batch episode renamer
  * @author Hermann Krumrey
- * @version 0.1
+ * @version 1.0
  */
 public class Main {
 

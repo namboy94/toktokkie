@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 /**
  * Class that implements a GUI using Swing
  * @author Hermann Krumrey
- * @versio 0.1
+ * @versio 1.0
  */
 public class MainGUI extends JFrame{
 

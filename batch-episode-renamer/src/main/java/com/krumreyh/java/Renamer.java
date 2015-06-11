@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Class that bundles all relevant methods to rename episodes
  * @author Hermann Krumrey
- * @version 0.1
+ * @version 1.0
  */
 public class Renamer {
 
@@ -140,6 +140,9 @@ public class Renamer {
 		try {
 			if (!new File(directory).exists()) { 
 				throw new IllegalArgumentException("Directory not valid");
+			}
+			if (!directory.endsWith("/") && !directory.endsWith("\\")) {
+				throw new IllegalArgumentException("Directory does not end with / or \\");
 			}
 		} catch (NullPointerException e) {
 			throw new IllegalArgumentException("Directory not valid");

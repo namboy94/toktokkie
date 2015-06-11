@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * Class that models an episode
  * @author Hermann
- * @version 0.1
+ * @version 1.0
  */
 public class Episode {
 	
