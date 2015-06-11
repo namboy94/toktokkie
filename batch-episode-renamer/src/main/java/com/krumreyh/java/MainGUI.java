@@ -2,7 +2,6 @@ package com.krumreyh.java;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -136,7 +135,18 @@ public class MainGUI extends JFrame{
 			promptForNewNames(episodes, newEpisodeNames);
 			
 			renamer.setNewEpisodeNames(newEpisodeNames);
-			renamer.startRename();
+			
+			boolean confirmed = true;
+			for (int i = 0; i < episodes.length; i++) {
+				confirmed = confirmationPrompt(episodes[i], newEpisodeNames[i]);
+				if (!confirmed) {break;}
+			}
+			
+			if (!confirmed) {
+				JOptionPane.showMessageDialog(MainGUI.this, "Operation aborted");
+			} else {
+				renamer.startRename();
+			}	
 		}
 		
 		/**
@@ -150,6 +160,18 @@ public class MainGUI extends JFrame{
 				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n" + episodes[i].getName());
 				newEpisodeNames[i] = prompt;
 			}
+		}
+		
+		/**
+		 * Prompts the user for confirmation of an episode rename
+		 */
+		private boolean confirmationPrompt(Episode episode, String newName) {
+			int confirmed = JOptionPane.YES_NO_OPTION;
+			String message = "Rename\n\n" + episode.getName() + "\n\nto:\n\n";
+			message += episode.getShowName() + " - S" + episode.getSeason() + "E" + episode.getEpisode();
+			message += " - " + newName + "." + episode.getFileExtension() + "\n\n?";
+			confirmed = JOptionPane.showConfirmDialog(MainGUI.this, message, "rename confirmation", confirmed);
+			if (confirmed == 0) { return true; } else { return false; }
 		}
 	}
 }

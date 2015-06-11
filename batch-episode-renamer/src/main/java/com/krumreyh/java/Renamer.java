@@ -168,7 +168,7 @@ public class Renamer {
 		Episode[] episodes = new Episode[(this.lastEp - this.firstEp + 1)];
 		int currentEpisode = this.firstEp;
 		for (int i = 0; i < listOfFiles.length; i++) {
-			episodes[i] = new Episode(listOfFiles[i], currentEpisode, this.season);
+			episodes[i] = new Episode(listOfFiles[i], currentEpisode, this.season, this.showName);
 			currentEpisode++;
 		}
 		return episodes;

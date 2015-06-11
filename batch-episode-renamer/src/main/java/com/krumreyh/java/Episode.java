@@ -12,6 +12,7 @@ public class Episode {
 	private File episodeFile;
 	private int episodeNumber;
 	private int season;
+	private String showName;
 	private String name;
 	private String fullDirectoryPath;
 	private String fileExtension;
@@ -20,10 +21,11 @@ public class Episode {
 	 * Constructor
 	 * @param episodeFile - the file containing this episode
 	 */
-	public Episode(File episodeFile, int episodeNumber, int season) {
+	public Episode(File episodeFile, int episodeNumber, int season, String showName) {
 		this.episodeFile = episodeFile;
 		this.episodeNumber = episodeNumber;
 		this.season = season;
+		this.showName = showName;
 		this.name = episodeFile.getName();
 		this.fullDirectoryPath = episodeFile.getAbsolutePath();
 		this.fileExtension = getFileExtension(this.episodeFile);
@@ -35,6 +37,14 @@ public class Episode {
 	 */
 	public String getName() {
 		return this.name;
+	}
+	
+	/**
+	 * Getter-method for the show name
+	 * @return the name of the show
+	 */
+	public String getShowName() {
+		return this.showName;
 	}
 	
 	/**
