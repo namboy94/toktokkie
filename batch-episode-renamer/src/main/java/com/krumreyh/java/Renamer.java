@@ -16,6 +16,9 @@ public class Renamer {
 	private int firstEp;
 	private int lastEp;
 	private String directory;
+	private File[] directoryContent;
+	private Episode[] episodes;
+	private String[] newEpisodeNames;
 	
 	/**
 	 * Constructor of the Renamer class that automagically tests the input parameters for validity
@@ -36,6 +39,29 @@ public class Renamer {
 		this.firstEp = Integer.parseInt(firstEp);
 		this.lastEp = Integer.parseInt(lastEp);
 		this.directory = directory;
+		
+		this.directoryContent = getAndSortDirectoryContent();
+		this.episodes = createEpisodes(this.directoryContent);
+	}
+	
+	/**
+	 * Getter-Method for the array of episodes
+	 * @return the array of episodes
+	 */
+	public Episode[] getEpisodes() {
+		return this.episodes;
+	}
+	
+	/**
+	 * Sets the new episode names
+	 * @param newEpisodeNames - array of new episode names
+	 */
+	public void setNewEpisodeNames(String[] newEpisodeNames) {
+		this.newEpisodeNames = newEpisodeNames;
+	}
+	
+	public void startRename() {
+		
 	}
 	
 	/**
@@ -117,5 +143,20 @@ public class Renamer {
 		File[] listOfFiles = new File(this.directory).listFiles();
 		Arrays.sort(listOfFiles);
 		return listOfFiles;
+	}
+	
+	/**
+	 * Creates an array of episodes based on the content of the directory
+	 * @param listOfFiles - the files to be added to the episodes
+	 * @return the array of Episodes
+	 */
+	private Episode[] createEpisodes(File[] listOfFiles) {
+		Episode[] episodes = new Episode[(this.lastEp - this.firstEp + 1)];
+		int currentEpisode = this.firstEp;
+		for (int i = 0; i < listOfFiles.length; i++) {
+			episodes[i] = new Episode(listOfFiles[i], currentEpisode, this.season);
+			currentEpisode++;
+		}
+		return episodes;
 	}
 }

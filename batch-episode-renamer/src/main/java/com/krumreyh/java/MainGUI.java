@@ -114,22 +114,39 @@ public class MainGUI extends JFrame{
 		/**
 		 * The action performed by the button
 		 */
-		public void actionPerformed(ActionEvent e) {
-			validate();
-		}
-		
-		private void validate() {
+		public void actionPerformed(ActionEvent ae) {
 			
 			String showName = MainGUI.this.showNameField.getText();
 			String season = MainGUI.this.seasonField.getText();
 			String firstEp = MainGUI.this.firstEpField.getText();
 			String lastEp = MainGUI.this.lastEpField.getText();
 			String directory = MainGUI.this.directoryField.getText();
+			Renamer renamer = null;
 			
 			try {
-				Renamer renamer = new Renamer(showName, season, firstEp, lastEp, directory);
+				renamer = new Renamer(showName, season, firstEp, lastEp, directory);
 			} catch (IllegalArgumentException e) {
 				JOptionPane.showMessageDialog(MainGUI.this, e.getMessage());
+				return;
+			}
+			
+			Episode[] episodes = renamer.getEpisodes();
+			String[] newEpisodeNames = new String[episodes.length];
+			promptForNewNames(episodes, newEpisodeNames);
+			
+			renamer.setNewEpisodeNames(newEpisodeNames);
+		}
+		
+		/**
+		 * Prompts the user for each new episode name in order
+		 * @param episodes - array of episodes
+		 * @param newEpisodeNames - array of new episode names
+		 */
+		private void promptForNewNames(Episode[] episodes, String[] newEpisodeNames) {
+			for (int i = 0; i < episodes.length; i++) {
+				JFrame frame = new JFrame("New Episode Name");
+				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n" + episodes[i].getName());
+				newEpisodeNames[i] = prompt;
 			}
 		}
 	}

@@ -26,5 +26,13 @@ public class Episode {
 		this.name = episodeFile.getName();
 		this.fullDirectoryPath = episodeFile.getAbsolutePath();
 	}
+	
+	/**
+	 * Getter-method for the episode name
+	 * @return the name of the episode
+	 */
+	public String getName() {
+		return this.name;
+	}
 
 }
