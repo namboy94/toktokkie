@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+import com.krumreyh.java.krumreylib.fileops.DirectoryHandler;
+import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
+
 /**
  * Class that bundles all relevant methods to rename episodes
  * @author Hermann Krumrey
@@ -138,7 +141,7 @@ public class Renamer {
 	 */
 	private void validateDirectory(String directory) throws IllegalArgumentException{
 		try {
-			if (!new File(directory).exists()) { 
+			if (!DirectoryHandler.checkIfDirectory(directory)) { 
 				throw new IllegalArgumentException("Directory not valid");
 			}
 			if (!directory.endsWith("/") && !directory.endsWith("\\")) {

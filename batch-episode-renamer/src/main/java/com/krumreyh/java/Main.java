@@ -14,8 +14,10 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		new MainGUI();
-		
+		if (args.length == 0) {
+			new MainGUI();
+		} else {
+			System.out.println("Too many arguments");
+		}
 	}
-	
 }
