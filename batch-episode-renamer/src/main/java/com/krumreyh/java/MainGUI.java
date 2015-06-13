@@ -9,6 +9,8 @@ import javax.swing.JTextField;
 
 import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
 
+import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
+
 /**
  * Class that implements a GUI using Swing
  * @author Hermann Krumrey
