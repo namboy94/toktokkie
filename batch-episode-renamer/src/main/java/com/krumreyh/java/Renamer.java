@@ -1,13 +1,10 @@
 package com.krumreyh.java;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
-import com.krumreyh.java.krumreylib.fileops.DirectoryHandler;
-import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
+import com.krumreyh.java.krumreylib.fileops.FileHandler;
 
 /**
  * Class that bundles all relevant methods to rename episodes
@@ -48,6 +45,7 @@ public class Renamer {
 		
 		this.directoryContent = getAndSortDirectoryContent();
 		this.episodes = createEpisodes(this.directoryContent);
+		this.newEpisodeNames = new String[this.episodes.length];
 	}
 	
 	/**
@@ -63,7 +61,9 @@ public class Renamer {
 	 * @param newEpisodeNames - array of new episode names
 	 */
 	public void setNewEpisodeNames(String[] newEpisodeNames) {
-		this.newEpisodeNames = newEpisodeNames;
+		for (int i = 0; i < newEpisodeNames.length; i++) {
+			this.newEpisodeNames[i] = FileHandler.sanitizeFileName(newEpisodeNames[i]);
+		}
 	}
 	
 	/**
@@ -85,12 +85,7 @@ public class Renamer {
 	 */
 	private void validateShowName(String showName) throws IllegalArgumentException {
 		String illegalNameError = "The show name consists of no valid characters";
-		
-		for (int i = 0; i < this.illegalCharacters.length; i++) {
-			if (showName.indexOf(this.illegalCharacters[i]) != -1) {
-				 showName = showName.replace("" + this.illegalCharacters[i], "");
-			}
-		}
+		showName = FileHandler.sanitizeFileName(showName);
 		if (showName.length() == 0) {
 			throw new IllegalArgumentException(illegalNameError);
 		}
@@ -141,7 +136,7 @@ public class Renamer {
 	 */
 	private void validateDirectory(String directory) throws IllegalArgumentException{
 		try {
-			if (!DirectoryHandler.checkIfDirectory(directory)) { 
+			if (!FileHandler.checkIfDirectory(directory)) { 
 				throw new IllegalArgumentException("Directory not valid");
 			}
 			if (!directory.endsWith("/") && !directory.endsWith("\\")) {
