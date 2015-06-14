@@ -1,5 +1,7 @@
 package com.krumreyh.java;
 
+import com.krumreyh.java.user.interfaces.MainCLI;
+
 /**
  * Main Class of the batch episode renamer
  * @author Hermann Krumrey
@@ -16,8 +18,8 @@ public class Main {
 		
 		if (args.length == 0) {
 			new MainGUI();
-		} else {
-			System.out.println("Too many arguments");
+		} else if (args[0].equals("-cli")) {
+			new MainCLI();
 		}
 	}
 }
