@@ -1,4 +1,4 @@
-package com.krumreyh.java;
+package com.krumreyh.java.batch.episode.renamer.userinterface.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,16 +7,16 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
-
+import com.krumreyh.java.batch.episode.renamer.objects.Episode;
+import com.krumreyh.java.batch.episode.renamer.utils.Renamer;
 import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
 
 /**
- * Class that implements a GUI using Swing
+ * Class that models the primary GUI of the application
  * @author Hermann Krumrey
- * @versio 1.0
+ * @version 1.0
  */
-public class MainGUI extends GUITemplate{
+public class MainGUI extends GUITemplate {
 
 	protected JTextField showNameField;
 	protected JTextField seasonField;
@@ -24,8 +24,9 @@ public class MainGUI extends GUITemplate{
 	protected JTextField lastEpField;
 	protected JTextField directoryField;
 	
+	
 	/**
-	 * Constructor of the GUI that adds all UI elements
+	 * Constructor that adds all GUI Elements and starts the GUI
 	 */
 	public MainGUI() {
 		
@@ -47,10 +48,10 @@ public class MainGUI extends GUITemplate{
 		startGUI();
 	}
 	
+	
 	/**
-	 * Class that implements an actionlistener for the start rename button of the GUI
+	 * Class that implements an ActionListener for the 'Start Renaming' button of the GUI
 	 * @author Hermann Krumrey
-	 *
 	 */
 	protected class StartButton implements ActionListener {
 		/**
@@ -73,14 +74,19 @@ public class MainGUI extends GUITemplate{
 			}
 			
 			Episode[] episodes = renamer.getEpisodes();
-			String[] newEpisodeNames = new String[episodes.length];
-			promptForNewNames(episodes, newEpisodeNames);
 			
-			renamer.setNewEpisodeNames(newEpisodeNames);
+			for (int i = 0; i < episodes.length; i++) {
+				JFrame frame = new JFrame("New Episode Name");
+				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n" + episodes[i].getCurrentName());
+				episodes[i].setNewName(prompt);
+			}
+			
+			renamer.setEpisodes(episodes);
+			episodes = renamer.getEpisodes();
 			
 			boolean confirmed = true;
 			for (int i = 0; i < episodes.length; i++) {
-				confirmed = confirmationPrompt(episodes[i], newEpisodeNames[i]);
+				confirmed = confirmationPrompt(episodes[i]);
 				if (!confirmed) {break;}
 			}
 			
@@ -92,27 +98,12 @@ public class MainGUI extends GUITemplate{
 		}
 		
 		/**
-		 * Prompts the user for each new episode name in order
-		 * @param episodes - array of episodes
-		 * @param newEpisodeNames - array of new episode names
-		 */
-		private void promptForNewNames(Episode[] episodes, String[] newEpisodeNames) {
-			for (int i = 0; i < episodes.length; i++) {
-				JFrame frame = new JFrame("New Episode Name");
-				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n" + episodes[i].getName());
-				newEpisodeNames[i] = prompt;
-			}
-		}
-		
-		/**
 		 * Prompts the user for confirmation of an episode rename
 		 */
-		private boolean confirmationPrompt(Episode episode, String newName) {
+		private boolean confirmationPrompt(Episode episode) {
 			int confirmed = JOptionPane.YES_NO_OPTION;
-			String message = "Rename\n\n" + episode.getName() + "\n\nto:\n\n";
-			message += episode.getShowName() + " - S" + episode.getSeason() + "E" + episode.getEpisode();
-			message += " - " + newName + "." + episode.getFileExtension() + "\n\n?";
-			confirmed = JOptionPane.showConfirmDialog(MainGUI.this, message, "rename confirmation", confirmed);
+			String message = "Rename\n\n" + episode.getCurrentName() + "\n\nto:\n\n" + episode.generateNewName() + "\n\n?";
+			confirmed = JOptionPane.showConfirmDialog(MainGUI.this, message, "Rename Confirmation", confirmed);
 			if (confirmed == 0) { return true; } else { return false; }
 		}
 	}
