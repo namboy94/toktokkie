@@ -98,7 +98,7 @@ public class Renamer {
 		this.episodes = new Episode[this.directoryContent.length];
 		int episodeNumber = this.firstEpisode;
 		for (int i = 0; i < this.episodes.length; i++) {
-			this.episodes[i] = new Episode(this.directoryContent[i], this.showName, episodeNumber, this.season);
+			this.episodes[i] = new Episode(this.directoryContent[i], this.showName, this.season, episodeNumber);
 			episodeNumber++;
 		}
 	}
