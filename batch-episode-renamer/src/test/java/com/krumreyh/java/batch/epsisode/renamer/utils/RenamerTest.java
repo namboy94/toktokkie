@@ -56,8 +56,24 @@ public class RenamerTest {
 		renamer.setEpisodes(episodes);
 		renamer.startRename();
 		
-		if (!FileHandler.checkifFile("src/test/resources/testDir/Test - S01E01 - TestRename1.txt")) { fail(); }
-		if (!FileHandler.checkifFile("src/test/resources/testDir/Test - S01E02 - TestRename2.txt")) { fail(); }
-		if (!FileHandler.checkifFile("src/test/resources/testDir/Test - S01E03 - TestRename3.txt")) { fail(); }
+		if (!FileHandler.checkIfFile("src/test/resources/testDir/Test - S01E01 - TestRename1.txt")) { fail(); }
+		if (!FileHandler.checkIfFile("src/test/resources/testDir/Test - S01E02 - TestRename2.txt")) { fail(); }
+		if (!FileHandler.checkIfFile("src/test/resources/testDir/Test - S01E03 - TestRename3.txt")) { fail(); }
+		if (FileHandler.checkIfFile("src/test/resources/testDir/test1.txt")) { fail(); }
+		if (FileHandler.checkIfFile("src/test/resources/testDir/test2.txt")) { fail(); }
+		if (FileHandler.checkIfFile("src/test/resources/testDir/test3.txt")) { fail(); }
+	}
+	
+	/**
+	 * Checks if all kinds of illegal arguments are caught correctly
+	 */
+	@Test
+	public void illegalArgumentTest() {
+		try {
+			Renamer test1 = new Renamer("test", "100", "100", "103", "src/test/resources/testDir");
+			fail();
+		} catch (IllegalArgumentException e) {
+			if (!e.getMessage().equals("Amount of files in directory conflicts with user input")) { fail(); }
+		}
 	}
 }
