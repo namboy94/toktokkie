@@ -10,12 +10,15 @@ import com.krumreyh.java.batch.episode.renamer.userinterface.gui.MainGUI;
  */
 public class Main {
 	
+	/**
+	 * Main method that starts the program, has options for CLI and GUI
+	 * @param args - command line parameters, -cli for CLI
+	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
 			new MainGUI();
 		} else if (args[0].equals("-cli")) {
 			new MainCLI();
 		}
-	}
-	
+	}	
 }
