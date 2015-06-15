@@ -7,6 +7,14 @@ package com.krumreyh.java.folder.icon.changer.iconizers;
  */
 public interface Iconizer {
 	
-	public void changeIcons();
+	/**
+	 * Changes A single show's worth of folder icons
+	 */
+	public void changeIconsSingleFolder();
+	
+	/**
+	 * Changes Multiple Show's worth of Folder Icons
+	 */
+	public void changeIconsMultiFolder();
 	
 }
