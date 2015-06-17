@@ -22,8 +22,6 @@ public class MainGUI extends GUITemplate{
 		this.setGUISettings("Folder Icon Changer", 400, 400, 400, 170, null, EXIT_ON_CLOSE, false);
 		this.addTextField("", 10, 10, 200, 40);
 		this.addButton("Start", 220, 10, 170, 40, null);
-		Checkbox multiBox = this.addCheckBox("Multi-Change", 150, 60, 150, 20);
-		this.multi = multiBox.getState();
 		this.startGUI();
 	}
 	

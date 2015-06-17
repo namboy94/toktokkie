@@ -7,21 +7,23 @@ import com.krumreyh.java.krumreylib.fileops.FileHandler;
 public class NautilusIconizer implements Iconizer{
 
 	private File upperDirectory;
+	private File parent;
 	private File[] folderIcons;
 	
 	/**
-	 * Constructor that checks if the given directory exists and is valid
-	 * @param directory - the directory containing the folders to be iconized
-	 * @throws IllegalArgumentException - In case the directory is invalid
+	 * Empty Constructor
 	 */
 	public NautilusIconizer(String directory) throws IllegalArgumentException {
-		if (!FileHandler.checkIfDirectory(directory)) {
-			throw new IllegalArgumentException("Not a valid directory");
-		} else {
-			this.upperDirectory = new File(directory);
-		}
 	}
 	
+	public void setDirectories(String parent, String upperDirectory) {
+
+	}
+	
+	/**
+	 * 
+	 * @param parentChildren
+	 */
 	public void searchForFolderIcons(File[] parentChildren) {
 		for (int i = 0; i < parentChildren.length; i++) {
 			if (FileHandler.getPureFileName(parentChildren[i]).equals("Folder Icon")) { 
