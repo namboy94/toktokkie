@@ -3,64 +3,70 @@ package com.krumreyh.java.folder.icon.changer.iconizers;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.krumreyh.java.folder.icon.changer.objects.Icon;
 import com.krumreyh.java.krumreylib.fileops.FileHandler;
 
 /**
- * Interface that prescribes which methods an iconizer must use to rename icons.
+ * Class that handles the iconizing of folders
  * @author Hermann Krumrey
  * @version 1.0
  */
-public abstract class Iconizer {
+public class Iconizer {
 
-	protected File directory;
-	protected Mode mode;
+	protected File[] children;
 	
 	/**
-	 * Checks what type of iconizing should be performed
+	 * Constructor that checks if the give directory is valid and saves its children to a File array
+	 * @param directory
+	 * @throws IllegalArgumentException - in case the directory is invalid
 	 */
-	protected void establishType() {
-		File[] children = FileHandler.getDirectoryContent(this.directory);
-		for (int i = 0; i < children.length; i++) {
-			if (FileHandler.getPureFileName(children[i]).equals("Folder Icon")) {
-				this.mode = Mode.SINGLE;
-				return;
-			}
-		}
-		this.mode = Mode.MULTI;
+	public Iconizer(String directory) throws IllegalArgumentException {
+		if (!FileHandler.checkIfDirectory(directory)) { throw new IllegalArgumentException("Not a valid directory"); }
+		this.children = FileHandler.getDirectoryContent(new File(directory));
 	}
 	
-	//TODO Replace with method from krumreylib (findChild)
-	/**
-	 * Finds the folder icon directory of a directory
-	 * @param directory - the directory to be checked
-	 * @return the folder icon directory
-	 * @throws FileNotFoundException - in case no Folder Icon Directory was found
-	 */
-	protected File findFolderIconDirectory(File directory) throws FileNotFoundException {
+	protected void iconize(IconCommand iconcom) {
+		for (int i = 0; i < this.children.length; i++) {
+			File folderIconFolder = null;
+			File[] innerChildren = FileHandler.getDirectoryContent(this.children[i]);
+			for (int j = 0; j < innerChildren.length; j++) {
+				if (innerChildren[i].getName().equals("Folder Icon")) {
+					folderIconFolder = innerChildren[j];
+					break;
+				}
+			}
+			iconcom.iconize(this.children[i], folderIconFolder, "Main");
+			iconcom.iconize(folderIconFolder, folderIconFolder, "Folder Icon");
+			for (int j = 0; j < innerChildren.length; j++) {
+				if (innerChildren[j].getName().equals("Folder Icon")) {
+					continue;
+				}
+				if (FileHandler.checkIfDirectory(innerChildren[j])) {
+					iconcom.iconize(innerChildren[j], folderIconFolder);
+					if (FileHandler.hasChildren(innerChildren[j])) {
+						recursiveIconize(innerChildren[j], iconcom, folderIconFolder);
+					}
+				}
+			}
+		}
+	}
+	
+	protected void recursiveIconize(File directory, IconCommand iconcom, File folderIconFolder) {
 		File[] children = FileHandler.getDirectoryContent(directory);
 		for (int i = 0; i < children.length; i++) {
-			if (FileHandler.getPureFileName(children[i]).equals("Folder Icon")) {
-				return children[i];
+			if (FileHandler.checkIfDirectory(children[i])) {
+				iconcom.iconize(children[i], folderIconFolder);
+				if (FileHandler.hasChildren(children[i])) {
+					recursiveIconize(children[i], iconcom, folderIconFolder);
+				}
 			}
 		}
-		throw new FileNotFoundException("Folder Icon Folder Not Found");
 	}
 	
-	protected void iconizeSingle() {
+	protected interface IconCommand {
+		public void iconize(File folder, File icon);
 		
-	}
-	
-	/**
-	 * Starts the iconizing process
-	 */
-	public abstract void iconize();
-	
-	protected interface commandType {
-		
-	}
-	
-	protected enum Mode {
-		SINGLE, MULTI
+		public void iconize(File folder, File icon, String hardcoded);
 	}
 	
 }
