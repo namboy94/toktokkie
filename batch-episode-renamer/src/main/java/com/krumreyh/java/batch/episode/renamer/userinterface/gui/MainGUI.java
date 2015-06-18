@@ -1,5 +1,6 @@
 package com.krumreyh.java.batch.episode.renamer.userinterface.gui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -43,7 +44,7 @@ public class MainGUI extends GUITemplate {
 		this.firstEpField = addTextField("", 120, 130, 270, 50);
 		this.lastEpField = addTextField("", 120, 190, 270, 50);
 		this.directoryField = addTextField("", 120, 250, 270, 50);
-		addButton("Start Renaming", 25, 350, 350, 60, new StartButton());
+		changeComponentAppearance(addButton("Start Renaming", 25, 350, 350, 60, new StartButton()), 20, 0, "arial", new Color(255, 255, 255), new Color(0, 0, 0));
 		
 		startGUI();
 	}
