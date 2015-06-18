@@ -1,9 +1,7 @@
 package com.krumreyh.java.folder.icon.changer.iconizers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
-import com.krumreyh.java.folder.icon.changer.objects.Icon;
 import com.krumreyh.java.krumreylib.fileops.FileHandler;
 
 /**
@@ -25,6 +23,10 @@ public class Iconizer {
 		this.children = FileHandler.getDirectoryContent(new File(directory));
 	}
 	
+	/**
+	 * Starts the iconizing of all child directories
+	 * @param iconcom - the IconCommand object, operates differently depending on OS and file browser
+	 */
 	protected void iconize(IconCommand iconcom) {
 		for (int i = 0; i < this.children.length; i++) {
 			File folderIconFolder = null;
@@ -51,6 +53,12 @@ public class Iconizer {
 		}
 	}
 	
+	/**
+	 * Recursively changes the folder icon of all directories in a directory
+	 * @param directory - the directory whose subdirectories' folder icons should be changed
+	 * @param iconcom - the icon command
+	 * @param folderIconFolder - the directory where the folder icons are located
+	 */
 	protected void recursiveIconize(File directory, IconCommand iconcom, File folderIconFolder) {
 		File[] children = FileHandler.getDirectoryContent(directory);
 		for (int i = 0; i < children.length; i++) {
@@ -63,10 +71,25 @@ public class Iconizer {
 		}
 	}
 	
+	/**
+	 * Interface that handles the actual iconizing of folders
+	 */
 	protected interface IconCommand {
-		public void iconize(File folder, File icon);
 		
-		public void iconize(File folder, File icon, String hardcoded);
+		/**
+		 * Iconizes a folder
+		 * @param folder - the folder to be iconized
+		 * @param iconFolder = the directory containing the folder icons
+		 */
+		public void iconize(File folder, File iconFolder);
+		
+		/**
+		 * Iconizes a special folder
+		 * @param folder - the folder to be iconized
+		 * @param iconFolder = the directory containing the folder icons
+		 * @param special - indicates the type of folder
+		 */
+		public void iconize(File folder, File iconFolder, String special);
 	}
 	
 }

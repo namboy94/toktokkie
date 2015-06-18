@@ -4,6 +4,9 @@ import java.awt.Checkbox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JTextField;
+
+import com.krumreyh.java.folder.icon.changer.iconizers.Iconizer;
 import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
 
 /**
@@ -13,15 +16,16 @@ import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
  */
 public class MainGUI extends GUITemplate{
 
-	private boolean multi = false;
+	private JTextField directory;
 	
 	/**
 	 * Constructor that adds all elements of the GUI and makes the GUI visible
 	 */
 	public MainGUI() {
 		this.setGUISettings("Folder Icon Changer", 400, 400, 400, 170, null, EXIT_ON_CLOSE, false);
-		this.addTextField("", 10, 10, 200, 40);
-		this.addButton("Start", 220, 10, 170, 40, null);
+		this.directory = this.addTextField("", 10, 10, 200, 40);
+		this.addButton("Start", 220, 10, 170, 40, new StartButton());
+		this.addLabel("OS", 220, 210, 170, 40);
 		this.startGUI();
 	}
 	
@@ -34,7 +38,7 @@ public class MainGUI extends GUITemplate{
 		 * The performed action on button-press
 		 */
 		public void actionPerformed(ActionEvent arg0) {
-			
+			Iconizer iconizer = new Iconizer(MainGUI.this.directory.getText());
 		}
 	}
 }
