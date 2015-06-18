@@ -15,11 +15,13 @@ public abstract class Iconizer {
 	
 	/**
 	 * Constructor-method that checks if the give directory is valid and saves its children to a File array
-	 * @param directory
+	 * @param directory - the directory containing all shows to be iconized
 	 * @throws IllegalArgumentException - in case the directory is invalid
 	 */
 	protected void construct(String directory) throws IllegalArgumentException {
-		if (!FileHandler.checkIfDirectory(directory)) { throw new IllegalArgumentException("Not a valid directory"); }
+		if (!FileHandler.checkIfDirectory(directory)) {
+			throw new IllegalArgumentException("Not a valid directory");
+		}
 		this.children = FileHandler.getChildrenDirectories(directory);
 	}
 	
@@ -81,7 +83,7 @@ public abstract class Iconizer {
 		 * @param folder - the folder to be iconized
 		 * @param iconFolder = the directory containing the folder icons
 		 */
-		public void iconize(File folder, File iconFolder);
+		void iconize(File folder, File iconFolder);
 		
 		/**
 		 * Iconizes a special folder
@@ -89,7 +91,7 @@ public abstract class Iconizer {
 		 * @param iconFolder = the directory containing the folder icons
 		 * @param special - indicates the type of folder
 		 */
-		public void iconize(File folder, File iconFolder, String special);
+		void iconize(File folder, File iconFolder, String special);
 	}
 	
 }

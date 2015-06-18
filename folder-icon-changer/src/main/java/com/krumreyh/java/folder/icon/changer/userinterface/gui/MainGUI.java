@@ -1,12 +1,10 @@
 package com.krumreyh.java.folder.icon.changer.userinterface.gui;
 
-import java.awt.Checkbox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
 
-import com.krumreyh.java.folder.icon.changer.iconizers.Iconizer;
 import com.krumreyh.java.folder.icon.changer.iconizers.NautilusIconizer;
 import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
 
@@ -15,7 +13,7 @@ import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
  * @author Hermann Krumrey
  * @version 1.0
  */
-public class MainGUI extends GUITemplate{
+public class MainGUI extends GUITemplate {
 
 	private JTextField directory;
 	
@@ -37,8 +35,9 @@ public class MainGUI extends GUITemplate{
 
 		/**
 		 * The performed action on button-press
+		 * @param e - the button-press event
 		 */
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(ActionEvent e) {
 			NautilusIconizer iconizer = new NautilusIconizer(MainGUI.this.directory.getText());
 			iconizer.iconize();
 		}
