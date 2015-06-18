@@ -20,10 +20,10 @@ public class NautilusIconizer extends Iconizer{
 		public void iconize(File folder, File iconFolder) {
 			String folderName = folder.getName();
 			String folderToChange = folder.getAbsolutePath();
-			String folderIcon = iconFolder.getAbsolutePath() + FileHandler.getExtension(iconFolder) + folderName + ".png";
+			String folderIcon = iconFolder.getAbsolutePath() + FileHandler.getDivider(iconFolder) + folderName + ".png";
 			String command = "gvfs-set-attribute -t string '" + folderToChange + "' metadata::custom-icon 'file://" + folderIcon + "'";
 			try {
-				Runtime.getRuntime().exec(command);
+				Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", command});
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -31,10 +31,10 @@ public class NautilusIconizer extends Iconizer{
 
 		public void iconize(File folder, File iconFolder, String special) {
 			String folderToChange = folder.getAbsolutePath();
-			String folderIcon = iconFolder.getAbsolutePath() + FileHandler.getExtension(iconFolder) + special + ".png";
+			String folderIcon = iconFolder.getAbsolutePath() + FileHandler.getDivider(iconFolder) + special + ".png";
 			String command = "gvfs-set-attribute -t string '" + folderToChange + "' metadata::custom-icon 'file://" + folderIcon + "'";
 			try {
-				Runtime.getRuntime().exec(command);
+				Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", command});
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

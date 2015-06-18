@@ -20,7 +20,7 @@ public abstract class Iconizer {
 	 */
 	protected void construct(String directory) throws IllegalArgumentException {
 		if (!FileHandler.checkIfDirectory(directory)) { throw new IllegalArgumentException("Not a valid directory"); }
-		this.children = FileHandler.getDirectoryContent(new File(directory));
+		this.children = FileHandler.getChildrenDirectories(directory);
 	}
 	
 	/**
@@ -30,7 +30,7 @@ public abstract class Iconizer {
 	protected void iconize(IconCommand iconcom) {
 		for (int i = 0; i < this.children.length; i++) {
 			File folderIconFolder = null;
-			File[] innerChildren = FileHandler.getDirectoryContent(this.children[i]);
+			File[] innerChildren = FileHandler.getChildrenDirectories(this.children[i]);
 			for (int j = 0; j < innerChildren.length; j++) {
 				if (innerChildren[i].getName().equals("Folder Icon")) {
 					folderIconFolder = innerChildren[j];
@@ -38,7 +38,7 @@ public abstract class Iconizer {
 				}
 			}
 			iconcom.iconize(this.children[i], folderIconFolder, "Main");
-			iconcom.iconize(folderIconFolder, folderIconFolder, "Folder Icon");
+			iconcom.iconize(folderIconFolder, folderIconFolder, "Folder");
 			for (int j = 0; j < innerChildren.length; j++) {
 				if (innerChildren[j].getName().equals("Folder Icon")) {
 					continue;
@@ -60,7 +60,7 @@ public abstract class Iconizer {
 	 * @param folderIconFolder - the directory where the folder icons are located
 	 */
 	protected void recursiveIconize(File directory, IconCommand iconcom, File folderIconFolder) {
-		File[] children = FileHandler.getDirectoryContent(directory);
+		File[] children = FileHandler.getChildrenDirectories(directory);
 		for (int i = 0; i < children.length; i++) {
 			if (FileHandler.checkIfDirectory(children[i])) {
 				iconcom.iconize(children[i], folderIconFolder);
