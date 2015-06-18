@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JTextField;
 
 import com.krumreyh.java.folder.icon.changer.iconizers.Iconizer;
+import com.krumreyh.java.folder.icon.changer.iconizers.NautilusIconizer;
 import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
 
 /**
@@ -38,7 +39,8 @@ public class MainGUI extends GUITemplate{
 		 * The performed action on button-press
 		 */
 		public void actionPerformed(ActionEvent arg0) {
-			Iconizer iconizer = new Iconizer(MainGUI.this.directory.getText());
+			NautilusIconizer iconizer = new NautilusIconizer(MainGUI.this.directory.getText());
+			iconizer.iconize();
 		}
 	}
 }

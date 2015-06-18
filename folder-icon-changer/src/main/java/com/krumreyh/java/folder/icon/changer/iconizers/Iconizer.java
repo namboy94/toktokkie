@@ -9,16 +9,16 @@ import com.krumreyh.java.krumreylib.fileops.FileHandler;
  * @author Hermann Krumrey
  * @version 1.0
  */
-public class Iconizer {
+public abstract class Iconizer {
 
 	protected File[] children;
 	
 	/**
-	 * Constructor that checks if the give directory is valid and saves its children to a File array
+	 * Constructor-method that checks if the give directory is valid and saves its children to a File array
 	 * @param directory
 	 * @throws IllegalArgumentException - in case the directory is invalid
 	 */
-	public Iconizer(String directory) throws IllegalArgumentException {
+	protected void construct(String directory) throws IllegalArgumentException {
 		if (!FileHandler.checkIfDirectory(directory)) { throw new IllegalArgumentException("Not a valid directory"); }
 		this.children = FileHandler.getDirectoryContent(new File(directory));
 	}
