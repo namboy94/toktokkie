@@ -44,7 +44,8 @@ public class MainGUI extends GUITemplate {
 		this.firstEpField = addTextField("", 120, 130, 270, 50);
 		this.lastEpField = addTextField("", 120, 190, 270, 50);
 		this.directoryField = addTextField("", 120, 250, 270, 50);
-		changeComponentAppearance(addButton("Start Renaming", 25, 350, 350, 60, new StartButton()), 20, 0, "arial", new Color(255, 255, 255), new Color(0, 0, 0));
+		changeComponentAppearance(addButton("Start Renaming", 25, 350, 350, 60, new StartButton()), 20, 0, "arial",
+																		new Color(255, 255, 255), new Color(0, 0, 0));
 		
 		startGUI();
 	}
@@ -57,6 +58,7 @@ public class MainGUI extends GUITemplate {
 	protected class StartButton implements ActionListener {
 		/**
 		 * The action performed by the button
+		 * @param ae - the button-press event
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			
@@ -78,7 +80,8 @@ public class MainGUI extends GUITemplate {
 			
 			for (int i = 0; i < episodes.length; i++) {
 				JFrame frame = new JFrame("New Episode Name");
-				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n" + episodes[i].getCurrentName());
+				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n"
+																		+ episodes[i].getCurrentName());
 				episodes[i].setNewName(prompt);
 			}
 			
@@ -88,7 +91,9 @@ public class MainGUI extends GUITemplate {
 			boolean confirmed = true;
 			for (int i = 0; i < episodes.length; i++) {
 				confirmed = confirmationPrompt(episodes[i]);
-				if (!confirmed) {break;}
+				if (!confirmed) {
+					break;
+				}
 			}
 			
 			if (!confirmed) {
@@ -103,9 +108,10 @@ public class MainGUI extends GUITemplate {
 		 */
 		private boolean confirmationPrompt(Episode episode) {
 			int confirmed = JOptionPane.YES_NO_OPTION;
-			String message = "Rename\n\n" + episode.getCurrentName() + "\n\nto:\n\n" + episode.generateNewName() + "\n\n?";
+			String message = "Rename\n\n" + episode.getCurrentName() + "\n\nto:\n\n"
+												+ episode.generateNewName() + "\n\n?";
 			confirmed = JOptionPane.showConfirmDialog(MainGUI.this, message, "Rename Confirmation", confirmed);
-			if (confirmed == 0) { return true; } else { return false; }
+			return (confirmed == 0);
 		}
 	}
 }

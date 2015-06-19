@@ -31,7 +31,8 @@ public class Renamer {
 	 * @param directory - the directory to be used
 	 * @throws IllegalArgumentException - if an invalid parameter is entered.
 	 */
-	public Renamer(String showName, String season, String firstEp, String lastEp, String directory) throws IllegalArgumentException {
+	public Renamer(String showName, String season, String firstEp, String lastEp, String directory)
+																	throws IllegalArgumentException {
 		if (!FileHandler.checkIfDirectory(directory)) {
 			throw new IllegalArgumentException("Not a Directory");
 		} else {
@@ -53,7 +54,7 @@ public class Renamer {
 	
 	/**
 	 * Sets the new file names for the episodes after sanitizing them.
-	 * @param episodes
+	 * @param episodes - the array of episodes containing the new episode names
 	 */
 	public void setEpisodes(Episode[] episodes) {
 		for (int i = 0; i < episodes.length; i++) {
@@ -78,7 +79,7 @@ public class Renamer {
 	 * @param season - the season number as string
 	 * @throws IllegalArgumentException - if one of the strings could not be parsed to int.
 	 */
-	private void turnToInt(String firstEp, String lastEp, String season) throws IllegalArgumentException{
+	private void turnToInt(String firstEp, String lastEp, String season) throws IllegalArgumentException {
 		try {
 			this.firstEpisode = Integer.parseInt(firstEp);
 			this.lastEpisode = Integer.parseInt(lastEp);

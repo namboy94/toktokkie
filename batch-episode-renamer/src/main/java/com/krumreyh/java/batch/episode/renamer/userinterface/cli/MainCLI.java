@@ -1,7 +1,5 @@
 package com.krumreyh.java.batch.episode.renamer.userinterface.cli;
 
-import java.io.IOException;
-
 import com.krumreyh.java.batch.episode.renamer.objects.Episode;
 import com.krumreyh.java.batch.episode.renamer.utils.Renamer;
 import com.krumreyh.java.krumreylib.cli.CLITemplate;
@@ -12,7 +10,7 @@ import com.krumreyh.java.krumreylib.cli.TerminalParser;
  * @author Hermann Krumrey
  * @version 1.0
  */
-public class MainCLI extends CLITemplate{
+public class MainCLI extends CLITemplate {
 
 	/**
 	 * Constructor that adds all possible commands to the CLI
@@ -57,7 +55,8 @@ public class MainCLI extends CLITemplate{
 			Episode[] episodes = renamer.getEpisodes();
 			
 			for (int i = 0; i < episodes.length; i++) {
-				episodes[i].setNewName(TerminalParser.prompt("Please enter the new name for: " + episodes[i].getCurrentName()));
+				episodes[i].setNewName(TerminalParser.prompt("Please enter the new name for: "
+																+ episodes[i].getCurrentName()));
 			}
 			
 			renamer.setEpisodes(episodes);
@@ -73,8 +72,11 @@ public class MainCLI extends CLITemplate{
 				confirm = true;
 			}
 			
-			if (confirm) { renamer.startRename(); }
-			else { System.out.println("Operation cancelled"); }
+			if (confirm) {
+				renamer.startRename();
+			} else {
+				System.out.println("Operation cancelled");
+			}
 		}
 		
 		/**

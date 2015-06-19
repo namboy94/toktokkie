@@ -43,7 +43,7 @@ public class Episode {
 	
 	/**
 	 * getter-method that delivers the new would-be name of the episode
-	 * @return
+	 * @return the new name of the episode
 	 */
 	public String getNewName() {
 		return this.renameTo;
