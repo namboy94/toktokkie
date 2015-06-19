@@ -46,6 +46,7 @@ public class MainGUI extends GUITemplate {
 				case "Mac":		break;
 				default:		showPopUpMessage("Unsupported OS detected");
 				}
+				showPopUpMessage("Operation completed");
 				
 			} catch (IllegalArgumentException ex) {
 				showPopUpMessage(ex.getMessage());

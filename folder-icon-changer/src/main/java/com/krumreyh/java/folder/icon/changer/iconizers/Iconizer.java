@@ -34,7 +34,7 @@ public abstract class Iconizer {
 			File folderIconFolder = null;
 			File[] innerChildren = FileHandler.getChildrenDirectories(this.children[i]);
 			for (int j = 0; j < innerChildren.length; j++) {
-				if (innerChildren[i].getName().equals("Folder Icon")) {
+				if (innerChildren[j].getName().equals("Folder Icon")) {
 					folderIconFolder = innerChildren[j];
 					break;
 				}
