@@ -1,6 +1,10 @@
 package com.krumreyh.java.folder.icon.changer;
 
+import java.io.File;
+import java.io.InputStream;
+
 import com.krumreyh.java.folder.icon.changer.userinterface.gui.MainGUI;
+import com.krumreyh.java.krumreylib.fileops.FileHandler;
 
 /**
  * Class that contains the main method of the program
@@ -14,6 +18,7 @@ public class Main {
 	 * @param args - command line parameters
 	 */
 	public static void main(String[] args) {
+		
 		if (args.length == 0) {
 			new MainGUI();
 		}

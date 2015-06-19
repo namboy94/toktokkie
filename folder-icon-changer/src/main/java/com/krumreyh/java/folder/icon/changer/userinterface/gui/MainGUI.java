@@ -2,6 +2,11 @@ package com.krumreyh.java.folder.icon.changer.userinterface.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -36,7 +41,7 @@ public class MainGUI extends GUITemplate {
 		default:		showPopUpMessage("Unsupported OS detected");
 		}
 		
-		this.setGUISettings("Folder Icon Changer", 400, 400, 400, 170, null, EXIT_ON_CLOSE, false);
+		this.setGUISettings("Folder Icon Changer", 400, 400, 400, 110, null, EXIT_ON_CLOSE, false);
 		this.directory = this.addTextField("", 10, 10, 200, 40);
 		this.addButton("Start", 220, 10, 170, 40, new StartButton());
 		this.selectedBrowser = this.addDropDownMenu(validIconizers, 170, 70, 200, 20);
