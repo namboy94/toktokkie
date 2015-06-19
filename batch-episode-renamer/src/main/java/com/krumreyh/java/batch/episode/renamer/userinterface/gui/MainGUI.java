@@ -31,7 +31,7 @@ public class MainGUI extends GUITemplate {
 	 */
 	public MainGUI() {
 		
-		setGUISettings("Batch Episode Renamer", 250, 250, 400, 470, null, EXIT_ON_CLOSE, false);
+		setGUISettings("Batch Episode Renamer", 250, 250, 400, 420, null, EXIT_ON_CLOSE, false);
 		
 		//Add UI Elements
 		addLabel("Show Name", 10, 10, 100, 50);
@@ -44,7 +44,7 @@ public class MainGUI extends GUITemplate {
 		this.firstEpField = addTextField("", 120, 130, 270, 50);
 		this.lastEpField = addTextField("", 120, 190, 270, 50);
 		this.directoryField = addTextField("", 120, 250, 270, 50);
-		changeComponentAppearance(addButton("Start Renaming", 25, 350, 350, 60, new StartButton()), 20, 0, "arial",
+		changeComponentAppearance(addButton("Start Renaming", 25, 330, 350, 60, new StartButton()), 20, 0, "arial",
 																		new Color(255, 255, 255), new Color(0, 0, 0));
 		
 		startGUI();
