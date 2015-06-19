@@ -38,8 +38,12 @@ public class MainGUI extends GUITemplate {
 		 * @param e - the button-press event
 		 */
 		public void actionPerformed(ActionEvent e) {
-			NautilusIconizer iconizer = new NautilusIconizer(MainGUI.this.directory.getText());
-			iconizer.iconize();
+			try {
+				NautilusIconizer iconizer = new NautilusIconizer(MainGUI.this.directory.getText());
+				iconizer.iconize();
+			} catch (IllegalArgumentException ex) {
+				showPopUpMessage(ex.getMessage());
+			}
 		}
 	}
 }
