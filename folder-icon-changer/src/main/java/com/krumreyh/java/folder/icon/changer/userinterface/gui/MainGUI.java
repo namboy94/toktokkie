@@ -39,11 +39,17 @@ public class MainGUI extends GUITemplate {
 		 */
 		public void actionPerformed(ActionEvent e) {
 			try {
-				NautilusIconizer iconizer = new NautilusIconizer(MainGUI.this.directory.getText());
-				iconizer.iconize();
+				switch (System.getProperty("os.name")) {
+				case "Linux":	new NautilusIconizer(MainGUI.this.directory.getText()).iconize();
+								break;
+				case "Windows":	break;
+				case "Mac":		break;
+				default:		showPopUpMessage("Unsupported OS detected");
+				}
+				
 			} catch (IllegalArgumentException ex) {
 				showPopUpMessage(ex.getMessage());
-			}
+			}	
 		}
 	}
 }

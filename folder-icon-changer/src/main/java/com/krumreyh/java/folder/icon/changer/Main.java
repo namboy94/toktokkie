@@ -14,7 +14,8 @@ public class Main {
 	 * @param args - command line parameters
 	 */
 	public static void main(String[] args) {
-		new MainGUI();
+		if (args.length == 0) {
+			new MainGUI();
+		}
 	}
-	
 }

@@ -8,6 +8,7 @@ import com.krumreyh.java.krumreylib.fileops.FileHandler;
 /**
  * Class that handles Iconizing for the Nautilus File Browser (available on GNU/Linux-Systems)
  * This Iconizer class also works for Nemo, Linux Mint's default file browser
+ * This is the default Iconizer for Linux
  * @author Hermann Krumrey
  * @version 1.0
  */
