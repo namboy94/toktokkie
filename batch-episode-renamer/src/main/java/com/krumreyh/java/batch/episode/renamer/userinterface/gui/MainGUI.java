@@ -72,16 +72,15 @@ public class MainGUI extends GUITemplate {
 			try {
 				renamer = new Renamer(showName, season, firstEp, lastEp, directory);
 			} catch (IllegalArgumentException e) {
-				JOptionPane.showMessageDialog(MainGUI.this, e.getMessage());
+				showPopUpMessage(e.getMessage());
 				return;
 			}
 			
 			Episode[] episodes = renamer.getEpisodes();
 			
 			for (int i = 0; i < episodes.length; i++) {
-				JFrame frame = new JFrame("New Episode Name");
-				String prompt = JOptionPane.showInputDialog(frame, "Enter the new episode name for: \n"
-																		+ episodes[i].getCurrentName());
+				String message ="Enter the new episode name for: \n" + episodes[i].getCurrentName();
+				String prompt = showInputDialog("New Episode Name", message);
 				episodes[i].setNewName(prompt);
 			}
 			
@@ -97,7 +96,7 @@ public class MainGUI extends GUITemplate {
 			}
 			
 			if (!confirmed) {
-				JOptionPane.showMessageDialog(MainGUI.this, "Operation aborted");
+				showPopUpMessage("Operation aborted");
 			} else {
 				renamer.startRename();
 			}	
@@ -107,11 +106,9 @@ public class MainGUI extends GUITemplate {
 		 * Prompts the user for confirmation of an episode rename
 		 */
 		private boolean confirmationPrompt(Episode episode) {
-			int confirmed = JOptionPane.YES_NO_OPTION;
 			String message = "Rename\n\n" + episode.getCurrentName() + "\n\nto:\n\n"
 												+ episode.generateNewName() + "\n\n?";
-			confirmed = JOptionPane.showConfirmDialog(MainGUI.this, message, "Rename Confirmation", confirmed);
-			return (confirmed == 0);
+			return showConfirmationDialog(message, "Rename Confirmation");
 		}
 	}
 }
