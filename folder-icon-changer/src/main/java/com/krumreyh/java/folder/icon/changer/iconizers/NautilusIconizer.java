@@ -36,6 +36,9 @@ public class NautilusIconizer extends Iconizer {
 
 		public void iconize(File folder, File iconFolder) {
 			String folderName = folder.getName();
+			if (folderName.endsWith("+")) {
+				folderName = folderName.substring(0, folderName.length() - 1);
+			}
 			String folderToChange = folder.getAbsolutePath();
 			String folderIcon = iconFolder.getAbsolutePath() + FileHandler.getDivider(iconFolder) + folderName + ".png";
 			changeIcon(folderToChange, folderIcon);

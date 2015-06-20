@@ -1,6 +1,7 @@
 package com.krumreyh.java.folder.icon.changer.iconizers;
 
 import java.io.File;
+import java.io.InputStream;
 
 import com.krumreyh.java.krumreylib.fileops.FileHandler;
 
@@ -36,6 +37,7 @@ public abstract class Iconizer {
 			for (int j = 0; j < innerChildren.length; j++) {
 				if (innerChildren[j].getName().equals("Folder Icon")) {
 					folderIconFolder = innerChildren[j];
+					copyDefaultIcons(folderIconFolder, innerChildren);
 					break;
 				}
 			}
@@ -71,6 +73,46 @@ public abstract class Iconizer {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Copies default icon files to the folder icon directory in case they are not there yet.
+	 * @param folderIconFolder - the folder icon folder where the default icons should be copied to.
+	 * TODO @param siblingDirectories - Array of directories on the same plane as a the folder icon folder
+	 */
+	protected void copyDefaultIcons(File folderIconFolder, File[] siblingDirectories) {
+		String[] resources = new String[] {	"Subbed SD", "Subbed 720p", "Subbed 1080p",
+											"Dual-Audio SD", "Dual-Audio 720p", "Dual-Audio 1080p",
+											"Multi-Audio SD", "Multi-Audio 720p", "Multi-Audio 1080p",
+											"Dubbed SD", "Dubbed 720p", "Dubbed 1080p",
+											"Folder", "Main"};
+		for (int i = 0; i < resources.length; i++) {
+			String ico = resources[i] + ".ico";
+			String png = resources[i] + ".png";
+			String folderIconDirectory = folderIconFolder.getAbsolutePath() + FileHandler.getDivider(folderIconFolder);
+			boolean icoFound = false;
+			boolean pngFound = false;
+			File[] icons = FileHandler.getDirectoryContent(folderIconFolder);
+			for (int j = 0; j < icons.length; j++) {
+				if (icons[j].getName().equals(ico)) {
+					icoFound = true;
+				} else if (icons[j].getName().equals(png)) {
+					pngFound = true;
+				}
+			}
+			if (!icoFound) {
+				FileHandler.copyResource("/" + ico, new File(folderIconDirectory + ico));
+			}
+			if (!pngFound) {
+				FileHandler.copyResource("/" + png, new File(folderIconDirectory + png));
+			}
+		}
+		
+		//TODO Season1.png etc. should also be copied
+		/*for (int i = 0; i < siblingDirectories.length; i++) {
+			if (!siblingDirectories[i].getName().equals("Folder Icon")) {
+			}
+		}*/
 	}
 	
 	/**
