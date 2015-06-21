@@ -108,6 +108,7 @@ public abstract class Iconizer {
 			}
 		}
 		
+		//TODO missing icos or pngs should be converted from their counterpart
 		//TODO Season1.png etc. should also be copied
 		/*for (int i = 0; i < siblingDirectories.length; i++) {
 			if (!siblingDirectories[i].getName().equals("Folder Icon")) {
