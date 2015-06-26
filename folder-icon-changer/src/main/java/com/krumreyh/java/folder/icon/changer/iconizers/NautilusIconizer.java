@@ -63,5 +63,51 @@ public class NautilusIconizer extends Iconizer {
 			} catch (IOException e) {
 			}
 		}
+
+		public void convert(File original, File parent) {
+			String path = parent.getAbsolutePath() + FileHandler.getDivider(parent);
+			String name = FileHandler.getPureFileName(original);
+			String ext = FileHandler.getExtension(original);
+			String ico = path + name + ".ico";
+			String png = path + name + ".png";
+			try {
+				if (ext.equals("png")) {
+					String command = "convert \"" + png + "\" \"" + ico + "\"";
+					Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", command});
+				} else if (ext.equals("ico")) {
+					String command = "convert \"" + ico + "\" \"" + png + "\"";
+					Runtime.getRuntime().exec(new String[] {"/bin/sh", "-c", command}).waitFor();
+					icoConvertCleanup(name, path, parent);
+				}
+			} catch (IOException | InterruptedException e) {
+			}
+		}
+		
+		private void icoConvertCleanup(String name, String path, File parent) {
+			File[] icons = FileHandler.getDirectoryContent(parent);
+			File[] newIcons = new File[icons.length];
+			int i = 0;
+			for (int j = 0; j < icons.length; j++) {
+				System.out.println(icons[j].getName());
+				if (icons[j].getName().contains(name) && FileHandler.getExtension(icons[j]).equals("png")) {
+					System.out.println(icons[j].getName());
+					newIcons[i] = icons[j];
+					i++;
+				}
+			}
+			File largest = newIcons[0];
+			for (int j = 0; j < newIcons.length; j++) {
+				if (newIcons[j] == null) {
+					break;
+				}
+				if (newIcons[j].length() > largest.length()) {
+					largest.delete();
+					largest = newIcons[j];
+				} else {
+					newIcons[j].delete();
+				}
+			}
+			FileHandler.renameFile(largest, name);
+		}
 	}
 }

@@ -37,6 +37,7 @@ public abstract class Iconizer {
 			for (int j = 0; j < innerChildren.length; j++) {
 				if (innerChildren[j].getName().equals("Folder Icon")) {
 					folderIconFolder = innerChildren[j];
+					convertMissingIcons(folderIconFolder, iconcom);
 					copyDefaultIcons(folderIconFolder, innerChildren);
 					break;
 				}
@@ -86,10 +87,12 @@ public abstract class Iconizer {
 											"Multi-Audio SD", "Multi-Audio 720p", "Multi-Audio 1080p",
 											"Dubbed SD", "Dubbed 720p", "Dubbed 1080p",
 											"Folder", "Main"};
+		
+		String folderIconDirectory = folderIconFolder.getAbsolutePath() + FileHandler.getDivider(folderIconFolder);
+		
 		for (int i = 0; i < resources.length; i++) {
 			String ico = resources[i] + ".ico";
 			String png = resources[i] + ".png";
-			String folderIconDirectory = folderIconFolder.getAbsolutePath() + FileHandler.getDivider(folderIconFolder);
 			boolean icoFound = false;
 			boolean pngFound = false;
 			File[] icons = FileHandler.getDirectoryContent(folderIconFolder);
@@ -108,12 +111,56 @@ public abstract class Iconizer {
 			}
 		}
 		
-		//TODO missing icos or pngs should be converted from their counterpart
-		//TODO Season1.png etc. should also be copied
-		/*for (int i = 0; i < siblingDirectories.length; i++) {
-			if (!siblingDirectories[i].getName().equals("Folder Icon")) {
+		//TODO Optimize Code, maybe merge the two processes, or at least thread it.
+		
+		File[] folderIcons = FileHandler.getDirectoryContent(folderIconFolder);
+		
+		for (int i = 0; i < siblingDirectories.length; i++) {
+			if (FileHandler.getPureFileName(siblingDirectories[i]).equals("Folder Icon")) {
+				continue;
 			}
-		}*/
+			boolean foundIco = false;
+			boolean foundPng = false;
+			for (int j = 0; j < folderIcons.length; j++) {
+				if (FileHandler.getPureFileName(folderIcons[j]).equals(FileHandler.getPureFileName(siblingDirectories[i]))){
+					if (FileHandler.getExtension(folderIcons[i]).equals("ico")) {
+						foundIco = true;
+					} else if (FileHandler.getExtension(folderIcons[i]).equals("png")) {
+						foundPng = true;
+					}
+					if (foundPng && foundIco) {
+						break;
+					}
+				}
+			}
+			String nameOfSibling = FileHandler.getPureFileName(siblingDirectories[i]);
+			if (!foundIco) {
+				FileHandler.copyResource("/Main.ico", new File(folderIconDirectory + nameOfSibling + ".ico"));
+			}
+			if (!foundPng) {
+				FileHandler.copyResource("/Main.png", new File(folderIconDirectory + nameOfSibling + ".png"));
+			}
+		}
+	}
+	
+	protected void convertMissingIcons(File folderIconFolder, IconCommand iconcom) {
+		File[] icons = FileHandler.getDirectoryContent(folderIconFolder);
+		for (int i = 0; i < icons.length; i++) {
+			boolean foundPair = false;
+			String name = FileHandler.getPureFileName(icons[i]);
+			for (int j = 0; j < icons.length; j++) {
+				if (i == j) {
+					continue;
+				}
+				if (FileHandler.getPureFileName(icons[j]).equals(name)) {
+					foundPair = true;
+					break;
+				}
+			}
+			if (!foundPair) {
+				iconcom.convert(icons[i], folderIconFolder);
+			}
+		}
 	}
 	
 	/**
@@ -135,6 +182,13 @@ public abstract class Iconizer {
 		 * @param special - indicates the type of folder
 		 */
 		void iconize(File folder, File iconFolder, String special);
+		
+		/**
+		 * Converts an icon (png -> ico, ico -> png)
+		 * @param original - the original icon file
+		 * @param parent - the parent directory of the file
+		 */
+		void convert(File original, File parent);
 	}
 	
 }
