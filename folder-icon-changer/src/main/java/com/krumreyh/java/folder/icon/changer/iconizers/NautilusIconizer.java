@@ -3,6 +3,7 @@ package com.krumreyh.java.folder.icon.changer.iconizers;
 import java.io.File;
 import java.io.IOException;
 
+import com.krumreyh.java.krumreylib.cli.TerminalParser;
 import com.krumreyh.java.krumreylib.fileops.FileHandler;
 
 /**
@@ -88,9 +89,7 @@ public class NautilusIconizer extends Iconizer {
 			File[] newIcons = new File[icons.length];
 			int i = 0;
 			for (int j = 0; j < icons.length; j++) {
-				System.out.println(icons[j].getName());
 				if (icons[j].getName().contains(name) && FileHandler.getExtension(icons[j]).equals("png")) {
-					System.out.println(icons[j].getName());
 					newIcons[i] = icons[j];
 					i++;
 				}
@@ -104,7 +103,9 @@ public class NautilusIconizer extends Iconizer {
 					largest.delete();
 					largest = newIcons[j];
 				} else {
-					newIcons[j].delete();
+					if (j > 0) {
+						newIcons[j].delete();
+					}
 				}
 			}
 			FileHandler.renameFile(largest, name);
