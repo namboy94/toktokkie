@@ -38,7 +38,7 @@ public abstract class Iconizer {
 				if (innerChildren[j].getName().equals("Folder Icon")) {
 					folderIconFolder = innerChildren[j];
 					convertMissingIcons(folderIconFolder, iconcom);
-					//copyDefaultIcons(folderIconFolder, innerChildren);
+					copyDefaultIcons(folderIconFolder, innerChildren);
 					break;
 				}
 			}
