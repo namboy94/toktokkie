@@ -44,8 +44,9 @@ public class MainGUI extends GUITemplate {
 		this.firstEpField = addTextField("", 120, 130, 270, 50);
 		this.lastEpField = addTextField("", 120, 190, 270, 50);
 		this.directoryField = addTextField("", 120, 250, 270, 50);
-		changeComponentAppearance(addButton("Start Renaming", 25, 330, 350, 60, new StartButton()), 20, 0, "arial",
-																		new Color(255, 255, 255), new Color(0, 0, 0));
+		addButton("Start Renaming", 25, 330, 350, 60, new StartButton());
+		
+		this.setGUIStyle(15, this.seasonField.getFont().getStyle(), this.seasonField.getFont().getFontName(), new Color(255, 255, 255), new Color(0, 0, 0));
 		
 		startGUI();
 	}
