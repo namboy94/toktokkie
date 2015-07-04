@@ -4,7 +4,7 @@
 
   <groupId>com.krumreyh.java</groupId>
   <artifactId>batch-episode-renamer</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>batch-episode-renamer</name>
