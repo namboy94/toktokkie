@@ -74,6 +74,7 @@ public class MainCLI extends CLITemplate {
 			
 			if (confirm) {
 				renamer.startRename();
+				System.out.println("Operation Completed\n\nBatch Episode Renamer\nPress Enter to start");
 			} else {
 				System.out.println("Operation cancelled");
 			}
