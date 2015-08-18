@@ -4,7 +4,7 @@
 
   <groupId>com.krumreyh.java</groupId>
   <artifactId>folder-icon-changer</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
   <name>folder-icon-changer</name>
@@ -32,20 +32,6 @@
 				</archive>
 			</configuration>
 		</plugin>
-		<plugin>
-	      <artifactId>maven-dependency-plugin</artifactId>
-	        <executions>
-	          <execution>
-	          <phase>process-sources</phase>
-	            <goals>
-	              <goal>copy-dependencies</goal>
-	            </goals>
-	            <configuration>
-	              <outputDirectory>${project.build.directory}</outputDirectory>
-	            </configuration>
-	          </execution>
-	        </executions>
-	     </plugin>
      </plugins>
   </build>
 
