@@ -4,7 +4,7 @@
 
   <groupId>com.krumreyh.java</groupId>
   <artifactId>folder-icon-changer</artifactId>
-  <version>1.0</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
 
   <name>folder-icon-changer</name>
