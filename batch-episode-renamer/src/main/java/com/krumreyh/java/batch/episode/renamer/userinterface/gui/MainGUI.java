@@ -10,14 +10,16 @@ import javax.swing.JTextField;
 
 import com.krumreyh.java.batch.episode.renamer.objects.Episode;
 import com.krumreyh.java.batch.episode.renamer.utils.Renamer;
-import com.krumreyh.java.krumreylib.gui.swing.GUITemplate;
+import com.krumreyh.java.krumreylib.gui.swing.config.StyleConfig;
+import com.krumreyh.java.krumreylib.gui.swing.config.themes.KrumreyDefault;
+import com.krumreyh.java.krumreylib.gui.swing.templates.BasicGUI;
 
 /**
  * Class that models the primary GUI of the application
  * @author Hermann Krumrey
  * @version 1.0
  */
-public class MainGUI extends GUITemplate {
+public class MainGUI extends BasicGUI {
 
 	protected JTextField showNameField;
 	protected JTextField seasonField;
@@ -31,7 +33,7 @@ public class MainGUI extends GUITemplate {
 	 */
 	public MainGUI() {
 		
-		setGUISettings("Batch Episode Renamer", 250, 250, 400, 420, null, EXIT_ON_CLOSE, false);
+		this.setGUISettings("Batch Episode Renamer", 400, 420, null, EXIT_ON_CLOSE, false, new KrumreyDefault());
 		
 		//Add UI Elements
 		addLabel("Show Name", 10, 10, 100, 50);
@@ -39,16 +41,14 @@ public class MainGUI extends GUITemplate {
 		addLabel("First Episode", 10, 130, 100, 50);
 		addLabel("Last Episode", 10, 190, 100, 50);
 		addLabel("Directory", 10, 250, 100, 50);
-		this.showNameField = addTextField("", 120, 10, 270, 50);
-		this.seasonField = addTextField("", 120, 70, 270, 50);
-		this.firstEpField = addTextField("", 120, 130, 270, 50);
-		this.lastEpField = addTextField("", 120, 190, 270, 50);
-		this.directoryField = addTextField("", 120, 250, 270, 50);
+		this.showNameField = this.addTextField("", 120, 10, 270, 50, null);
+		this.seasonField = this.addTextField("", 120, 70, 270, 50, null);
+		this.firstEpField = addTextField("", 120, 130, 270, 50, null);
+		this.lastEpField = addTextField("", 120, 190, 270, 50, null);
+		this.directoryField = addTextField("", 120, 250, 270, 50, null);
 		addButton("Start Renaming", 25, 330, 350, 60, new StartButton());
 		
-		this.setGUIStyle(15, this.seasonField.getFont().getStyle(), this.seasonField.getFont().getFontName(), new Color(255, 255, 255), new Color(0, 0, 0));
-		
-		startGUI();
+		this.setVisible(true);
 	}
 	
 	
@@ -73,7 +73,7 @@ public class MainGUI extends GUITemplate {
 			try {
 				renamer = new Renamer(showName, season, firstEp, lastEp, directory);
 			} catch (IllegalArgumentException e) {
-				showPopUpMessage(e.getMessage());
+				showMessageBox(e.getMessage(), "Illegal Argument Exception", -1, -1);
 				return;
 			}
 			
@@ -81,7 +81,7 @@ public class MainGUI extends GUITemplate {
 			
 			for (int i = 0; i < episodes.length; i++) {
 				String message ="Enter the new episode name for: \n" + episodes[i].getCurrentName();
-				String prompt = showInputDialog("New Episode Name", message);
+				String prompt = showInputDialog(message, "New Episode Name", -1, -1);
 				episodes[i].setNewName(prompt);
 			}
 			
@@ -97,7 +97,7 @@ public class MainGUI extends GUITemplate {
 			}
 			
 			if (!confirmed) {
-				showPopUpMessage("Operation aborted");
+				showMessageBox("Operation Aborted", "Operation Aborted", -1, -1);
 			} else {
 				renamer.startRename();
 			}	
@@ -109,7 +109,7 @@ public class MainGUI extends GUITemplate {
 		private boolean confirmationPrompt(Episode episode) {
 			String message = "Rename\n\n" + episode.getCurrentName() + "\n\nto:\n\n"
 												+ episode.generateNewName() + "\n\n?";
-			return showConfirmationDialog(message, "Rename Confirmation");
+			return MainGUI.this.showConfirmationPrompt(message, "Rename Confirmation", -1, -1);
 		}
 	}
 }
