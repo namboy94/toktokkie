@@ -1,3 +1,5 @@
+from renamer.utils.renamer import Renamer
+
 """
 Class that models the CLI
 @author Hermann Krumrey<hermann@krumreyh.com>
@@ -16,7 +18,9 @@ class CLI(object):
     """
     def start(self):
         if self.directory:
-            print("rename()")
+            renamer = Renamer(self.directory)
+            renamer.parseDirectory()
+            renamer.requestConfirmation()
         else:
             print("cli")
 
