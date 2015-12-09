@@ -9,16 +9,25 @@ class Episode(object):
         self.showName = showName
         self.oldName = episodeFile.rsplit("/", 1)[1]
         self.tvdbName = ""
+        self.newName = ""
         self.generateTVDBName()
-        self.newEpisodeFile = episodeFile.rsplit(self.oldName)[0] + self.tvdbName
+        self.generateNewName()
+        self.newEpisodeFile = episodeFile.rsplit(self.oldName)[0] + self.newName
 
     def generateTVDBName(self):
 
         tvdb = tvdb_api.Tvdb()
-        self.print()
         episodeInfo = tvdb[self.showName][self.seasonNumber][self.episodeNumber]
         episodeName = episodeInfo['episodename']
         self.tvdbName = episodeName
+
+    def generateNewName(self):
+
+        episodeString = str(self.episodeNumber)
+        seasonString = str(self.seasonNumber)
+        if len(episodeString) < 2: episodeString = "0" + episodeString
+        if len(seasonString) < 2: seasonString = "0" + seasonString
+        self.newName = self.showName + " - S" + seasonString + "E" + episodeString + " - " + self.tvdbName
 
     def print(self):
 

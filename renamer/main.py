@@ -4,6 +4,7 @@ Main script
 """
 import argparse
 from renamer.CLI import CLI
+from renamer.GUI import GUI
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--cli", help="Starts the program in CLI mode", action="store_true")
@@ -14,4 +15,4 @@ if args.cli:
     cli = CLI(args.directory)
     cli.start()
 else:
-    print("start gui")
+    gui = GUI()

@@ -40,7 +40,6 @@ class Renamer(object):
                     episodeDir = qualityDir + "/" + episode
                     episodeNumber = i
                     seasonNumber = season.lower().split("/", 1)[1].split("season ")[1]
-                    print(seasonNumber)
                     self.episodes.append(Episode(episodeDir, episodeNumber, seasonNumber, showname))
                     i += 1
 
@@ -50,16 +49,21 @@ class Renamer(object):
         confirmation = [[], []]
         for episode in self.episodes:
             confirmation[0].append(episode.oldName)
-            confirmation[1].append(episode.tvdbName)
+            confirmation[1].append(episode.newName)
         return confirmation
 
+    """
+    """
     def confirm(self, confirmation):
         i = 0
         for episode in self.episodes:
-            if not episode.oldName == confirmation[0][i] or not episode.tvdbName == confirmation[1][i]:
+            if not episode.oldName == confirmation[0][i] or not episode.newName == confirmation[1][i]:
                 return
+            i += 1
         self.confirmed = True
 
+    """
+    """
     def startRename(self):
         if not self.confirmed: raise Exception("Rename not confirmed")
         for episode in self.episodes:

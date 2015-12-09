@@ -18,20 +18,36 @@ class CLI(object):
     """
     def start(self):
         if self.directory:
-            renamer = Renamer(self.directory)
-            renamer.parseDirectory()
-            renamer.requestConfirmation()
+            self.renameLoop(self.directory)
         else:
-            print("cli")
+            while True:
+                userInput = input("Enter the absolute file path of the folder to be used for renaming")
+                if userInput.lower() in ["exit", "quit"]: break
+                self.renameLoop(userInput)
 
+    """
+    """
+    def renameLoop(self, directory):
+        renamer = Renamer(directory)
+        confirmation = renamer.requestConfirmation()
+        if self.confirmer(confirmation):
+            renamer.confirm(confirmation)
+            renamer.startRename()
 
-
-
-"""
-Showname
--Season X
---Quality
----Episode X
----Episode Y
----Episode Z
-"""
+    """
+    """
+    def confirmer(self, confirmation):
+        print("Confirmation:")
+        i = 0
+        while i < len(confirmation[0]):
+            print("\nrename")
+            print(confirmation[0][i])
+            print("to")
+            print(confirmation[1][i])
+            print("?")
+            answer = ""
+            while not answer.lower() in ["y", "n"]:
+                answer = input("(y/n)")
+                if answer == "n": return False
+            i += 1
+        return True
