@@ -8,23 +8,32 @@ from parsers.ArgumentParser import ArgumentParser
 from plugins.PluginManager import PluginManager
 from startup.Installer import Installer
 
+"""
+Main Module that starts the program
+@author Hermann Krumrey<hermann@krumreyh.com>
+"""
+
+#Parse Arguments
 args = ArgumentParser().parse()
 
+#Installation and Updating
 if args.install:
     Installer().install()
     sys.exit(0)
 if args.update:
     sys.exit(0)
 
+if not Installer().isInstalled():
+    print("Program not installed correctly. Install with --install option")
+    sys.exit(1)
+
+#ConfigParsing
 config = configparser.ConfigParser()
 config.read(os.getenv("HOME") + "/.mediamanager/configs/mainconfig")
 pluginConfig = dict(config.items("plugins"))
 activePlugins = PluginManager(pluginConfig).getPlugins()
 
-if not Installer().isInstalled():
-    print("Program not installed correctly. Install with --install option")
-    sys.exit(1)
-
+#Start the program
 if config.get("interface", "gui").lower() in ["true", "1", "yes"]:
     gui = MainGUI(activePlugins)
     gui.start()
