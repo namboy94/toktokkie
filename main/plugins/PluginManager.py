@@ -1,4 +1,4 @@
-from plugins.renamer.Renamer import Renamer
+from plugins.renamer.RenamerPlugin import RenamerPlugin
 
 """
 Class that manages plugins and checks which plugins to run
@@ -13,7 +13,7 @@ class PluginManager(object):
     """
     def __init__(self, config):
         allPlugins = []
-        allPlugins.append(Renamer())
+        allPlugins.append(RenamerPlugin())
         #New Plugins here
 
         self.activePlugins = []

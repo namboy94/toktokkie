@@ -34,7 +34,13 @@ pluginConfig = dict(config.items("plugins"))
 activePlugins = PluginManager(pluginConfig).getPlugins()
 
 #Start the program
-if config.get("interface", "gui").lower() in ["true", "1", "yes"]:
+if config.get("interface", "gui").lower() in ["true", "1", "yes"] and not args.cli:
+    gui = MainGUI(activePlugins)
+    gui.start()
+elif not config.get("interface", "gui").lower() in ["true", "1", "yes"] and not args.gui:
+    cli = MainCLI(activePlugins)
+    cli.start()
+elif args.gui:
     gui = MainGUI(activePlugins)
     gui.start()
 else:

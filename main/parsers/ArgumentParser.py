@@ -14,6 +14,8 @@ class ArgumentParser(object):
         self.parser = argparse.ArgumentParser()
         self.parser.add_argument("-i", "--install", help="installs the program", action="store_true")
         self.parser.add_argument("-u", "--update", help="updates the program", action="store_true")
+        self.parser.add_argument("-c", "--cli", help="starts the program in cli-mode", action="store_true")
+        self.parser.add_argument("-g", "--gui", help="starts the program in gui-mode", action="store_true")
 
     """
     Starts the argumentparser

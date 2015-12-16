@@ -1,5 +1,4 @@
 import tkinter
-from plugins.renamer.Renamer import Renamer
 
 """
 Class that implements the Main GUI

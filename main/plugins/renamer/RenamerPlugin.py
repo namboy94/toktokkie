@@ -1,10 +1,12 @@
+from mainuserinterfaces.MainGUI import MainGUI
 from plugins.genericPlugin.GenericPlugin import GenericPlugin
-#from plugins.renamer.userInterfaces.RenamerGUI import RenamerGUI
+from plugins.renamer.userinterface.RenamerGUI import RenamerGUI
+from plugins.renamer.userinterface.RenamerCLI import RenamerCLI
 
 """
 Class that handles renaming of episodes
 """
-class Renamer(GenericPlugin):
+class RenamerPlugin(GenericPlugin):
 
     """
     @:return "Renamer"
@@ -16,12 +18,11 @@ class Renamer(GenericPlugin):
     Starts the CLI
     """
     def startCLI(self, parentCLI):
-        print("cli")
+        RenamerCLI().start()
 
     """
     Starts the GUI, while hiding the parent until finished
     """
     def startGUI(self, parentGUI):
-        parentGUI.root.withdraw()
-        #RenamerGUI().start()
-        parentGUI.root.deiconify()
+        parentGUI.root.destroy()
+        RenamerGUI().start()

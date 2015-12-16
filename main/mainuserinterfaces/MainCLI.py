@@ -16,8 +16,7 @@ class MainCLI(object):
     """
     def start(self):
         while True:
-            print("User Input: \n")
-            userInput = input().lower()
+            userInput = input("User Input:\n").lower()
             if userInput in ["quit", "exit"]:
                 break
             else:
@@ -29,4 +28,4 @@ class MainCLI(object):
                 if pluginToRun is None:
                     print("User Input not understood")
                 else:
-                    pluginToRun.startCLI()
+                    pluginToRun.startCLI(self)
