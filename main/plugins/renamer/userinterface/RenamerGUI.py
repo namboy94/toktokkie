@@ -16,7 +16,6 @@ class RenamerGUI(object):
         self.text.bind("<Control-Key-A>", self.select_all)
         self.text.bind("<Return>", self.startRename)
         self.text.pack()
-        self.gui.protocol('WM_DELETE_WINDOW', self.gui.destroy)
 
     def start(self):
         self.gui.mainloop()

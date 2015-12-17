@@ -1,4 +1,5 @@
 from plugins.renamer.RenamerPlugin import RenamerPlugin
+from plugins.xdccSearchAndDownload.XDCCPlugin import XDCCPlugin
 
 """
 Class that manages plugins and checks which plugins to run
@@ -14,6 +15,7 @@ class PluginManager(object):
     def __init__(self, config):
         allPlugins = []
         allPlugins.append(RenamerPlugin())
+        allPlugins.append(XDCCPlugin())
         #New Plugins here
 
         self.activePlugins = []
