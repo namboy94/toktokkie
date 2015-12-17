@@ -1,8 +1,15 @@
 import os
 from subprocess import Popen
 
+"""
+Class that contains static methods to help rename files
+@author Hermann Krumrey<hermann@krumreyh.com>
+"""
 class FileRenamer(object):
 
+    """
+    Renames a file to a new file name, keeping the extension and filepath.
+    """
     @staticmethod
     def renameFile(file, newname):
 

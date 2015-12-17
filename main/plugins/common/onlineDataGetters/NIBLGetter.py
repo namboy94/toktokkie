@@ -1,11 +1,23 @@
 import requests
 from bs4 import BeautifulSoup
 
+"""
+Class that gets xdcc packlists from nibl.co.uk
+@author Hermann Krumrey<hermann@krumreyh.com>
+"""
 class NIBLGetter(object):
 
+    """
+    Constructor
+    @:param searchTerm - the term for which a search should be done.
+    """
     def __init__(self, searchTerm):
         self.searchTerm = searchTerm
 
+    """
+    Conducts the search and returns an array of arrays containing the pack information
+    @:return the search results
+    """
     def search(self):
         splitSearchTerm = self.searchTerm.split(" ")
         preparedSearchTerm = splitSearchTerm[0]

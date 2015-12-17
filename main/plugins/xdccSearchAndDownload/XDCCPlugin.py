@@ -1,29 +1,29 @@
 from mainuserinterfaces.MainGUI import MainGUI
 from plugins.genericPlugin.GenericPlugin import GenericPlugin
-from plugins.renamer.userinterface.RenamerGUI import RenamerGUI
-from plugins.renamer.userinterface.RenamerCLI import RenamerCLI
+from plugins.xdccSearchAndDownload.userinterfaces.XDCCGUI import XDCCGUI
+from plugins.xdccSearchAndDownload.userinterfaces.XDCCCLI import XDCCCLI
 
 """
 Class that handles renaming of episodes
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class RenamerPlugin(GenericPlugin):
+class XDCCPlugin(GenericPlugin):
 
     """
     @:return "Renamer"
     """
     def getName(self):
-        return "Renamer"
+        return "XDCC-Search-Download"
 
     """
     Starts the CLI
     """
     def startCLI(self, parentCLI):
-        RenamerCLI().start()
+        XDCCCLI().start()
 
     """
     Starts the GUI, while hiding the parent until finished
     """
     def startGUI(self, parentGUI):
         parentGUI.root.destroy()
-        RenamerGUI().start()
+        XDCCGUI().start()

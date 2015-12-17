@@ -1,5 +1,11 @@
+"""
+CLI for the Renamer plugin
+@author Hermann Krumrey<hermann@krumreyh.com>
+"""
 class RenamerCLI():
-    
+
+    #TODO Actually implement the CLI
+
     def __init__(self):
         print()
         

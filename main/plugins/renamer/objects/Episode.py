@@ -3,12 +3,17 @@ from plugins.common.onlineDataGetters.TVDBGetter import TVDBGetter
 from plugins.common.fileOps.FileRenamer import FileRenamer
 
 """
-Episode Object
+Episode Object, containing important episode info used for renaming and stuff
+@author Hermann Krumrey<hermann@krumreyh.com>
 """
 class Episode(object):
 
     """
     Constructor
+    @:param episodeFile - the current episode file path
+    @:param episodeNumber - the episode number
+    @:param seasonNumber - the season number
+    @:param showName - the show name
     """
     def __init__(self, episodeFile, episodeNumber, seasonNumber, showName):
         self.episodeFile = episodeFile
@@ -41,12 +46,14 @@ class Episode(object):
               + str(self.episodeNumber) + "," + str(self.seasonNumber) + "," + self.showName + "}")
 
     """
+    Geerates the episode name from the tv database
     """
     def __generateTVDBName__(self):
 
         self.tvdbName = self.tvdbGetter.findEpisodeName()
 
     """
+    Generates the new name of an episode in Plex-conform format.
     """
     def __generateNewName__(self):
 

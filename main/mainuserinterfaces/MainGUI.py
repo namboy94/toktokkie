@@ -10,7 +10,6 @@ class MainGUI(object):
     Constructor
     """
     def __init__(self, activePlugins):
-        print(activePlugins)
         self.plugins = activePlugins
         self.buttons = []
 
@@ -27,7 +26,10 @@ class MainGUI(object):
     Adds buttons for all plugins
     """
     def __addButtons__(self):
-        for plugin in self.plugins:
-            button = tkinter.Button(self.root, text=plugin.getName(), command=lambda: plugin.startGUI(self))
-            button.pack()
+        i = 0
+        while i < len(self.plugins):
+            button = tkinter.Button(self.root, text=self.plugins[i].getName(),
+                                    command=lambda i=i: self.plugins[i].startGUI(self))
+            button.pack(fill=tkinter.X)
             self.buttons.append(button)
+            i += 1
