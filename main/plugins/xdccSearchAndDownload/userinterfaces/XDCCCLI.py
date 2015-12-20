@@ -1,8 +1,10 @@
+from plugins.genericPlugin.userinterfaces.GenericCLI import GenericCLI
+
 """
 CLI for the XDCC Search and Download plugin
 @author Hermann Krumrey <hermann@krumreyh.com>
 """
-class XDCCCLI(object):
+class XDCCCLI(GenericCLI):
 
     """
     Constructor

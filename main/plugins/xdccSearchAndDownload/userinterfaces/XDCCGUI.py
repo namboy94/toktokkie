@@ -1,12 +1,14 @@
 import tkinter
 from subprocess import Popen
 from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
+from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
+import easygui
 
 """
 GUI for the XDCC Search and Download class
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class XDCCGUI(object):
+class XDCCGUI(GenericGUI):
 
     """
     Constructor
@@ -45,7 +47,7 @@ class XDCCGUI(object):
         self.searchResult = NIBLGetter(searchTerm).search()
         self.box.delete(0, tkinter.END)
         for result in self.searchResult:
-            choice = result[0] + " - " + result[1] + " - " + result[3]
+            choice = result.toString()
             self.box.insert(tkinter.END, choice)
 
     """
@@ -54,10 +56,7 @@ class XDCCGUI(object):
     def startDownload(self):
         items = self.box.curselection()
         for item in items:
-            Popen(["ls", "-a"])
-            p = Popen(["python2", "/home/hermann/IDEs/Projects/PyCharm/media-manager/main/external/xdccbot.py", "irc.rizon.net", "horriblesubs", "asuhdashdsadsad", self.searchResult[item][1], self.searchResult[item][2]])
-            print(p.communicate())
-            print(str(item))
+            Popen(["python2", "/home/hermann/IDEs/Projects/PyCharm/media-manager/main/external/xdccbot.py", "irc.rizon.net", "horriblesubs", "asuhdashdsadsad", self.searchResult[item][1], self.searchResult[item][2]])
 
     """
     Dirty Hack to allow the gui to react to CTRL-a

@@ -1,8 +1,10 @@
+from plugins.genericPlugin.userinterfaces.GenericCLI import GenericCLI
+
 """
 CLI for the Renamer plugin
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class RenamerCLI():
+class RenamerCLI(GenericCLI):
 
     #TODO Actually implement the CLI
 

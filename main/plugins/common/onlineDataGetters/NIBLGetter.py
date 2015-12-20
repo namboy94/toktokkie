@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from plugins.common.onlineDataGetters.objects.XDCCPack import XDCCPack
 
 """
 Class that gets xdcc packlists from nibl.co.uk
@@ -15,8 +16,8 @@ class NIBLGetter(object):
         self.searchTerm = searchTerm
 
     """
-    Conducts the search and returns an array of arrays containing the pack information
-    @:return the search results
+    Conducts the search
+    @:return the search results as a list of XDCCPack objects
     """
     def search(self):
         splitSearchTerm = self.searchTerm.split(" ")
@@ -37,9 +38,30 @@ class NIBLGetter(object):
 
         i = 0
         while i < len(fileNames):
-            result = [fileNames[i].text.rsplit(" \n", 1)[0], botnames[i].text.rsplit(" ", 1)[0], packNumbers[i].text, filesizes[i].text]
-            print(result)
+            filename = fileNames[i].text.rsplit(" \n", 1)[0]
+            bot = botnames[i].text.rsplit(" ", 1)[0]
+            server = self.getServer(bot)
+            channel = self.getChannel(bot)
+            packnumber = int(packNumbers[i].text)
+            size = filesizes[i].text
+            result = XDCCPack(filename, server, bot, channel, packnumber, size)
             results.append(result)
             i += 1
 
         return results
+
+    """
+    Checks to which server a given bot belongs to.
+    @:param bot - the bot's name to be used
+    @:return the server name
+    """
+    def getServer(self, bot):
+        return "irc.rizon.net"
+
+    """
+    Checks to which channel a given bot belongs to
+    @:param bot - the bot to check for
+    @:return the channel
+    """
+    def getChannel(self, bot):
+        return "intel"

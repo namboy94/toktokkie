@@ -1,12 +1,13 @@
 import tkinter
 import easygui
 from plugins.renamer.utils.Renamer import Renamer
+from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 
 """
 GUI for the Renamer plugin
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class RenamerGUI(object):
+class RenamerGUI(GenericGUI):
 
     """
     Constructor
