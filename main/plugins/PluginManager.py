@@ -20,7 +20,7 @@ class PluginManager(object):
 
         self.activePlugins = []
         for plugin in allPlugins:
-            if config[plugin.getName().lower()].lower() in ["true", "yes", "1"]:
+            if config[plugin.getConfigTag()].lower() in ["true", "yes", "1"]:
                 self.activePlugins.append(plugin)
 
     """

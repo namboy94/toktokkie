@@ -16,6 +16,18 @@ class XDCCPlugin(GenericPlugin):
         return "XDCC-Search-Download"
 
     """
+    @:return "xdcc-searchdownload"
+    """
+    def getConfigTag(self):
+        return "xdcc-searchdownload"
+
+    """
+    @:return "xdcc-searchdl"
+    """
+    def getCommandName(self):
+        return "xdcc-searchdl"
+
+    """
     Starts the CLI
     """
     def startCLI(self, parentCLI):

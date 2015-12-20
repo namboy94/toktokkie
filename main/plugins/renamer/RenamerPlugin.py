@@ -16,6 +16,18 @@ class RenamerPlugin(GenericPlugin):
         return "Renamer"
 
     """
+    @:return "renamer"
+    """
+    def getConfigTag(self):
+        return "renamer"
+
+    """
+    @:return "renamer"
+    """
+    def getCommandName(self):
+        return "renamer"
+
+    """
     Starts the CLI
     """
     def startCLI(self, parentCLI):

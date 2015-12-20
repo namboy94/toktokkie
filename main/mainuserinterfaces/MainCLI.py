@@ -15,10 +15,13 @@ class MainCLI(object):
     Starts the user interface
     """
     def start(self):
+        print("Starting Media Manager\n")
         while True:
             userInput = input("User Input:\n").lower()
             if userInput in ["quit", "exit"]:
                 break
+            elif userInput in ["help"]:
+                self.__printhelp__()
             else:
                 pluginToRun = None
                 for plugin in self.plugins:
@@ -29,3 +32,13 @@ class MainCLI(object):
                     print("User Input not understood")
                 else:
                     pluginToRun.startCLI(self)
+
+    """
+    Prints a help string to the console
+    """
+    def __printhelp__(self):
+        print("help\nPrints this help message\n")
+        print("quit|exit\nExits the program\n")
+        for plugin in self.plugins:
+            print(plugin.getCommandName())
+            print("starts the " + plugin.getName() + " plugin\n")

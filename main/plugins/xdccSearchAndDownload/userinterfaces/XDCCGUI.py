@@ -4,6 +4,8 @@ from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 import easygui
 
+from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
+
 """
 GUI for the XDCC Search and Download class
 @author Hermann Krumrey<hermann@krumreyh.com>
@@ -55,8 +57,10 @@ class XDCCGUI(GenericGUI):
     """
     def startDownload(self):
         items = self.box.curselection()
+        packs = []
         for item in items:
-            Popen(["python2", "/home/hermann/IDEs/Projects/PyCharm/media-manager/main/external/xdccbot.py", "irc.rizon.net", "horriblesubs", "asuhdashdsadsad", self.searchResult[item][1], self.searchResult[item][2]])
+            packs.append(self.searchResult[item])
+        TwistedDownloader(packs).downloadLoop()
 
     """
     Dirty Hack to allow the gui to react to CTRL-a

@@ -47,12 +47,15 @@ class Installer(object):
     def __writeMainConfig__(self):
         Popen(["touch", self.mainConfig])
         file = open(self.mainConfig, "w")
-        file.write("[interface]\n")
-        file.write("gui = False\n\n")
         file.write("[plugins]\n")
         file.write("renamer = True\n")
+        file.write("xdcc-searchdownload = True\n")
         file.close()
 
+    """
+    Copies the xdcc download script to the program directory.
+    THis has to be done differently once twisted's irc module is ported to python 3
+    """
     def __copyXDCCScriptFile__(self):
         original = os.path.dirname(sys.argv[0]) + "/external/xdccbot.py"
         Popen(["cp", original, self.xdccDLScript])
