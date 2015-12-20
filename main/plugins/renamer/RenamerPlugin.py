@@ -37,5 +37,4 @@ class RenamerPlugin(GenericPlugin):
     Starts the GUI, while hiding the parent until finished
     """
     def startGUI(self, parentGUI):
-        parentGUI.root.destroy()
-        RenamerGUI().start()
+        RenamerGUI(parentGUI).start()

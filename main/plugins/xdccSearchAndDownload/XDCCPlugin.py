@@ -37,5 +37,4 @@ class XDCCPlugin(GenericPlugin):
     Starts the GUI, while hiding the parent until finished
     """
     def startGUI(self, parentGUI):
-        parentGUI.root.destroy()
-        XDCCGUI().start()
+        XDCCGUI(parentGUI).start()

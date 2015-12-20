@@ -32,4 +32,11 @@ class XDCCCLI(GenericCLI):
         packs = []
         for choice in choices:
             packs.append(results[int(choice) - 1])
-        TwistedDownloader(packs).downloadLoop()
+        autoRenameChoice = input("Do you want to auto-rename the downloaded files?")
+        if autoRenameChoice.lower() in ["yes", "y"]:
+            showName = input("Enter the show name")
+            episodeNo = int(input("Enter the (first) episode number"))
+            seasonNo = int(input("Enter the season number"))
+            TwistedDownloader(packs, showName, episodeNo, seasonNo)
+        else:
+            TwistedDownloader(packs).downloadLoop()

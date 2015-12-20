@@ -10,12 +10,9 @@ GUI for the Renamer plugin
 class RenamerGUI(GenericGUI):
 
     """
-    Constructor
     Sets up all interface elements of the GUI
     """
-    def __init__(self):
-        self.gui = tkinter.Tk()
-
+    def setUp(self):
         self.button = tkinter.Button(self.gui, text="Automatic Renaming", command=self.startRename)
         self.button.pack(fill=tkinter.X)
 
@@ -25,12 +22,7 @@ class RenamerGUI(GenericGUI):
         self.text.bind("<Control-Key-A>", self.select_all)
         self.text.bind("<Return>", self.startRename)
         self.text.pack(fill=tkinter.X)
-
-    """
-    Starts the GUI
-    """
-    def start(self):
-        self.gui.mainloop()
+        #TODO Implement that X runs the stop() command
 
     """
     Starts the renaming process
