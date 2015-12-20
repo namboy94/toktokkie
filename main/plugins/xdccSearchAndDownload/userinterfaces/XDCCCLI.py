@@ -1,5 +1,4 @@
 import configparser
-
 from plugins.genericPlugin.userinterfaces.GenericCLI import GenericCLI
 from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
