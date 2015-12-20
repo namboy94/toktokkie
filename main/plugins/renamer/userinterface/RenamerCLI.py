@@ -11,20 +11,17 @@ class RenamerCLI(GenericCLI):
     Constructor
     @:param directory - used if only a single directory is used
     """
-    def __init__(self, directory=""):
-        self.directory = directory
+    def __init__(self):
+        print()
 
     """
     Starts the CLI, or renames the originally given directory and exits
     """
     def start(self):
-        if self.directory:
-            self.renameLoop(self.directory)
-        else:
-            while True:
-                userInput = input("Enter the absolute file path of the folder to be used for renaming")
-                if userInput.lower() in ["exit", "quit"]: break
-                self.renameLoop(userInput)
+        while True:
+            userInput = input("Enter the absolute file path of the folder to be used for renaming")
+            if userInput.lower() in ["exit", "quit"]: break
+            self.renameLoop(userInput)
 
     """
     """

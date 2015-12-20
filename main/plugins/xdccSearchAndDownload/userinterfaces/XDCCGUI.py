@@ -1,8 +1,6 @@
 import tkinter
-from subprocess import Popen
 from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
-import easygui
 
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
 
