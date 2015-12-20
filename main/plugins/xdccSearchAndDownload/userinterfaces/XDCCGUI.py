@@ -1,7 +1,10 @@
+import os
 import tkinter
+import configparser
 import easygui
 from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
+from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
 
 """
@@ -56,11 +59,18 @@ class XDCCGUI(GenericGUI):
         for item in items:
             packs.append(self.searchResult[item])
         self.promptAutoRename()
-        if self.autorename:
-            TwistedDownloader(packs, self.showname, self.episodeNumber, self.seasonNumber).downloadLoop()
-        else:
-            TwistedDownloader(packs).downloadLoop()
-
+        config = configparser.ConfigParser().read((os.getenv("HOME") + "/.mediamanager/configs/mainconfig"))
+        downloader = dict(config.items("defaults"))["downloader"]
+        if downloader == "twisted":
+            if self.autorename:
+                TwistedDownloader(packs, self.showname, self.episodeNumber, self.seasonNumber).downloadLoop()
+            else:
+                TwistedDownloader(packs).downloadLoop()
+        elif downloader == "hexchat":
+            if self.autorename:
+                HexChatPluginDownloader(packs, self.showname, self.episodeNumber, self.seasonNumber).downloadLoop()
+            else:
+                HexChatPluginDownloader(packs, self.showname).downloadLoop()
     """
     Asks the user
     """

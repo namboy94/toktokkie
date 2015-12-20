@@ -1,5 +1,8 @@
+import configparser
+
 from plugins.genericPlugin.userinterfaces.GenericCLI import GenericCLI
 from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
+from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
 
 """
@@ -32,11 +35,21 @@ class XDCCCLI(GenericCLI):
         packs = []
         for choice in choices:
             packs.append(results[int(choice) - 1])
+
+        config = configparser.ConfigParser().read((os.getenv("HOME") + "/.mediamanager/configs/mainconfig"))
+        downloader = dict(config.items("defaults"))["downloader"]
+
         autoRenameChoice = input("Do you want to auto-rename the downloaded files?")
         if autoRenameChoice.lower() in ["yes", "y"]:
             showName = input("Enter the show name")
             episodeNo = int(input("Enter the (first) episode number"))
             seasonNo = int(input("Enter the season number"))
-            TwistedDownloader(packs, showName, episodeNo, seasonNo)
+            if downloader == "twisted":
+                TwistedDownloader(packs, showName, episodeNo, seasonNo)
+            elif downloader == "hexchat":
+                HexChatPluginDownloader(packs, showName, episodeNo, seasonNo).downloadLoop()
         else:
-            TwistedDownloader(packs).downloadLoop()
+            if downloader == "twisted":
+                TwistedDownloader(packs).downloadLoop()
+            elif downloader == "hexchat":
+                HexChatPluginDownloader(packs).downloadLoop()

@@ -50,6 +50,8 @@ class Installer(object):
         file.write("[plugins]\n")
         file.write("renamer = True\n")
         file.write("xdcc-searchdownload = True\n")
+        file.write("\n[defaults]\n")
+        file.write("downloader = twisted\n#options = (twisted|hexchat)\n")
         file.close()
 
     """
