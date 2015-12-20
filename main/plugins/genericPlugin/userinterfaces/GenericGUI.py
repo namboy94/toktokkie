@@ -12,6 +12,7 @@ class GenericGUI(object):
         self.parent = parent
         parent.destroy()
         self.gui = tkinter.Tk()
+        self.setUp()
 
     """
     Sets up the elements of the GUI
