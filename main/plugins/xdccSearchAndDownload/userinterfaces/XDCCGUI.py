@@ -37,7 +37,6 @@ class XDCCGUI(GenericGUI):
 
         self.startButton = tkinter.Button(self.gui, text="Download", command=self.startDownload, width=50)
         self.startButton.pack(fill=tkinter.X)
-        #TODO Implement that X runs the stop() command
 
     """
     Conducts a search for the currently entered search term
@@ -59,7 +58,8 @@ class XDCCGUI(GenericGUI):
         for item in items:
             packs.append(self.searchResult[item])
         self.promptAutoRename()
-        config = configparser.ConfigParser().read((os.getenv("HOME") + "/.mediamanager/configs/mainconfig"))
+        config = configparser.ConfigParser()
+        config.read((os.getenv("HOME") + "/.mediamanager/configs/mainconfig"))
         downloader = dict(config.items("defaults"))["downloader"]
         if downloader == "twisted":
             if self.autorename:
@@ -103,7 +103,7 @@ class XDCCGUI(GenericGUI):
         self.episodeNumber = int(self.episodeNoText.get("1.0", tkinter.END).split("\n")[0])
         self.seasonNumber = int(self.seasonNoText.get("1.0", tkinter.END).split("\n")[0])
         self.newgui.destroy()
-        self.__init__()
+        self.__init__(self.parent)
 
 
     """

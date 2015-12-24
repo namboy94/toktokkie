@@ -10,8 +10,9 @@ class GenericGUI(object):
     """
     def __init__(self, parent):
         self.parent = parent
-        parent.destroy()
+        parent.root.destroy()
         self.gui = tkinter.Tk()
+        #TODO make that X destroys this window and recreates the parent. Or just runs the stop() method in other words.
         self.setUp()
 
     """

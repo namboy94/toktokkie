@@ -44,7 +44,7 @@ class NIBLGetter(object):
             channel = self.getChannel(bot)
             packnumber = int(packNumbers[i].text)
             size = filesizes[i].text
-            result = XDCCPack(filename, server, bot, channel, packnumber, size)
+            result = XDCCPack(filename, server, channel, bot, packnumber, size)
             results.append(result)
             i += 1
 
