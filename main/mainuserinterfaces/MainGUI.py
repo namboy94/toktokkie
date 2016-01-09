@@ -13,6 +13,11 @@ class MainGUI(Gtk.Window):
         Gtk.Window.__init__(self, title="Main GUI")
         self.set_border_width(10)
 
+        self.grid = Gtk.Grid()
+        self.grid.set_column_homogeneous(True)
+        self.grid.set_row_homogeneous(True)
+        self.add(self.grid)
+
         self.plugins = activePlugins
         self.buttons = []
         self.__addButtons__()
@@ -31,12 +36,14 @@ class MainGUI(Gtk.Window):
     """
     def __addButtons__(self):
         i = 0
-        hbox = Gtk.Box(spacing=6)
-        self.add(hbox)
+        row = 0
+        column = -1
         while i < len(self.plugins):
+            if i % 3 == 0 and not i == 0: row += 1; column = 0
+            else: column += 1
             button = Gtk.Button.new_with_label(self.plugins[i].getName())
             button.connect("clicked", self.startPlugin, self.plugins[i])
-            hbox.pack_start(button, True, True, 0)
+            self.grid.attach(button, column, row, 1, 1)
             i += 1
 
     def startPlugin(self, widget, plugin):

@@ -9,8 +9,17 @@ class GenericGUI(Gtk.Window):
     Initializes the gui, destroying the parent
     @:param parent - the parent gui
     """
-    def __init__(self, parent):
+    def __init__(self, parent, title):
+        Gtk.Window.__init__(self, title=title)
+        self.set_border_width(10)
+
+        self.grid = Gtk.Grid()
+        self.grid.set_column_homogeneous(True)
+        self.grid.set_row_homogeneous(True)
+        self.add(self.grid)
+
         self.parent = parent
+
         self.setUp()
 
     """

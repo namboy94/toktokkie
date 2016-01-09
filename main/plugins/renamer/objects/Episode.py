@@ -53,7 +53,7 @@ class Episode(object):
         self.tvdbName = self.tvdbGetter.findEpisodeName()
         illegalCharacters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
         for illegalCharacter in illegalCharacters:
-            self.tvdbName.replace(illegalCharacter, "")
+            self.tvdbName = self.tvdbName.replace(illegalCharacter, "")
 
     """
     Generates the new name of an episode in Plex-conform format.

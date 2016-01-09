@@ -1,6 +1,6 @@
 import os
 import configparser
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
@@ -16,14 +16,6 @@ class XDCCGUI(GenericGUI):
     Initializes the interface elements
     """
     def setUp(self):
-        Gtk.Window.__init__(self, title="Main GUI")
-        self.set_border_width(10)
-
-        grid = Gtk.Grid()
-        grid.set_column_homogeneous(True)
-        grid.set_row_homogeneous(True)
-        self.add(grid)
-
         self.searchResult = []
         self.autorename = False
         self.showname = ""
@@ -32,11 +24,12 @@ class XDCCGUI(GenericGUI):
 
         self.entry = Gtk.Entry()
         self.entry.set_text("Enter Search Term here")
-        grid.add(self.entry)
+        self.entry.connect("key-press-event", self.defaultEnterKey)
+        self.grid.attach(self.entry, 0, 0, 2, 1)
 
-        searchButton = Gtk.Button.new_with_label("Search")
-        searchButton.connect("clicked", self.searchXDCC)
-        grid.add(searchButton)
+        self.searchButton = Gtk.Button.new_with_label("Search")
+        self.searchButton.connect("clicked", self.searchXDCC)
+        self.grid.attach_next_to(self.searchButton, self.entry, Gtk.PositionType.RIGHT, 1, 1)
 
         #Bot - Pack - Size - FileName
         self.listStore = Gtk.ListStore(int, str, int, str, str)
@@ -48,17 +41,13 @@ class XDCCGUI(GenericGUI):
         self.scrollable_treelist = Gtk.ScrolledWindow()
         self.scrollable_treelist.set_vexpand(True)
         self.scrollable_treelist.add(self.treeview)
-        grid.add(self.scrollable_treelist)
         self.treeSelection = self.treeview.get_selection()
         self.treeSelection.set_mode(Gtk.SelectionMode.MULTIPLE)
-
-        self.selectionBox = Gtk.ListBox()
-        self.selectionBox.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
-        grid.add(self.selectionBox)
+        self.grid.attach(self.scrollable_treelist, 0, 2, 3, 5)
 
         startButton = Gtk.Button.new_with_label("Download")
         startButton.connect("clicked", self.startDownload)
-        grid.add(startButton)
+        self.grid.attach(startButton, 1, 8, 1, 1)
 
     """
     Conducts a search for the currently entered search term
@@ -117,19 +106,12 @@ class XDCCGUI(GenericGUI):
     Sets the variables for the autorename
     """
     def autorenamebutton(self):
-        self.showname = self.showText.get("1.0", tkinter.END).split("\n")[0]
-        self.episodeNumber = int(self.episodeNoText.get("1.0", tkinter.END).split("\n")[0])
-        self.seasonNumber = int(self.seasonNoText.get("1.0", tkinter.END).split("\n")[0])
-        self.newgui.destroy()
-        self.__init__(self.parent)
-
+        print("TODO")
 
     """
-    Dirty Hack to allow the gui to react to CTRL-a
+    Defines the default behaviour when pressing enter for the search entry
+    It will act as if pressing the "Search" button
     """
-    #LEGACY TK
-    def select_all(self, event):
-        self.text.tag_add(tkinter.SEL, "1.0", tkinter.END)
-        self.text.mark_set(tkinter.INSERT, "1.0")
-        self.text.see(tkinter.INSERT)
-        return 'break'
+    def defaultEnterKey(self, widget, ev):
+        if ev.keyval == Gdk.KEY_Return:
+            self.searchXDCC(widget)

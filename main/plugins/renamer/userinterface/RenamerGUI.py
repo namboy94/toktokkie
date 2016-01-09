@@ -13,19 +13,13 @@ class RenamerGUI(GenericGUI):
     Sets up all interface elements of the GUI
     """
     def setUp(self):
-        Gtk.Window.__init__(self, title="Main GUI")
-        self.set_border_width(10)
-
-        hbox = Gtk.Box(spacing=6)
-        self.add(hbox)
-
-        button = Gtk.Button.new_with_label("Start")
-        button.connect("clicked", self.startRename)
-        hbox.pack_start(button, True, True, 0)
+        self.button = Gtk.Button.new_with_label("Start")
+        self.button.connect("clicked", self.startRename)
+        self.grid.attach(self.button, 4, 0, 1, 1)
 
         self.entry = Gtk.Entry()
         self.entry.set_text("")
-        hbox.pack_start(self.entry, True, True, 0)
+        self.grid.attach(self.entry, 0, 0, 3, 1)
 
     """
     Starts the renaming process
