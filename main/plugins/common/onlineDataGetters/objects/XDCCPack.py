@@ -16,8 +16,15 @@ class XDCCPack(object):
         self.size = size
 
     """
-    Returns the bot information as as string
+    Returns the bot information as a string
     @:return the bot information
     """
     def toString(self):
         return self.filename + "  -  " + self.bot + "  -  Size:" + self.size
+
+    """
+    Returns the bot information as a tuple
+    @:return the bot information
+    """
+    def toTuple(self):
+        return (self.bot, self.packnumber, self.size, self.filename)
