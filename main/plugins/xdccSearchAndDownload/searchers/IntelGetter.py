@@ -44,7 +44,7 @@ class IntelGetter(GenericGetter):
                 continue
             elif (i - 3) % 5 == 0:
                 size = line.text
-            elif (i - 4) %5 == 0:
+            elif (i - 4) % 5 == 0:
                 filename = line.text
                 channel = self.getChannel(bot)
                 server = self.getServer(bot)

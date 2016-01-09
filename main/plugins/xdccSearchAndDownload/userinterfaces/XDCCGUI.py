@@ -3,6 +3,7 @@ import configparser
 from gi.repository import Gtk, Gdk
 from plugins.xdccSearchAndDownload.searchers.NIBLGetter import NIBLGetter
 from plugins.xdccSearchAndDownload.searchers.IntelGetter import IntelGetter
+from plugins.xdccSearchAndDownload.searchers.IxIRCGetter import IxIRCGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
@@ -31,6 +32,7 @@ class XDCCGUI(GenericGUI):
         self.searchEngines = Gtk.ListStore(str)
         self.searchEngines.append(("NIBL.co.uk",))
         self.searchEngines.append(("Intel Haruhichan",))
+        self.searchEngines.append(("ixIRC",))
         self.searchEngine = Gtk.ComboBox.new_with_model(self.searchEngines)
         renderer_text = Gtk.CellRendererText()
         self.searchEngine.pack_start(renderer_text, True)
@@ -57,7 +59,7 @@ class XDCCGUI(GenericGUI):
 
         self.startButton = Gtk.Button.new_with_label("Download")
         self.startButton.connect("clicked", self.startDownload)
-        self.grid.attach(self.startButton, 1, 8, 1, 1)
+        self.grid.attach_next_to(self.startButton, self.scrollable_treelist, Gtk.PositionType.BOTTOM, 1, 1)
 
 
     """
@@ -71,6 +73,8 @@ class XDCCGUI(GenericGUI):
             self.searchResult = NIBLGetter(searchTerm).search()
         elif search[0] == "Intel Haruhichan":
             self.searchResult = IntelGetter(searchTerm).search()
+        elif search[0] == "ixIRC":
+            self.searchResult = IxIRCGetter(searchTerm).search()
 
         self.listStore.clear()
         i = 0
