@@ -1,8 +1,8 @@
 import configparser
 from plugins.genericPlugin.userinterfaces.GenericCLI import GenericCLI
-from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
+from plugins.xdccSearchAndDownload.searchers.NIBLGetter import NIBLGetter
 
 """
 CLI for the XDCC Search and Download plugin

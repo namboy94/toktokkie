@@ -1,7 +1,8 @@
 import os
 import configparser
 from gi.repository import Gtk, Gdk
-from plugins.common.onlineDataGetters.NIBLGetter import NIBLGetter
+from plugins.xdccSearchAndDownload.searchers.NIBLGetter import NIBLGetter
+from plugins.xdccSearchAndDownload.searchers.IntelGetter import IntelGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
@@ -25,13 +26,22 @@ class XDCCGUI(GenericGUI):
         self.entry = Gtk.Entry()
         self.entry.set_text("Enter Search Term here")
         self.entry.connect("key-press-event", self.defaultEnterKey)
-        self.grid.attach(self.entry, 0, 0, 2, 1)
+        self.grid.attach(self.entry, 0, 0, 2, 2)
+
+        self.searchEngines = Gtk.ListStore(str)
+        self.searchEngines.append(("NIBL.co.uk",))
+        self.searchEngines.append(("Intel Haruhichan",))
+        self.searchEngine = Gtk.ComboBox.new_with_model(self.searchEngines)
+        renderer_text = Gtk.CellRendererText()
+        self.searchEngine.pack_start(renderer_text, True)
+        self.searchEngine.add_attribute(renderer_text, "text", 0)
+        self.searchEngine.set_active(0)
+        self.grid.attach_next_to(self.searchEngine, self.entry, Gtk.PositionType.RIGHT, 1, 1)
 
         self.searchButton = Gtk.Button.new_with_label("Search")
         self.searchButton.connect("clicked", self.searchXDCC)
-        self.grid.attach_next_to(self.searchButton, self.entry, Gtk.PositionType.RIGHT, 1, 1)
+        self.grid.attach_next_to(self.searchButton, self.searchEngine, Gtk.PositionType.BOTTOM, 1, 1)
 
-        #Bot - Pack - Size - FileName
         self.listStore = Gtk.ListStore(int, str, int, str, str)
         self.treeview = Gtk.TreeView.new_with_model(self.listStore.filter_new())
         for i, column_title in enumerate(["#", "Bot", "Pack", "Size", "Filename"]):
@@ -43,18 +53,24 @@ class XDCCGUI(GenericGUI):
         self.scrollable_treelist.add(self.treeview)
         self.treeSelection = self.treeview.get_selection()
         self.treeSelection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.grid.attach(self.scrollable_treelist, 0, 2, 3, 5)
+        self.grid.attach_next_to(self.scrollable_treelist, self.entry, Gtk.PositionType.BOTTOM, 3, 5)
 
-        startButton = Gtk.Button.new_with_label("Download")
-        startButton.connect("clicked", self.startDownload)
-        self.grid.attach(startButton, 1, 8, 1, 1)
+        self.startButton = Gtk.Button.new_with_label("Download")
+        self.startButton.connect("clicked", self.startDownload)
+        self.grid.attach(self.startButton, 1, 8, 1, 1)
+
 
     """
     Conducts a search for the currently entered search term
     """
     def searchXDCC(self, widget):
+        search = self.searchEngines.get(self.searchEngine.get_active_iter(), 0)
+
         searchTerm = self.entry.get_text()
-        self.searchResult = NIBLGetter(searchTerm).search()
+        if search[0] == "NIBL.co.uk":
+            self.searchResult = NIBLGetter(searchTerm).search()
+        elif search[0] == "Intel Haruhichan":
+            self.searchResult = IntelGetter(searchTerm).search()
 
         self.listStore.clear()
         i = 0
