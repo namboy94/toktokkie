@@ -17,7 +17,7 @@ class MainCLI(object):
     def start(self):
         print("Starting Media Manager\n")
         while True:
-            userInput = input("User Input:\n").lower()
+            userInput = input("What would you like to do?\n").lower()
             if userInput in ["quit", "exit"]:
                 break
             elif userInput in ["help"]:
@@ -25,7 +25,7 @@ class MainCLI(object):
             else:
                 pluginToRun = None
                 for plugin in self.plugins:
-                    if userInput == plugin.getName().lower():
+                    if userInput == plugin.getCommandName().lower():
                         pluginToRun = plugin
                         break
                 if pluginToRun is None:
