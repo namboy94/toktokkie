@@ -9,5 +9,5 @@ class NautilusNemoIconizer(object):
     Iconizes the folder
     """
     @staticmethod
-    def iconize(self, directory, icon):
-        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon])
+    def iconize(directory, icon):
+        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon + ".png"])

@@ -28,6 +28,8 @@ class IconizerGUI(GenericGUI):
     """
     def iconizeStart(self, widget):
         directory = self.directoryEntry.get_text()
+        if not directory.endswith("/"):
+            directory += "/"
         if not os.path.isdir(directory):
             self.messageBox("Not a directory!")
             return
@@ -37,12 +39,11 @@ class IconizerGUI(GenericGUI):
             if child == "Folder Icon":
                 multiple = False
                 break
-        if not directory.endswith("/"):
-            directory += "/"
 
         if multiple:
             for child in children:
                 self.iconizeDir(directory + child)
+        else: self.iconizeDir(directory)
 
     """
     Iconizes a single folder

@@ -21,6 +21,7 @@ class DeepIconizer(object):
         else:
             raise NotImplementedError("Iconizing Method not implemented")
         self.folderIconDirectory = self.directory + "Folder Icon/"
+        self.concreteIconizer.iconize(self.folderIconDirectory, self.folderIconDirectory + "Folder")
 
     """
     Starts the iconization process
@@ -29,12 +30,13 @@ class DeepIconizer(object):
 
         if directory is None:
             directory = self.directory
+            self.concreteIconizer.iconize(directory, self.folderIconDirectory + "Main")
 
         children = self.getChildren(directory)
 
         i = 0
         while i < len(children[0]):
-            self.concreteIconizer.iconize(children[1][i], self.folderIconDirectory + children[0][i] + ".png")
+            self.concreteIconizer.iconize(children[1][i], self.folderIconDirectory + children[0][i])
             self.iconize(children[1][i])
             i += 1
 
