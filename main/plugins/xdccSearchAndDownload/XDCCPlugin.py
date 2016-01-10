@@ -1,4 +1,3 @@
-from mainuserinterfaces.MainGUI import MainGUI
 from plugins.genericPlugin.GenericPlugin import GenericPlugin
 from plugins.xdccSearchAndDownload.userinterfaces.XDCCGUI import XDCCGUI
 from plugins.xdccSearchAndDownload.userinterfaces.XDCCCLI import XDCCCLI
@@ -10,7 +9,7 @@ Class that handles renaming of episodes
 class XDCCPlugin(GenericPlugin):
 
     """
-    @:return "Renamer"
+    @:return "XDCC-Search-Download"
     """
     def getName(self):
         return "XDCC-Search-Download"
