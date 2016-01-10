@@ -1,6 +1,7 @@
 from plugins.renamer.RenamerPlugin import RenamerPlugin
 from plugins.xdccSearchAndDownload.XDCCPlugin import XDCCPlugin
 from plugins.iconizer.IconizerPlugin import IconizerPlugin
+from plugins.batchDownloadManager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
 
 """
 Class that manages plugins and checks which plugins to run
@@ -18,6 +19,7 @@ class PluginManager(object):
         allPlugins.append(RenamerPlugin())
         allPlugins.append(XDCCPlugin())
         allPlugins.append(IconizerPlugin())
+        allPlugins.append(BatchDownloadManagerPlugin())
         #New Plugins here
 
         #overrides reading from config

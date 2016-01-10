@@ -6,7 +6,7 @@ from plugins.batchDownloadManager.userinterfaces.BatchDownloadManagerGUI import 
 Class that handles the calls to the BatchDownloadManager
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class IconizerPlugin(GenericPlugin):
+class BatchDownloadManagerPlugin(GenericPlugin):
 
     """
     @:return "Batch Download Manager"
@@ -36,4 +36,4 @@ class IconizerPlugin(GenericPlugin):
     Starts the GUI, while hiding the parent until finished
     """
     def startGUI(self, parentGUI):
-        BatchDownloadManagerGUI(parentGUI, "Folder Iconizer GUI").start()
+        BatchDownloadManagerGUI(parentGUI, "Batch Download Manager").start()
