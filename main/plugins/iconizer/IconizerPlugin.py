@@ -6,7 +6,7 @@ from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
 Class that handles iconizing of folders
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class XDCCPlugin(GenericPlugin):
+class IconizerPlugin(GenericPlugin):
 
     """
     @:return "Iconizer"

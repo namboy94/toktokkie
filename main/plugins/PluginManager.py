@@ -1,5 +1,6 @@
 from plugins.renamer.RenamerPlugin import RenamerPlugin
 from plugins.xdccSearchAndDownload.XDCCPlugin import XDCCPlugin
+from plugins.iconizer.IconizerPlugin import IconizerPlugin
 
 """
 Class that manages plugins and checks which plugins to run
@@ -16,12 +17,17 @@ class PluginManager(object):
         allPlugins = []
         allPlugins.append(RenamerPlugin())
         allPlugins.append(XDCCPlugin())
+        allPlugins.append(IconizerPlugin())
         #New Plugins here
 
+        #overrides reading from config
+        self.activePlugins = allPlugins
+        """
         self.activePlugins = []
         for plugin in allPlugins:
             if config[plugin.getConfigTag()].lower() in ["true", "yes", "1"]:
                 self.activePlugins.append(plugin)
+        """
 
     """
     Returns a list of plugins, which should be used by the user interface. (CLI or GUI)

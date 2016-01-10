@@ -1,6 +1,6 @@
 import os
 import configparser
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 from plugins.xdccSearchAndDownload.searchers.NIBLGetter import NIBLGetter
 from plugins.xdccSearchAndDownload.searchers.IntelGetter import IntelGetter
 from plugins.xdccSearchAndDownload.searchers.IxIRCGetter import IxIRCGetter
@@ -127,11 +127,3 @@ class XDCCGUI(GenericGUI):
     """
     def autorenamebutton(self):
         print("TODO")
-
-    """
-    Defines the default behaviour when pressing enter for the search entry
-    It will act as if pressing the "Search" button
-    """
-    def defaultEnterKey(self, widget, ev):
-        if ev.keyval == Gdk.KEY_Return:
-            self.searchXDCC(widget)
