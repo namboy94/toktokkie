@@ -35,6 +35,7 @@ class TwistedDownloader(object):
     Downloads a single pack
     """
     def download(self, pack):
+        #TODO Look at Hexchatdownloader
         script = os.getenv("HOME") + "/.mediamanager/scripts/xdccbot.py"
         #TODO Get bot name from config
         Popen(["python2", "script", pack.server, pack.channel, "aajajajajjajaja", pack.bot, str(pack.packnumber)])

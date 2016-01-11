@@ -30,3 +30,4 @@ class FileRenamer(object):
 
         newFile = os.path.dirname(file) + "/" + newname + extension
         Popen(["mv", file, newFile])
+        return newFile

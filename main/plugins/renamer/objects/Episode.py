@@ -35,7 +35,7 @@ class Episode(object):
     """
     def rename(self):
 
-        FileRenamer.renameFile(self.episodeFile, self.newName)
+        self.episodeFile = FileRenamer.renameFile(self.episodeFile, self.newName)
 
     """
     Prints the episode object

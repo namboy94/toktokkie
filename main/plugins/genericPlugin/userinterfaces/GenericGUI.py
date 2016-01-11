@@ -142,6 +142,15 @@ class GenericGUI(Gtk.Window):
         treeSelection.set_mode(Gtk.SelectionMode.MULTIPLE)
         return [scrollable_treelist, treeSelection, treeview, listStore]
 
+    def generateRadioButton(self, text):
+        radio = Gtk.RadioButton.new_with_label(None, text)
+        return radio
+
+    def generateCheckBox(self, text, active):
+        checkBox = Gtk.CheckButton.new_with_label(text)
+        if active:
+            checkBox.set_active(True)
+        return checkBox
 
     ###Bequemlichkeitsmethoden###
 

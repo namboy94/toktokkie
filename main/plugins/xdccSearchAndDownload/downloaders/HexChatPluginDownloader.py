@@ -29,6 +29,7 @@ class HexChatPluginDownloader(object):
             for line in hexchatconfig:
                 if "dcc_dir = " in line:
                     self.downloaddir = line.split("dcc_dir = ")[1]
+                    if not self.downloaddir.endswith("/"): self.downloaddir += "/"
                     break
             hexchatconfig.close()
 
@@ -100,7 +101,15 @@ class HexChatPluginDownloader(object):
     def downloadLoop(self):
         self.__writeScript__()
         Popen(["hexchat"])
+        downloaded = []
+        self.packs.sort(key=lambda x: x.fileName)
         if self.autorename:
             for pack in self.packs:
-                Episode(self.downloaddir + pack.filename, self.showName, self.episodeNumber, self.seasonNumber).rename()
+                #TODO Do it alphabetically
+                episode = Episode(self.downloaddir + pack.filename, self.showName, self.episodeNumber, self.seasonNumber).rename()
+                downloaded.append(episode.episodeFile)
                 self.episodeNumber += 1
+        else:
+            for pack in self.packs:
+                downloaded.append(self.downloaddir + pack.filename)
+        return downloaded

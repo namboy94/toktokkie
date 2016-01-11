@@ -20,8 +20,8 @@ class DeepIconizer(object):
             self.concreteIconizer = NautilusNemoIconizer
         else:
             raise NotImplementedError("Iconizing Method not implemented")
-        self.folderIconDirectory = self.directory + "Folder Icon/"
-        self.concreteIconizer.iconize(self.folderIconDirectory, self.folderIconDirectory + "Folder")
+        self.folderIconDirectory = self.directory + ".icons/"
+        self.concreteIconizer.iconize(self.folderIconDirectory, self.folderIconDirectory + "folder")
 
     """
     Starts the iconization process
@@ -30,12 +30,13 @@ class DeepIconizer(object):
 
         if directory is None:
             directory = self.directory
-            self.concreteIconizer.iconize(directory, self.folderIconDirectory + "Main")
+            self.concreteIconizer.iconize(directory, self.folderIconDirectory + "main")
 
         children = self.getChildren(directory)
 
         i = 0
-        while i < len(children[0]):
+        print(children)
+        while i < len(children[0]) and i < len(children[1]):
             self.concreteIconizer.iconize(children[1][i], self.folderIconDirectory + children[0][i])
             self.iconize(children[1][i])
             i += 1
@@ -48,11 +49,11 @@ class DeepIconizer(object):
     """
     def getChildren(self, directory):
         childrenNames = os.listdir(directory)
+        if ".icons" in childrenNames: childrenNames.remove(".icons")
         childrenDirs = []
         for child in childrenNames:
-            if child == "Folder Icon": childrenNames.remove(child); continue
             childDir = directory + child + "/"
             if not os.path.isdir(childDir): childrenNames.remove(child); continue
-            else: childrenDirs.append(childDir)
+            childrenDirs.append(childDir)
 
         return [childrenNames, childrenDirs]

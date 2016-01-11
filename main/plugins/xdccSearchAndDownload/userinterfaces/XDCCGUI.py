@@ -67,34 +67,14 @@ class XDCCGUI(GenericGUI):
     """
     def searchXDCC(self, widget):
         search = self.searchEngines.get(self.searchEngine.get_active_iter(), 0)
-
         searchTerm = self.entry.get_text()
-        if search[0] == "NIBL.co.uk":
-            self.searchResult = NIBLGetter(searchTerm).search()
-        elif search[0] == "Intel Haruhichan":
-            self.searchResult = IntelGetter(searchTerm).search()
-        elif search[0] == "ixIRC":
-            self.searchResult = IxIRCGetter(searchTerm).search()
-
-        self.listStore.clear()
-        i = 0
-        for result in self.searchResult:
-            choice = (i,) + result.toTuple()
-            self.listStore.append(list(choice))
-            i += 1
+        self.searchResult = XDCCGUI.xdccSearch(search[0], searchTerm, self.listStore)
 
     """
     Starts the download of the selected packs
     """
     def startDownload(self, widget):
-        selected = []
-        (model, pathlist) = self.treeSelection.get_selected_rows()
-        for path in pathlist:
-            tree_iter = model.get_iter(path)
-            selected.append(model.get_value(tree_iter, 0))
-        packs = []
-        for selection in selected:
-            packs.append(self.searchResult[selection])
+        packs = XDCCGUI.getSelected(self.searchResult, self.treeSelection)
         self.promptAutoRename()
         config = configparser.ConfigParser()
         config.read((os.getenv("HOME") + "/.mediamanager/configs/mainconfig"))
@@ -127,3 +107,40 @@ class XDCCGUI(GenericGUI):
     """
     def autorenamebutton(self):
         print("TODO")
+
+
+
+    ###STATIC METHODS###
+    @staticmethod
+    def xdccSearch(searchEngine, searchTerm, listStore):
+
+        searchResult = None
+        if searchEngine == "NIBL.co.uk":
+            searchResult = NIBLGetter(searchTerm).search()
+        elif searchEngine == "Intel Haruhichan":
+            searchResult = IntelGetter(searchTerm).search()
+        elif searchEngine == "ixIRC.com":
+            searchResult = IxIRCGetter(searchTerm).search()
+        else:
+            raise NotImplementedError("The selected search engine is not implemented")
+
+        listStore.clear()
+        i = 0
+        for result in searchResult:
+            choice = (i,) + result.toTuple()
+            listStore.append(list(choice))
+            i += 1
+
+        return searchResult
+
+    @staticmethod
+    def getSelected(searchResult, treeSelection):
+        selected = []
+        (model, pathlist) = treeSelection.get_selected_rows()
+        for path in pathlist:
+            tree_iter = model.get_iter(path)
+            selected.append(model.get_value(tree_iter, 0))
+        packs = []
+        for selection in selected:
+            packs.append(searchResult[selection])
+        return packs
