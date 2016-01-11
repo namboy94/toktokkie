@@ -35,7 +35,6 @@ class DeepIconizer(object):
         children = self.getChildren(directory)
 
         i = 0
-        print(children)
         while i < len(children[0]) and i < len(children[1]):
             self.concreteIconizer.iconize(children[1][i], self.folderIconDirectory + children[0][i])
             self.iconize(children[1][i])

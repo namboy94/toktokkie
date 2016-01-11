@@ -182,9 +182,13 @@ class BatchDownloadManagerGUI(GenericGUI):
         secondaryIcon = self.secondaryIconLocation.get_text()
 
         if mainIcon:
-            self.getIcon(mainIcon, directory + ".icons/", "main.png")
+            if self.getIcon(mainIcon, directory + ".icons/", "main.png") == "error":
+                self.messageBox("Error retrieving image from source")
+                return None
         if secondaryIcon:
-            self.getIcon(secondaryIcon, directory + ".icons/", newDirectory.rsplit("/", 2)[1] + ".png")
+            if self.getIcon(secondaryIcon, directory + ".icons/", newDirectory.rsplit("/", 2)[1] + ".png") == "error":
+                self.messageBox("Error retrieving image from source")
+                return None
 
         if mainIcon or secondaryIcon:
             method = self.getCurrentSelectedComboBox(self.methodComboBox)
@@ -195,16 +199,21 @@ class BatchDownloadManagerGUI(GenericGUI):
 
     def getIcon(self, path, folderIconDirectory, iconFile):
         if os.path.isfile(path):
-            if os.path.isfile(folderIconDirectory + iconFile):
-                Popen(["rm", folderIconDirectory + iconFile]).wait()
-            Popen(["cp", path, folderIconDirectory + iconFile]).wait()
+            if not path == folderIconDirectory + iconFile:
+                if os.path.isfile(folderIconDirectory + iconFile):
+                    Popen(["rm", folderIconDirectory + iconFile]).wait()
+                Popen(["cp", path, folderIconDirectory + iconFile]).wait()
         else:
             try:
-                spiderProcessCommand = ['wget', '--spider', path]
-                spiderProcess = Popen(spiderProcessCommand, stdout=PIPE, stderr=PIPE)
-                spider, spiderErr = spiderProcess.communicate()
-                spiderErr = spiderErr.decode()
-                os.system("wget " + path + " -O " + folderIconDirectory + iconFile)
+                before = os.listdir()
+                Popen(["wget", path]).wait()
+                after = os.listdir()
+                newFile = ""
+                for file in after:
+                    if not file in before:
+                        newFile = file
+                        break
+                Popen(["mv", newFile, folderIconDirectory + iconFile]).wait()
             except Exception as e:
-                return
+                return "error"
 
