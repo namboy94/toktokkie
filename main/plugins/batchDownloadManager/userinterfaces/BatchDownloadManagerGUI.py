@@ -23,6 +23,7 @@ class BatchDownloadManagerGUI(GenericGUI):
 
         self.destinationLabel = self.generateLabel("Destination Directory")
         self.destination = self.generateEntry("")
+        self.destination.connect("changed", self.directoryToShowName)
         self.grid.attach(self.destinationLabel, 0, 0, 20, 10)
         self.grid.attach(self.destination, 20, 0, 20, 10)
 
@@ -36,11 +37,17 @@ class BatchDownloadManagerGUI(GenericGUI):
         self.grid.attach_next_to(self.seasonLabel, self.showLabel, Gtk.PositionType.BOTTOM, 20, 10)
         self.grid.attach_next_to(self.season, self.show, Gtk.PositionType.BOTTOM, 20, 10)
 
+        self.episodeLabel = self.generateLabel("Stating Episode Number")
+        self.episode = self.generateEntry("optional")
+        self.grid.attach_next_to(self.episodeLabel, self.seasonLabel, Gtk.PositionType.BOTTOM, 20, 10)
+        self.grid.attach_next_to(self.episode, self.episodeLabel, Gtk.PositionType.RIGHT, 20, 10)
+
         self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.seasonLabel, Gtk.PositionType.BOTTOM, 20, 10)
+        self.grid.attach_next_to(self.divider1, self.episodeLabel, Gtk.PositionType.BOTTOM, 20, 10)
 
         self.searchLabel = self.generateLabel("Search Term")
         self.searchField = self.generateEntry("")
+        self.defaultEnterKey(self.searchField, self.searchXDCC)
         self.grid.attach_next_to(self.searchLabel, self.divider1, Gtk.PositionType.BOTTOM, 20, 10)
         self.grid.attach_next_to(self.searchField, self.searchLabel, Gtk.PositionType.RIGHT, 20, 10)
 
@@ -94,11 +101,11 @@ class BatchDownloadManagerGUI(GenericGUI):
         self.grid.attach_next_to(self.downloadButton, self.divider1, Gtk.PositionType.BOTTOM, 40, 10)
 
         self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.destination, Gtk.PositionType.RIGHT, 2, 190)
+        self.grid.attach_next_to(self.divider1, self.destination, Gtk.PositionType.RIGHT, 2, 200)
 
         listStore = Gtk.ListStore(int, str, int, str, str)
         self.searchResults = self.generateMultiListBox(listStore, ["#", "Bot", "Pack", "Size", "Filename"])
-        self.grid.attach_next_to(self.searchResults[0], self.divider1, Gtk.PositionType.RIGHT, 70, 190)
+        self.grid.attach_next_to(self.searchResults[0], self.divider1, Gtk.PositionType.RIGHT, 70, 200)
 
     """
     """
@@ -114,6 +121,13 @@ class BatchDownloadManagerGUI(GenericGUI):
         preparation = self.prepare()
         if preparation is None: return
         directory, show, season, firstEpisode, special, newDirectory = preparation
+
+        print(show)
+        print(show)
+        print(directory)
+        print(directory)
+
+
         packs = XDCCGUI.getSelected(self.searchResult, self.searchResults[1])
         downloader = self.getCurrentSelectedComboBox(self.downloadEngineComboBox)
         files = []
@@ -121,7 +135,7 @@ class BatchDownloadManagerGUI(GenericGUI):
             if self.renameCheck.get_active() and not special:
                 files = HexChatPluginDownloader(packs, show, firstEpisode, season).downloadLoop()
             else:
-                files = HexChatPluginDownloader(packs)
+                files = HexChatPluginDownloader(packs).downloadLoop()
         elif downloader == "Twisted":
             if self.renameCheck.get_active() and not special:
                 files = TwistedDownloader(packs, show, firstEpisode, season).downloadLoop()
@@ -194,6 +208,14 @@ class BatchDownloadManagerGUI(GenericGUI):
             method = self.getCurrentSelectedComboBox(self.methodComboBox)
             DeepIconizer(directory, method).iconize()
 
+        firstEp = self.episode.get_text()
+        if firstEp:
+            try:
+                firstEpisode = int(firstEp)
+            except:
+                self.messageBox("Not a valid episode number")
+                return None
+
         return [directory, show, season, firstEpisode, special, newDirectory]
 
 
@@ -217,3 +239,12 @@ class BatchDownloadManagerGUI(GenericGUI):
             except Exception as e:
                 return "error"
 
+    def directoryToShowName(self, widget):
+        directory = self.destination.get_text()
+        showName = ""
+        try:
+            showName = directory.rsplit("/", 1)[1]
+        except:
+            showName = directory.rsplit("/", 1)[0]
+        self.show.set_text(showName)
+        self.searchField.set_text(showName)

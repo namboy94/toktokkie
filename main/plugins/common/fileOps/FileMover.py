@@ -19,5 +19,5 @@ class FileMover(object):
 
         newFile = locationBackup + fileName
 
-        Popen(["mv", file, newFile])
+        Popen(["mv", file, newFile]).wait()
         return newFile

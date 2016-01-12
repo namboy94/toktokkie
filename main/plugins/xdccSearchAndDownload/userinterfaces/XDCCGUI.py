@@ -117,7 +117,7 @@ class XDCCGUI(GenericGUI):
         searchResult = None
         if searchEngine == "NIBL.co.uk":
             searchResult = NIBLGetter(searchTerm).search()
-        elif searchEngine == "Intel Haruhichan":
+        elif searchEngine == "intel.haruhichan.com":
             searchResult = IntelGetter(searchTerm).search()
         elif searchEngine == "ixIRC.com":
             searchResult = IxIRCGetter(searchTerm).search()

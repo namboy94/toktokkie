@@ -48,9 +48,11 @@ class GenericGUI(Gtk.Window):
     Defines the default behaviour when pressing enter for the search entry
     It will act as if pressing the "Search" button
     """
-    def defaultEnterKey(self, widget, ev, command):
-        if ev.keyval == Gdk.KEY_Return:
-            command(widget)
+    def defaultEnterKey(self, widget, command):
+        def enter(wid, ev, com):
+            if ev.keyval == Gdk.KEY_Return:
+                com(wid)
+        widget.connect("key-press-event", enter, command)
 
     """
     Opens a message box popup.

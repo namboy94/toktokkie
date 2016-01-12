@@ -29,5 +29,5 @@ class FileRenamer(object):
                 raise e
 
         newFile = os.path.dirname(file) + "/" + newname + extension
-        Popen(["mv", file, newFile])
+        Popen(["mv", file, newFile]).wait()
         return newFile
