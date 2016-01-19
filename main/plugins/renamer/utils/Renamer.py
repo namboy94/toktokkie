@@ -30,18 +30,15 @@ class Renamer(object):
         seasons = self.formatSeasons(seasons)
 
         for season in seasons:
-            qualities = os.listdir(season)
-            for quality in qualities:
-                qualityDir = season + "/" + quality
-                episodes = os.listdir(qualityDir)
-                episodes.sort(key=lambda x: x)
-                i = 1
-                for episode in episodes:
-                    episodeDir = qualityDir + "/" + episode
-                    episodeNumber = i
-                    seasonNumber = season.lower().split("/", 1)[1].split("season ")[1]
-                    self.episodes.append(Episode(episodeDir, episodeNumber, seasonNumber, showname))
-                    i += 1
+            episodes = os.listdir(season)
+            episodes.sort(key=lambda x: x)
+            i = 1
+            for episode in episodes:
+                episodeDir = season + "/" + episode
+                episodeNumber = i
+                seasonNumber = season.lower().split("/", 1)[1].split("season ")[1]
+                self.episodes.append(Episode(episodeDir, episodeNumber, seasonNumber, showname))
+                i += 1
 
     """
     """
