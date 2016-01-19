@@ -36,7 +36,7 @@ class IconizerGUI(GenericGUI):
         children = os.listdir(directory)
         multiple = True
         for child in children:
-            if child == "Folder Icon":
+            if child == ".icons":
                 multiple = False
                 break
 
@@ -53,10 +53,10 @@ class IconizerGUI(GenericGUI):
         method = self.getCurrentSelectedComboBox(self.iconizerMethodComboBox)
         hasIcons = False
         for subDirectory in os.listdir(directory):
-            if subDirectory == "Folder Icon":
+            if subDirectory == ".icons":
                 hasIcons = True
                 break
         if not hasIcons:
-            print("Error, " + directory + " has no subdirectory \"Folder Icon\"")
+            print("Error, " + directory + " has no subdirectory \".icons\"")
 
         DeepIconizer(directory, method).iconize()
