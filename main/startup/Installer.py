@@ -13,33 +13,46 @@ class Installer(object):
     Constructor
     """
     def __init__(self):
-        self.programDir = os.getenv("HOME") + "/.mediamanager"
-        self.configDir = self.programDir + "/configs"
-        self.scriptDir = self.programDir + "/scripts"
+        self.mainDir = os.getenv("HOME") + "/.mediamanager"
+        self.configDir = self.mainDir + "/configs"
+        self.scriptDir = self.mainDir + "/scripts"
         self.mainConfig = self.configDir + "/mainconfig"
         self.xdccDLScript = self.scriptDir + "/xdccbot.py"
+        self.programDir = self.mainDir + "/program"
+        self.executable = "/usr/bin/mediamanager"
+        self.guiExecutable = "/usr/bin/mmgui"
 
     """
     Checks if the program is installed
     @:return True is it is installed, False if not
     """
     def isInstalled(self):
-        if not os.path.isdir(self.programDir): return False
+        if not os.path.isdir(self.mainDir): return False
         if not os.path.isdir(self.configDir): return False
         if not os.path.isdir(self.scriptDir): return False
         if not os.path.isfile(self.mainConfig): return False
         if not os.path.isfile(self.xdccDLScript): return False
+        if not os.path.isdir(self.programDir): return False
+        if not os.path.isfile(self.executable): return False
+        if not os.path.isfile(self.guiExecutable): return False
         return True
 
     """
     Installs the program
     """
     def install(self):
-        if not os.path.isdir(self.programDir): Popen(["mkdir", self.programDir])
-        if not os.path.isdir(self.configDir): Popen(["mkdir", self.configDir])
-        if not os.path.isdir(self.scriptDir): Popen(["mkdir", self.scriptDir])
+        if not os.path.isdir(self.mainDir): Popen(["mkdir", self.mainDir]).wait()
+        if not os.path.isdir(self.configDir): Popen(["mkdir", self.configDir]).wait()
+        if not os.path.isdir(self.scriptDir): Popen(["mkdir", self.scriptDir]).wait()
         if not os.path.isfile(self.mainConfig): self.__writeMainConfig__()
         if not os.path.isfile(self.xdccDLScript): self.__copyXDCCScriptFile__()
+        if not os.path.isdir(self.programDir): Popen(["cp", "-rf", Installer.getSourceDir(), self.programDir]).wait()
+        if not os.path.isfile(self.executable):
+            Popen(["sudo", "cp", Installer.getSourceDir() + "/main/startup/scripts/mediamanagercli.sh", self.executable]).wait()
+            Popen(["sudo", "chmod", "755", self.executable]).wait()
+        if not os.path.isfile(self.guiExecutable):
+            Popen(["sudo", "cp", Installer.getSourceDir() + "/main/startup/scripts/mediamanagergui.sh", self.guiExecutable]).wait()
+            Popen(["sudo", "chmod", "755", self.guiExecutable]).wait()
 
     """
     Writes a default config file
@@ -60,4 +73,14 @@ class Installer(object):
     """
     def __copyXDCCScriptFile__(self):
         original = os.path.dirname(sys.argv[0]) + "/external/xdccbot.py"
-        Popen(["cp", original, self.xdccDLScript])
+        Popen(["cp", original, self.xdccDLScript]).wait()
+
+
+    """
+    Gets the source directory of the python program running
+    @:return the source directory
+    """
+    @staticmethod
+    def getSourceDir():
+        directory = os.path.dirname(sys.argv[0])
+        return str(os.path.abspath(directory).rsplit("/", 1)[0])

@@ -32,4 +32,6 @@ class GenericGetter(object):
     @:return the channel
     """
     def getChannel(self, bot):
+        if bot == "E-D|Mashiro":
+            return "exiled-destiny"
         return "intel"
