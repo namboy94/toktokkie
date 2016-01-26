@@ -23,7 +23,7 @@ class BatchDownloadManagerGUI(GenericGUI):
 
         self.destinationLabel = self.generateLabel("Destination Directory")
         self.destination = self.generateEntry("")
-        self.destination.connect("changed", self.directoryToShowName)
+        self.destination.connect("changed", self.onDirectoryChanged)
         self.grid.attach(self.destinationLabel, 0, 0, 20, 10)
         self.grid.attach(self.destination, 20, 0, 20, 10)
 
@@ -37,7 +37,7 @@ class BatchDownloadManagerGUI(GenericGUI):
         self.grid.attach_next_to(self.seasonLabel, self.showLabel, Gtk.PositionType.BOTTOM, 20, 10)
         self.grid.attach_next_to(self.season, self.show, Gtk.PositionType.BOTTOM, 20, 10)
 
-        self.episodeLabel = self.generateLabel("Stating Episode Number")
+        self.episodeLabel = self.generateLabel("Starting Episode Number")
         self.episode = self.generateEntry("optional")
         self.grid.attach_next_to(self.episodeLabel, self.seasonLabel, Gtk.PositionType.BOTTOM, 20, 10)
         self.grid.attach_next_to(self.episode, self.episodeLabel, Gtk.PositionType.RIGHT, 20, 10)
@@ -105,7 +105,14 @@ class BatchDownloadManagerGUI(GenericGUI):
 
         listStore = Gtk.ListStore(int, str, int, str, str)
         self.searchResults = self.generateMultiListBox(listStore, ["#", "Bot", "Pack", "Size", "Filename"])
-        self.grid.attach_next_to(self.searchResults[0], self.divider1, Gtk.PositionType.RIGHT, 70, 200)
+        self.grid.attach_next_to(self.searchResults[0], self.divider1, Gtk.PositionType.RIGHT, 60, 200)
+
+        self.divider1 = self.generateLabel("")
+        self.grid.attach_next_to(self.divider1, self.searchResults[0], Gtk.PositionType.RIGHT, 2, 200)
+
+        directoryContentListStore = Gtk.ListStore(str)
+        self.directoryContent = self.generateMultiListBox(directoryContentListStore, ["File Name"])
+        self.grid.attach_next_to(self.directoryContent[0], self.divider1, Gtk.PositionType.RIGHT, 20, 200)
 
     """
     """
@@ -121,12 +128,6 @@ class BatchDownloadManagerGUI(GenericGUI):
         preparation = self.prepare()
         if preparation is None: return
         directory, show, season, firstEpisode, special, newDirectory = preparation
-
-        print(show)
-        print(show)
-        print(directory)
-        print(directory)
-
 
         packs = XDCCGUI.getSelected(self.searchResult, self.searchResults[1])
         downloader = self.getCurrentSelectedComboBox(self.downloadEngineComboBox)
@@ -239,7 +240,7 @@ class BatchDownloadManagerGUI(GenericGUI):
             except Exception as e:
                 return "error"
 
-    def directoryToShowName(self, widget):
+    def onDirectoryChanged(self, widget):
         directory = self.destination.get_text()
         showName = ""
         try:
@@ -247,4 +248,22 @@ class BatchDownloadManagerGUI(GenericGUI):
         except:
             showName = directory.rsplit("/", 1)[0]
         self.show.set_text(showName)
-        self.searchField.set_text(showName)
+        self.searchField.set_text(showName + " 1080")
+
+        self.directoryContent[3].clear()
+        if os.path.isdir(directory):
+            highestSeason = 1
+            while (os.path.isdir(directory + "/Season" + str(highestSeason + 1))): highestSeason += 1
+            if os.path.isdir(directory + "/Season " + str(highestSeason)):
+                children = os.listdir(directory + "/Season " + str(highestSeason))
+                for child in children:
+                    self.directoryContent[3].append([child])
+                self.episode.set_text(str(len(children) + 1))
+                self.season.set_text(str(highestSeason))
+                mainIcon = directory + "/.icons/main.png"
+                if os.path.isfile(mainIcon):
+                    self.mainIconLocation.set_text(mainIcon)
+                secondaryIcon = directory + "/.icons/Season " + str(highestSeason) + ".png"
+                if os.path.isfile(secondaryIcon):
+                    self.secondaryIconLocation.set_text(secondaryIcon)
+
