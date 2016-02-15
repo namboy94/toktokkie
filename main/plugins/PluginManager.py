@@ -25,36 +25,32 @@ from plugins.xdccSearchAndDownload.XDCCPlugin import XDCCPlugin
 from plugins.iconizer.IconizerPlugin import IconizerPlugin
 from plugins.batchDownloadManager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
 
-"""
-Class that manages plugins and checks which plugins to run
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
+
 class PluginManager(object):
+    """
+    Class that manages plugins and checks which plugins to run
+    """
 
-    """
-    Constructor
-    Already checks which plugins to use
-    @:param config - the config file's [plugin] section as a dictionary
-    """
     def __init__(self, config):
-        allPlugins = []
-        allPlugins.append(RenamerPlugin())
-        allPlugins.append(XDCCPlugin())
-        allPlugins.append(IconizerPlugin())
-        allPlugins.append(BatchDownloadManagerPlugin())
-        #New Plugins here
-
-        #overrides reading from config
-        self.activePlugins = allPlugins
         """
-        self.activePlugins = []
-        for plugin in allPlugins:
-            if config[plugin.getConfigTag()].lower() in ["true", "yes", "1"]:
-                self.activePlugins.append(plugin)
+        Constructor
+        Already checks which plugins to use
+        :param config: the config file's [plugin] section as a dictionary
         """
+        all_plugins = [RenamerPlugin(),
+                       XDCCPlugin(),
+                       IconizerPlugin(),
+                       BatchDownloadManagerPlugin()]
+        # New Plugins here
 
-    """
-    Returns a list of plugins, which should be used by the user interface. (CLI or GUI)
-    """
-    def getPlugins(self):
-        return self.activePlugins
+        self.active_plugins = []
+        for plugin in all_plugins:
+            if config[plugin.get_config_tag()].lower() in ["true", "yes", "1"]:
+                self.active_plugins.append(plugin)
+
+    def get_plugins(self):
+        """
+        Returns a list of plugins, which should be used by the user interface. (CLI or GUI)
+        :return: the list of plugins
+        """
+        return self.active_plugins
