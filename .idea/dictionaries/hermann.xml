@@ -1,9 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="hermann">
     <words>
+      <w>botname</w>
       <w>episodename</w>
+      <w>filesize</w>
       <w>haruhichan</w>
       <w>hexchat</w>
+      <w>ixirc</w>
       <w>krumrey</w>
       <w>mainconfig</w>
       <w>mediamanager</w>
@@ -11,7 +14,10 @@
       <w>mmgui</w>
       <w>nemo</w>
       <w>nibl</w>
+      <w>packlists</w>
+      <w>packnumber</w>
       <w>renamer</w>
+      <w>rizon</w>
       <w>searchdownload</w>
       <w>wget</w>
       <w>xdcc</w>

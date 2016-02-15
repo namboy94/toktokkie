@@ -23,13 +23,13 @@ This file is part of media-manager.
 import os
 from subprocess import Popen
 
-from plugins.batchDownloadManager.search_engines.IntelGetter import IntelGetter
-from plugins.batchDownloadManager.search_engines.IxIRCGetter import IxIRCGetter
-from plugins.batchDownloadManager.search_engines.NIBLGetter import NIBLGetter
-from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+from plugins.batchDownloadManager.searchengines.IntelGetter import IntelGetter
+from plugins.batchDownloadManager.searchengines.IxIRCGetter import IxIRCGetter
+from plugins.batchDownloadManager.searchengines.NIBLGetter import NIBLGetter
+from plugins.batchDownloadManager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 
 from guitemplates.gtk.GenericGtkGui import GenericGtkGui
-from plugins.batchDownloadManager.searchengines.downloaders.TwistedDownloader import TwistedDownloader
+from plugins.batchDownloadManager.downloaders.TwistedDownloader import TwistedDownloader
 from plugins.common.fileOps.FileMover import FileMover
 from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
@@ -298,6 +298,11 @@ class BatchDownloadManagerGUI(GenericGtkGui):
             Popen(["mv", new_file, folder_icon_directory + icon_file]).wait()
 
     def on_directory_changed(self, widget):
+        """
+        method run when the directory changes
+        :param widget: the changed widget
+        :return: void
+        """
         if widget is None:
             return
         directory = self.destination.get_text()
@@ -328,7 +333,13 @@ class BatchDownloadManagerGUI(GenericGtkGui):
 
     @staticmethod
     def xdcc_search(search_engine, search_term, list_store):
-
+        """
+        Conducts the XDCC search
+        :param search_engine: the search engine to be used
+        :param search_term: the search term
+        :param list_store: the list store to populate with the results
+        :return: the search result
+        """
         if search_engine == "NIBL.co.uk":
             search_result = NIBLGetter(search_term).search()
         elif search_engine == "intel.haruhichan.com":
@@ -349,6 +360,12 @@ class BatchDownloadManagerGUI(GenericGtkGui):
     
     @staticmethod
     def get_selected(search_result, tree_selection):
+        """
+        Returns the selected elements from the tree selection
+        :param search_result: the search result list
+        :param tree_selection: the tree selection
+        :return: the selection as list of packs
+        """
         selected = []
         (model, path_list) = tree_selection.get_selected_rows()
         for path in path_list:

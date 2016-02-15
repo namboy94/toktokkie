@@ -26,35 +26,32 @@ from bs4 import BeautifulSoup
 from plugins.batchDownloadManager.searchengines.GenericGetter import GenericGetter
 from plugins.batchDownloadManager.searchengines.objects.XDCCPack import XDCCPack
 
-"""
-Class that gets xdcc packlists from intel.haruhichan.com
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class IntelGetter(GenericGetter):
 
+class IntelGetter(GenericGetter):
     """
-    Conducts the search
-    @:return the search results as a list of XDCCPack objects
+    Class that gets xdcc pack lists from intel.haruhichan.com
     """
+    
     def search(self):
-        splitSearchTerm = self.searchTerm.split(" ")
-        preparedSearchTerm = splitSearchTerm[0]
+        """
+        Conducts the search
+        :return: the search results as a list of XDCCPack objects
+        """
+        split_search_term = self.search_term.split(" ")
+        prepared_search_term = split_search_term[0]
         i = 1
-        while i < len(splitSearchTerm):
-            preparedSearchTerm += "%20" + splitSearchTerm[i]
+        while i < len(split_search_term):
+            prepared_search_term += "%20" + split_search_term[i]
             i += 1
 
-        url = "http://intel.haruhichan.com/?s=" + preparedSearchTerm
+        url = "http://intel.haruhichan.com/?s=" + prepared_search_term
         content = BeautifulSoup(requests.get(url).text, "html.parser")
         packs = content.select("td")
 
         results = []
 
         i = 0
-        filename = ""
         bot = ""
-        server = ""
-        channel = ""
         packnumber = ""
         size = ""
         for line in packs:
@@ -69,10 +66,26 @@ class IntelGetter(GenericGetter):
                 size = line.text
             elif (i - 4) % 5 == 0:
                 filename = line.text
-                channel = self.getChannel(bot)
-                server = self.getServer(bot)
+                channel = self.get_channel(bot)
+                server = self.get_server(bot)
                 result = XDCCPack(filename, server, channel, bot, packnumber, size)
                 results.append(result)
             i += 1
 
         return results
+
+    def get_channel(self, bot):
+        """
+        Gets the channel for a given bot
+        :param bot: the bot
+        :return: the channel
+        """
+        return "#intel"
+
+    def get_server(self, bot):
+        """
+        Gets the server for a given bot
+        :param bot: the bot
+        :return: the server
+        """
+        return "irc.rizon.net"

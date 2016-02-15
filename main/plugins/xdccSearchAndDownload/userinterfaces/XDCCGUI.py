@@ -27,7 +27,7 @@ from gi.repository import Gtk
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 
-from plugins.batchDownloadManager.searchengines.downloaders.TwistedDownloader import TwistedDownloader
+from plugins.batchDownloadManager.downloaders.TwistedDownloader import TwistedDownloader
 
 """
 GUI for the XDCC Search and Download class

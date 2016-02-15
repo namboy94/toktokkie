@@ -26,43 +26,59 @@ from bs4 import BeautifulSoup
 from plugins.batchDownloadManager.searchengines.GenericGetter import GenericGetter
 from plugins.batchDownloadManager.searchengines.objects.XDCCPack import XDCCPack
 
-"""
-Class that gets xdcc packlists from nibl.co.uk
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class NIBLGetter(GenericGetter):
 
+class NIBLGetter(GenericGetter):
     """
-    Conducts the search
-    @:return the search results as a list of XDCCPack objects
+    Class that gets xdcc packlists from nibl.co.uk
     """
+
     def search(self):
-        splitSearchTerm = self.searchTerm.split(" ")
-        preparedSearchTerm = splitSearchTerm[0]
+        """
+        Conducts the search
+        :return: the search results as a list of XDCCPack objects
+        """
+        split_search_term = self.search_term.split(" ")
+        prepared_search_term = split_search_term[0]
         i = 1
-        while i < len(splitSearchTerm):
-            preparedSearchTerm += "+" + splitSearchTerm[i]
+        while i < len(split_search_term):
+            prepared_search_term += "+" + split_search_term[i]
             i += 1
 
-        url = "http://nibl.co.uk/bots.php?search=" + preparedSearchTerm
+        url = "http://nibl.co.uk/bots.php?search=" + prepared_search_term
         content = BeautifulSoup(requests.get(url).text, "html.parser")
-        fileNames = content.select(".filename")
-        packNumbers = content.select(".packnumber")
-        botnames = content.select(".botname")
-        filesizes = content.select(".filesize")
+        file_names = content.select(".filename")
+        pack_numbers = content.select(".packnumber")
+        bot_names = content.select(".botname")
+        file_sizes = content.select(".filesize")
 
         results = []
 
         i = 0
-        while i < len(fileNames):
-            filename = fileNames[i].text.rsplit(" \n", 1)[0]
-            bot = botnames[i].text.rsplit(" ", 1)[0]
-            server = self.getServer(bot)
-            channel = self.getChannel(bot)
-            packnumber = int(packNumbers[i].text)
-            size = filesizes[i].text
+        while i < len(file_names):
+            filename = file_names[i].text.rsplit(" \n", 1)[0]
+            bot = bot_names[i].text.rsplit(" ", 1)[0]
+            server = self.get_server(bot)
+            channel = self.get_channel(bot)
+            packnumber = int(pack_numbers[i].text)
+            size = file_sizes[i].text
             result = XDCCPack(filename, server, channel, bot, packnumber, size)
             results.append(result)
             i += 1
 
         return results
+    
+    def get_channel(self, bot):
+        """
+        Gets the channel for a given bot
+        :param bot: the bot
+        :return: the channel
+        """
+        return "#intel"
+    
+    def get_server(self, bot):
+        """
+        Gets the server for a given bot
+        :param bot: the bot
+        :return: the server
+        """
+        return "irc.rizon.net"

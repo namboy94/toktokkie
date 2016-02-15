@@ -20,40 +20,38 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-"""
-Class that defines interfaces for modules that search xdcc packlists
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
+
 class GenericGetter(object):
+    """
+    Class that defines interfaces for modules that search xdcc pack lists
+    """
 
-    """
-    Constructor
-    @:param searchTerm - the term for which a search should be done.
-    """
-    def __init__(self, searchTerm):
-        self.searchTerm = searchTerm
+    def __init__(self, search_term):
+        """
+        Constructor
+        :param: search_term: the term for which a search should be done.
+        """
+        self.search_term = search_term
 
-    """
-    Conducts the search
-    @:return the search results as a list of XDCCPack objects
-    """
     def search(self):
+        """
+        Conducts the search
+        :return: the search results as a list of XDCCPack objects
+        """
         raise NotImplementedError()
 
-    """
-    Checks to which server a given bot belongs to.
-    @:param bot - the bot's name to be used
-    @:return the server name
-    """
-    def getServer(self, bot):
-        return "irc.rizon.net"
+    def get_server(self, bot):
+        """
+        Checks to which server a given bot belongs to.
+        :param bot: the bot's name to be used
+        :return: the server name
+        """
+        raise NotImplementedError()
 
-    """
-    Checks to which channel a given bot belongs to
-    @:param bot - the bot to check for
-    @:return the channel
-    """
-    def getChannel(self, bot):
-        if bot == "E-D|Mashiro":
-            return "exiled-destiny"
-        return "intel"
+    def get_channel(self, bot):
+        """
+        Checks to which channel a given bot belongs to
+        :param bot: the bot to check for
+        :return: the channel
+        """
+        raise NotImplementedError()
