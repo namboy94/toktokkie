@@ -21,65 +21,70 @@ This file is part of media-manager.
 """
 
 import os
+import sys
 from subprocess import Popen
 
-import sys
 
-"""
-Class that handles installation of the program
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
 class Installer(object):
+    """
+    Class that handles installation of the program
+    """
 
-    """
-    Constructor
-    """
     def __init__(self):
+        """
+        Constructor
+        :return: void
+        """
         self.mainDir = os.getenv("HOME") + "/.mediamanager"
         self.configDir = self.mainDir + "/configs"
         self.scriptDir = self.mainDir + "/scripts"
         self.mainConfig = self.configDir + "/mainconfig"
         self.xdccDLScript = self.scriptDir + "/xdccbot.py"
         self.programDir = self.mainDir + "/program"
-        self.executable = "/usr/bin/mediamanager"
-        self.guiExecutable = "/usr/bin/mmgui"
+        self.executable = "/usr/bin/mmgui"
 
-    """
-    Checks if the program is installed
-    @:return True is it is installed, False if not
-    """
-    def isInstalled(self):
-        if not os.path.isdir(self.mainDir): return False
-        if not os.path.isdir(self.configDir): return False
-        if not os.path.isdir(self.scriptDir): return False
-        if not os.path.isfile(self.mainConfig): return False
-        if not os.path.isfile(self.xdccDLScript): return False
-        if not os.path.isdir(self.programDir): return False
-        if not os.path.isfile(self.executable): return False
-        if not os.path.isfile(self.guiExecutable): return False
+    def is_installed(self):
+        """
+        Checks if the program is installed
+        :return: True is it is installed, False if not
+        """
+        if not os.path.isdir(self.mainDir) or \
+                not os.path.isdir(self.configDir) or \
+                not os.path.isdir(self.scriptDir) or \
+                not os.path.isfile(self.mainConfig) or \
+                not os.path.isfile(self.xdccDLScript) or \
+                not os.path.isdir(self.programDir) or \
+                not os.path.isfile(self.executable):
+            return False
         return True
 
-    """
-    Installs the program
-    """
     def install(self):
-        if not os.path.isdir(self.mainDir): Popen(["mkdir", self.mainDir]).wait()
-        if not os.path.isdir(self.configDir): Popen(["mkdir", self.configDir]).wait()
-        if not os.path.isdir(self.scriptDir): Popen(["mkdir", self.scriptDir]).wait()
-        if not os.path.isfile(self.mainConfig): self.__writeMainConfig__()
-        if not os.path.isfile(self.xdccDLScript): self.__copyXDCCScriptFile__()
-        if not os.path.isdir(self.programDir): Popen(["cp", "-rf", Installer.getSourceDir(), self.programDir]).wait()
+        """
+        Installs the program
+        :return: void
+        """
+        if not os.path.isdir(self.mainDir):
+            Popen(["mkdir", self.mainDir]).wait()
+        if not os.path.isdir(self.configDir):
+            Popen(["mkdir", self.configDir]).wait()
+        if not os.path.isdir(self.scriptDir):
+            Popen(["mkdir", self.scriptDir]).wait()
+        if not os.path.isfile(self.mainConfig):
+            self.__write_main_config__()
+        if not os.path.isfile(self.xdccDLScript):
+            self.__copy_xdcc_script_file__()
+        if not os.path.isdir(self.programDir):
+            Popen(["cp", "-rf", Installer.__get_source_dir__(), self.programDir]).wait()
         if not os.path.isfile(self.executable):
-            Popen(["sudo", "cp", Installer.getSourceDir() + "/main/startup/scripts/mediamanagercli.sh", self.executable]).wait()
+            Popen(["sudo", "cp", Installer.__get_source_dir__() + "/main/startup/scripts/mediamanagergui.sh",
+                   self.executable]).wait()
             Popen(["sudo", "chmod", "755", self.executable]).wait()
-        if not os.path.isfile(self.guiExecutable):
-            Popen(["sudo", "cp", Installer.getSourceDir() + "/main/startup/scripts/mediamanagergui.sh", self.guiExecutable]).wait()
-            Popen(["sudo", "chmod", "755", self.guiExecutable]).wait()
 
-    """
-    Writes a default config file
-    """
-    def __writeMainConfig__(self):
+    def __write_main_config__(self):
+        """
+        Writes a default config file
+        :return: void
+        """
         Popen(["touch", self.mainConfig])
         file = open(self.mainConfig, "w")
         file.write("[plugins]\n")
@@ -89,20 +94,20 @@ class Installer(object):
         file.write("downloader = twisted\n#options = (twisted|hexchat)\n")
         file.close()
 
-    """
-    Copies the xdcc download script to the program directory.
-    THis has to be done differently once twisted's irc module is ported to python 3
-    """
-    def __copyXDCCScriptFile__(self):
+    def __copy_xdcc_script_file__(self):
+        """
+        Copies the xdcc download script to the program directory.
+        THis has to be done differently once twisted's irc module is ported to python 3
+        :return: void
+        """
         original = os.path.dirname(sys.argv[0]) + "/external/xdccbot.py"
         Popen(["cp", original, self.xdccDLScript]).wait()
 
-
-    """
-    Gets the source directory of the python program running
-    @:return the source directory
-    """
     @staticmethod
-    def getSourceDir():
+    def __get_source_dir__():
+        """
+        Gets the source directory of the python program running
+        :return: the source directory
+        """
         directory = os.path.dirname(sys.argv[0])
         return str(os.path.abspath(directory).rsplit("/", 1)[0])

@@ -24,7 +24,6 @@ import configparser
 import os
 import sys
 
-from mainuserinterfaces.MainCLI import MainCLI
 from mainuserinterfaces.MainGUI import MainGUI
 from parsers.ArgumentParser import ArgumentParser
 from plugins.PluginManager import PluginManager
@@ -58,12 +57,8 @@ def main():
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Start the program
-    if args.gui:
-        gui = MainGUI(active_plugins)
-        gui.start()
-    else:
-        cli = MainCLI(active_plugins)
-        cli.start()
+    gui = MainGUI(active_plugins)
+    gui.start()
 
 if __name__ == '__main__':
     main()
