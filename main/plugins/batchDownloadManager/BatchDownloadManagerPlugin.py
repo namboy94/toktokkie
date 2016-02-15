@@ -20,43 +20,37 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.batchDownloadManager.userinterfaces.BatchDownloadManagerCLI import BatchDownloadManagerCLI
-
 from plugins.batchDownloadManager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
 from plugins.common.GenericPlugin import GenericPlugin
 
-"""
-Class that handles the calls to the BatchDownloadManager
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class BatchDownloadManagerPlugin(GenericPlugin):
 
+class BatchDownloadManagerPlugin(GenericPlugin):
     """
-    @:return "Batch Download Manager"
+    Class that handles the calls to the BatchDownloadManager
     """
-    def getName(self):
+
+    def get_name(self):
+        """
+        :return: "Batch Download Manager"
+        """
         return "Batch Download Manager"
 
-    """
-    @:return "batch-download"
-    """
-    def getConfigTag(self):
+    def get_config_tag(self):
+        """
+        :return: "batch-download"
+        """
         return "batch-download"
 
-    """
-    @:return "batch download"
-    """
-    def getCommandName(self):
+    def get_command_name(self):
+        """
+        :return: "batch download"
+        """
         return "batch download"
 
-    """
-    Starts the CLI
-    """
-    def startCLI(self, parentCLI):
-        BatchDownloadManagerCLI().start()
-
-    """
-    Starts the GUI, while hiding the parent until finished
-    """
-    def startGUI(self, parentGUI):
-        BatchDownloadManagerGUI(parentGUI, "Batch Download Manager").start()
+    def start_gui(self, parent_gui):
+        """
+        Starts the GUI, while hiding the parent until finished
+        :param parent_gui: the parent gui window
+        :return: void
+        """
+        BatchDownloadManagerGUI(parent_gui).start()

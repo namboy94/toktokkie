@@ -21,120 +21,123 @@ This file is part of media-manager.
 """
 
 import os
-from subprocess import Popen, PIPE
-from gi.repository import Gtk
+from subprocess import Popen
+from guitemplates.gtk.GenericGtkGui import GenericGtkGui
 from plugins.common.fileOps.FileMover import FileMover
-from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 from plugins.xdccSearchAndDownload.userinterfaces.XDCCGUI import XDCCGUI
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
 from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
-"""
-GUI for the BatchDownloadManager plugin
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class BatchDownloadManagerGUI(GenericGUI):
+
+class BatchDownloadManagerGUI(GenericGtkGui):
+    """
+    GUI for the BatchDownloadManager plugin
+    """
+    
+    def __init__(self, parent):
+        self.search_result = []
+        self.destination_label = None
+        self.destination = None
+        self.show_label = None
+        self.show = None
+        self.season_label = None
+        self.season = None
+        self.episode_label = None
+        self.episode = None
+        self.search_label = None
+        self.search_field = None
+        self.search_engine_label = None
+        self.search_engine_combo_box = None
+        self.search_button = None
+        self.download_engine_label = None
+        self.download_engine_combo_box = None
+        self.download_button = None
+        self.options_label = None
+        self.rename_check = None
+        self.main_icon_label = None
+        self.main_icon_location = None
+        self.secondary_icon_label = None
+        self.secondary_icon_location = None
+        self.method_label = None
+        self.method_combo_box = None
+        self.search_results = None
+        self.directory_content = None
+        self.divider_1 = None
+        self.divider_2 = None
+        super().__init__("Batch Download Manager", parent, True)
 
     """
     Sets up all interface elements of the GUI
     """
-    def setUp(self):
+    def lay_out(self):
 
-        self.searchResult = []
-
-        self.destinationLabel = self.generateLabel("Destination Directory")
-        self.destination = self.generateEntry("")
-        self.destination.connect("changed", self.onDirectoryChanged)
-        self.grid.attach(self.destinationLabel, 0, 0, 20, 10)
+        self.destination_label = self.generate_label("Destination Directory")
+        self.destination = self.generate_entry("", self.on_directory_changed)
+        self.destination.connect("changed", )
+        self.grid.attach(self.destination_label, 0, 0, 20, 10)
         self.grid.attach(self.destination, 20, 0, 20, 10)
 
-        self.showLabel = self.generateLabel("Show Name")
-        self.show = self.generateEntry("")
-        self.grid.attach_next_to(self.showLabel, self.destinationLabel, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.show, self.destination, Gtk.PositionType.BOTTOM, 20, 10)
+        self.show_label = self.generate_label("Show Name")
+        self.show = self.generate_entry("")
+        self.grid.attach(self.show_label, 0, 10, 20, 10)
+        self.grid.attach(self.show, 20, 10, 20, 10)
 
-        self.seasonLabel = self.generateLabel("Season Number")
-        self.season = self.generateEntry("")
-        self.grid.attach_next_to(self.seasonLabel, self.showLabel, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.season, self.show, Gtk.PositionType.BOTTOM, 20, 10)
+        self.season_label = self.generate_label("Season Number")
+        self.season = self.generate_entry("")
+        self.grid.attach(self.season_label, 0, 20, 20, 10)
+        self.grid.attach(self.season, 20, 20, 20, 10)
 
-        self.episodeLabel = self.generateLabel("Starting Episode Number")
-        self.episode = self.generateEntry("optional")
-        self.grid.attach_next_to(self.episodeLabel, self.seasonLabel, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.episode, self.episodeLabel, Gtk.PositionType.RIGHT, 20, 10)
+        self.episode_label = self.generate_label("Starting Episode Number")
+        self.episode = self.generate_entry("optional")
+        self.grid.attach(self.episode_label, 0, 30, 20, 10)
+        self.grid.attach(self.episode, 20, 30, 20, 10)
 
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.episodeLabel, Gtk.PositionType.BOTTOM, 20, 10)
+        self.search_label = self.generate_label("Search Term")
+        self.search_field = self.generate_entry("", self.search_xdcc)
+        self.grid.attach(self.search_label, 0, 50, 20, 10)
+        self.grid.attach(self.search_field, 20, 50, 20, 10)
 
-        self.searchLabel = self.generateLabel("Search Term")
-        self.searchField = self.generateEntry("")
-        self.defaultEnterKey(self.searchField, self.searchXDCC)
-        self.grid.attach_next_to(self.searchLabel, self.divider1, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.searchField, self.searchLabel, Gtk.PositionType.RIGHT, 20, 10)
+        self.search_engine_label = self.generate_label("Search Engine")
+        self.search_engine_combo_box = self.generate_combo_box(["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
+        self.grid.attach(self.search_engine_label, 0, 60, 20, 10)
+        self.grid.attach(self.search_engine_combo_box["combo_box"], 20, 60, 20, 10)
 
-        self.searchEngineLabel = self.generateLabel("Search Engine")
-        self.searchEngineComboBox = self.generateComboBox(["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
-        self.grid.attach_next_to(self.searchEngineLabel, self.searchLabel, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.searchEngineComboBox[0], self.searchField, Gtk.PositionType.BOTTOM, 20, 10)
+        self.search_button = self.generate_simple_button("Start Search", self.searchXDCC)
+        self.grid.attach(self.search_button, 0, 80, 40, 10)
 
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.searchEngineLabel, Gtk.PositionType.BOTTOM, 20, 10)
+        self.download_engine_label = self.generate_label("Download Engine")
+        self.download_engine_combo_box = self.generate_combo_box(["Hexchat Plugin", "Twisted"])
+        self.grid.attach(self.download_engine_label, 0, 100, 20, 10)
+        self.grid.attach(self.download_engine_combo_box["combo_box"], 20, 100, 20, 10)
 
-        self.searchButton = self.generateSimpleButton("Start Search", self.searchXDCC)
-        self.grid.attach_next_to(self.searchButton, self.divider1, Gtk.PositionType.BOTTOM, 40, 10)
+        self.options_label = self.generate_label("Options")
+        self.rename_check = self.generate_check_box("Automatic Rename", True)
+        self.grid.attach(self.options_label, 0, 120, 20, 10)
+        self.grid.attach(self.rename_check, 20, 120, 20, 10)
 
-        self.divider2 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider2, self.divider1, Gtk.PositionType.BOTTOM, 20, 30)
+        self.main_icon_label = self.generate_label("Main Icon")
+        self.secondary_icon_label = self.generate_label("Season Icon")
+        self.main_icon_location = self.generate_entry("")
+        self.secondary_icon_location = self.generate_entry("")
+        self.method_label = self.generate_label("Method")
+        self.method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
+        self.grid.attach(self.main_icon_label, 0, 140, 20, 10)
+        self.grid.attach(self.secondary_icon_label, 0, 150, 20, 10)
+        self.grid.attach(self.main_icon_location, 20, 140, 20, 10)
+        self.grid.attach(self.secondary_icon_location, 20, 150, 20, 10)
+        self.grid.attach(self.method_label, 0, 160, 20, 10)
+        self.grid.attach(self.method_combo_box["combo_box"], 20, 160, 20, 10)
 
-        self.downloadEngineLabel = self.generateLabel("Download Engine")
-        self.downloadEngineComboBox = self.generateComboBox(["Hexchat Plugin", "Twisted"])
-        self.grid.attach_next_to(self.downloadEngineLabel, self.divider2, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.downloadEngineComboBox[0], self.downloadEngineLabel, Gtk.PositionType.RIGHT, 20, 10)
+        self.download_button = self.generate_simple_button("Start Download", self.start_download)
+        self.grid.attach(self.download_button, 0, 180, 40, 10)
 
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.downloadEngineLabel, Gtk.PositionType.BOTTOM, 20, 10)
+        self.search_results = self.generateMultiListBox(
+            {"#": int, "Bot": str, "Pack": int, "Size": str, "Filename": str})
+        self.grid.attach(self.searchResults["scrollable"], 22, 0, 60, 200)
 
-        self.optionsLabel = self.generateLabel("Options")
-        self.renameCheck = self.generateCheckBox("Automatic Rename", True)
-        self.grid.attach_next_to(self.optionsLabel, self.divider1, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.renameCheck, self.optionsLabel, Gtk.PositionType.RIGHT, 20, 10)
-
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.optionsLabel, Gtk.PositionType.BOTTOM, 20, 10)
-
-        self.mainIconLabel = self.generateLabel("Main Icon")
-        self.secondaryIconLabel = self.generateLabel("Season Icon")
-        self.mainIconLocation = self.generateEntry("")
-        self.secondaryIconLocation = self.generateEntry("")
-        self.methodLabel = self.generateLabel("Method")
-        self.methodComboBox = self.generateComboBox(["Nautilus", "Nemo"])
-        self.grid.attach_next_to(self.mainIconLabel, self.divider1, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.secondaryIconLabel, self.mainIconLabel, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.mainIconLocation, self.mainIconLabel, Gtk.PositionType.RIGHT, 20, 10)
-        self.grid.attach_next_to(self.secondaryIconLocation, self.secondaryIconLabel, Gtk.PositionType.RIGHT, 20, 10)
-        self.grid.attach_next_to(self.methodLabel, self.secondaryIconLabel, Gtk.PositionType.BOTTOM, 20, 10)
-        self.grid.attach_next_to(self.methodComboBox[0], self. secondaryIconLocation, Gtk.PositionType.BOTTOM, 20, 10)
-
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.methodLabel, Gtk.PositionType.BOTTOM, 20, 10)
-
-        self.downloadButton = self.generateSimpleButton("Start Download", self.startDownload)
-        self.grid.attach_next_to(self.downloadButton, self.divider1, Gtk.PositionType.BOTTOM, 40, 10)
-
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.destination, Gtk.PositionType.RIGHT, 2, 200)
-
-        listStore = Gtk.ListStore(int, str, int, str, str)
-        self.searchResults = self.generateMultiListBox(listStore, ["#", "Bot", "Pack", "Size", "Filename"])
-        self.grid.attach_next_to(self.searchResults[0], self.divider1, Gtk.PositionType.RIGHT, 60, 200)
-
-        self.divider1 = self.generateLabel("")
-        self.grid.attach_next_to(self.divider1, self.searchResults[0], Gtk.PositionType.RIGHT, 2, 200)
-
-        directoryContentListStore = Gtk.ListStore(str)
-        self.directoryContent = self.generateMultiListBox(directoryContentListStore, ["File Name"])
-        self.grid.attach_next_to(self.directoryContent[0], self.divider1, Gtk.PositionType.RIGHT, 20, 200)
+        self.directory_content = self.generateMultiListBox({"File Name": str})
+        self.grid.attach(self.directoryContent["scrollable"], 84, 0, 20, 200)
 
     """
     """
@@ -152,15 +155,15 @@ class BatchDownloadManagerGUI(GenericGUI):
         directory, show, season, firstEpisode, special, newDirectory = preparation
 
         packs = XDCCGUI.getSelected(self.searchResult, self.searchResults[1])
-        downloader = self.getCurrentSelectedComboBox(self.downloadEngineComboBox)
+        downloader = self.getCurrentSelectedComboBox(self.download_engine_combo_box)
         files = []
         if downloader == "Hexchat Plugin":
-            if self.renameCheck.get_active() and not special:
+            if self.rename_check.get_active() and not special:
                 files = HexChatPluginDownloader(packs, show, firstEpisode, season).downloadLoop()
             else:
                 files = HexChatPluginDownloader(packs).downloadLoop()
         elif downloader == "Twisted":
-            if self.renameCheck.get_active() and not special:
+            if self.rename_check.get_active() and not special:
                 files = TwistedDownloader(packs, show, firstEpisode, season).downloadLoop()
             else:
                 files = TwistedDownloader(packs).downloadLoop()
@@ -215,8 +218,8 @@ class BatchDownloadManagerGUI(GenericGUI):
         episodes = os.listdir(newDirectory)
         firstEpisode = len(episodes) + 1
 
-        mainIcon = self.mainIconLocation.get_text()
-        secondaryIcon = self.secondaryIconLocation.get_text()
+        mainIcon = self.main_icon_location.get_text()
+        secondaryIcon = self.secondary_icon_location.get_text()
 
         if mainIcon:
             if self.getIcon(mainIcon, directory + ".icons/", "main.png") == "error":
@@ -228,7 +231,7 @@ class BatchDownloadManagerGUI(GenericGUI):
                 return None
 
         if mainIcon or secondaryIcon:
-            method = self.getCurrentSelectedComboBox(self.methodComboBox)
+            method = self.getCurrentSelectedComboBox(self.method_combo_box)
             DeepIconizer(directory, method).iconize()
 
         firstEp = self.episode.get_text()
@@ -284,8 +287,8 @@ class BatchDownloadManagerGUI(GenericGUI):
                 self.season.set_text(str(highestSeason))
                 mainIcon = directory + "/.icons/main.png"
                 if os.path.isfile(mainIcon):
-                    self.mainIconLocation.set_text(mainIcon)
+                    self.main_icon_location.set_text(mainIcon)
                 secondaryIcon = directory + "/.icons/Season " + str(highestSeason) + ".png"
                 if os.path.isfile(secondaryIcon):
-                    self.secondaryIconLocation.set_text(secondaryIcon)
+                    self.secondary_icon_location.set_text(secondaryIcon)
 

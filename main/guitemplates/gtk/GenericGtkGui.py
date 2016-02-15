@@ -30,7 +30,7 @@ class GenericGtkGui(Gtk.Window):
     abstract class from which other classes can inherit from.
     """
 
-    def __init__(self, title="Finance Manager", parent=None, hide_parent=True):
+    def __init__(self, title="Media Manager", parent=None, hide_parent=True):
         """
         Constructor which initializes the GUI
         :param title: The window title. Defaults to "Finance Manager"
