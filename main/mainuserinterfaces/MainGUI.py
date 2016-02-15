@@ -3,7 +3,7 @@ Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
 
-    media-manager is a progam that allows convenient managing of various
+    media-manager is a program that allows convenient managing of various
     local media collections, mostly focused on video.
 
     media-manager is free software: you can redistribute it and/or modify
