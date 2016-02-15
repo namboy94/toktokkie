@@ -20,9 +20,9 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.genericPlugin.GenericPlugin import GenericPlugin
-from plugins.xdccSearchAndDownload.userinterfaces.XDCCGUI import XDCCGUI
+from plugins.GenericPlugin import GenericPlugin
 from plugins.xdccSearchAndDownload.userinterfaces.XDCCCLI import XDCCCLI
+from plugins.xdccSearchAndDownload.userinterfaces.XDCCGUI import XDCCGUI
 
 """
 Class that handles renaming of episodes

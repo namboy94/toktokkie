@@ -33,36 +33,36 @@ class MainGUI(GenericGtkGui):
         """
         Constructor
         :param active_plugins: The plugins to be displayed
+        :return: void
         """
         super().__init__(self, "Main Gui")
-
         self.plugins = active_plugins
-        self.buttons = []
-        self.__addButtons__()
 
-    """
-    Starts the user interface
-    """
-    def start(self):
-        self.window = self
-        self.window.connect("delete-event", Gtk.main_quit)
-        self.window.show_all()
-        Gtk.main()
-
-    """
-    Adds buttons for all plugins
-    """
-    def __addButtons__(self):
+    def lay_out(self):
+        """
+        Adds buttons for all plugins
+        :return: void
+        """
         i = 0
         row = 0
         column = -1
         while i < len(self.plugins):
-            if i % 3 == 0 and not i == 0: row += 1; column = 0
-            else: column += 1
-            button = Gtk.Button.new_with_label(self.plugins[i].getName())
-            button.connect("clicked", self.startPlugin, self.plugins[i])
+            if i % 3 == 0 and not i == 0:
+                row += 1
+                column = 0
+            else:
+                column += 1
+
+            def start_button_function(widget, plugin):
+                """
+                The method run when pressed on the plugin button
+                :param widget: the button that caused this action
+                :param plugin: the plugin to which the button is assigned
+                :return: void
+                """
+                if widget is not None:
+                    plugin.start_gui(self)
+
+            button = self.generate_simple_button(self.plugins[i].getName(), start_button_function, self.plugins[i])
             self.grid.attach(button, column, row, 1, 1)
             i += 1
-
-    def startPlugin(self, widget, plugin):
-        plugin.startGUI(self)

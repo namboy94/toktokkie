@@ -20,14 +20,34 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-"""
-Generic CLI class defining a kind of interface for CLI construction
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class GenericCLI(object):
 
+class GenericPlugin(object):
     """
-    Starts the CLI
+    Generic Plugin that serves as a unified interface for the plugins.
     """
-    def start(self):
-        raise NotImplementedError("CLI not implemented correctly")
+
+    def get_name(self):
+        """
+        :return: the name of this plugin
+        """
+        raise NotImplementedError()
+
+    def get_command_name(self):
+        """
+        :return: the command that starts ths plugin
+        """
+        raise NotImplementedError()
+
+    def get_config_tag(self):
+        """
+        :return: the config tag of this plugin
+        """
+        raise NotImplementedError()
+
+    def start_gui(self, parent_gui):
+        """
+        Starts the GUI of the plugin
+        :param parent_gui: the gui's parent
+        :return: void
+        """
+        raise NotImplementedError()
