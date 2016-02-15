@@ -20,29 +20,23 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+# imports
+from guitemplates.gtk.GenericGtkGui import GenericGtkGui
 
-"""
-Class that implements the Main GUI
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class MainGUI(Gtk.Window):
 
+class MainGUI(GenericGtkGui):
     """
-    Constructor
+    Class that implements the Main GUI
     """
-    def __init__(self, activePlugins):
-        Gtk.Window.__init__(self, title="Main GUI")
-        self.set_border_width(10)
 
-        self.grid = Gtk.Grid()
-        self.grid.set_column_homogeneous(True)
-        self.grid.set_row_homogeneous(True)
-        self.add(self.grid)
+    def __init__(self, active_plugins):
+        """
+        Constructor
+        :param active_plugins: The plugins to be displayed
+        """
+        super().__init__(self, "Main Gui")
 
-        self.plugins = activePlugins
+        self.plugins = active_plugins
         self.buttons = []
         self.__addButtons__()
 
