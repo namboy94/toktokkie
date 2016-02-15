@@ -22,14 +22,15 @@ This file is part of media-manager.
 
 import requests
 from bs4 import BeautifulSoup
-from plugins.xdccSearchAndDownload.searchers.GenericGetter import GenericGetter
-from plugins.xdccSearchAndDownload.searchers.objects.XDCCPack import XDCCPack
+
+from plugins.batchDownloadManager.searchengines.GenericGetter import GenericGetter
+from plugins.batchDownloadManager.searchengines.objects.XDCCPack import XDCCPack
 
 """
-Class that gets xdcc packlists from nibl.co.uk
+Class that gets xdcc packlists from intel.haruhichan.com
 @author Hermann Krumrey<hermann@krumreyh.com>
 """
-class NIBLGetter(GenericGetter):
+class IntelGetter(GenericGetter):
 
     """
     Conducts the search
@@ -40,28 +41,38 @@ class NIBLGetter(GenericGetter):
         preparedSearchTerm = splitSearchTerm[0]
         i = 1
         while i < len(splitSearchTerm):
-            preparedSearchTerm += "+" + splitSearchTerm[i]
+            preparedSearchTerm += "%20" + splitSearchTerm[i]
             i += 1
 
-        url = "http://nibl.co.uk/bots.php?search=" + preparedSearchTerm
+        url = "http://intel.haruhichan.com/?s=" + preparedSearchTerm
         content = BeautifulSoup(requests.get(url).text, "html.parser")
-        fileNames = content.select(".filename")
-        packNumbers = content.select(".packnumber")
-        botnames = content.select(".botname")
-        filesizes = content.select(".filesize")
+        packs = content.select("td")
 
         results = []
 
         i = 0
-        while i < len(fileNames):
-            filename = fileNames[i].text.rsplit(" \n", 1)[0]
-            bot = botnames[i].text.rsplit(" ", 1)[0]
-            server = self.getServer(bot)
-            channel = self.getChannel(bot)
-            packnumber = int(packNumbers[i].text)
-            size = filesizes[i].text
-            result = XDCCPack(filename, server, channel, bot, packnumber, size)
-            results.append(result)
+        filename = ""
+        bot = ""
+        server = ""
+        channel = ""
+        packnumber = ""
+        size = ""
+        for line in packs:
+            if i % 5 == 0:
+                bot = line.text
+            elif (i - 1) % 5 == 0:
+                packnumber = int(line.text)
+            elif (i - 2) % 5 == 0:
+                i += 1
+                continue
+            elif (i - 3) % 5 == 0:
+                size = line.text
+            elif (i - 4) % 5 == 0:
+                filename = line.text
+                channel = self.getChannel(bot)
+                server = self.getServer(bot)
+                result = XDCCPack(filename, server, channel, bot, packnumber, size)
+                results.append(result)
             i += 1
 
         return results

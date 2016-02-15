@@ -20,15 +20,14 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
 import configparser
+import os
+
 from gi.repository import Gtk
-from plugins.xdccSearchAndDownload.searchers.NIBLGetter import NIBLGetter
-from plugins.xdccSearchAndDownload.searchers.IntelGetter import IntelGetter
-from plugins.xdccSearchAndDownload.searchers.IxIRCGetter import IxIRCGetter
 from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
 from plugins.xdccSearchAndDownload.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
-from plugins.xdccSearchAndDownload.downloaders.TwistedDownloader import TwistedDownloader
+
+from plugins.batchDownloadManager.searchengines.downloaders.TwistedDownloader import TwistedDownloader
 
 """
 GUI for the XDCC Search and Download class
@@ -134,35 +133,5 @@ class XDCCGUI(GenericGUI):
 
     ###STATIC METHODS###
     @staticmethod
-    def xdccSearch(searchEngine, searchTerm, listStore):
 
-        searchResult = None
-        if searchEngine == "NIBL.co.uk":
-            searchResult = NIBLGetter(searchTerm).search()
-        elif searchEngine == "intel.haruhichan.com":
-            searchResult = IntelGetter(searchTerm).search()
-        elif searchEngine == "ixIRC.com":
-            searchResult = IxIRCGetter(searchTerm).search()
-        else:
-            raise NotImplementedError("The selected search engine is not implemented")
 
-        listStore.clear()
-        i = 0
-        for result in searchResult:
-            choice = (i,) + result.toTuple()
-            listStore.append(list(choice))
-            i += 1
-
-        return searchResult
-
-    @staticmethod
-    def getSelected(searchResult, treeSelection):
-        selected = []
-        (model, pathlist) = treeSelection.get_selected_rows()
-        for path in pathlist:
-            tree_iter = model.get_iter(path)
-            selected.append(model.get_value(tree_iter, 0))
-        packs = []
-        for selection in selected:
-            packs.append(searchResult[selection])
-        return packs

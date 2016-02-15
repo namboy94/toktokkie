@@ -22,8 +22,9 @@ This file is part of media-manager.
 
 import requests
 from bs4 import BeautifulSoup
-from plugins.xdccSearchAndDownload.searchers.GenericGetter import GenericGetter
-from plugins.xdccSearchAndDownload.searchers.objects.XDCCPack import XDCCPack
+
+from plugins.batchDownloadManager.searchengines.GenericGetter import GenericGetter
+from plugins.batchDownloadManager.searchengines.objects.XDCCPack import XDCCPack
 
 """
 Class that gets xdcc packlists from ixirc.com
