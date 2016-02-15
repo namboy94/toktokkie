@@ -22,4 +22,4 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-python $HOME/.mediamanager/program/main/main.py -g
+python $HOME/.mediamanager/program/main/main.py

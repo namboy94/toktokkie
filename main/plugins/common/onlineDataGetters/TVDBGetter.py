@@ -23,44 +23,52 @@ This file is part of media-manager.
 import tvdb_api
 from plugins.common.fileOps.FileRenamer import FileRenamer
 
-"""
-the TVDBGetter class
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class TVDBGetter(object):
 
+class TVDBGetter(object):
     """
-    Constructor
-    @:param layer - the overlying yowsup layer
-    @:param messageProtocolEntity - the received message information
-    @:override
+    the TVDBGetter class
     """
-    def __init__(self, tvshow, season, episode):
-        self.tvshow = tvshow
+
+    def __init__(self, tv_show, season, episode):
+        """
+        Constructor
+        :param tv_show: the tv show's name
+        :param season: the season to search
+        :param episode: the episode to search
+        :return: void
+        """
+        self.tv_show = tv_show
         self.season = season
         self.episode = episode
 
-    """
-    Finds the episode name and returns it as string
-    """
-    def findEpisodeName(self):
-        return self.__getEpisodeName__()
+    def find_episode_name(self):
+        """
+        Finds the episode name and returns it as string
+        :return the episode name
+        """
+        return self.__get_episode_name__()
 
-    """
-    Finds the episode name and then renames a file.
-    """
-    def renameEpisodeFile(self, file):
-        newName = self.__getEpisodeName__()
-        if newName:
-            FileRenamer.renameFile(file, newName)
+    def rename_episode_file(self, file):
+        """
+        Finds the episode name and then renames a file.
+        :param file: the file top rename
+        :return: void
+        """
+        new_name = self.__get_episode_name__()
+        if new_name:
+            FileRenamer.rename_file(file, new_name)
 
-    """
-    Searches for the episode name
-    """
-    def __getEpisodeName__(self):
+    def __get_episode_name__(self):
+        """
+        Searches for the episode name
+        :return: the episode name, or "" if an exception occured
+        """
         try:
             tvdb = tvdb_api.Tvdb()
-            episodeInfo = tvdb[self.tvshow][self.season][self.episode]
-            episodeName = episodeInfo['episodename']
-            return episodeName
-        except: return ""
+            episode_info = tvdb[self.tv_show][self.season][self.episode]
+            episode_name = episode_info['episodename']
+            return episode_name
+        except Exception as e:
+            print("Check which kind of Exception this is")
+            print(str(e))
+            return ""

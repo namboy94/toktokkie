@@ -23,33 +23,35 @@ This file is part of media-manager.
 import os
 from subprocess import Popen
 
-"""
-Class that contains static methods to help rename files
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class FileRenamer(object):
 
+class FileRenamer(object):
     """
-    Renames a file to a new file name, keeping the extension and filepath.
+    Class that contains static methods to help rename files
     """
+
     @staticmethod
-    def renameFile(file, newname):
+    def rename_file(file, new_name):
+        """
+        Renames a file to a new file name, keeping the extension and file path.
+        :param file: the file to be renamed
+        :param new_name: the new name of the file
+        """
 
         try:
-            originalFileName = file.rsplit("/", 1)[1]
+            original_file_name = file.rsplit("/", 1)[1]
         except Exception as e:
             if "list index out of range" in str(e):
-                originalFileName = file
+                original_file_name = file
             else:
                 raise e
         try:
-            extension = "." + originalFileName.rsplit(".", 1)[1]
+            extension = "." + original_file_name.rsplit(".", 1)[1]
         except Exception as e:
             if "list index out of range" in str(e):
                 extension = ""
             else:
                 raise e
 
-        newFile = os.path.dirname(file) + "/" + newname + extension
-        Popen(["mv", file, newFile]).wait()
-        return newFile
+        new_file = os.path.dirname(file) + "/" + new_name + extension
+        Popen(["mv", file, new_file]).wait()
+        return new_file

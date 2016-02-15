@@ -22,23 +22,27 @@ This file is part of media-manager.
 
 from subprocess import Popen
 
-"""
-Class that contains static methods to help move files
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
+
 class FileMover(object):
+    """
+    Class that contains static methods to help move files
+    """
 
-    """
-    Moves a file to a new location.
-    """
     @staticmethod
-    def moveFile(file, location):
+    def move_file(file, location):
+        """
+        Moves a file to a new location.
+        :param location: the new location of the file
+        :param file: the file to be moved
+        :return: void
+        """
 
-        locationBackup = location
-        if not location.endswith("/"): locationBackup += "/"
-        fileName = file.rsplit("/", 1)[1]
+        location_backup = location
+        if not location.endswith("/"):
+            location_backup += "/"
+        file_name = file.rsplit("/", 1)[1]
 
-        newFile = locationBackup + fileName
+        new_file = location_backup + file_name
 
-        Popen(["mv", file, newFile]).wait()
-        return newFile
+        Popen(["mv", file, new_file]).wait()
+        return new_file

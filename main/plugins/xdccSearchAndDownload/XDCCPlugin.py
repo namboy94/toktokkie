@@ -20,7 +20,7 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.GenericPlugin import GenericPlugin
+from plugins.common.GenericPlugin import GenericPlugin
 from plugins.xdccSearchAndDownload.userinterfaces.XDCCCLI import XDCCCLI
 from plugins.xdccSearchAndDownload.userinterfaces.XDCCGUI import XDCCGUI
 
