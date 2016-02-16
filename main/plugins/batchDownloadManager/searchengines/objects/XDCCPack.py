@@ -26,10 +26,16 @@ class XDCCPack(object):
     Class that models an XDCC Pack Object
     """
 
-    """
-    Constructor
-    """
     def __init__(self, filename, server, channel, bot, packnumber, size):
+        """
+        Constructor
+        :param filename: the pack's file name
+        :param server: the server of the pack
+        :param channel: the channel of the pack
+        :param bot: the bot of the pack
+        :param packnumber: the pack number
+        :param size: the file size
+        """
         self.filename = filename
         self.server = server
         self.channel = channel
@@ -37,16 +43,16 @@ class XDCCPack(object):
         self.packnumber = packnumber
         self.size = size
 
-    """
-    Returns the bot information as a string
-    @:return the bot information
-    """
-    def toString(self):
+    def to_string(self):
+        """
+        Returns the bot information as a string
+        :return: the bot information as a string
+        """
         return self.filename + "  -  " + self.bot + "  -  Size:" + self.size
 
-    """
-    Returns the bot information as a tuple
-    @:return the bot information
-    """
-    def toTuple(self):
-        return (self.bot, self.packnumber, self.size, self.filename)
+    def to_tuple(self):
+        """
+        Returns the bot information as a tuple
+        :return: the bot information as a tuple
+        """
+        return self.bot, self.packnumber, self.size, self.filename

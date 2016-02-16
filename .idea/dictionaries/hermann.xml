@@ -3,9 +3,12 @@
     <words>
       <w>botname</w>
       <w>episodename</w>
+      <w>executer</w>
       <w>filesize</w>
+      <w>getenv</w>
       <w>haruhichan</w>
       <w>hexchat</w>
+      <w>hexchatdownloader</w>
       <w>ixirc</w>
       <w>krumrey</w>
       <w>mainconfig</w>
@@ -19,7 +22,11 @@
       <w>renamer</w>
       <w>rizon</w>
       <w>searchdownload</w>
+      <w>temlett</w>
+      <w>turcot</w>
+      <w>userdata</w>
       <w>wget</w>
+      <w>writestart</w>
       <w>xdcc</w>
       <w>xdccbot</w>
     </words>
