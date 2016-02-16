@@ -20,51 +20,65 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from gi.repository import Gtk
+
 from plugins.renamer.utils.Renamer import Renamer
-from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
+from guitemplates.gtk.GenericGtkGui import GenericGtkGui
 
-"""
-GUI for the Renamer plugin
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class RenamerGUI(GenericGUI):
 
+class RenamerGUI(GenericGtkGui):
     """
-    Sets up all interface elements of the GUI
+    GUI for the Renamer plugin
     """
-    def setUp(self):
-        self.button = Gtk.Button.new_with_label("Start")
-        self.button.connect("clicked", self.startRename)
+
+    def __init__(self, parent):
+        """
+        Constructor
+        :param parent: the parent gui window
+        :return: void
+        """
+        self.button = None
+        self.entry = None
+        super().__init("Renamer", parent, True)
+
+    def lay_out(self):
+        """
+        Sets up all interface elements of the GUI
+        :return void
+        """
+        self.button = self.generate_simple_button("Start", self.start_rename)
         self.grid.attach(self.button, 4, 0, 1, 1)
 
-        self.entry = Gtk.Entry()
-        self.entry.set_text("")
+        self.entry = self.generate_text_entry("", self.start_rename)
         self.grid.attach(self.entry, 0, 0, 3, 1)
 
-    """
-    Starts the renaming process
-    """
-    def startRename(self, dummy=""):
+    def start_rename(self, widget):
+        """
+        Starts the renaming process
+        :param widget: the button that started this method
+        :return: void
+        """
+        if widget is None:
+            return
         try:
-            absDir = self.entry.get_text()
-            print(absDir)
-            renamer = Renamer(absDir)
-            confirmation = renamer.requestConfirmation()
+            abs_dir = self.entry.get_text()
+            print(abs_dir)
+            renamer = Renamer(abs_dir)
+            confirmation = renamer.request_confirmation()
             if self.confirmer(confirmation):
                 renamer.confirm(confirmation)
-                renamer.startRename()
+                renamer.start_rename()
         except Exception as e:
             if str(e) == "Not a directory":
-                dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, str(e))
-                dialog.run()
-                dialog.destroy()
-            else: raise e
+                self.show_message_dialog(str(e))
+            else:
+                raise e
 
-    """
-    Asks the user for confirmation before continuing the rename
-    """
     def confirmer(self, confirmation):
+        """
+        Asks the user for confirmation before continuing the rename
+        :param confirmation: the confirmation
+        :return False if the user did not confirm the rename, True otherwise.
+        """
         i = 0
         while i < len(confirmation[0]):
             message = "Rename\n"
@@ -72,11 +86,8 @@ class RenamerGUI(GenericGUI):
             message += "\nto\n"
             message += confirmation[1][i]
             message += "\n?"
-            dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, "Confirmation")
-            dialog.format_secondary_text(message)
-            response = dialog.run()
-            dialog.destroy()
-            if not response == Gtk.ResponseType.YES:
+            response = self.show_y_n_dialog("Confirmation", message)
+            if not response:
                 return False
             i += 1
         return True

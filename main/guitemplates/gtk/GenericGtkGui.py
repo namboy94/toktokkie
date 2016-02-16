@@ -123,6 +123,22 @@ class GenericGtkGui(Gtk.Window):
         dialog.run()
         dialog.destroy()
 
+    def show_y_n_dialog(self, primary_message, secondary_message=""):
+        """
+        Opens a yes/no dialog
+        :param primary_message: the primary message to be displayed
+        :param secondary_message: the secondary message to be displayed
+        :return: True, if yes was selected, False otherwise
+        """
+        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, primary_message)
+        dialog.format_secondary_text(secondary_message)
+        response = dialog.run()
+        dialog.destroy()
+        if response == Gtk.ResponseType.YES:
+            return True
+        else:
+            return False
+
     def show_file_chooser_dialog(self):
         """
         Creates a file chooser dialog

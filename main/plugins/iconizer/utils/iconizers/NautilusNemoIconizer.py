@@ -22,14 +22,18 @@ This file is part of media-manager.
 
 from subprocess import Popen
 
-"""
-Class that iconizes folders for the Nemo and/or Nautilus file browsers
-"""
-class NautilusNemoIconizer(object):
 
+class NautilusNemoIconizer(object):
     """
-    Iconizes the folder
+    Class that iconizes folders for the Nemo and/or Nautilus file browsers
     """
+
     @staticmethod
     def iconize(directory, icon):
+        """
+        Iconizes the folder
+        :param icon: the icon to be used
+        :param directory: the directory to be iconized
+        :return: void
+        """
         Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon + ".png"])

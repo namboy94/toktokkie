@@ -2,13 +2,21 @@
   <dictionary name="hermann">
     <words>
       <w>botname</w>
+      <w>confirmer</w>
       <w>episodename</w>
       <w>executer</w>
       <w>filesize</w>
       <w>getenv</w>
+      <w>gvfs</w>
       <w>haruhichan</w>
       <w>hexchat</w>
       <w>hexchatdownloader</w>
+      <w>iconization</w>
+      <w>iconize</w>
+      <w>iconized</w>
+      <w>iconizer</w>
+      <w>iconizes</w>
+      <w>iconizing</w>
       <w>ixirc</w>
       <w>krumrey</w>
       <w>mainconfig</w>

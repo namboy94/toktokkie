@@ -21,41 +21,36 @@ This file is part of media-manager.
 """
 
 from plugins.common.GenericPlugin import GenericPlugin
-from plugins.iconizer.userinterfaces.IconizerCLI import IconizerCLI
 from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
 
-"""
-Class that handles iconizing of folders
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class IconizerPlugin(GenericPlugin):
 
+class IconizerPlugin(GenericPlugin):
     """
-    @:return "Iconizer"
+    Class that handles iconizing of folders
     """
-    def getName(self):
+
+    def get_name(self):
+        """
+        :return "Iconizer"
+        """
         return "Iconizer"
 
-    """
-    @:return "iconizer"
-    """
-    def getConfigTag(self):
+    def get_config_tag(self):
+        """
+        :return "iconizer"
+        """
         return "iconizer"
 
-    """
-    @:return "iconizer"
-    """
-    def getCommandName(self):
+    def get_command_name(self):
+        """
+        :return "iconizer"
+        """
         return "iconizer"
 
-    """
-    Starts the CLI
-    """
-    def startCLI(self, parentCLI):
-        IconizerCLI().start()
-
-    """
-    Starts the GUI, while hiding the parent until finished
-    """
-    def startGUI(self, parentGUI):
-        IconizerGUI(parentGUI, "Folder Iconizer GUI").start()
+    def start_gui(self, parent_gui):
+        """
+        Starts the GUI, while hiding the parent until finished
+        :param parent_gui: the parent window
+        :return void
+        """
+        IconizerGUI(parent_gui).start()

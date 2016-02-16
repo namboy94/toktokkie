@@ -23,58 +23,64 @@ This file is part of media-manager.
 import os
 from plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
 
-"""
-Class that handles the iconization of a parent directory and its children
-"""
+
 class DeepIconizer(object):
+    """
+    Class that handles the iconization of a parent directory and its children
+    """
 
-    """
-    Constructor
-    @:param directory - the parent directory
-    @:param method - the method of iconization to be used
-    """
     def __init__(self, directory, method):
+        """
+        Constructor
+        :param directory: the parent directory
+        :param method: the method of iconization to be used
+        :return: void
+        """
         self.directory = directory
-        if not directory.endswith("/"): self.directory += "/"
+        if not directory.endswith("/"): 
+            self.directory += "/"
 
-        self.concreteIconizer = None
+        self.concrete_iconizer = None
         if method == "Nautilus" or method == "Nemo":
-            self.concreteIconizer = NautilusNemoIconizer
+            self.concrete_iconizer = NautilusNemoIconizer
         else:
             raise NotImplementedError("Iconizing Method not implemented")
-        self.folderIconDirectory = self.directory + ".icons/"
-        self.concreteIconizer.iconize(self.folderIconDirectory, self.folderIconDirectory + "folder")
+        self.folder_icon_directory = self.directory + ".icons/"
+        self.concrete_iconizer.iconize(self.folder_icon_directory, self.folder_icon_directory + "folder")
 
-    """
-    Starts the iconization process
-    """
     def iconize(self, directory=None):
-
+        """
+        Starts the iconization process
+        :param directory: the directory to iconize
+        """
         if directory is None:
             directory = self.directory
-            self.concreteIconizer.iconize(directory, self.folderIconDirectory + "main")
+            self.concrete_iconizer.iconize(directory, self.folder_icon_directory + "main")
 
-        children = self.getChildren(directory)
+        children = self.get_children(directory)
 
         i = 0
         while i < len(children[0]) and i < len(children[1]):
-            self.concreteIconizer.iconize(children[1][i], self.folderIconDirectory + children[0][i])
+            self.concrete_iconizer.iconize(children[1][i], self.folder_icon_directory + children[0][i])
             self.iconize(children[1][i])
             i += 1
 
+    @staticmethod
+    def get_children(directory):
+        """
+        Gets the names and directory paths of the children of a directory
+        :param directory: the directory to be used
+        :return: the names and directories as a list of length 2
+        """
+        children_names = os.listdir(directory)
+        if ".icons" in children_names:
+            children_names.remove(".icons")
+        children_dirs = []
+        for child in children_names:
+            child_dir = directory + child + "/"
+            if not os.path.isdir(child_dir):
+                children_names.remove(child)
+                continue
+            children_dirs.append(child_dir)
 
-    """
-    Gets the names and directory paths of the children of a directory
-    @:param directory - the directory to be used
-    @:return the names and directories as a list of length 2
-    """
-    def getChildren(self, directory):
-        childrenNames = os.listdir(directory)
-        if ".icons" in childrenNames: childrenNames.remove(".icons")
-        childrenDirs = []
-        for child in childrenNames:
-            childDir = directory + child + "/"
-            if not os.path.isdir(childDir): childrenNames.remove(child); continue
-            childrenDirs.append(childDir)
-
-        return [childrenNames, childrenDirs]
+        return [children_names, children_dirs]

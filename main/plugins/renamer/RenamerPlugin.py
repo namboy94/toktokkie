@@ -21,41 +21,36 @@ This file is part of media-manager.
 """
 
 from plugins.common.GenericPlugin import GenericPlugin
-from plugins.renamer.userinterface.RenamerCLI import RenamerCLI
 from plugins.renamer.userinterface.RenamerGUI import RenamerGUI
 
-"""
-Class that handles renaming of episodes
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class RenamerPlugin(GenericPlugin):
 
+class RenamerPlugin(GenericPlugin):
     """
-    @:return "Renamer"
+    Class that handles renaming of episodes
     """
-    def getName(self):
+
+    def get_name(self):
+        """
+        :return "Renamer"
+        """
         return "Renamer"
 
-    """
-    @:return "renamer"
-    """
-    def getConfigTag(self):
+    def get_config_tag(self):
+        """
+        :return "renamer"
+        """
         return "renamer"
 
-    """
-    @:return "renamer"
-    """
-    def getCommandName(self):
+    def get_command_name(self):
+        """
+        :return "renamer"
+        """
         return "renamer"
 
-    """
-    Starts the CLI
-    """
-    def startCLI(self, parentCLI):
-        RenamerCLI().start()
-
-    """
-    Starts the GUI, while hiding the parent until finished
-    """
-    def startGUI(self, parentGUI):
-        RenamerGUI(parentGUI, "Renamer").start()
+    def start_gui(self, parent_gui):
+        """
+        Starts the GUI, while hiding the parent until finished
+        :param parent_gui: the parent gui window
+        :return void
+        """
+        RenamerGUI(parent_gui).start()

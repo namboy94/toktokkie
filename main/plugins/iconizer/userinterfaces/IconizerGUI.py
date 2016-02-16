@@ -21,39 +21,54 @@ This file is part of media-manager.
 """
 
 import os
-from gi.repository import Gtk
-from plugins.genericPlugin.userinterfaces.GenericGUI import GenericGUI
+from guitemplates.gtk.GenericGtkGui import GenericGtkGui
 from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
-"""
-GUI for the Iconizer plugin
-@author Hermann Krumrey<hermann@krumreyh.com>
-"""
-class IconizerGUI(GenericGUI):
 
+class IconizerGUI(GenericGtkGui):
     """
-    Sets up all interface elements of the GUI
+    GUI for the Iconizer plugin
     """
-    def setUp(self):
 
-        self.directoryEntry = self.generateEntry("Enter Directory here", self.iconizeStart)
+    def __init__(self, parent):
+        """
+        Constructor
+        :return: void
+        """
+        self.directory_entry = None
+        self.start_button = None
+        self.iconizer_method_combo_box = None
+        super().__init("Iconizer", parent, True)
+
+    def lay_out(self):
+        """
+        Sets up all interface elements of the GUI
+        :return: void
+        """
+
+        self.directory_entry = self.generateEntry("Enter Directory here", self.iconize_start)
         self.grid.attach(self.directoryEntry, 0, 0, 3, 2)
 
-        self.startButton = self.generateSimpleButton("Start", self.iconizeStart)
-        self.grid.attach_next_to(self.startButton, self.directoryEntry, Gtk.PositionType.RIGHT, 1, 1)
+        self.start_button = self.generateSimpleButton("Start", self.iconize_start)
+        self.grid.attach(self.startButton, 3, 0, 1, 1)
 
-        self.iconizerMethodComboBox = self.generateComboBox(["Nautilus", "Nemo"])
-        self.grid.attach_next_to(self.iconizerMethodComboBox[0], self.startButton, Gtk.PositionType.BOTTOM, 1, 1)
+        self.iconizer_method_combo_box = self.generateComboBox(["Nautilus", "Nemo"])
+        self.grid.attach(self.iconizerMethodComboBox["combo_box"], 3, 1, 1, 1)
 
-    """
-    Starts the iconizing process
-    """
-    def iconizeStart(self, widget):
-        directory = self.directoryEntry.get_text()
+    def iconize_start(self, widget):
+        """
+        Starts the iconizing process
+        :param widget: the widget that started this method
+        :return void
+        """
+        if widget is not None:
+            return
+
+        directory = self.directory_entry.get_text()
         if not directory.endswith("/"):
             directory += "/"
         if not os.path.isdir(directory):
-            self.messageBox("Not a directory!")
+            self.show_message_dialog("Not a directory!")
             return
         children = os.listdir(directory)
         multiple = True
@@ -64,21 +79,23 @@ class IconizerGUI(GenericGUI):
 
         if multiple:
             for child in children:
-                self.iconizeDir(directory + child)
-        else: self.iconizeDir(directory)
+                self.iconize_dir(directory + child)
+        else:
+            self.iconize_dir(directory)
 
-    """
-    Iconizes a single folder
-    @:param - directory - the directory to be iconized
-    """
-    def iconizeDir(self, directory):
-        method = self.getCurrentSelectedComboBox(self.iconizerMethodComboBox)
-        hasIcons = False
-        for subDirectory in os.listdir(directory):
-            if subDirectory == ".icons":
-                hasIcons = True
+    def iconize_dir(self, directory):
+        """
+        Iconizes a single folder
+        :param directory: the directory to be iconized
+        :return: void
+        """
+        method = self.get_current_selected_combo_box_option(self.iconizerMethodComboBox)
+        has_icons = False
+        for sub_directory in os.listdir(directory):
+            if sub_directory == ".icons":
+                has_icons = True
                 break
-        if not hasIcons:
+        if not has_icons:
             print("Error, " + directory + " has no subdirectory \".icons\"")
 
         DeepIconizer(directory, method).iconize()
