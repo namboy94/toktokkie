@@ -21,7 +21,6 @@ This file is part of media-manager.
 """
 
 from plugins.renamer.RenamerPlugin import RenamerPlugin
-from plugins.xdccSearchAndDownload.XDCCPlugin import XDCCPlugin
 from plugins.iconizer.IconizerPlugin import IconizerPlugin
 from plugins.batchDownloadManager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
 
@@ -38,7 +37,6 @@ class PluginManager(object):
         :param config: the config file's [plugin] section as a dictionary
         """
         all_plugins = [RenamerPlugin(),
-                       XDCCPlugin(),
                        IconizerPlugin(),
                        BatchDownloadManagerPlugin()]
         # New Plugins here

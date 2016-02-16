@@ -83,28 +83,27 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         """
 
         self.destination_label = self.generate_label("Destination Directory")
-        self.destination = self.generate_entry("", self.on_directory_changed)
-        self.destination.connect("changed", )
+        self.destination = self.generate_text_entry("", self.on_directory_changed)
         self.grid.attach(self.destination_label, 0, 0, 20, 10)
         self.grid.attach(self.destination, 20, 0, 20, 10)
 
         self.show_label = self.generate_label("Show Name")
-        self.show = self.generate_entry("")
+        self.show = self.generate_text_entry("")
         self.grid.attach(self.show_label, 0, 10, 20, 10)
         self.grid.attach(self.show, 20, 10, 20, 10)
 
         self.season_label = self.generate_label("Season Number")
-        self.season = self.generate_entry("")
+        self.season = self.generate_text_entry("")
         self.grid.attach(self.season_label, 0, 20, 20, 10)
         self.grid.attach(self.season, 20, 20, 20, 10)
 
         self.episode_label = self.generate_label("Starting Episode Number")
-        self.episode = self.generate_entry("optional")
+        self.episode = self.generate_text_entry("optional")
         self.grid.attach(self.episode_label, 0, 30, 20, 10)
         self.grid.attach(self.episode, 20, 30, 20, 10)
 
         self.search_label = self.generate_label("Search Term")
-        self.search_field = self.generate_entry("", self.search_xdcc)
+        self.search_field = self.generate_text_entry("", self.search_xdcc)
         self.grid.attach(self.search_label, 0, 50, 20, 10)
         self.grid.attach(self.search_field, 20, 50, 20, 10)
 
@@ -113,7 +112,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         self.grid.attach(self.search_engine_label, 0, 60, 20, 10)
         self.grid.attach(self.search_engine_combo_box["combo_box"], 20, 60, 20, 10)
 
-        self.search_button = self.generate_simple_button("Start Search", self.searchXDCC)
+        self.search_button = self.generate_simple_button("Start Search", self.search_xdcc)
         self.grid.attach(self.search_button, 0, 80, 40, 10)
 
         self.download_engine_label = self.generate_label("Download Engine")
@@ -128,8 +127,8 @@ class BatchDownloadManagerGUI(GenericGtkGui):
 
         self.main_icon_label = self.generate_label("Main Icon")
         self.secondary_icon_label = self.generate_label("Season Icon")
-        self.main_icon_location = self.generate_entry("")
-        self.secondary_icon_location = self.generate_entry("")
+        self.main_icon_location = self.generate_text_entry("")
+        self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
         self.method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
         self.grid.attach(self.main_icon_label, 0, 140, 20, 10)
@@ -142,12 +141,12 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         self.download_button = self.generate_simple_button("Start Download", self.start_download)
         self.grid.attach(self.download_button, 0, 180, 40, 10)
 
-        self.search_results = self.generateMultiListBox(
-            {"#": int, "Bot": str, "Pack": int, "Size": str, "Filename": str})
-        self.grid.attach(self.search_results["scrollable"], 22, 0, 60, 200)
+        self.search_results = self.generate_multi_list_box(
+            {"#": (int,), "Bot": (str,), "Pack": (int,), "Size": (str,), "Filename": (str,)})
+        self.grid.attach(self.search_results["scrollable"], 22, 0, 60, 100)
 
-        self.directory_content = self.generateMultiListBox({"File Name": str})
-        self.grid.attach(self.directoryContent["scrollable"], 84, 0, 20, 200)
+        self.directory_content = self.generate_multi_list_box({"File Name": (str,)})
+        self.grid.attach(self.directory_content["scrollable"], 84, 0, 20, 100)
 
     def search_xdcc(self, widget):
         """
@@ -156,7 +155,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         :return: void
         """
         if widget is not None:
-            search_engine = self.get_current_selected_combo_box_option(self.search_engineComboBox)
+            search_engine = self.get_current_selected_combo_box_option(self.search_engine_combo_box)
             search_term = self.search_field.get_text()
             self.search_result = self.xdccSearch(search_engine, search_term, self.search_results["list_store"])
 

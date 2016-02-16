@@ -38,7 +38,7 @@ class IconizerGUI(GenericGtkGui):
         self.directory_entry = None
         self.start_button = None
         self.iconizer_method_combo_box = None
-        super().__init("Iconizer", parent, True)
+        super().__init__("Iconizer", parent, True)
 
     def lay_out(self):
         """
@@ -46,14 +46,14 @@ class IconizerGUI(GenericGtkGui):
         :return: void
         """
 
-        self.directory_entry = self.generateEntry("Enter Directory here", self.iconize_start)
-        self.grid.attach(self.directoryEntry, 0, 0, 3, 2)
+        self.directory_entry = self.generate_text_entry("Enter Directory here", self.iconize_start)
+        self.grid.attach(self.directory_entry, 0, 0, 3, 2)
 
-        self.start_button = self.generateSimpleButton("Start", self.iconize_start)
-        self.grid.attach(self.startButton, 3, 0, 1, 1)
+        self.start_button = self.generate_simple_button("Start", self.iconize_start)
+        self.grid.attach(self.start_button, 3, 0, 1, 1)
 
-        self.iconizer_method_combo_box = self.generateComboBox(["Nautilus", "Nemo"])
-        self.grid.attach(self.iconizerMethodComboBox["combo_box"], 3, 1, 1, 1)
+        self.iconizer_method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
+        self.grid.attach(self.iconizer_method_combo_box["combo_box"], 3, 1, 1, 1)
 
     def iconize_start(self, widget):
         """

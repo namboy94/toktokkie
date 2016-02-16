@@ -50,7 +50,8 @@ class GenericGtkGui(Gtk.Window):
         self.hide_parent = hide_parent
 
         # initialize GTK
-        super().__init__(self, title=title)
+        Gtk.Window.__init__(self, title=title)
+        # super().__init__(self, title=title)
         self.set_border_width(10)
 
         # Set up Grid Layout
@@ -241,7 +242,7 @@ class GenericGtkGui(Gtk.Window):
         entry = Gtk.Entry()
         entry.set_text(defaulttext)
         if command is not None:
-            entry.connect("key-press-event", GenericGtkGui.defaultEnterKey, command, additional_args)
+            entry.connect("key-press-event", GenericGtkGui.default_enter_key, command, additional_args)
         return entry
 
     @staticmethod
@@ -273,6 +274,7 @@ class GenericGtkGui(Gtk.Window):
                     selection: the object keeping track of the selected options
                     list_store: the ListStore object containing all options
         """
+        print(options)
         types = ()
         titles = []
         for key in sorted(options.items()):

@@ -38,7 +38,7 @@ class RenamerGUI(GenericGtkGui):
         """
         self.button = None
         self.entry = None
-        super().__init("Renamer", parent, True)
+        super().__init__("Renamer", parent, True)
 
     def lay_out(self):
         """

@@ -35,8 +35,8 @@ class MainGUI(GenericGtkGui):
         :param active_plugins: The plugins to be displayed
         :return: void
         """
-        super().__init__(self, "Main Gui")
         self.plugins = active_plugins
+        super().__init__("Main Gui")
 
     def lay_out(self):
         """
@@ -61,8 +61,9 @@ class MainGUI(GenericGtkGui):
                 :return: void
                 """
                 if widget is not None:
-                    plugin.start_gui(self)
+                    print(plugin)
+                    plugin[0].start_gui(self)
 
-            button = self.generate_simple_button(self.plugins[i].getName(), start_button_function, self.plugins[i])
+            button = self.generate_simple_button(self.plugins[i].get_name(), start_button_function, self.plugins[i])
             self.grid.attach(button, column, row, 1, 1)
             i += 1
