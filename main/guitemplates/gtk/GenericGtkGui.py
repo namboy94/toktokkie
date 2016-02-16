@@ -89,7 +89,7 @@ class GenericGtkGui(Gtk.Window):
     # Helper methods
 
     @staticmethod
-    def default_enter_key(widget, command):
+    def default_enter_key(widget, command, *additional_args):
         """
         Connects a command to the enter key for a GTK widget.
         This means, if the enter/return key is pressed while the widget is in focus,
@@ -99,7 +99,7 @@ class GenericGtkGui(Gtk.Window):
         :return: void
         """
 
-        def enter(internal_widget, event, internal_command):
+        def enter(internal_widget, event, internal_command, *more_args):
             """
             Method that evaluates whenever a key is pressed if it's the enter key.
             :param internal_widget: the widget to which this methods listens
@@ -108,9 +108,9 @@ class GenericGtkGui(Gtk.Window):
             :return: void
             """
             if event.keyval == Gdk.KEY_Return:
-                internal_command(internal_widget)
+                internal_command(internal_widget, more_args)
 
-        widget.connect("key-press-event", enter, command)
+        widget.connect("key-press-event", enter, command, additional_args)
 
     def show_message_dialog(self, primary_message, secondary_message=""):
         """
@@ -274,7 +274,6 @@ class GenericGtkGui(Gtk.Window):
                     selection: the object keeping track of the selected options
                     list_store: the ListStore object containing all options
         """
-        print(options)
         types = ()
         titles = []
         for key in sorted(options.items()):

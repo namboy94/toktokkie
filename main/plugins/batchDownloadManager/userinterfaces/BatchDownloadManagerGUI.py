@@ -84,46 +84,46 @@ class BatchDownloadManagerGUI(GenericGtkGui):
 
         self.destination_label = self.generate_label("Destination Directory")
         self.destination = self.generate_text_entry("", self.on_directory_changed)
-        self.grid.attach(self.destination_label, 0, 0, 20, 10)
-        self.grid.attach(self.destination, 20, 0, 20, 10)
+        self.grid.attach(self.destination_label, 0, 0, 20, 5)
+        self.grid.attach(self.destination, 20, 0, 20, 5)
 
         self.show_label = self.generate_label("Show Name")
         self.show = self.generate_text_entry("")
-        self.grid.attach(self.show_label, 0, 10, 20, 10)
-        self.grid.attach(self.show, 20, 10, 20, 10)
+        self.grid.attach(self.show_label, 0, 5, 20, 5)
+        self.grid.attach(self.show, 20, 5, 20, 5)
 
         self.season_label = self.generate_label("Season Number")
         self.season = self.generate_text_entry("")
-        self.grid.attach(self.season_label, 0, 20, 20, 10)
-        self.grid.attach(self.season, 20, 20, 20, 10)
+        self.grid.attach(self.season_label, 0, 10, 20, 5)
+        self.grid.attach(self.season, 20, 10, 20, 5)
 
         self.episode_label = self.generate_label("Starting Episode Number")
         self.episode = self.generate_text_entry("optional")
-        self.grid.attach(self.episode_label, 0, 30, 20, 10)
-        self.grid.attach(self.episode, 20, 30, 20, 10)
+        self.grid.attach(self.episode_label, 0, 15, 20, 5)
+        self.grid.attach(self.episode, 20, 15, 20, 5)
 
         self.search_label = self.generate_label("Search Term")
         self.search_field = self.generate_text_entry("", self.search_xdcc)
-        self.grid.attach(self.search_label, 0, 50, 20, 10)
-        self.grid.attach(self.search_field, 20, 50, 20, 10)
+        self.grid.attach(self.search_label, 0, 25, 20, 5)
+        self.grid.attach(self.search_field, 20, 25, 20, 5)
 
         self.search_engine_label = self.generate_label("Search Engine")
         self.search_engine_combo_box = self.generate_combo_box(["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
-        self.grid.attach(self.search_engine_label, 0, 60, 20, 10)
-        self.grid.attach(self.search_engine_combo_box["combo_box"], 20, 60, 20, 10)
+        self.grid.attach(self.search_engine_label, 0, 30, 20, 5)
+        self.grid.attach(self.search_engine_combo_box["combo_box"], 20, 30, 20, 5)
 
         self.search_button = self.generate_simple_button("Start Search", self.search_xdcc)
-        self.grid.attach(self.search_button, 0, 80, 40, 10)
+        self.grid.attach(self.search_button, 0, 40, 40, 5)
 
         self.download_engine_label = self.generate_label("Download Engine")
         self.download_engine_combo_box = self.generate_combo_box(["Hexchat Plugin", "Twisted"])
-        self.grid.attach(self.download_engine_label, 0, 100, 20, 10)
-        self.grid.attach(self.download_engine_combo_box["combo_box"], 20, 100, 20, 10)
+        self.grid.attach(self.download_engine_label, 0, 50, 20, 5)
+        self.grid.attach(self.download_engine_combo_box["combo_box"], 20, 50, 20, 5)
 
         self.options_label = self.generate_label("Options")
         self.rename_check = self.generate_check_box("Automatic Rename", True)
-        self.grid.attach(self.options_label, 0, 120, 20, 10)
-        self.grid.attach(self.rename_check, 20, 120, 20, 10)
+        self.grid.attach(self.options_label, 0, 60, 20, 5)
+        self.grid.attach(self.rename_check, 20, 60, 20, 5)
 
         self.main_icon_label = self.generate_label("Main Icon")
         self.secondary_icon_label = self.generate_label("Season Icon")
@@ -131,22 +131,22 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
         self.method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
-        self.grid.attach(self.main_icon_label, 0, 140, 20, 10)
-        self.grid.attach(self.secondary_icon_label, 0, 150, 20, 10)
-        self.grid.attach(self.main_icon_location, 20, 140, 20, 10)
-        self.grid.attach(self.secondary_icon_location, 20, 150, 20, 10)
-        self.grid.attach(self.method_label, 0, 160, 20, 10)
-        self.grid.attach(self.method_combo_box["combo_box"], 20, 160, 20, 10)
+        self.grid.attach(self.main_icon_label, 0, 70, 20, 5)
+        self.grid.attach(self.secondary_icon_label, 0, 75, 20, 5)
+        self.grid.attach(self.main_icon_location, 20, 70, 20, 5)
+        self.grid.attach(self.secondary_icon_location, 20, 75, 20, 5)
+        self.grid.attach(self.method_label, 0, 80, 20, 5)
+        self.grid.attach(self.method_combo_box["combo_box"], 20, 80, 20, 5)
 
         self.download_button = self.generate_simple_button("Start Download", self.start_download)
-        self.grid.attach(self.download_button, 0, 180, 40, 10)
+        self.grid.attach(self.download_button, 0, 90, 40, 5)
 
         self.search_results = self.generate_multi_list_box(
             {"#": (int,), "Bot": (str,), "Pack": (int,), "Size": (str,), "Filename": (str,)})
-        self.grid.attach(self.search_results["scrollable"], 22, 0, 60, 100)
+        self.grid.attach(self.search_results["scrollable"], 45, 0, 60, 60)
 
         self.directory_content = self.generate_multi_list_box({"File Name": (str,)})
-        self.grid.attach(self.directory_content["scrollable"], 84, 0, 20, 100)
+        self.grid.attach(self.directory_content["scrollable"], 110, 0, 20, 60)
 
     def search_xdcc(self, widget):
         """
