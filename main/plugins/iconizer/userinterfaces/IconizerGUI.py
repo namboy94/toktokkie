@@ -61,7 +61,7 @@ class IconizerGUI(GenericGtkGui):
         :param widget: the widget that started this method
         :return void
         """
-        if widget is not None:
+        if widget is None:
             return
 
         directory = self.directory_entry.get_text()
@@ -89,7 +89,7 @@ class IconizerGUI(GenericGtkGui):
         :param directory: the directory to be iconized
         :return: void
         """
-        method = self.get_current_selected_combo_box_option(self.iconizerMethodComboBox)
+        method = self.get_current_selected_combo_box_option(self.iconizer_method_combo_box)
         has_icons = False
         for sub_directory in os.listdir(directory):
             if sub_directory == ".icons":

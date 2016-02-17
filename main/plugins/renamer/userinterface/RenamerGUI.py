@@ -61,7 +61,6 @@ class RenamerGUI(GenericGtkGui):
             return
         try:
             abs_dir = self.entry.get_text()
-            print(abs_dir)
             renamer = Renamer(abs_dir)
             confirmation = renamer.request_confirmation()
             if self.confirmer(confirmation):

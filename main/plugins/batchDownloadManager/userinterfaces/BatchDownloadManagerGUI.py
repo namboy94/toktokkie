@@ -75,6 +75,8 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         self.divider_1 = None
         self.divider_2 = None
         super().__init__("Batch Download Manager", parent, True)
+        self.grid.set_column_homogeneous(False)
+        self.grid.set_row_homogeneous(False)
 
     def lay_out(self):
         """
@@ -89,7 +91,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
 
         self.show_label = self.generate_label("Show Name")
         self.show = self.generate_text_entry("")
-        self.grid.attach(self.show_label, 0, 5, 20, 5)
+        self.grid.attach(self.show_label, 0, 2, 20, 5)
         self.grid.attach(self.show, 20, 5, 20, 5)
 
         self.season_label = self.generate_label("Season Number")
