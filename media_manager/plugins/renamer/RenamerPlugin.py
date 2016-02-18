@@ -1,6 +1,4 @@
-#!/bin/bash
-
-/*
+"""
 Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
@@ -20,6 +18,39 @@ This file is part of media-manager.
 
     You should have received a copy of the GNU General Public License
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
-*/
+"""
 
-python $HOME/.mediamanager/program/main/main.py
+from plugins.common.GenericPlugin import GenericPlugin
+from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+
+
+class RenamerPlugin(GenericPlugin):
+    """
+    Class that handles renaming of episodes
+    """
+
+    def get_name(self):
+        """
+        :return "Renamer"
+        """
+        return "Renamer"
+
+    def get_config_tag(self):
+        """
+        :return "renamer"
+        """
+        return "renamer"
+
+    def get_command_name(self):
+        """
+        :return "renamer"
+        """
+        return "renamer"
+
+    def start_gui(self, parent_gui):
+        """
+        Starts the GUI, while hiding the parent until finished
+        :param parent_gui: the parent gui window
+        :return void
+        """
+        RenamerGUI(parent_gui).start()

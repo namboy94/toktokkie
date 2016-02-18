@@ -22,7 +22,7 @@ This file is part of media-manager.
 
 from plugins.renamer.RenamerPlugin import RenamerPlugin
 from plugins.iconizer.IconizerPlugin import IconizerPlugin
-from plugins.batchDownloadManager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
 
 
 class PluginManager(object):

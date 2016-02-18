@@ -25,7 +25,6 @@ import os
 import sys
 
 from mainuserinterfaces.MainGUI import MainGUI
-from parsers.ArgumentParser import ArgumentParser
 from plugins.PluginManager import PluginManager
 from startup.Installer import Installer
 
@@ -36,19 +35,8 @@ def main():
     :return: void
     """
 
-    # Parse Arguments
-    args = ArgumentParser().parse()
-
-    # Installation and Updating
-    if args.install:
-        Installer().install()
-        sys.exit(0)
-    if args.update:
-        sys.exit(0)
-
     if not Installer().is_installed():
-        print("Program not installed correctly. Install with --install option")
-        sys.exit(1)
+        Installer().install()
 
     # ConfigParsing
     config = configparser.ConfigParser()

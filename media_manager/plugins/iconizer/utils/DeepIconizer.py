@@ -55,7 +55,7 @@ class DeepIconizer(object):
         """
         if directory is None:
             directory = self.directory
-            self.concrete_iconizer.iconize(directory, self.folder_icon_directory + "main")
+            self.concrete_iconizer.iconize(directory, self.folder_icon_directory + "media_manager")
 
         children = self.get_children(directory)
 
