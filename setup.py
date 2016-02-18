@@ -34,7 +34,7 @@ def readme():
 
 
 setup(name='media-manager',
-      version='0.1',
+      version='0.2',
       description='A personal media manager program',
       long_description=readme(),
       classifiers=['Development Status :: 2 - Pre-Alpha',
@@ -58,6 +58,7 @@ setup(name='media-manager',
                 'media_manager.plugins.batchdownloadmanager',
                 'media_manager.plugins.batchdownloadmanager.downloaders',
                 'media_manager.plugins.batchdownloadmanager.searchengines',
+                'media_manager.plugins.batchdownloadmanager.searchengines.objects',
                 'media_manager.plugins.batchdownloadmanager.userinterfaces',
                 'media_manager.plugins.common',
                 'media_manager.plugins.common.fileops',

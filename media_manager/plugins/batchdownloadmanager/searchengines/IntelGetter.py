@@ -24,8 +24,8 @@ import requests
 from bs4 import BeautifulSoup
 
 try:
-    from media_managerplugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
-    from media_managerplugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+    from media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
+    from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
 except ImportError:
     from plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack

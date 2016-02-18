@@ -23,7 +23,7 @@ This file is part of media-manager.
 try:
     from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI\
         import BatchDownloadManagerGUI
-    from media_managerplugins.common.GenericPlugin import GenericPlugin
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
 except ImportError:
     from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
     from plugins.common.GenericPlugin import GenericPlugin
