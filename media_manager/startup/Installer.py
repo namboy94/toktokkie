@@ -76,7 +76,7 @@ class Installer(object):
         if not os.path.isdir(self.programDir):
             Popen(["cp", "-rf", Installer.__get_source_dir__(), self.programDir]).wait()
         if not os.path.isfile(self.executable):
-            Popen(["sudo", "cp", Installer.__get_source_dir__() + "/main/startup/scripts/mediamanagergui.sh",
+            Popen(["sudo", "cp", Installer.__get_source_dir__() + "/media_manager/startup/scripts/mediamanagergui.sh",
                    self.executable]).wait()
             Popen(["sudo", "chmod", "755", self.executable]).wait()
 

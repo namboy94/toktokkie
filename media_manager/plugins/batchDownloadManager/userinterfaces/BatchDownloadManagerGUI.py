@@ -250,7 +250,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         secondary_icon = self.secondary_icon_location.get_text()
 
         if main_icon:
-            if self.get_icon(main_icon, directory + ".icons/", "main.png") == "error":
+            if self.get_icon(main_icon, directory + ".icons/", "media_manager.png") == "error":
                 self.show_message_dialog("Error retrieving image from source")
                 return None
         if secondary_icon:
@@ -325,7 +325,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
                     self.directory_content["list_store"].append([child])
                 self.episode.set_text(str(len(children) + 1))
                 self.season.set_text(str(highest_season))
-                main_icon = directory + "/.icons/main.png"
+                main_icon = directory + "/.icons/media_manager.png"
                 if os.path.isfile(main_icon):
                     self.main_icon_location.set_text(main_icon)
                 secondary_icon = directory + "/.icons/Season " + str(highest_season) + ".png"
