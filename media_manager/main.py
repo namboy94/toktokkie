@@ -25,10 +25,12 @@ import os
 
 try:
     from media_manager.mainuserinterfaces.MainGUI import MainGUI
+    from media_manager.mainuserinterfaces.MainTkGui import MainTkGui
     from media_manager.plugins.PluginManager import PluginManager
     from media_manager.startup.Installer import Installer
 except ImportError:
     from mainuserinterfaces.MainGUI import MainGUI
+    from mainuserinterfaces.MainTkGui import MainTkGui
     from plugins.PluginManager import PluginManager
     from startup.Installer import Installer
 
@@ -49,7 +51,11 @@ def main():
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Start the program
+    """
     gui = MainGUI(active_plugins)
+    gui.start()
+    """
+    gui = MainTkGui(active_plugins)
     gui.start()
 
 if __name__ == '__main__':

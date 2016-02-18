@@ -20,13 +20,11 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-try:
-    from media_manager.guitemplates.GenericGui import GenericGui
-except ImportError:
-    from guitemplates.GenericGui import GenericGui
+from tkinter import *
+from functools import partial
 
 
-class GenericTkGui(GenericGui):
+class GenericTkGui(Tk):
     """
     Class that models a generic grid-based GTK Gui. This should be used like an
     abstract class from which other classes can inherit from.
@@ -42,9 +40,11 @@ class GenericTkGui(GenericGui):
                         hidden while this window is open
         :return: void
         """
-        dummy = (title, parent, hide_parent)
-        dummy += (1,)
-        raise NotImplementedError()
+        super().__init__()
+        self.title(title)
+        self.parent = parent
+        self.hide_parent = hide_parent
+        self.lay_out()
 
     def lay_out(self):
         """
@@ -60,21 +60,13 @@ class GenericTkGui(GenericGui):
         it will be hidden during the mainloop and reappear at the end
         :return: void
         """
-        raise NotImplementedError()
+        if self.parent is not None and self.hide_parent:
+            self.parent.withdraw()
+        self.mainloop()
+        if self.parent is not None and self.hide_parent:
+            self.parent.show()
 
     # Helper methods
-
-    @staticmethod
-    def default_enter_key(widget, command, *additional_args):
-        """
-        Connects a command to the enter key for a GTK widget.
-        This means, if the enter/return key is pressed while the widget is in focus,
-        this command will be called.
-        :param widget: the widget to which the command should be connected to
-        :param command: the command to be executed when pressing the enter key
-        :return: void
-        """
-        raise NotImplementedError()
 
     def show_message_dialog(self, primary_message, secondary_message=""):
         """
@@ -124,17 +116,15 @@ class GenericTkGui(GenericGui):
         """
         raise NotImplementedError()
 
-    @staticmethod
-    def generate_label(label_text):
+    def generate_label(self, label_text):
         """
         Generates a GTK Label
         :param label_text: the text to be displayed on the label
         :return: the Label object
         """
-        raise NotImplementedError()
+        return Label(self, text=label_text)
 
-    @staticmethod
-    def generate_simple_button(button_text, command, *additional_args):
+    def generate_simple_button(self, button_text, command, *additional_args):
         """
         Generates a GTK Button
         :param button_text: the text to be displayed on the button
@@ -142,10 +132,9 @@ class GenericTkGui(GenericGui):
         :param additional_args: additional arguments to be passed to the command
         :return: the Button object
         """
-        raise NotImplementedError()
+        return Button(self, text=button_text, command=partial(command, additional_args))
 
-    @staticmethod
-    def generate_text_entry(defaulttext="", command=None, *additional_args):
+    def generate_text_entry(self, defaulttext="", command=None, *additional_args):
         """
         Generates a GTK Text Entry
         :param defaulttext: The text to be displayed by default
@@ -154,7 +143,10 @@ class GenericTkGui(GenericGui):
         :param additional_args: additional arguments to be passed to the command
         :return: the Entry object
         """
-        raise NotImplementedError()
+        entry = Entry(self, text=defaulttext)
+        if command is not None:
+            entry.bind('<Return>', partial(command, additional_args))
+        return entry
 
     @staticmethod
     def generate_combo_box(options):

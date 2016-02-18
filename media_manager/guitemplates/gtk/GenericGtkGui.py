@@ -23,13 +23,8 @@ This file is part of media-manager.
 # imports
 from gi.repository import Gtk, Gdk
 
-try:
-    from media_manager.guitemplates.GenericGui import GenericGui
-except ImportError:
-    from guitemplates.GenericGui import GenericGui
 
-
-class GenericGtkGui(Gtk.Window, GenericGui):
+class GenericGtkGui(Gtk.Window):
     """
     Class that models a generic grid-based GTK Gui. This should be used like an
     abstract class from which other classes can inherit from.
