@@ -21,8 +21,13 @@ This file is part of media-manager.
 """
 
 import os
-from guitemplates.gtk.GenericGtkGui import GenericGtkGui
-from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+
+try:
+    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+except ImportError:
+    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
 
 class IconizerGUI(GenericGtkGui):

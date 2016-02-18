@@ -50,6 +50,7 @@ class GenericGtkGui(Gtk.Window):
         self.hide_parent = hide_parent
 
         # initialize GTK
+        # noinspection PyCallByClass
         Gtk.Window.__init__(self, title=title)
         # super().__init__(self, title=title)
         self.set_border_width(10)

@@ -23,8 +23,12 @@ This file is part of media-manager.
 import requests
 from bs4 import BeautifulSoup
 
-from plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
-from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+try:
+    from media_managerplugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
+    from media_managerplugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+except ImportError:
+    from plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
+    from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
 
 
 class IxIRCGetter(GenericGetter):

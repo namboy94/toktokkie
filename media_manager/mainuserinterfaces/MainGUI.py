@@ -21,7 +21,10 @@ This file is part of media-manager.
 """
 
 # imports
-from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+try:
+    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
+except ImportError:
+    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
 
 
 class MainGUI(GenericGtkGui):

@@ -20,8 +20,12 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.common.GenericPlugin import GenericPlugin
-from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+try:
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+except ImportError:
+    from plugins.common.GenericPlugin import GenericPlugin
+    from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
 
 
 class IconizerPlugin(GenericPlugin):

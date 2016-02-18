@@ -22,11 +22,15 @@ This file is part of media-manager.
 
 import configparser
 import os
-import sys
 
-from mainuserinterfaces.MainGUI import MainGUI
-from plugins.PluginManager import PluginManager
-from startup.Installer import Installer
+try:
+    from media_manager.mainuserinterfaces.MainGUI import MainGUI
+    from media_manager.plugins.PluginManager import PluginManager
+    from media_manager.startup.Installer import Installer
+except ImportError:
+    from mainuserinterfaces.MainGUI import MainGUI
+    from plugins.PluginManager import PluginManager
+    from startup.Installer import Installer
 
 
 def main():

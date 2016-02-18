@@ -21,7 +21,11 @@ This file is part of media-manager.
 """
 
 import os
-from plugins.renamer.objects.Episode import Episode
+
+try:
+    from media_manager.plugins.renamer.objects.Episode import Episode
+except ImportError:
+    from plugins.renamer.objects.Episode import Episode
 
 
 class Renamer(object):

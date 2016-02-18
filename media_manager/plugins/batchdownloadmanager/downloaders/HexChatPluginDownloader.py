@@ -22,7 +22,11 @@ This file is part of media-manager.
 
 import os
 from subprocess import Popen
-from plugins.renamer.objects.Episode import Episode
+
+try:
+    from media_manager.plugins.renamer.objects.Episode import Episode
+except ImportError:
+    from plugins.renamer.objects.Episode import Episode
 
 
 class HexChatPluginDownloader(object):

@@ -20,9 +20,12 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-
-from plugins.renamer.utils.Renamer import Renamer
-from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+try:
+    from media_manager.plugins.renamer.utils.Renamer import Renamer
+    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
+except ImportError:
+    from plugins.renamer.utils.Renamer import Renamer
+    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
 
 
 class RenamerGUI(GenericGtkGui):

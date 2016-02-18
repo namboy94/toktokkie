@@ -23,15 +23,24 @@ This file is part of media-manager.
 import os
 from subprocess import Popen
 
-from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
-from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
-from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
-from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
-
-from guitemplates.gtk.GenericGtkGui import GenericGtkGui
-from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
-from plugins.common.fileops.FileMover import FileMover
-from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+try:
+    from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
+    from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
+    from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
+    from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from media_manager.plugins.common.fileops.FileMover import FileMover
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+except ImportError:
+    from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
+    from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
+    from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
+    from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from plugins.common.fileops.FileMover import FileMover
+    from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
 
 class BatchDownloadManagerGUI(GenericGtkGui):
@@ -289,9 +298,9 @@ class BatchDownloadManagerGUI(GenericGtkGui):
                     Popen(["rm", folder_icon_directory + icon_file]).wait()
                 Popen(["cp", path, folder_icon_directory + icon_file]).wait()
         else:
-            before = os.listdir()  # This is currently intended
+            before = os.listdir(os.getcwd())
             Popen(["wget", path]).wait()
-            after = os.listdir()   # Yes, this too
+            after = os.listdir(os.getcwd())
             new_file = ""
             for file in after:
                 if file not in before:

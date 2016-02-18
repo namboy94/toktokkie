@@ -21,7 +21,11 @@ This file is part of media-manager.
 """
 
 import os
-from plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
+
+try:
+    from media_manager.plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
+except ImportError:
+    from plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
 
 
 class DeepIconizer(object):

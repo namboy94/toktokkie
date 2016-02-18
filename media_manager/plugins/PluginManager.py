@@ -20,9 +20,14 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.renamer.RenamerPlugin import RenamerPlugin
-from plugins.iconizer.IconizerPlugin import IconizerPlugin
-from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+try:
+    from media_manager.plugins.renamer.RenamerPlugin import RenamerPlugin
+    from media_manager.plugins.iconizer.IconizerPlugin import IconizerPlugin
+    from media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+except ImportError:
+    from plugins.renamer.RenamerPlugin import RenamerPlugin
+    from plugins.iconizer.IconizerPlugin import IconizerPlugin
+    from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
 
 
 class PluginManager(object):

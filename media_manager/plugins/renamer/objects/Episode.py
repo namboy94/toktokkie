@@ -20,8 +20,12 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
-from plugins.common.fileops.FileRenamer import FileRenamer
+try:
+    from media_manager.plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
+    from media_manager.plugins.common.fileops.FileRenamer import FileRenamer
+except ImportError:
+    from plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
+    from plugins.common.fileops.FileRenamer import FileRenamer
 
 
 class Episode(object):
