@@ -198,17 +198,19 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
                                    self.episode.get_text(),
                                    self.main_icon_location.get_text(),
                                    self.secondary_icon_location.get_text(),
-                                   self.get_current_selected_combo_box_option(self.method_combo_box["combo_box"]))
+                                   self.get_current_selected_combo_box_option(self.method_combo_box))
         if len(preparation) != 6:
             self.show_message_dialog(preparation[0], preparation[1])
             return
 
         directory, show, season, first_episode, special, new_directory = preparation
 
-        selected_packs = self.get_selected_multi_list_box_elements(self.search_results["selection"])
+        selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
         packs = []
         for selection in selected_packs:
             packs.append(self.search_result[selection])
+        if len(packs) == 0:
+            return
 
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
         files = []
