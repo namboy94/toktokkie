@@ -44,7 +44,7 @@ class GenericPlugin(object):
         """
         raise NotImplementedError()
 
-    def start_gui(self, parent_gui):
+    def start_gtk_gui(self, parent_gui):
         """
         Starts the GUI of the plugin
         :param parent_gui: the gui's parent

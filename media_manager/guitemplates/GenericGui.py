@@ -20,16 +20,8 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# imports
-from gi.repository import Gtk, Gdk
 
-try:
-    from media_manager.guitemplates.GenericGui import GenericGui
-except ImportError:
-    from guitemplates.GenericGui import GenericGui
-
-
-class GenericGtkGui(Gtk.Window, GenericGui):
+class GenericGui(object):
     """
     Class that models a generic grid-based GTK Gui. This should be used like an
     abstract class from which other classes can inherit from.
@@ -45,29 +37,9 @@ class GenericGtkGui(Gtk.Window, GenericGui):
                         hidden while this window is open
         :return: void
         """
-        # object variables
-        self.grid = None
-        self.window = None
-        self.parent = None
-        self.hide_parent = False
-
-        self.parent = parent
-        self.hide_parent = hide_parent
-
-        # initialize GTK
-        # noinspection PyCallByClass
-        Gtk.Window.__init__(self, title=title)
-        # super().__init__(self, title=title)
-        self.set_border_width(10)
-
-        # Set up Grid Layout
-        self.grid = Gtk.Grid(column_homogeneous=True,
-                             column_spacing=10,
-                             row_spacing=10)
-        self.add(self.grid)
-
-        # Delegated to the child classes
-        self.lay_out()
+        dummy = (title, parent, hide_parent)
+        dummy += (1,)
+        raise NotImplementedError()
 
     def lay_out(self):
         """
@@ -75,7 +47,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :raise NotImplementedError to indicate that this class is abstract
         :return: void
         """
-        raise NotImplementedError("lay_out method not implemented")
+        raise NotImplementedError()
 
     def start(self):
         """
@@ -83,14 +55,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         it will be hidden during the mainloop and reappear at the end
         :return: void
         """
-        if self.parent and self.hide_parent:
-            self.parent.window.hide()
-        self.window = self
-        self.window.connect("delete-event", Gtk.main_quit)
-        self.window.show_all()
-        Gtk.main()
-        if self.parent and self.hide_parent:
-            self.parent.window.show_all()
+        raise NotImplementedError()
 
     # Helper methods
 
@@ -104,19 +69,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param command: the command to be executed when pressing the enter key
         :return: void
         """
-
-        def enter(internal_widget, event, internal_command, *more_args):
-            """
-            Method that evaluates whenever a key is pressed if it's the enter key.
-            :param internal_widget: the widget to which this methods listens
-            :param event: the key-press event to be evaluated
-            :param internal_command: the command to be executed when pressing the enter key
-            :return: void
-            """
-            if event.keyval == Gdk.KEY_Return:
-                internal_command(internal_widget, more_args)
-
-        widget.connect("key-press-event", enter, command, additional_args)
+        raise NotImplementedError()
 
     def show_message_dialog(self, primary_message, secondary_message=""):
         """
@@ -125,10 +78,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param secondary_message: the secondary message to be displayed
         :return: void
         """
-        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, primary_message)
-        dialog.format_secondary_text(secondary_message)
-        dialog.run()
-        dialog.destroy()
+        raise NotImplementedError()
 
     def show_y_n_dialog(self, primary_message, secondary_message=""):
         """
@@ -137,28 +87,14 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param secondary_message: the secondary message to be displayed
         :return: True, if yes was selected, False otherwise
         """
-        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, primary_message)
-        dialog.format_secondary_text(secondary_message)
-        response = dialog.run()
-        dialog.destroy()
-        if response == Gtk.ResponseType.YES:
-            return True
-        else:
-            return False
+        raise NotImplementedError()
 
     def show_file_chooser_dialog(self):
         """
         Creates a file chooser dialog
         :return: the selected file path
         """
-        dialog = Gtk.FileChooserDialog("Please choose a file", self, Gtk.FileChooserAction.OPEN,
-                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        response = dialog.run()
-        dialog.destroy()
-        if response == Gtk.ResponseType.OK:
-            return dialog.get_filename
-        else:
-            return ""
+        raise NotImplementedError()
 
     def show_text_box(self, message):
         """
@@ -166,22 +102,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param message: The message addressed to the user to be displayed
         :return: the entered string
         """
-        dialog = Gtk.MessageDialog(self, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                   Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL, message)
-        dialog_box = dialog.get_content_area()
-        user_entry = Gtk.Entry()
-        user_entry.set_size_request(250, 0)
-        dialog_box.pack_end(user_entry, False, False, 0)
-
-        dialog.show_all()
-
-        response = dialog.run()
-        response_text = user_entry.get_text()
-        dialog.destroy()
-        if (response == Gtk.ResponseType.OK) and (response_text != ''):
-            return response_text
-        else:
-            return None
+        raise NotImplementedError()
 
     def show_password_box(self, message):
         """
@@ -189,24 +110,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param message: The message addressed to the user to be displayed
         :return: the password
         """
-        dialog = Gtk.MessageDialog(self, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                   Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL, message)
-        dialog_box = dialog.get_content_area()
-        user_entry = Gtk.Entry()
-        user_entry.set_visibility(False)
-        user_entry.set_invisible_char("*")
-        user_entry.set_size_request(250, 0)
-        dialog_box.pack_end(user_entry, False, False, 0)
-
-        dialog.show_all()
-
-        response = dialog.run()
-        response_text = user_entry.get_text()
-        dialog.destroy()
-        if (response == Gtk.ResponseType.OK) and (response_text != ''):
-            return response_text
-        else:
-            return None
+        raise NotImplementedError()
 
     @staticmethod
     def generate_label(label_text):
@@ -215,9 +119,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param label_text: the text to be displayed on the label
         :return: the Label object
         """
-        label = Gtk.Label()
-        label.set_text(label_text)
-        return label
+        raise NotImplementedError()
 
     @staticmethod
     def generate_simple_button(button_text, command, *additional_args):
@@ -228,12 +130,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param additional_args: additional arguments to be passed to the command
         :return: the Button object
         """
-        button = Gtk.Button.new_with_label(button_text)
-        if len(additional_args) == 0:
-            button.connect("clicked", command)
-        else:
-            button.connect("clicked", command, additional_args)
-        return button
+        raise NotImplementedError()
 
     @staticmethod
     def generate_text_entry(defaulttext="", command=None, *additional_args):
@@ -245,11 +142,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param additional_args: additional arguments to be passed to the command
         :return: the Entry object
         """
-        entry = Gtk.Entry()
-        entry.set_text(defaulttext)
-        if command is not None:
-            entry.connect("key-press-event", GenericGtkGui.default_enter_key, command, additional_args)
-        return entry
+        raise NotImplementedError()
 
     @staticmethod
     def generate_combo_box(options):
@@ -260,15 +153,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
                     combo_box: the Combo Box object
                     list_store: the ListStore object that stores the options for the combo box
         """
-        option_store = Gtk.ListStore(str)
-        for option in options:
-            option_store.append((option,))
-        combo_box = Gtk.ComboBox.new_with_model(option_store)
-        renderer_text = Gtk.CellRendererText()
-        combo_box.pack_start(renderer_text, True)
-        combo_box.add_attribute(renderer_text, "text", 0)
-        combo_box.set_active(0)
-        return {"combo_box": combo_box, "list_store": option_store}
+        raise NotImplementedError()
 
     @staticmethod
     def generate_multi_list_box(options):
@@ -280,23 +165,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
                     selection: the object keeping track of the selected options
                     list_store: the ListStore object containing all options
         """
-        types = tuple(options["types"])
-        titles = options["titles"]
-
-        list_store = Gtk.ListStore(*types)
-        tree_view = Gtk.TreeView.new_with_model(list_store.filter_new())
-        for i, column_title in enumerate(titles):
-            renderer = Gtk.CellRendererText()
-            column = Gtk.TreeViewColumn(column_title, renderer, text=i)
-            tree_view.append_column(column)
-        scrollable_tree_list = Gtk.ScrolledWindow()
-        scrollable_tree_list.set_vexpand(True)
-        scrollable_tree_list.add(tree_view)
-        tree_selection = tree_view.get_selection()
-        tree_selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        scrollable_tree_list.set_hexpand(True)
-        scrollable_tree_list.set_vexpand(True)
-        return {"scrollable": scrollable_tree_list, "selection": tree_selection, "list_store": list_store}
+        raise NotImplementedError()
 
     @staticmethod
     def generate_radio_button(text):
@@ -305,8 +174,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param text: the text to be displayed together with the radio button
         :return: the RadioButton object
         """
-        radio = Gtk.RadioButton.new_with_label(None, text)
-        return radio
+        raise NotImplementedError()
 
     @staticmethod
     def generate_check_box(text, active=False):
@@ -316,10 +184,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param active: the default state of the checkbox
         :return: the CheckButton object
         """
-        check_box = Gtk.CheckButton.new_with_label(text)
-        if active:
-            check_box.set_active(True)
-        return check_box
+        raise NotImplementedError()
 
     @staticmethod
     def get_current_selected_combo_box_option(combo_box_dict):
@@ -328,12 +193,7 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param combo_box_dict: the combo box dictionary generated by generate_combo_box
         :return: the currently selected string
         """
-        combo_box = combo_box_dict["combo_box"]
-        combo_box_list = combo_box_dict["list_store"]
-        combo_iter = combo_box.get_active_iter()
-        if combo_iter is None:
-            return None
-        return combo_box_list.get(combo_iter, 0)[0]
+        raise NotImplementedError()
 
     @staticmethod
     def get_selected_multi_list_box_elements(multi_list_box):
@@ -342,10 +202,4 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         :param multi_list_box: the multi list box dictionary
         :return: the selection as list of elements
         """
-        tree_selection = multi_list_box["selection"]
-        selected = []
-        (model, path_list) = tree_selection.get_selected_rows()
-        for path in path_list:
-            tree_iter = model.get_iter(path)
-            selected.append(model.get_value(tree_iter, 0))
-        return selected
+        raise NotImplementedError()

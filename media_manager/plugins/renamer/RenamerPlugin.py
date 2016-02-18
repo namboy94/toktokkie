@@ -51,7 +51,7 @@ class RenamerPlugin(GenericPlugin):
         """
         return "renamer"
 
-    def start_gui(self, parent_gui):
+    def start_gtk_gui(self, parent_gui):
         """
         Starts the GUI, while hiding the parent until finished
         :param parent_gui: the parent gui window
