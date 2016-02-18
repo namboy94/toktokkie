@@ -85,13 +85,14 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         """
 
         self.destination_label = self.generate_label("Destination Directory")
-        self.destination = self.generate_text_entry("", self.on_directory_changed)
+        self.destination = self.generate_text_entry("")
+        self.destination.connect("changed", self.on_directory_changed)
         self.grid.attach(self.destination_label, 0, 0, 20, 5)
         self.grid.attach(self.destination, 20, 0, 20, 5)
 
         self.show_label = self.generate_label("Show Name")
         self.show = self.generate_text_entry("")
-        self.grid.attach(self.show_label, 0, 2, 20, 5)
+        self.grid.attach(self.show_label, 0, 5, 20, 5)
         self.grid.attach(self.show, 20, 5, 20, 5)
 
         self.season_label = self.generate_label("Season Number")
@@ -144,7 +145,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         self.grid.attach(self.download_button, 0, 90, 40, 5)
 
         self.search_results = self.generate_multi_list_box(
-            {"#": (int,), "Bot": (str,), "Pack": (int,), "Size": (str,), "Filename": (str,)})
+            {"#": (int,), "Bot": (str,), "Filename": (str,), "Pack": (int,), "Size": (str,)})
         self.grid.attach(self.search_results["scrollable"], 45, 0, 60, 60)
 
         self.directory_content = self.generate_multi_list_box({"File Name": (str,)})
@@ -159,7 +160,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         if widget is not None:
             search_engine = self.get_current_selected_combo_box_option(self.search_engine_combo_box)
             search_term = self.search_field.get_text()
-            self.search_result = self.xdccSearch(search_engine, search_term, self.search_results["list_store"])
+            self.search_result = self.xdcc_search(search_engine, search_term, self.search_results["list_store"])
 
     def start_download(self, widget):
         """
@@ -353,7 +354,7 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         list_store.clear()
         i = 0
         for result in search_result:
-            choice = (i,) + result.toTuple()
+            choice = (i,) + result.to_tuple()
             list_store.append(list(choice))
             i += 1
 

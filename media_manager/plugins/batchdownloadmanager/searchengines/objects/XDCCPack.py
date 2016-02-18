@@ -55,4 +55,4 @@ class XDCCPack(object):
         Returns the bot information as a tuple
         :return: the bot information as a tuple
         """
-        return self.bot, self.packnumber, self.size, self.filename
+        return self.bot, self.filename, self.packnumber, self.size

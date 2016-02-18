@@ -265,9 +265,10 @@ class GenericGtkGui(Gtk.Window):
         return {"combo_box": combo_box, "list_store": option_store}
 
     @staticmethod
-    def generate_multi_list_box(options):
+    def generate_multi_list_box(options, arrange_sorted=True):
         """
         Generates a Multi List Box, consisting of scrollable columns and rows
+        :param arrange_sorted: can specify if the options will be sorted or not
         :param options: A dictionary following the scheme {title: type}
         :return: A dictionary with the individual parts of the multi list box
                     scrollable: the actual widget
@@ -276,9 +277,15 @@ class GenericGtkGui(Gtk.Window):
         """
         types = ()
         titles = []
-        for key in sorted(options.items()):
-            types += key[1]
-            titles.append(key[0])
+        if arrange_sorted:
+            for key in sorted(options.items()):
+                types += key[1]
+                titles.append(key[0])
+        else:
+            for key in options:
+                types += options[key]
+                titles.append(key)
+
         list_store = Gtk.ListStore(*types)
         tree_view = Gtk.TreeView.new_with_model(list_store.filter_new())
         for i, column_title in enumerate(titles):
