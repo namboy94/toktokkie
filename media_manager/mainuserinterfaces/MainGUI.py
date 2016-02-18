@@ -64,7 +64,7 @@ class MainGUI(GenericGtkGui):
                 :return: void
                 """
                 if widget is not None:
-                    plugin[0].start_gui(self)
+                    plugin[0].start_gtk_gui(self)
 
             button = self.generate_simple_button(self.plugins[i].get_name(), start_button_function, self.plugins[i])
             self.grid.attach(button, column, row, 1, 1)

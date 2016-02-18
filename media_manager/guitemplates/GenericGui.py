@@ -96,6 +96,13 @@ class GenericGui(object):
         """
         raise NotImplementedError()
 
+    def show_directory_chooser_dialog(self):
+        """
+        Creates a directory chooser dialog
+        :return: the selected directory path
+        """
+        raise NotImplementedError()
+
     def show_text_box(self, message):
         """
         Shows a text box and retrieves a value entered by the user

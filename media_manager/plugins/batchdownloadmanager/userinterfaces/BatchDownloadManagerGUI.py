@@ -58,6 +58,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.search_result = []
         self.destination_label = None
         self.destination = None
+        self.destination_browser = None
         self.show_label = None
         self.show = None
         self.season_label = None
@@ -97,7 +98,9 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.destination_label = self.generate_label("Destination Directory")
         self.destination = self.generate_text_entry("")
         self.destination.connect("changed", self.on_directory_changed)
-        self.grid.attach(self.destination_label, 0, 0, 20, 5)
+        self.destination_browser = self.generate_simple_button("Browse", self.browse_for_destination)
+        self.grid.attach(self.destination_label, 0, 0, 10, 5)
+        self.grid.attach(self.destination_browser, 10, 0, 10, 5)
         self.grid.attach(self.destination, 20, 0, 20, 5)
 
         self.show_label = self.generate_label("Show Name")
@@ -256,3 +259,13 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
                 secondary_icon = directory + "/.icons/Season " + str(highest_season) + ".png"
                 if os.path.isfile(secondary_icon):
                     self.secondary_icon_location.set_text(secondary_icon)
+
+    def browse_for_destination(self, widget):
+        """
+        Opens a file browser dialog to select a directory to the show's root directory
+        :param widget: the button that caused this method call
+        :return: void
+        """
+        if widget is not None:
+            directory = self.show_directory_chooser_dialog()
+            self.destination.set_text(directory)

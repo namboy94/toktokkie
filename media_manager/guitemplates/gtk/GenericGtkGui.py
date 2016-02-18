@@ -154,11 +154,25 @@ class GenericGtkGui(Gtk.Window, GenericGui):
         dialog = Gtk.FileChooserDialog("Please choose a file", self, Gtk.FileChooserAction.OPEN,
                                        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         response = dialog.run()
-        dialog.destroy()
+        selected_file = ""
         if response == Gtk.ResponseType.OK:
-            return dialog.get_filename
-        else:
-            return ""
+            selected_file = dialog.get_filename()
+        dialog.destroy()
+        return selected_file
+
+    def show_directory_chooser_dialog(self):
+        """
+        Creates a directory chooser dialog
+        :return: the selected directory path
+        """
+        dialog = Gtk.FileChooserDialog("Please choose a file", self, Gtk.FileChooserAction.SELECT_FOLDER,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        response = dialog.run()
+        directory = ""
+        if response == Gtk.ResponseType.OK:
+            directory = dialog.get_filename()
+        dialog.destroy()
+        return directory
 
     def show_text_box(self, message):
         """
