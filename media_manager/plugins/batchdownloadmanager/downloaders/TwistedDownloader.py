@@ -63,6 +63,7 @@ class TwistedDownloader(object):
         :return void
         """
         # TODO Look at Hexchatdownloader
+        #
         # script = os.getenv("HOME") + "/.mediamanager/scripts/xdccbot.py"
         # TODO Get bot name from config
         Popen(["python2", "script", pack.server, pack.channel, "", pack.bot, str(pack.packnumber)])
