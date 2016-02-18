@@ -21,7 +21,6 @@ This file is part of media-manager.
 """
 
 import os
-from subprocess import Popen
 
 try:
     from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
@@ -32,6 +31,7 @@ try:
     from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from media_manager.plugins.common.fileops.FileMover import FileMover
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
 except ImportError:
     from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
     from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
@@ -41,9 +41,10 @@ except ImportError:
     from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from plugins.common.fileops.FileMover import FileMover
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
 
 
-class BatchDownloadManagerGUI(GenericGtkGui):
+class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
     """
     GUI for the BatchDownloadManager plugin
     """
@@ -169,7 +170,15 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         if widget is not None:
             search_engine = self.get_current_selected_combo_box_option(self.search_engine_combo_box)
             search_term = self.search_field.get_text()
-            self.search_result = self.xdcc_search(search_engine, search_term, self.search_results["list_store"])
+            self.search_result = self.conduct_xdcc_search(search_engine, search_term)
+
+            list_store = self.search_results["list_store"]
+            list_store.clear()
+            i = 0
+            for result in self.search_result:
+                choice = (i,) + result.to_tuple()
+                list_store.append(list(choice))
+                i += 1
 
     def start_download(self, widget):
         """
@@ -179,9 +188,18 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         """
         if widget is None:
             return
-        preparation = self.prepare()
-        if preparation is None:
+
+        preparation = self.prepare(self.destination.get_text(),
+                                   self.show.get_text(),
+                                   self.season.get_text(),
+                                   self.episode.get_text(),
+                                   self.main_icon_location.get_text(),
+                                   self.secondary_icon_location.get_text(),
+                                   self.get_current_selected_combo_box_option(self.method_combo_box["combo_box"]))
+        if len(preparation) != 6:
+            self.show_message_dialog(preparation[0], preparation[1])
             return
+
         directory, show, season, first_episode, special, new_directory = preparation
 
         selected_packs = self.get_selected_multi_list_box_elements(self.search_results["selection"])
@@ -204,113 +222,6 @@ class BatchDownloadManagerGUI(GenericGtkGui):
 
         for file in files:
             FileMover.move_file(file, new_directory)
-
-    def prepare(self):
-        """
-        Prepares the download
-        :return: [the original directory,
-                  the show name,
-                  the season number,
-                  the first episode number,
-                  if it's special,
-                  and the new directory]
-        """
-        directory = self.destination.get_text()
-        if not directory.endswith("/"):
-            directory += "/"
-        if os.path.isdir(directory):
-            update = True
-        else:
-            update = False
-
-        show = self.show.get_text()
-        if not show:
-            self.show_message_dialog("No show name specified")
-            return None
-
-        if not self.season.get_text():
-            self.show_message_dialog("No Season number specified")
-            return None
-        try:
-            season = int(self.season.get_text())
-            special = False
-        except ValueError:
-            season = self.season.get_text()
-            special = True
-
-        if special:
-            new_directory = directory + str(season) + "/"
-        else:
-            new_directory = directory + "Season " + str(season) + "/"
-
-        if not update:
-            Popen(["mkdir", "-p", directory]).wait()
-            if not os.path.isdir(directory):
-                self.show_message_dialog("Error creating directory", "Was a valid directory string entered?")
-                return None
-            Popen(["mkdir", "-p", directory + ".icons"]).wait()
-
-        season_update = False
-        if update and os.path.isdir(new_directory):
-            season_update = True
-
-        if not season_update:
-            Popen(["mkdir", "-p", new_directory]).wait()
-
-        episodes = os.listdir(new_directory)
-        first_episode = len(episodes) + 1
-
-        main_icon = self.main_icon_location.get_text()
-        secondary_icon = self.secondary_icon_location.get_text()
-
-        if main_icon:
-            if self.get_icon(main_icon, directory + ".icons/", "media_manager.png") == "error":
-                self.show_message_dialog("Error retrieving image from source")
-                return None
-        if secondary_icon:
-            if self.get_icon(secondary_icon, directory + ".icons/",
-                             new_directory.rsplit("/", 2)[1] + ".png") == "error":
-                self.show_message_dialog("Error retrieving image from source")
-                return None
-
-        if main_icon or secondary_icon:
-            method = self.get_current_selected_combo_box_option(self.method_combo_box)
-            DeepIconizer(directory, method).iconize()
-
-        first_ep = self.episode.get_text()
-        if first_ep:
-            try:
-                first_episode = int(first_ep)
-            except ValueError:
-                self.messageBox("Not a valid episode number")
-                return None
-
-        return [directory, show, season, first_episode, special, new_directory]
-
-    @staticmethod
-    def get_icon(path, folder_icon_directory, icon_file):
-        """
-        Gets the icons specified by the user with either wget or cp
-        :param path: the path to the icon file
-        :param folder_icon_directory: the folder icon directory
-        :param icon_file: the icon file to which the icon will be saved to
-        :return void
-        """
-        if os.path.isfile(path):
-            if not path == folder_icon_directory + icon_file:
-                if os.path.isfile(folder_icon_directory + icon_file):
-                    Popen(["rm", folder_icon_directory + icon_file]).wait()
-                Popen(["cp", path, folder_icon_directory + icon_file]).wait()
-        else:
-            before = os.listdir(os.getcwd())
-            Popen(["wget", path]).wait()
-            after = os.listdir(os.getcwd())
-            new_file = ""
-            for file in after:
-                if file not in before:
-                    new_file = file
-                    break
-            Popen(["mv", new_file, folder_icon_directory + icon_file]).wait()
 
     def on_directory_changed(self, widget):
         """
@@ -345,30 +256,3 @@ class BatchDownloadManagerGUI(GenericGtkGui):
                 secondary_icon = directory + "/.icons/Season " + str(highest_season) + ".png"
                 if os.path.isfile(secondary_icon):
                     self.secondary_icon_location.set_text(secondary_icon)
-
-    @staticmethod
-    def xdcc_search(search_engine, search_term, list_store):
-        """
-        Conducts the XDCC search
-        :param search_engine: the search engine to be used
-        :param search_term: the search term
-        :param list_store: the list store to populate with the results
-        :return: the search result
-        """
-        if search_engine == "NIBL.co.uk":
-            search_result = NIBLGetter(search_term).search()
-        elif search_engine == "intel.haruhichan.com":
-            search_result = IntelGetter(search_term).search()
-        elif search_engine == "ixIRC.com":
-            search_result = IxIRCGetter(search_term).search()
-        else:
-            raise NotImplementedError("The selected search engine is not implemented")
-
-        list_store.clear()
-        i = 0
-        for result in search_result:
-            choice = (i,) + result.to_tuple()
-            list_store.append(list(choice))
-            i += 1
-
-        return search_result
