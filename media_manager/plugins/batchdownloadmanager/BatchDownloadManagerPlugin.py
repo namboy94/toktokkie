@@ -20,7 +20,7 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins.batchDownloadManager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
+from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
 from plugins.common.GenericPlugin import GenericPlugin
 
 

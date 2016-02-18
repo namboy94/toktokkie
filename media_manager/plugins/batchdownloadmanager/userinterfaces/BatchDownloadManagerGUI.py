@@ -23,14 +23,14 @@ This file is part of media-manager.
 import os
 from subprocess import Popen
 
-from plugins.batchDownloadManager.searchengines.IntelGetter import IntelGetter
-from plugins.batchDownloadManager.searchengines.IxIRCGetter import IxIRCGetter
-from plugins.batchDownloadManager.searchengines.NIBLGetter import NIBLGetter
-from plugins.batchDownloadManager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
+from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
+from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
+from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 
 from guitemplates.gtk.GenericGtkGui import GenericGtkGui
-from plugins.batchDownloadManager.downloaders.TwistedDownloader import TwistedDownloader
-from plugins.common.fileOps.FileMover import FileMover
+from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+from plugins.common.fileops.FileMover import FileMover
 from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
 

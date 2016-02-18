@@ -21,7 +21,7 @@ This file is part of media-manager.
 """
 
 import tvdb_api
-from plugins.common.fileOps.FileRenamer import FileRenamer
+from plugins.common.fileops.FileRenamer import FileRenamer
 
 
 class TVDBGetter(object):
