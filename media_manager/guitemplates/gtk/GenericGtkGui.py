@@ -266,26 +266,17 @@ class GenericGtkGui(Gtk.Window):
         return {"combo_box": combo_box, "list_store": option_store}
 
     @staticmethod
-    def generate_multi_list_box(options, arrange_sorted=True):
+    def generate_multi_list_box(options):
         """
         Generates a Multi List Box, consisting of scrollable columns and rows
-        :param arrange_sorted: can specify if the options will be sorted or not
-        :param options: A dictionary following the scheme {title: type}
+        :param options: A dictionary following the scheme {titles: [list], types: [list]}
         :return: A dictionary with the individual parts of the multi list box
                     scrollable: the actual widget
                     selection: the object keeping track of the selected options
                     list_store: the ListStore object containing all options
         """
-        types = ()
-        titles = []
-        if arrange_sorted:
-            for key in sorted(options.items()):
-                types += key[1]
-                titles.append(key[0])
-        else:
-            for key in options:
-                types += options[key]
-                titles.append(key)
+        types = tuple(options["types"])
+        titles = options["titles"]
 
         list_store = Gtk.ListStore(*types)
         tree_view = Gtk.TreeView.new_with_model(list_store.filter_new())
@@ -338,3 +329,18 @@ class GenericGtkGui(Gtk.Window):
         if combo_iter is None:
             return None
         return combo_box_list.get(combo_iter, 0)[0]
+
+    @staticmethod
+    def get_selected_multi_list_box_elements(multi_list_box):
+        """
+        Returns the selected elements from a multi list box
+        :param multi_list_box: the multi list box dictionary
+        :return: the selection as list of elements
+        """
+        tree_selection = multi_list_box["selection"]
+        selected = []
+        (model, path_list) = tree_selection.get_selected_rows()
+        for path in path_list:
+            tree_iter = model.get_iter(path)
+            selected.append(model.get_value(tree_iter, 0))
+        return selected

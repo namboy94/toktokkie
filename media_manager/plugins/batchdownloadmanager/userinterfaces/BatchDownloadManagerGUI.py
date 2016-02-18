@@ -154,11 +154,11 @@ class BatchDownloadManagerGUI(GenericGtkGui):
         self.grid.attach(self.download_button, 0, 90, 40, 5)
 
         self.search_results = self.generate_multi_list_box(
-            {"#": (int,), "Bot": (str,), "Filename": (str,), "Pack": (int,), "Size": (str,)})
-        self.grid.attach(self.search_results["scrollable"], 45, 0, 60, 60)
+            {"types": [int, str, int, str, str], "titles": ["#", "Bot", "Pack", "Size", "Filename"]})
+        self.grid.attach(self.search_results["scrollable"], 45, 0, 60, 100)
 
-        self.directory_content = self.generate_multi_list_box({"File Name": (str,)})
-        self.grid.attach(self.directory_content["scrollable"], 110, 0, 20, 60)
+        self.directory_content = self.generate_multi_list_box({"types": [str], "titles": ["File Name"]})
+        self.grid.attach(self.directory_content["scrollable"], 110, 0, 20, 100)
 
     def search_xdcc(self, widget):
         """
@@ -184,7 +184,11 @@ class BatchDownloadManagerGUI(GenericGtkGui):
             return
         directory, show, season, first_episode, special, new_directory = preparation
 
-        packs = self.get_selected(self.search_result, self.search_results["selection"])
+        selected_packs = self.get_selected_multi_list_box_elements(self.search_results["selection"])
+        packs = []
+        for selection in selected_packs:
+            packs.append(self.search_result[selection])
+
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
         files = []
         if downloader == "Hexchat Plugin":
@@ -368,21 +372,3 @@ class BatchDownloadManagerGUI(GenericGtkGui):
             i += 1
 
         return search_result
-    
-    @staticmethod
-    def get_selected(search_result, tree_selection):
-        """
-        Returns the selected elements from the tree selection
-        :param search_result: the search result list
-        :param tree_selection: the tree selection
-        :return: the selection as list of packs
-        """
-        selected = []
-        (model, path_list) = tree_selection.get_selected_rows()
-        for path in path_list:
-            tree_iter = model.get_iter(path)
-            selected.append(model.get_value(tree_iter, 0))
-        packs = []
-        for selection in selected:
-            packs.append(search_result[selection])
-        return packs
