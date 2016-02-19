@@ -63,7 +63,10 @@ class Episode(object):
         Renames the original file
         :return void
         """
-        self.episode_file = FileRenamer.rename_file(self.episode_file, self.new_name)
+        try:
+            self.episode_file = FileRenamer.rename_file(self.episode_file, self.new_name)
+        except FileNotFoundError:
+            self.episode_file = FileRenamer.rename_file(self.episode_file.replace(' ', '_'), self.new_name)
         
     def print(self):
         """

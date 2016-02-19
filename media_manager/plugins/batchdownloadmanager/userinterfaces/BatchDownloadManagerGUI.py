@@ -217,17 +217,15 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.directory_content["list_store"].clear()
         if os.path.isdir(directory):
             highest_season = 1
-            print(directory)
             while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
                 highest_season += 1
             if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
-                print(directory)
                 children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
                 for child in children:
                     self.directory_content["list_store"].append([child])
                 self.episode.set_text(str(len(children) + 1))
                 self.season.set_text(str(highest_season))
-                main_icon = os.path.join(directory, ".icons", "media_manager.png")
+                main_icon = os.path.join(directory, ".icons", "main.png")
                 if os.path.isfile(main_icon):
                     self.main_icon_location.set_text(main_icon)
                 secondary_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
