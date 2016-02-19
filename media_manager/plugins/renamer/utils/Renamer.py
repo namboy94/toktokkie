@@ -52,7 +52,7 @@ class Renamer(object):
         if not os.path.isdir(self.directory):
             raise Exception("Not a directory")
 
-        show_name = self.directory.rsplit("/", 1)[1]
+        show_name = os.path.basename(self.directory)
 
         seasons = os.listdir(self.directory)
         seasons = self.format_seasons(seasons)
@@ -62,9 +62,9 @@ class Renamer(object):
             episodes.sort(key=lambda x: x)
             i = 1
             for episode in episodes:
-                episode_dir = season + "/" + episode
+                episode_dir = os.path.join(season, episode)
                 episode_number = i
-                season_number = season.lower().split("/", 1)[1].split("season ")[1]
+                season_number = os.path.basename(season).lower().split("season ")[1]
                 self.episodes.append(Episode(episode_dir, episode_number, season_number, show_name))
                 i += 1
 
@@ -110,5 +110,5 @@ class Renamer(object):
         new_seasons = []
         for season in seasons:
             if "season" in season.lower():
-                new_seasons.append(self.directory + "/" + season)
+                new_seasons.append(os.path.join(self.directory, season))
         return new_seasons

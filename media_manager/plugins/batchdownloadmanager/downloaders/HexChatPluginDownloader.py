@@ -183,5 +183,5 @@ class HexChatPluginDownloader(object):
                 self.episode_number += 1
         else:
             for pack in self.packs:
-                downloaded.append(self.download_dir + pack.filename)
+                downloaded.append(os.path.join(self.download_dir, pack.filename))
         return downloaded
