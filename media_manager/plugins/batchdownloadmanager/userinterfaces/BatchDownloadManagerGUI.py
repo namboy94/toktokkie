@@ -23,23 +23,11 @@ This file is part of media-manager.
 import os
 
 try:
-    from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
-    from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
-    from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
-    from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
-    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
-    from media_manager.plugins.common.fileops.FileMover import FileMover
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
 except ImportError:
-    from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
-    from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
-    from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
-    from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from guitemplates.gtk.GenericGtkGui import GenericGtkGui
-    from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
-    from plugins.common.fileops.FileMover import FileMover
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
 
@@ -203,8 +191,6 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
             self.show_message_dialog(preparation[0], preparation[1])
             return
 
-        directory, show, season, first_episode, special, new_directory = preparation
-
         selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
         packs = []
         for selection in selected_packs:
@@ -213,20 +199,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
             return
 
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
-        files = []
-        if downloader == "Hexchat Plugin":
-            if self.rename_check.get_active() and not special:
-                files = HexChatPluginDownloader(packs, show, first_episode, season).download_loop()
-            else:
-                files = HexChatPluginDownloader(packs).download_loop()
-        elif downloader == "Twisted":
-            if self.rename_check.get_active() and not special:
-                files = TwistedDownloader(packs, show, first_episode, season).download_loop()
-            else:
-                files = TwistedDownloader(packs).download_loop()
-
-        for file in files:
-            FileMover.move_file(file, new_directory)
+        self.start_download_process(preparation, downloader, packs, self.rename_check.get_active())
 
     def on_directory_changed(self, widget):
         """
@@ -237,28 +210,27 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         if widget is None:
             return
         directory = self.destination.get_text()
-        try:
-            show_name = directory.rsplit("/", 1)[1]
-        except IndexError:
-            show_name = directory.rsplit("/", 1)[0]
+        show_name = os.path.basename(directory)
         self.show.set_text(show_name)
         self.search_field.set_text(show_name + " 1080")
 
         self.directory_content["list_store"].clear()
         if os.path.isdir(directory):
             highest_season = 1
-            while os.path.isdir(directory + "/Season" + str(highest_season + 1)):
+            print(directory)
+            while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
                 highest_season += 1
-            if os.path.isdir(directory + "/Season " + str(highest_season)):
-                children = os.listdir(directory + "/Season " + str(highest_season))
+            if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
+                print(directory)
+                children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
                 for child in children:
                     self.directory_content["list_store"].append([child])
                 self.episode.set_text(str(len(children) + 1))
                 self.season.set_text(str(highest_season))
-                main_icon = directory + "/.icons/media_manager.png"
+                main_icon = os.path.join(directory, ".icons", "media_manager.png")
                 if os.path.isfile(main_icon):
                     self.main_icon_location.set_text(main_icon)
-                secondary_icon = directory + "/.icons/Season " + str(highest_season) + ".png"
+                secondary_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
                 if os.path.isfile(secondary_icon):
                     self.secondary_icon_location.set_text(secondary_icon)
 

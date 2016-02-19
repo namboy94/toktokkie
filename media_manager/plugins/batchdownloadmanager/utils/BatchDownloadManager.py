@@ -25,15 +25,21 @@ import os
 from subprocess import Popen
 
 try:
+    from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
     from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
     from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from media_manager.plugins.common.fileops.FileMover import FileMover
 except ImportError:
+    from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+    from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
     from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
     from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from plugins.common.fileops.FileMover import FileMover
 
 
 class BatchDownloadManager(object):
@@ -102,8 +108,6 @@ class BatchDownloadManager(object):
                   special: if it's special,
                   new_directory: and the new directory}
         """
-        if not directory.endswith("/"):
-            directory += "/"
         if os.path.isdir(directory):
             update = True
         else:
@@ -125,7 +129,7 @@ class BatchDownloadManager(object):
         if special:
             new_directory = os.path.join(directory, str(season))
         else:
-            new_directory = os.path.join(directory, "Season", str(season))
+            new_directory = os.path.join(directory, "Season " + str(season))
 
         if not update:
             os.makedirs(directory)
@@ -144,11 +148,12 @@ class BatchDownloadManager(object):
         first_episode = len(episodes) + 1
 
         if main_icon:
-            if BatchDownloadManager.get_icon(main_icon, directory + ".icons/", "media_manager.png") == "error":
+            if BatchDownloadManager.get_icon(main_icon, os.path.join(directory, ".icons"), "media_manager.png")\
+                    == "error":
                 return "Error retrieving image from source", ""
         if secondary_icon:
-            if BatchDownloadManager.get_icon(secondary_icon, directory + ".icons/",
-                                             new_directory.rsplit("/", 2)[1] + ".png") == "error":
+            if BatchDownloadManager.get_icon(secondary_icon, os.path.join(directory, ".icons"),
+                                             os.path.dirname(new_directory) + ".png") == "error":
                 return "Error retrieving image from source", ""
 
         if main_icon or secondary_icon:
@@ -162,3 +167,30 @@ class BatchDownloadManager(object):
 
         return {"directory": directory, "show": show, "season": season, "first_episode": first_episode,
                 "special": special, "new_directory": new_directory}
+
+    @staticmethod
+    def start_download_process(preparation, downloader, packs, auto_rename):
+        """
+        Starts the XDCC download
+        :param preparation: the preparation dictionary created beforehand
+        :param downloader: the downloader to use
+        :param packs: the packs to download
+        :param auto_rename: bool that determines if the files will be auto-renamed
+        :return: void
+        """
+        files = []
+        if downloader == "Hexchat Plugin":
+            if auto_rename and not preparation["special"]:
+                files = HexChatPluginDownloader(packs, preparation["show"], preparation["first_episode"],
+                                                preparation["season"]).download_loop()
+            else:
+                files = HexChatPluginDownloader(packs).download_loop()
+        elif downloader == "Twisted":
+            if auto_rename and not preparation["special"]:
+                files = TwistedDownloader(packs, preparation["show"], preparation["first_episode"],
+                                          preparation["season"]).download_loop()
+            else:
+                files = TwistedDownloader(packs).download_loop()
+
+        for file in files:
+            FileMover.move_file(file, preparation["new_directory"])

@@ -50,11 +50,12 @@ class HexChatPluginDownloader(object):
             self.hexchat_config_location = os.path.join(os.path.expanduser('~'), ".config", "hexchat", "hexchat.conf")
         elif platform.system() == "Windows":
             self.script_location = os.path.join(os.path.expanduser('~'),
-                                                "AppData", "Roaming" "HexChat", "addons", "dlscript.py")
+                                                "AppData", "Roaming", "HexChat", "addons", "dlscript.py")
             self.hexchat_config_location = os.path.join(os.path.expanduser('~'),
-                                                        "AppData", "Roaming" "HexChat", "hexchat.conf")
+                                                        "AppData", "Roaming", "HexChat", "hexchat.conf")
         self.packs = packs
         self.script = open(self.script_location, 'w')
+        self.download_dir = ""
 
         hexchat_config = open(self.hexchat_config_location, 'r')
         content = hexchat_config.read()
@@ -65,8 +66,14 @@ class HexChatPluginDownloader(object):
                 new_content.append("gui_join_dialog = 0")
             elif "dcc_auto_recv" in line:
                 new_content.append("dcc_auto_recv = 2")
+            elif "gui_slist_skip" in line:
+                new_content.append("gui_slist_skip = 1")
+            elif "dcc_dir = " in line:
+                self.download_dir = line.split("dcc_dir = ")[1].split("\n")[0]
+                new_content.append(line)
             else:
                 new_content.append(line)
+        new_content.pop()
 
         hexchat_config = open(self.hexchat_config_location, 'w')
         for line in new_content:
@@ -79,13 +86,6 @@ class HexChatPluginDownloader(object):
             self.show_name = show_name
             self.episode_number = int(episode_number)
             self.season_number = int(season_number)
-            self.download_dir = ""
-            hexchat_config = open(self.hexchat_config_location, 'r')
-            for line in hexchat_config:
-                if "dcc_dir = " in line:
-                    self.download_dir = line.split("dcc_dir = ")[1].split("\n")[0]
-                    break
-            hexchat_config.close()
 
     def __write_start__(self):
         """

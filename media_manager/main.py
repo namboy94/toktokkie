@@ -20,8 +20,10 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import configparser
+
 import os
+import sys
+import configparser
 from os.path import expanduser
 
 try:
@@ -59,8 +61,16 @@ def main():
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Start the program
-    gui = MainGui(active_plugins)
-    gui.start()
+    if len(sys.argv) > 1 and sys.argv[1] == "-tk":
+        try:
+            from mainuserinterfaces.MainTkGui import MainTkGui
+        except ImportError:
+            from media_manager.mainuserinterfaces.MainTkGui import MainTkGui
+        gui = MainTkGui(active_plugins)
+        gui.start()
+    else:
+        gui = MainGui(active_plugins)
+        gui.start()
 
 if __name__ == '__main__':
     main()

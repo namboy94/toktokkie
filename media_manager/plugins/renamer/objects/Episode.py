@@ -20,6 +20,8 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+
 try:
     from media_manager.plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
     from media_manager.plugins.common.fileops.FileRenamer import FileRenamer
@@ -50,7 +52,7 @@ class Episode(object):
 
         self.tvdb_getter = TVDBGetter(self.show_name, self.season_number, self.episode_number)
 
-        self.old_name = episode_file.rsplit("/", 1)[1]
+        self.old_name = os.path.basename(episode_file)
         self.tvdb_name = ""
         self.new_name = ""
         self.__generate_tvdb_name__()
