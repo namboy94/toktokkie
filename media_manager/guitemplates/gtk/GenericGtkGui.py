@@ -192,31 +192,6 @@ class GenericGtkGui(Gtk.Window):
         else:
             return None
 
-    def show_password_box(self, message):
-        """
-        Shows a text box asking for a password and return the password
-        :param message: The message addressed to the user to be displayed
-        :return: the password
-        """
-        dialog = Gtk.MessageDialog(self, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                   Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL, message)
-        dialog_box = dialog.get_content_area()
-        user_entry = Gtk.Entry()
-        user_entry.set_visibility(False)
-        user_entry.set_invisible_char("*")
-        user_entry.set_size_request(250, 0)
-        dialog_box.pack_end(user_entry, False, False, 0)
-
-        dialog.show_all()
-
-        response = dialog.run()
-        response_text = user_entry.get_text()
-        dialog.destroy()
-        if (response == Gtk.ResponseType.OK) and (response_text != ''):
-            return response_text
-        else:
-            return None
-
     @staticmethod
     def generate_label(label_text):
         """

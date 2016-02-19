@@ -21,6 +21,10 @@ This file is part of media-manager.
 """
 
 from tkinter import *
+from tkinter import messagebox
+from tkinter import filedialog
+from tkinter import simpledialog
+from tkinter import ttk
 from functools import partial
 
 
@@ -68,53 +72,54 @@ class GenericTkGui(Tk):
 
     # Helper methods
 
-    def show_message_dialog(self, primary_message, secondary_message=""):
+    @staticmethod
+    def show_message_dialog(title, message):
         """
-        Opens a message box displaying a primary and a secondary message
-        :param primary_message: the primary message to be displayed
-        :param secondary_message: the secondary message to be displayed
+        Opens a message box displaying a title and a message
+        :param title: the title to be displayed
+        :param message: the message to be displayed
         :return: void
         """
-        raise NotImplementedError()
+        messagebox.showinfo(title, message)
 
-    def show_y_n_dialog(self, primary_message, secondary_message=""):
+    @staticmethod
+    def show_y_n_dialog(title, message):
         """
         Opens a yes/no dialog
-        :param primary_message: the primary message to be displayed
-        :param secondary_message: the secondary message to be displayed
+        :param title: the title text to be displayed
+        :param message: the message to be displayed
         :return: True, if yes was selected, False otherwise
         """
-        raise NotImplementedError()
+        if messagebox.askyesno(title, message):
+            return True
+        else:
+            return False
 
-    def show_file_chooser_dialog(self):
+    @staticmethod
+    def show_file_chooser_dialog():
         """
         Creates a file chooser dialog
         :return: the selected file path
         """
-        raise NotImplementedError()
+        return filedialog.askopenfile()
 
-    def show_directory_chooser_dialog(self):
+    @staticmethod
+    def show_directory_chooser_dialog():
         """
         Creates a directory chooser dialog
         :return: the selected directory path
         """
-        raise NotImplementedError()
+        return filedialog.askdirectory()
 
-    def show_text_box(self, message):
+    @staticmethod
+    def show_text_box(title, message):
         """
         Shows a text box and retrieves a value entered by the user
+        :param title: The title to be displayed
         :param message: The message addressed to the user to be displayed
         :return: the entered string
         """
-        raise NotImplementedError()
-
-    def show_password_box(self, message):
-        """
-        Shows a text box asking for a password and return the password
-        :param message: The message addressed to the user to be displayed
-        :return: the password
-        """
-        raise NotImplementedError()
+        return simpledialog.askstring(title, message)
 
     def generate_label(self, label_text):
         """
@@ -148,8 +153,7 @@ class GenericTkGui(Tk):
             entry.bind('<Return>', partial(command, additional_args))
         return entry
 
-    @staticmethod
-    def generate_combo_box(options):
+    def generate_combo_box(self, options):
         """
         Generates a combo box with a given amount of options
         :param options: a list of (string) options to be displayed
@@ -157,7 +161,10 @@ class GenericTkGui(Tk):
                     combo_box: the Combo Box object
                     list_store: the ListStore object that stores the options for the combo box
         """
-        raise NotImplementedError()
+        combo_box = ttk.Combobox(self)
+        combo_box['values'] = tuple(options)
+        combo_box.state(['readonly'])
+        return combo_box
 
     @staticmethod
     def generate_multi_list_box(options):
