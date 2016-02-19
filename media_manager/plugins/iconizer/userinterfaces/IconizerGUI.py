@@ -70,8 +70,6 @@ class IconizerGUI(GenericGtkGui):
             return
 
         directory = self.directory_entry.get_text()
-        if not directory.endswith("/"):
-            directory += "/"
         if not os.path.isdir(directory):
             self.show_message_dialog("Not a directory!")
             return
@@ -84,7 +82,7 @@ class IconizerGUI(GenericGtkGui):
 
         if multiple:
             for child in children:
-                self.iconize_dir(directory + child)
+                self.iconize_dir(os.path.join(directory, child))
         else:
             self.iconize_dir(directory)
 

@@ -42,16 +42,14 @@ class DeepIconizer(object):
         :return: void
         """
         self.directory = directory
-        if not directory.endswith("/"): 
-            self.directory += "/"
 
         self.concrete_iconizer = None
         if method == "Nautilus" or method == "Nemo":
             self.concrete_iconizer = NautilusNemoIconizer
         else:
             raise NotImplementedError("Iconizing Method not implemented")
-        self.folder_icon_directory = self.directory + ".icons/"
-        self.concrete_iconizer.iconize(self.folder_icon_directory, self.folder_icon_directory + "folder")
+        self.folder_icon_directory = os.path.join(self.directory, ".icons")
+        self.concrete_iconizer.iconize(self.folder_icon_directory, os.path.join(self.folder_icon_directory, "folder"))
 
     def iconize(self, directory=None):
         """
@@ -60,13 +58,13 @@ class DeepIconizer(object):
         """
         if directory is None:
             directory = self.directory
-            self.concrete_iconizer.iconize(directory, self.folder_icon_directory + "media_manager")
+            self.concrete_iconizer.iconize(directory, os.path.join(self.folder_icon_directory, "main"))
 
         children = self.get_children(directory)
 
         i = 0
         while i < len(children[0]) and i < len(children[1]):
-            self.concrete_iconizer.iconize(children[1][i], self.folder_icon_directory + children[0][i])
+            self.concrete_iconizer.iconize(children[1][i], os.path.join(self.folder_icon_directory, children[0][i]))
             self.iconize(children[1][i])
             i += 1
 
@@ -82,7 +80,7 @@ class DeepIconizer(object):
             children_names.remove(".icons")
         children_dirs = []
         for child in children_names:
-            child_dir = directory + child + "/"
+            child_dir = os.path.join(directory, child)
             if not os.path.isdir(child_dir):
                 children_names.remove(child)
                 continue

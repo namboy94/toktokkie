@@ -75,8 +75,6 @@ class IconizerTkGui(GenericTkGui):
             return
 
         directory = self.directory_entry.get()
-        if not directory.endswith("/"):
-            directory += "/"
         if not os.path.isdir(directory):
             self.show_message_dialog("Not a directory!", "Please enter a valid directory path.")
             return
@@ -89,7 +87,7 @@ class IconizerTkGui(GenericTkGui):
 
         if multiple:
             for child in children:
-                self.iconize_dir(directory + child)
+                self.iconize_dir(os.path.join(directory, child))
         else:
             self.iconize_dir(directory)
 
