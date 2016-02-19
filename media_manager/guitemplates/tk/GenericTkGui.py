@@ -48,8 +48,6 @@ class GenericTkGui(Tk):
         self.title(title)
         self.parent = parent
         self.hide_parent = hide_parent
-        Grid.rowconfigure(self, 0, weight=1)
-        Grid.columnconfigure(self, 0, weight=1)
         self.lay_out()
 
     def lay_out(self):
@@ -141,16 +139,21 @@ class GenericTkGui(Tk):
         """
         return Button(self, text=button_text, command=partial(command, additional_args))
 
-    def generate_text_entry(self, defaulttext="", command=None, *additional_args):
+    def generate_text_entry(self, defaulttext="", command=None, *additional_args, change_command=None):
         """
         Generates a GTK Text Entry
+        :param change_command: command run when the entry gets changed
         :param defaulttext: The text to be displayed by default
         :param command: The command to be executed if the enter key is pressed when this
                         text entry is in focus.
         :param additional_args: additional arguments to be passed to the command
         :return: the Entry object
         """
-        entry = Entry(self, text=defaulttext)
+        text_var = StringVar(self, defaulttext)
+        if change_command is not None:
+            text_var.trace("w", lambda name, index, mode, sv=text_var: change_command(sv))
+        entry = Entry(self, textvariable=text_var)
+        entry.var = text_var
         if command is not None:
             entry.bind('<Return>', partial(command, additional_args))
         return entry
@@ -169,26 +172,16 @@ class GenericTkGui(Tk):
         combo_box.state(['readonly'])
         return combo_box
 
-    @staticmethod
-    def generate_multi_list_box(options):
+    def generate_multi_selectable_list_box(self, options):
         """
-        Generates a Multi List Box, consisting of scrollable columns and rows
-        :param options: A dictionary following the scheme {titles: [list], types: [list]}
-        :return: A dictionary with the individual parts of the multi list box
-                    scrollable: the actual widget
-                    selection: the object keeping track of the selected options
-                    list_store: the ListStore object containing all options
+        Generates a Multiple selectable List Box
+        :param options: A list of initial values
+        :return:the multi selectable list box
         """
-        raise NotImplementedError()
-
-    @staticmethod
-    def generate_radio_button(text):
-        """
-        Generates a Radio Button
-        :param text: the text to be displayed together with the radio button
-        :return: the RadioButton object
-        """
-        raise NotImplementedError()
+        list_box = Listbox(self, selectmode=MULTIPLE)
+        for item in options:
+            list_box.insert(END, item)
+        return list_box
 
     def generate_check_box(self, text, active=False):
         """
@@ -204,12 +197,24 @@ class GenericTkGui(Tk):
             check_button.select()
         return check_button
 
-
     @staticmethod
-    def get_selected_multi_list_box_elements(multi_list_box):
+    def get_selected_multi_selectable_list_box_elements(multi_selectable_list_box):
         """
         Returns the selected elements from a multi list box
-        :param multi_list_box: the multi list box dictionary
+        :param multi_selectable_list_box: the multi list box dictionary
         :return: the selection as list of elements
         """
-        raise NotImplementedError()
+        items = map(int, multi_selectable_list_box.curselection())
+        selected = {}
+        for item in items:
+            selected[item] = (multi_selectable_list_box.get(item))
+        return selected
+
+    @staticmethod
+    def clear_list_box(list_box):
+        """
+        Clears a list box (in-place)
+        :param list_box: the list box to be cleared
+        :return: void
+        """
+        list_box.delete(0, END)
