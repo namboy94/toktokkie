@@ -75,10 +75,12 @@ class HexChatPluginDownloader(object):
                 new_content.append(line)
         new_content.pop()
 
-        hexchat_config = open(self.hexchat_config_location, 'w')
-        for line in new_content:
-            hexchat_config.write(line + "\n")
-        hexchat_config.close()
+        # TODO get this to work on Windows
+        if platform.system() == "Linux":
+            hexchat_config = open(self.hexchat_config_location, 'w')
+            for line in new_content:
+                hexchat_config.write(line + "\n")
+            hexchat_config.close()
 
         self.auto_rename = False
         if show_name and episode_number > 0 and season_number > 0:

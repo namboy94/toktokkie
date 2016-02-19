@@ -205,7 +205,7 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
             return
 
         downloader = self.download_engine_combo_box.get()
-        self.start_download_process(preparation, downloader, packs, self.rename_check.get())
+        self.start_download_process(preparation, downloader, packs, self.rename_check. var.get())
 
     def on_directory_changed(self, widget):
         """
