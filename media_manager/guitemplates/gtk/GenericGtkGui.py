@@ -21,9 +21,14 @@ This file is part of media-manager.
 """
 
 # imports
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+try:
+    # noinspection PyUnresolvedReferences
+    import gi
+    gi.require_version('Gtk', '3.0')
+    # noinspection PyUnresolvedReferences
+    from gi.repository import Gtk, Gdk
+except ImportError:
+    print()  # Using Tk
 
 
 class GenericGtkGui(Gtk.Window):
