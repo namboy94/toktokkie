@@ -48,6 +48,8 @@ class GenericTkGui(Tk):
         self.title(title)
         self.parent = parent
         self.hide_parent = hide_parent
+        Grid.rowconfigure(self, 0, weight=1)
+        Grid.columnconfigure(self, 0, weight=1)
         self.lay_out()
 
     def lay_out(self):
@@ -188,15 +190,19 @@ class GenericTkGui(Tk):
         """
         raise NotImplementedError()
 
-    @staticmethod
-    def generate_check_box(text, active=False):
+    def generate_check_box(self, text, active=False):
         """
         Generates a Checkbox
         :param text: the text to be displayed beside the checkbox
         :param active: the default state of the checkbox
         :return: the CheckButton object
         """
-        raise NotImplementedError()
+        var = IntVar()
+        check_button = Checkbutton(self, text=text, variable=var)
+        check_button.var = var
+        if active:
+            check_button.select()
+        return check_button
 
 
     @staticmethod

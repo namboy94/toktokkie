@@ -23,9 +23,12 @@ This file is part of media-manager.
 try:
     from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI\
         import BatchDownloadManagerGUI
+    from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui\
+        import BatchDownloadManagerTkGui
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
 except ImportError:
     from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
+    from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui import BatchDownloadManagerTkGui
     from plugins.common.GenericPlugin import GenericPlugin
 
 
@@ -59,3 +62,11 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :return: void
         """
         BatchDownloadManagerGUI(parent_gui).start()
+
+    def start_tk_gui(self, parent_gui):
+        """
+        Starts the GTK GUI, while hiding the parent until finished
+        :param parent_gui: the parent gui window
+        :return: void
+        """
+        BatchDownloadManagerTkGui(parent_gui).start()

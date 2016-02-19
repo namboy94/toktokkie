@@ -34,6 +34,16 @@ except ImportError:
     from plugins.PluginManager import PluginManager
     from startup.Installer import Installer
 
+try:
+    # noinspection PyUnresolvedReferences
+    import gi
+    gi.require_version('Gtk', '3.0')
+    # noinspection PyUnresolvedReferences
+    from gi.repository import Gtk
+    main_gui = MainGUI
+except ImportError:
+    main_gui = MainTkGui
+
 
 def main():
     """
@@ -50,12 +60,10 @@ def main():
     plugin_config = dict(config.items("plugins"))
     active_plugins = PluginManager(plugin_config).get_plugins()
 
+    # Test tk
+    main_gui = MainTkGui
     # Start the program
-    """
-    gui = MainGUI(active_plugins)
-    gui.start()
-    """
-    gui = MainTkGui(active_plugins)
+    gui = main_gui(active_plugins)
     gui.start()
 
 if __name__ == '__main__':

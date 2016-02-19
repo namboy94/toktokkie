@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 import os
+from tkinter import END
 
 try:
     from media_manager.guitemplates.tk.GenericTkGui import GenericTkGui
@@ -41,6 +42,7 @@ class IconizerTkGui(GenericTkGui):
         :return: void
         """
         self.directory_entry = None
+        self.directory_browse_button = None
         self.start_button = None
         self.iconizer_method_combo_box = None
         super().__init__("Iconizer", parent, True)
@@ -52,7 +54,10 @@ class IconizerTkGui(GenericTkGui):
         """
 
         self.directory_entry = self.generate_text_entry("Enter Directory here", self.iconize_start)
-        self.directory_entry.grid(columnspan=3, rowspan=2, column=0, row=0)
+        self.directory_entry.grid(columnspan=3, column=0, row=0)
+
+        self.directory_browse_button = self.generate_simple_button("Browse", self.browse_directory)
+        self.directory_browse_button.grid(column=1, row=1)
 
         self.start_button = self.generate_simple_button("Start", self.iconize_start)
         self.start_button.grid(column=3, row=1)
@@ -104,3 +109,16 @@ class IconizerTkGui(GenericTkGui):
             print("Error, " + directory + " has no subdirectory \".icons\"")
 
         DeepIconizer(directory, method).iconize()
+
+    def browse_directory(self, widget):
+        """
+        Opens a directory browser dialog.
+        :param widget: the button that started this mess
+        :return: void
+        """
+        if widget is None:
+            return
+
+        directory = self.show_directory_chooser_dialog()
+        self.directory_entry.delete(0, END)
+        self.directory_entry.insert(0, directory)
