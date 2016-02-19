@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 import os
+import platform
 
 try:
     from media_manager.plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
@@ -88,3 +89,12 @@ class DeepIconizer(object):
             children_dirs.append(child_dir)
 
         return [children_names, children_dirs]
+
+    @staticmethod
+    def get_iconizer_options():
+        if platform.system() == "Linux":
+            return ["Nautilus", "Nemo"]
+        elif platform.system() == "Windows":
+            return ["Windows"]
+        else:
+            return []

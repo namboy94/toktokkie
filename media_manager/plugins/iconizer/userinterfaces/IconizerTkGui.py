@@ -62,7 +62,7 @@ class IconizerTkGui(GenericTkGui):
         self.start_button = self.generate_simple_button("Start", self.iconize_start)
         self.start_button.grid(column=3, row=1)
 
-        self.iconizer_method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
+        self.iconizer_method_combo_box = self.generate_combo_box(DeepIconizer.get_iconizer_options())
         self.iconizer_method_combo_box.grid(column=3, row=0)
 
     def iconize_start(self, widget):

@@ -144,7 +144,7 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         self.main_icon_location = self.generate_text_entry("")
         self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
-        self.method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
+        self.method_combo_box = self.generate_combo_box(DeepIconizer.get_iconizer_options())
         self.main_icon_label.grid(columnspan=2, column=0, row=9, sticky=W + E + N + S)
         self.secondary_icon_label.grid(columnspan=2, column=0, row=10, sticky=W + E + N + S)
         self.main_icon_location.grid(columnspan=2, column=2, row=9, sticky=W + E + N + S)
