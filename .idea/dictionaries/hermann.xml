@@ -13,6 +13,7 @@
       <w>filesize</w>
       <w>fsutil</w>
       <w>getenv</w>
+      <w>gobject</w>
       <w>gvfs</w>
       <w>haruhichan</w>
       <w>hexchat</w>
@@ -34,12 +35,14 @@
       <w>nibl</w>
       <w>packlists</w>
       <w>packnumber</w>
+      <w>pacman</w>
       <w>renamer</w>
       <w>rizon</w>
       <w>searchdownload</w>
       <w>slist</w>
       <w>temlett</w>
       <w>turcot</w>
+      <w>uncheck</w>
       <w>userdata</w>
       <w>wget</w>
       <w>writestart</w>
