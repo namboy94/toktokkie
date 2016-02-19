@@ -4,10 +4,12 @@
       <w>beautifulsoup</w>
       <w>botname</w>
       <w>confirmer</w>
+      <w>createnew</w>
       <w>defaulttext</w>
       <w>episodename</w>
       <w>executer</w>
       <w>filesize</w>
+      <w>fsutil</w>
       <w>getenv</w>
       <w>gvfs</w>
       <w>haruhichan</w>
