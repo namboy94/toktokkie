@@ -24,25 +24,22 @@ import configparser
 import os
 
 try:
-    from media_manager.mainuserinterfaces.MainGUI import MainGUI
-    from media_manager.mainuserinterfaces.MainTkGui import MainTkGui
     from media_manager.plugins.PluginManager import PluginManager
     from media_manager.startup.Installer import Installer
 except ImportError:
-    from mainuserinterfaces.MainGUI import MainGUI
-    from mainuserinterfaces.MainTkGui import MainTkGui
     from plugins.PluginManager import PluginManager
     from startup.Installer import Installer
 
 try:
-    # noinspection PyUnresolvedReferences
-    import gi
-    gi.require_version('Gtk', '3.0')
-    # noinspection PyUnresolvedReferences
-    from gi.repository import Gtk
-    main_gui = MainGUI
+    from media_manager.mainuserinterfaces.MainGUI import MainGUI as MainGui
 except ImportError:
-    main_gui = MainTkGui
+    try:
+        from media_manager.mainuserinterfaces.MainTkGui import MainTkGui as MainGui
+    except ImportError:
+        try:
+            from mainuserinterfaces.MainGUI import MainGUI as MainGui
+        except ImportError:
+            from mainuserinterfaces.MainTkGui import MainTkGui as MainGui
 
 
 def main():
@@ -60,10 +57,8 @@ def main():
     plugin_config = dict(config.items("plugins"))
     active_plugins = PluginManager(plugin_config).get_plugins()
 
-    # Test tk
-    main_gui = MainTkGui
     # Start the program
-    gui = main_gui(active_plugins)
+    gui = MainGui(active_plugins)
     gui.start()
 
 if __name__ == '__main__':
