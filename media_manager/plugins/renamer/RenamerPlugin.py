@@ -23,9 +23,11 @@ This file is part of media-manager.
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+    from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
     from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+    from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui
 
 
 class RenamerPlugin(GenericPlugin):
@@ -53,8 +55,16 @@ class RenamerPlugin(GenericPlugin):
 
     def start_gtk_gui(self, parent_gui):
         """
-        Starts the GUI, while hiding the parent until finished
+        Starts the Gtk GUI, while hiding the parent until finished
         :param parent_gui: the parent gui window
         :return void
         """
         RenamerGUI(parent_gui).start()
+
+    def start_tk_gui(self, parent_gui):
+        """
+        Starts the Tk GUI, while hiding the parent until finished
+        :param parent_gui: the parent gui window
+        :return void
+        """
+        RenamerTkGui(parent_gui).start()
