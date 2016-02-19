@@ -44,17 +44,9 @@ class GenericPlugin(object):
         """
         raise NotImplementedError()
 
-    def start_gtk_gui(self, parent_gui):
+    def start_gui(self, parent_gui):
         """
-        Starts the Gtk GUI of the plugin
-        :param parent_gui: the gui's parent
-        :return: void
-        """
-        raise NotImplementedError()
-
-    def start_tk_gui(self, parent_gui):
-        """
-        Starts the Tk GUI of the plugin
+        Starts the GUI of the plugin
         :param parent_gui: the gui's parent
         :return: void
         """

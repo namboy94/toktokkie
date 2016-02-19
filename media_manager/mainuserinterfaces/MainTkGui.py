@@ -62,7 +62,7 @@ class MainTkGui(GenericTkGui):
                 :param plugin: the plugin to which the button is assigned
                 :return: void
                 """
-                plugin[0].start_tk_gui(self)
+                plugin[0].start_gui(self)
 
             button = self.generate_simple_button(self.plugins[i].get_name(), start_button_function, self.plugins[i])
             button.grid(column=column, row=row)

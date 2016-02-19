@@ -22,12 +22,19 @@ This file is part of media-manager.
 
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
-    from media_manager.plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
-    from plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui
+
+try:
+    from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI as PluginGui
+except ImportError:
+    try:
+        from media_manager.plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as PluginGui
+    except ImportError:
+        try:
+            from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI as PluginGui
+        except ImportError:
+            from plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as PluginGui
 
 
 class IconizerPlugin(GenericPlugin):
@@ -53,18 +60,10 @@ class IconizerPlugin(GenericPlugin):
         """
         return "iconizer"
 
-    def start_gtk_gui(self, parent_gui):
+    def start_gui(self, parent_gui):
         """
-        Starts the Gtk GUI, while hiding the parent until finished
+        Starts the GUI, while hiding the parent until finished
         :param parent_gui: the parent window
         :return void
         """
-        IconizerGUI(parent_gui).start()
-
-    def start_tk_gui(self, parent_gui):
-        """
-        Starts the Tk GUI, while hiding the parent until finished
-        :param parent_gui: the parent window
-        :return void
-        """
-        IconizerTkGui(parent_gui).start()
+        PluginGui(parent_gui).start()

@@ -22,12 +22,19 @@ This file is part of media-manager.
 
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
-    from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
-    from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui
+
+try:
+    from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI as PluginGui
+except ImportError:
+    try:
+        from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as PluginGui
+    except ImportError:
+            try:
+                from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI as PluginGui
+            except ImportError:
+                from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as PluginGui
 
 
 class RenamerPlugin(GenericPlugin):
@@ -53,18 +60,10 @@ class RenamerPlugin(GenericPlugin):
         """
         return "renamer"
 
-    def start_gtk_gui(self, parent_gui):
+    def start_gui(self, parent_gui):
         """
-        Starts the Gtk GUI, while hiding the parent until finished
+        Starts the GUI, while hiding the parent until finished
         :param parent_gui: the parent gui window
         :return void
         """
-        RenamerGUI(parent_gui).start()
-
-    def start_tk_gui(self, parent_gui):
-        """
-        Starts the Tk GUI, while hiding the parent until finished
-        :param parent_gui: the parent gui window
-        :return void
-        """
-        RenamerTkGui(parent_gui).start()
+        PluginGui(parent_gui).start()
