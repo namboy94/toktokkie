@@ -22,6 +22,7 @@ This file is part of media-manager.
 
 import configparser
 import os
+from os.path import expanduser
 
 try:
     from media_manager.plugins.PluginManager import PluginManager
@@ -53,7 +54,7 @@ def main():
 
     # ConfigParsing
     config = configparser.ConfigParser()
-    config.read(os.getenv("HOME") + "/.mediamanager/configs/mainconfig")
+    config.read(os.path.join(expanduser('~'), ".mediamanager", "configs", "mainconfig"))
     plugin_config = dict(config.items("plugins"))
     active_plugins = PluginManager(plugin_config).get_plugins()
 

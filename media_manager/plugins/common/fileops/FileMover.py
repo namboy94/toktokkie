@@ -20,7 +20,7 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from subprocess import Popen
+import os
 
 
 class FileMover(object):
@@ -37,12 +37,8 @@ class FileMover(object):
         :return: void
         """
 
-        location_backup = location
-        if not location.endswith("/"):
-            location_backup += "/"
-        file_name = file.rsplit("/", 1)[1]
+        file_name = os.path.basename(file)
+        new_file = os.path.join(location, file_name)
+        os.rename(file, new_file)
 
-        new_file = location_backup + file_name
-
-        Popen(["mv", file, new_file]).wait()
         return new_file

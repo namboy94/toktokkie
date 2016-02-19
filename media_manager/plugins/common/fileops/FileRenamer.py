@@ -21,7 +21,6 @@ This file is part of media-manager.
 """
 
 import os
-from subprocess import Popen
 
 
 class FileRenamer(object):
@@ -36,22 +35,9 @@ class FileRenamer(object):
         :param file: the file to be renamed
         :param new_name: the new name of the file
         """
+        original_file_name = os.path.basename(file)
+        extension = os.path.splitext(original_file_name)[1]
 
-        try:
-            original_file_name = file.rsplit("/", 1)[1]
-        except Exception as e:
-            if "list index out of range" in str(e):
-                original_file_name = file
-            else:
-                raise e
-        try:
-            extension = "." + original_file_name.rsplit(".", 1)[1]
-        except Exception as e:
-            if "list index out of range" in str(e):
-                extension = ""
-            else:
-                raise e
-
-        new_file = os.path.dirname(file) + "/" + new_name + extension
-        Popen(["mv", file, new_file]).wait()
+        new_file = os.path.join(os.path.dirname(file), new_name + extension)
+        os.rename(file, new_file)
         return new_file

@@ -21,7 +21,7 @@ This file is part of media-manager.
 """
 
 import os
-from subprocess import Popen
+from os.path import expanduser
 
 
 class Installer(object):
@@ -34,9 +34,9 @@ class Installer(object):
         Constructor
         :return: void
         """
-        self.main_dir = os.getenv("HOME") + "/.mediamanager"
-        self.config_dir = self.main_dir + "/configs"
-        self.mainConfig = self.config_dir + "/mainconfig"
+        self.main_dir = os.path.join(expanduser('~'), ".mediamanager")
+        self.config_dir = os.path.join(self.main_dir, "configs")
+        self.main_config = os.path.join(self.config_dir, "mainconfig")
 
     def is_installed(self):
         """
@@ -45,7 +45,7 @@ class Installer(object):
         """
         if not os.path.isdir(self.main_dir) or \
                 not os.path.isdir(self.config_dir) or \
-                not os.path.isfile(self.mainConfig):
+                not os.path.isfile(self.main_config):
             return False
         return True
 
@@ -55,10 +55,10 @@ class Installer(object):
         :return: void
         """
         if not os.path.isdir(self.main_dir):
-            Popen(["mkdir", self.main_dir]).wait()
+            os.makedirs(self.main_dir)
         if not os.path.isdir(self.config_dir):
-            Popen(["mkdir", self.config_dir]).wait()
-        if not os.path.isfile(self.mainConfig):
+            os.makedirs(self.config_dir)
+        if not os.path.isfile(self.main_config):
             self.__write_main_config__()
 
     def __write_main_config__(self):
@@ -66,8 +66,7 @@ class Installer(object):
         Writes a default config file
         :return: void
         """
-        Popen(["touch", self.mainConfig])
-        file = open(self.mainConfig, "w")
+        file = open(self.main_config, "w")
         file.write("[plugins]\n")
         file.write("renamer = True\n")
         file.write("batch-download\n")
