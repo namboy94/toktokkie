@@ -57,7 +57,7 @@ class IconizerGUI(GenericGtkGui):
         self.start_button = self.generate_simple_button("Start", self.iconize_start)
         self.grid.attach(self.start_button, 3, 0, 1, 1)
 
-        self.iconizer_method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
+        self.iconizer_method_combo_box = self.generate_combo_box(DeepIconizer.get_iconizer_options())
         self.grid.attach(self.iconizer_method_combo_box["combo_box"], 3, 1, 1, 1)
 
     def iconize_start(self, widget):

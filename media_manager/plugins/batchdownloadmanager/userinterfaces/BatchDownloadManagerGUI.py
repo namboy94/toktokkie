@@ -146,7 +146,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.main_icon_location = self.generate_text_entry("")
         self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
-        self.method_combo_box = self.generate_combo_box(["Nautilus", "Nemo"])
+        self.method_combo_box = self.generate_combo_box([DeepIconizer.get_iconizer_options()])
         self.grid.attach(self.main_icon_label, 0, 70, 20, 5)
         self.grid.attach(self.secondary_icon_label, 0, 75, 20, 5)
         self.grid.attach(self.main_icon_location, 20, 70, 20, 5)
