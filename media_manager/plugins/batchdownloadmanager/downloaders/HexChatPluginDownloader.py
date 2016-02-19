@@ -21,6 +21,8 @@ This file is part of media-manager.
 """
 
 import os
+import platform
+
 from subprocess import Popen
 
 try:
@@ -43,8 +45,34 @@ class HexChatPluginDownloader(object):
         :param season_number: the season number for use with auto_rename
         :return: void
         """
+        if platform.system() == "Linux":
+            self.script_location = os.path.join(os.path.expanduser('~'), ".config", "hexchat", "addons", "dlscript.py")
+            self.hexchat_config_location = os.path.join(os.path.expanduser('~'), ".config", "hexchat", "hexchat.conf")
+        elif platform.system() == "Windows":
+            self.script_location = os.path.join(os.path.expanduser('~'),
+                                                "AppData", "Roaming" "HexChat", "addons", "dlscript.py")
+            self.hexchat_config_location = os.path.join(os.path.expanduser('~'),
+                                                        "AppData", "Roaming" "HexChat", "hexchat.conf")
         self.packs = packs
-        self.script = open(os.getenv("HOME") + "/.config/hexchat/addons/dlscript.py", 'w')
+        self.script = open(self.script_location, 'w')
+
+        hexchat_config = open(self.hexchat_config_location, 'r')
+        content = hexchat_config.read()
+        hexchat_config.close()
+        new_content = []
+        for line in content.split("\n"):
+            if "gui_join_dialog" in line:
+                new_content.append("gui_join_dialog = 0")
+            elif "dcc_auto_recv" in line:
+                new_content.append("dcc_auto_recv = 2")
+            else:
+                new_content.append(line)
+
+        hexchat_config = open(self.hexchat_config_location, 'w')
+        for line in new_content:
+            hexchat_config.write(line + "\n")
+        hexchat_config.close()
+
         self.auto_rename = False
         if show_name and episode_number > 0 and season_number > 0:
             self.auto_rename = True
@@ -52,12 +80,10 @@ class HexChatPluginDownloader(object):
             self.episode_number = int(episode_number)
             self.season_number = int(season_number)
             self.download_dir = ""
-            hexchat_config = open(os.getenv("HOME") + "/.config/hexchat/hexchat.conf", 'r')
+            hexchat_config = open(self.hexchat_config_location, 'r')
             for line in hexchat_config:
                 if "dcc_dir = " in line:
                     self.download_dir = line.split("dcc_dir = ")[1].split("\n")[0]
-                    if not self.download_dir.endswith("/"):
-                        self.download_dir += "/"
                     break
             hexchat_config.close()
 
@@ -132,12 +158,23 @@ class HexChatPluginDownloader(object):
         :return a list of file paths leading to the downloaded files
         """
         self.__write_script__()
-        Popen(["hexchat"]).wait()
+        if platform.system() == "Linux":
+            Popen(["hexchat"]).wait()
+        elif platform.system() == "Windows":
+            if os.path.isfile("C:\\Program Files\\HexChat\\hexchat.exe"):
+                Popen(["C:\\Program Files\\HexChat\\hexchat.exe"]).wait()
+            else:
+                return
+        else:
+            return
+
+        os.remove(self.script_location)
+
         downloaded = []
         self.packs.sort(key=lambda x: x.filename)
         if self.auto_rename:
             for pack in self.packs:
-                episode = Episode(self.download_dir + pack.filename,
+                episode = Episode(os.path.join(self.download_dir, pack.filename),
                                   self.episode_number, self.season_number, self.show_name)
                 episode.rename()
                 downloaded.append(episode.episode_file)
