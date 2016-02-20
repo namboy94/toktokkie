@@ -123,11 +123,22 @@ class GenericTkGui(Tk):
 
     def generate_label(self, label_text):
         """
-        Generates a GTK Label
+        Generates a TK Label
         :param label_text: the text to be displayed on the label
         :return: the Label object
         """
         return Label(self, text=label_text)
+
+    def generate_image_label(self, label_image):
+        """
+        Generates a TK Image Label
+        :param label_image: the image to be displayed on the label
+        :return: the Label object
+        """
+        img = PhotoImage(file=label_image)
+        label = Label(self, image=img)
+        label.img = img
+        return label
 
     def generate_simple_button(self, button_text, command, *additional_args):
         """

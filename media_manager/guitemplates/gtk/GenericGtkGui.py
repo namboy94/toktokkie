@@ -23,7 +23,7 @@ This file is part of media-manager.
 # imports
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 
 class GenericGtkGui(Gtk.Window):
@@ -204,6 +204,23 @@ class GenericGtkGui(Gtk.Window):
         label = Gtk.Label()
         label.set_text(label_text)
         return label
+
+    @staticmethod
+    def generate_image_label(label_image, width=None, height=None):
+        """
+        Generates a GTK Image Label
+        :param width: the width of the image. If not specified, the default is used
+        :param height: the height of the image. If not specified, the default is used
+        :param label_image: the image to be displayed on the label
+        :return: the Label object
+        """
+        if height is not None and width is not None:
+            print("resize")
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(label_image)
+            pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
+            return Gtk.Image.new_from_pixbuf(pixbuf)
+        else:
+            return Gtk.Image.new_from_file(label_image)
 
     @staticmethod
     def generate_simple_button(button_text, command, *additional_args):
