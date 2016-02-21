@@ -61,3 +61,8 @@ After the installation is completed, run hexchat and set it up to your liking. T
 3. Uncheck "Always show this dialog after connecting" on first connection to a server
 
 And now you should be set!
+
+
+Disclaimer:
+
+The developer(s) of this software is/are not liable for any unlawful use of the provided software.

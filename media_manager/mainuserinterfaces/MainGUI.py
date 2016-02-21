@@ -46,11 +46,11 @@ class MainGUI(GenericGtkGui):
         Adds buttons for all plugins
         :return: void
         """
-        logo_label = self.generate_image_label("/home/hermann/IDEs/projects/pycharm/media-manager/res/logo.png", 1, 1)
-        self.grid.attach(logo_label, 1, 0, 1, 1)
+        # logo_label = self.generate_image_label("/home/hermann/IDEs/projects/pycharm/media-manager/res/logo.png", 1, 1)
+        # self.grid.attach(logo_label, 1, 0, 1, 1)
 
         i = 0
-        row = 1
+        row = 0
         column = -1
         while i < len(self.plugins):
             if i % 3 == 0 and not i == 0:
