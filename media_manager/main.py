@@ -36,7 +36,7 @@ except ImportError:
     from Globals import Globals
 
 
-def main():
+def main(ui_override=None):
     """
     Main method that runs the program
     :return: void
@@ -52,7 +52,7 @@ def main():
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Parse arguments
-    if len(sys.argv) > 1 and sys.argv[1] == "-tk":
+    if (len(sys.argv) > 1 and sys.argv[1] == "-tk") or ui_override == "tk":
         try:
             from mainuserinterfaces.MainTkGui import MainTkGui as GlobalGui
             from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui

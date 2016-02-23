@@ -34,7 +34,7 @@ def readme():
 
 
 setup(name='media-manager',
-      version='0.6.1',
+      version='0.7',
       description='A personal media manager program',
       long_description=readme(),
       classifiers=['Development Status :: 3 - Alpha',
@@ -78,7 +78,7 @@ setup(name='media-manager',
       dependency_links=['https://git.gnome.org/browse/pygobject'],
       test_suite='nose.collector',
       tests_require=['nose'],
-      scripts=['bin/mediamanager'],
+      scripts=['bin/mediamanager', 'bin/mediamanager-gtk', 'bin/mediamanager-tk'],
       zip_safe=False)
 
 # How to upload to pypi:
