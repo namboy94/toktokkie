@@ -68,9 +68,7 @@ def main(ui_override=None):
         Globals.MainGui = GlobalGui
         Globals.RenamerGui = RenamerGui
         Globals.IconizerGui = IconizerGui
-        print(BatchDownloadManagerGui)
         Globals.BatchDownloadManagerGui = BatchDownloadManagerGui
-        print(Globals.BatchDownloadManagerGui)
 
     # Start the program
     gui = Globals.MainGui(active_plugins)

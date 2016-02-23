@@ -65,10 +65,10 @@ class GenericTkGui(Tk):
         :return: void
         """
         if self.parent is not None and self.hide_parent:
-            self.parent.withdraw()
+            self.parent.destroy()
         self.mainloop()
         if self.parent is not None and self.hide_parent:
-            self.parent.show()
+            self.parent.__init__(self.parent.plugins)
 
     # Helper methods
 
