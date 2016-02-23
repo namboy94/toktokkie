@@ -49,6 +49,7 @@ class GenericTkGui(Tk):
         self.parent = parent
         self.hide_parent = hide_parent
         self.lay_out()
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
 
     def lay_out(self):
         """
@@ -61,14 +62,21 @@ class GenericTkGui(Tk):
     def start(self):
         """
         Starts the GUI and enters the gui mainloop. If this window has a parent,
-        it will be hidden during the mainloop and reappear at the end
+        it will be hidden during the mainloop
         :return: void
         """
         if self.parent is not None and self.hide_parent:
-            self.parent.destroy()
+            self.parent.withdraw()
         self.mainloop()
+
+    def close_window(self):
+        """
+        Method run when the window closes
+        :return: void
+        """
         if self.parent is not None and self.hide_parent:
-            self.parent.__init__(self.parent.plugins)
+            self.parent.show()
+        self.destroy()
 
     # Helper methods
 

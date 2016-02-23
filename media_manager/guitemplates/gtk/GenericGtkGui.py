@@ -54,13 +54,13 @@ class GenericGtkGui(Gtk.Window):
         # initialize GTK
         # noinspection PyCallByClass
         Gtk.Window.__init__(self, title=title)
-        # super().__init__(self, title=title)
         self.set_border_width(10)
 
         # Set up Grid Layout
         self.grid = Gtk.Grid(column_homogeneous=True,
-                             column_spacing=10,
-                             row_spacing=10)
+                             row_homogeneous=False,
+                             column_spacing=0,
+                             row_spacing=0)
         self.add(self.grid)
 
         # Delegated to the child classes
