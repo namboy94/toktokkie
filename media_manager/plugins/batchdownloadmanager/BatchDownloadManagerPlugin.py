@@ -22,24 +22,10 @@ This file is part of media-manager.
 
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.Globals import Globals
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-
-try:
-    from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
-        import BatchDownloadManagerGUI as PluginGui
-except ImportError:
-    try:
-        from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
-            import BatchDownloadManagerTkGui as PluginGui
-    except ImportError:
-        try:
-            from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
-                import BatchDownloadManagerGUI as PluginGui
-        except ImportError:
-            from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
-                import BatchDownloadManagerTkGui as PluginGui
-
+    from Globals import Globals
 
 
 class BatchDownloadManagerPlugin(GenericPlugin):
@@ -71,4 +57,4 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return: void
         """
-        PluginGui(parent_gui).start()
+        Globals.BatchDownloadManagerGui(parent_gui).start()

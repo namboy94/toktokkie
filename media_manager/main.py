@@ -29,20 +29,11 @@ from os.path import expanduser
 try:
     from media_manager.plugins.PluginManager import PluginManager
     from media_manager.startup.Installer import Installer
+    from media_manager.Globals import Globals
 except ImportError:
     from plugins.PluginManager import PluginManager
     from startup.Installer import Installer
-
-try:
-    from media_manager.mainuserinterfaces.MainGUI import MainGUI as MainGui
-except ImportError:
-    try:
-        from media_manager.mainuserinterfaces.MainTkGui import MainTkGui as MainGui
-    except ImportError:
-        try:
-            from mainuserinterfaces.MainGUI import MainGUI as MainGui
-        except ImportError:
-            from mainuserinterfaces.MainTkGui import MainTkGui as MainGui
+    from Globals import Globals
 
 
 def main():
@@ -60,17 +51,30 @@ def main():
     plugin_config = dict(config.items("plugins"))
     active_plugins = PluginManager(plugin_config).get_plugins()
 
-    # Start the program
+    # Parse arguments
     if len(sys.argv) > 1 and sys.argv[1] == "-tk":
         try:
-            from mainuserinterfaces.MainTkGui import MainTkGui
+            from mainuserinterfaces.MainTkGui import MainTkGui as GlobalGui
+            from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui
+            from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
+                import BatchDownloadManagerTkGui as BatchDownloadManagerGui
+            from plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as IconizerGui
         except ImportError:
-            from media_manager.mainuserinterfaces.MainTkGui import MainTkGui
-        gui = MainTkGui(active_plugins)
-        gui.start()
-    else:
-        gui = MainGui(active_plugins)
-        gui.start()
+            from media_manager.mainuserinterfaces.MainTkGui import MainTkGui as GlobalGui
+            from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui
+            from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
+                import BatchDownloadManagerTkGui as BatchDownloadManagerGui
+            from media_manager.plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as IconizerGui
+        Globals.MainGui = GlobalGui
+        Globals.RenamerGui = RenamerGui
+        Globals.IconizerGui = IconizerGui
+        print(BatchDownloadManagerGui)
+        Globals.BatchDownloadManagerGui = BatchDownloadManagerGui
+        print(Globals.BatchDownloadManagerGui)
+
+    # Start the program
+    gui = Globals.MainGui(active_plugins)
+    gui.start()
 
 if __name__ == '__main__':
     main()

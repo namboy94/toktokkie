@@ -22,19 +22,10 @@ This file is part of media-manager.
 
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.Globals import Globals
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-
-try:
-    from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI as PluginGui
-except ImportError:
-    try:
-        from media_manager.plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as PluginGui
-    except ImportError:
-        try:
-            from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI as PluginGui
-        except ImportError:
-            from plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as PluginGui
+    from Globals import Globals
 
 
 class IconizerPlugin(GenericPlugin):
@@ -66,4 +57,4 @@ class IconizerPlugin(GenericPlugin):
         :param parent_gui: the parent window
         :return void
         """
-        PluginGui(parent_gui).start()
+        Globals.IconizerGui(parent_gui).start()

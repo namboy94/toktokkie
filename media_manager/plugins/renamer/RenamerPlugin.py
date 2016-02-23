@@ -22,19 +22,10 @@ This file is part of media-manager.
 
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.Globals import Globals
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-
-try:
-    from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI as PluginGui
-except ImportError:
-    try:
-        from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as PluginGui
-    except ImportError:
-            try:
-                from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI as PluginGui
-            except ImportError:
-                from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as PluginGui
+    from Globals import Globals
 
 
 class RenamerPlugin(GenericPlugin):
@@ -66,4 +57,4 @@ class RenamerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return void
         """
-        PluginGui(parent_gui).start()
+        Globals.RenamerGui(parent_gui).start()
