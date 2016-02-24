@@ -75,7 +75,7 @@ class GenericTkGui(Tk):
         :return: void
         """
         if self.parent is not None and self.hide_parent:
-            self.parent.show()
+            self.parent.deiconify()
         self.destroy()
 
     # Helper methods

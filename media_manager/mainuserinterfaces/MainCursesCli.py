@@ -34,11 +34,13 @@ class MainCursesCli(object):
         curses.cbreak()
         self.screen.keypad(True)
 
-    def lay_out(self):
-        curses.
-
     def end(self):
         curses.nocbreak()
         self.screen.keypad(False)
         curses.echo()
         curses.endwin()
+
+if __name__ == '__main__':
+    cli = MainCursesCli()
+    cli.end()
+    print("End")
