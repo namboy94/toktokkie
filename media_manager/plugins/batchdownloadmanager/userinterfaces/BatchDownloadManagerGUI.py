@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 import os
+from threading import Thread
 
 try:
     from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
@@ -43,6 +44,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param parent: the parent gui
         :return: void
         """
+        self.search_thread = Thread(target=self.search_xdcc_thread)
         self.search_result = []
         self.configure_label = None
         self.destination_label = None
@@ -163,22 +165,32 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
 
     def search_xdcc(self, widget):
         """
-        Searches for xdcc packs using the currently selected search engine
+        Searches for xdcc packs using the currently selected search engine, using a seperate thread
+        If a search is already running, it won't start a new search
         :param widget: the search button
         :return: void
         """
         if widget is not None:
-            search_engine = self.get_current_selected_combo_box_option(self.search_engine_combo_box)
-            search_term = self.search_field.get_text()
-            self.search_result = self.conduct_xdcc_search(search_engine, search_term)
+            if not self.search_thread.isAlive():
+                self.search_thread.start()
+                self.search_thread.join()
+                self.search_thread = Thread(target=self.search_xdcc_thread)
 
-            list_store = self.search_results["list_store"]
-            list_store.clear()
-            i = 0
-            for result in self.search_result:
-                choice = (i,) + result.to_tuple()
-                list_store.append(list(choice))
-                i += 1
+    def search_xdcc_thread(self):
+        """
+        To be run as an individual thread so that the GUI doesn't freeze while searching
+        """
+        search_engine = self.get_current_selected_combo_box_option(self.search_engine_combo_box)
+        search_term = self.search_field.get_text()
+        self.search_result = self.conduct_xdcc_search(search_engine, search_term)
+
+        list_store = self.search_results["list_store"]
+        list_store.clear()
+        i = 0
+        for result in self.search_result:
+            choice = (i,) + result.to_tuple()
+            list_store.append(list(choice))
+            i += 1
 
     def start_download(self, widget):
         """
