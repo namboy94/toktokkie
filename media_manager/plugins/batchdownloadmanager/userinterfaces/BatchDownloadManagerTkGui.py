@@ -22,6 +22,7 @@ This file is part of media-manager.
 
 import os
 from tkinter import END, W, E, N, S, Grid
+from threading import Thread
 
 try:
     from media_manager.guitemplates.tk.GenericTkGui import GenericTkGui
@@ -44,6 +45,10 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         :param parent: the parent gui
         :return: void
         """
+        # Threads
+        self.search_thread = None
+
+        # UI Elements
         self.search_result = []
         self.destination_label = None
         self.destination = None
@@ -74,6 +79,8 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         self.directory_content = None
         self.divider_1 = None
         self.divider_2 = None
+
+        # Initialize GUI
         super().__init__("Batch Download Manager", parent, True)
 
     def lay_out(self):
@@ -165,17 +172,29 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         :return: void
         """
         if widget is not None:
-            search_engine = self.search_engine_combo_box.get()
-            search_term = self.search_field.get()
-            self.search_result = self.conduct_xdcc_search(search_engine, search_term)
+            if self.search_thread is None:
+                self.search_thread = Thread(target=self.search_xdcc_thread)
+            if not self.search_thread.is_alive():
+                self.search_thread.start()
+                self.search_thread = Thread(target=self.search_xdcc_thread)
 
-            self.clear_list_box(self.search_results)
+    def search_xdcc_thread(self):
+        """
+        To be run as an individual thread so that the GUI doesn't freeze while searching
+        """
+        self.search_button["text"] = "Searching..."
+        search_engine = self.search_engine_combo_box.get()
+        search_term = self.search_field.get()
+        self.search_result = self.conduct_xdcc_search(search_engine, search_term)
 
-            i = 0
-            for result in self.search_result:
-                choice = "#" + str(i) + ": " + result.to_string()
-                self.search_results.insert(END, choice)
-                i += 1
+        self.clear_list_box(self.search_results)
+
+        i = 0
+        for result in self.search_result:
+            choice = "#" + str(i) + ": " + result.to_string()
+            self.search_results.insert(END, choice)
+            i += 1
+        self.search_button["text"] = "Start Search"
 
     def start_download(self, widget):
         """
