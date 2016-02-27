@@ -49,6 +49,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         """
         # Threads
         self.search_thread = None
+        self.download_thread = None
 
         # GUI Elements
         self.search_result = []
@@ -201,13 +202,13 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
                 self.search_button.set_label("Start Search")
 
             GLib.idle_add(update_list)
+            self.search_thread = Thread(target=search_xdcc_thread)
 
         if widget is not None:
             if self.search_thread is None:
                 self.search_thread = Thread(target=search_xdcc_thread)
             if not self.search_thread.is_alive():
                 self.search_thread.start()
-                self.search_thread = Thread(target=search_xdcc_thread)
 
     def start_download(self, widget):
         """
@@ -215,29 +216,38 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param widget: the Download Button
         :return: void
         """
-        if widget is None:
-            return
+        def start_download_thread():
+            """
+            Starts the parallel running donload thread
+            """
+            preparation = self.prepare(self.destination.get_text(),
+                                       self.show.get_text(),
+                                       self.season.get_text(),
+                                       self.episode.get_text(),
+                                       self.main_icon_location.get_text(),
+                                       self.secondary_icon_location.get_text(),
+                                       self.get_current_selected_combo_box_option(self.method_combo_box))
 
-        preparation = self.prepare(self.destination.get_text(),
-                                   self.show.get_text(),
-                                   self.season.get_text(),
-                                   self.episode.get_text(),
-                                   self.main_icon_location.get_text(),
-                                   self.secondary_icon_location.get_text(),
-                                   self.get_current_selected_combo_box_option(self.method_combo_box))
-        if len(preparation) != 6:
-            self.show_message_dialog(preparation[0], preparation[1])
-            return
+            if len(preparation) != 6:
+                self.show_message_dialog(preparation[0], preparation[1])
+                return
 
-        selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
-        packs = []
-        for selection in selected_packs:
-            packs.append(self.search_result[selection])
-        if len(packs) == 0:
-            return
+            selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
+            packs = []
+            for selection in selected_packs:
+                packs.append(self.search_result[selection])
+            if len(packs) == 0:
+                return
 
-        downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
-        self.start_download_process(preparation, downloader, packs, self.rename_check.get_active())
+            downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
+            self.start_download_process(preparation, downloader, packs, self.rename_check.get_active())
+            self.search_thread = Thread(target=start_download_thread)
+
+        if widget is not None:
+            if self.download_thread is None:
+                self.download_thread = Thread(target=start_download_thread)
+            if not self.download_thread.is_alive():
+                self.download_thread.start()
 
     def on_directory_changed(self, widget):
         """
