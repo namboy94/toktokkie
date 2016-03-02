@@ -77,7 +77,10 @@ class NIBLGetter(GenericGetter):
         :param bot: the bot
         :return: the channel
         """
-        return "#intel"
+        if bot == "HelloKitty" or "CR-" in bot:
+            return "#horriblesubs"
+        else:
+            return "#intel"
     
     def get_server(self, bot):
         """
