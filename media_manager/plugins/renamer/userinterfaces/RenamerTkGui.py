@@ -27,6 +27,8 @@ except ImportError:
     from plugins.renamer.utils.Renamer import Renamer
     from guitemplates.tk.GenericTkGui import GenericTkGui
 
+from tkinter import END
+
 
 class RenamerTkGui(GenericTkGui):
     """
@@ -41,6 +43,7 @@ class RenamerTkGui(GenericTkGui):
         """
         self.button = None
         self.entry = None
+        self.browser = None
         super().__init__("Renamer", parent, True)
 
     def lay_out(self):
@@ -51,8 +54,11 @@ class RenamerTkGui(GenericTkGui):
         self.button = self.generate_simple_button("Start", self.start_rename)
         self.button.grid(column=4, row=0)
 
+        self.browser = self.generate_simple_button("Browse", self.browse_directory)
+        self.browser.grid(column=0, row=0)
+
         self.entry = self.generate_text_entry("", self.start_rename)
-        self.entry.grid(columnspan=3, column=0, row=0)
+        self.entry.grid(columnspan=2, column=1, row=0)
 
     def start_rename(self, *kwargs):
         """
@@ -95,3 +101,17 @@ class RenamerTkGui(GenericTkGui):
                 return False
             i += 1
         return True
+
+    def browse_directory(self, widget):
+        """
+        Opens a directory browser dialog.
+        :param widget: the button that started this mess
+        :return: void
+        """
+        if widget is None:
+            return
+
+        directory = self.show_directory_chooser_dialog()
+        if directory:
+            self.entry.delete(0, END)
+            self.entry.insert(0, directory)

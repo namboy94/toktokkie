@@ -41,18 +41,22 @@ class RenamerGUI(GenericGtkGui):
         """
         self.button = None
         self.entry = None
+        self.browse = None
         super().__init__("Renamer", parent, True)
 
     def lay_out(self):
         """
         Sets up all interface elements of the GUI
-        :return void
+        :return: void
         """
         self.button = self.generate_simple_button("Start", self.start_rename)
         self.grid.attach(self.button, 4, 0, 1, 1)
 
+        self.browse = self.generate_simple_button("Browse", self.browse_directory)
+        self.grid.attach(self.browse, 0, 0, 1, 1)
+
         self.entry = self.generate_text_entry("", self.start_rename)
-        self.grid.attach(self.entry, 0, 0, 3, 1)
+        self.grid.attach(self.entry, 1, 0, 2, 1)
 
     def start_rename(self, widget):
         """
@@ -75,11 +79,22 @@ class RenamerGUI(GenericGtkGui):
             else:
                 raise e
 
+    def browse_directory(self, widget):
+        """
+        Shows a directory chooser dialog and sets the entry to the result of the browse
+        :param widget: the button that called this method
+        :return: void
+        """
+        if widget is not None:
+            selected_directory = self.show_directory_chooser_dialog()
+            if selected_directory:
+                self.entry.set_text(selected_directory)
+
     def confirmer(self, confirmation):
         """
         Asks the user for confirmation before continuing the rename
         :param confirmation: the confirmation
-        :return False if the user did not confirm the rename, True otherwise.
+        :return: False if the user did not confirm the rename, True otherwise.
         """
         i = 0
         while i < len(confirmation[0]):

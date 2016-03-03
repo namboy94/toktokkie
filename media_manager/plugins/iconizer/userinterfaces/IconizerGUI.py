@@ -41,6 +41,7 @@ class IconizerGUI(GenericGtkGui):
         :return: void
         """
         self.directory_entry = None
+        self.director_browser = None
         self.start_button = None
         self.iconizer_method_combo_box = None
         super().__init__("Iconizer", parent, True)
@@ -52,7 +53,10 @@ class IconizerGUI(GenericGtkGui):
         """
 
         self.directory_entry = self.generate_text_entry("Enter Directory here", self.iconize_start)
-        self.grid.attach(self.directory_entry, 0, 0, 3, 2)
+        self.grid.attach(self.directory_entry, 0, 0, 3, 1)
+
+        self.director_browser = self.generate_simple_button("Browse", self.browse_directory)
+        self.grid.attach(self.director_browser, 1, 1, 1, 1)
 
         self.start_button = self.generate_simple_button("Start", self.iconize_start)
         self.grid.attach(self.start_button, 3, 0, 1, 1)
@@ -85,6 +89,17 @@ class IconizerGUI(GenericGtkGui):
                 self.iconize_dir(os.path.join(directory, child))
         else:
             self.iconize_dir(directory)
+
+    def browse_directory(self, widget):
+        """
+        Shows a directory chooser dialog and sets the entry to the result of the browse
+        :param widget: the button that called this method
+        :return: void
+        """
+        if widget is not None:
+            selected_directory = self.show_directory_chooser_dialog()
+            if selected_directory:
+                self.directory_entry.set_text(selected_directory)
 
     def iconize_dir(self, directory):
         """

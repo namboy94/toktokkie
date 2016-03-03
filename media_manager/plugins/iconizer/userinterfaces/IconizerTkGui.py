@@ -52,7 +52,6 @@ class IconizerTkGui(GenericTkGui):
         Sets up all interface elements of the GUI
         :return: void
         """
-
         self.directory_entry = self.generate_text_entry("Enter Directory here", self.iconize_start)
         self.directory_entry.grid(columnspan=3, column=0, row=0)
 
@@ -118,5 +117,6 @@ class IconizerTkGui(GenericTkGui):
             return
 
         directory = self.show_directory_chooser_dialog()
-        self.directory_entry.delete(0, END)
-        self.directory_entry.insert(0, directory)
+        if directory:
+            self.directory_entry.delete(0, END)
+            self.directory_entry.insert(0, directory)
