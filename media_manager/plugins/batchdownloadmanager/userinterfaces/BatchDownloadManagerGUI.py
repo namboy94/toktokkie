@@ -49,6 +49,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         """
         # Threads
         self.search_thread = None
+        self.searching = False
         self.download_thread = None
 
         # GUI Elements
@@ -200,11 +201,13 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
                     list_store.append(list(choice))
                     i += 1
                 self.search_button.set_label("Start Search")
+                self.searching = False
 
             GLib.idle_add(update_list)
             self.search_thread = Thread(target=search_xdcc_thread)
 
-        if widget is not None:
+        if widget is not None and not self.searching:
+            self.searching = True
             if self.search_thread is None:
                 self.search_thread = Thread(target=search_xdcc_thread)
             if not self.search_thread.is_alive():

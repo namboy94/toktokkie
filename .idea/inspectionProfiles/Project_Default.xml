@@ -22,6 +22,8 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="Gdk" />
+          <option value="gi.repository.GLib" />
+          <option value="gi.repository.GObject" />
         </list>
       </option>
     </inspection_tool>
