@@ -12,7 +12,7 @@ or install using pip:
     
 
 You can also run the main.py file directly with the python interpreter if that is how you want to do it. This will only
-work when all dependencies are installed beforehand
+work when all dependencies are installed beforehand.
 
 The program depends on the following python packages:
 
@@ -48,6 +48,9 @@ You will have to have a working python 3 installation on your machine. If you do
 the official website: https://www.python.org/downloads/windows/
 
 Once you have installed this, you should be able to install the program using pip or the setup.py file directly.
+
+To update the program, either use pip or make use of
+[this .bat file](http://gitlab.namibsun.net/namboy94/media-manager/raw/master/bin/update.bat).
 
 To be able to use the Hexchat Downloader, you will have to install the 64-bit version of Hexchat for Windows from
 the official website: https://hexchat.github.io/downloads.html
