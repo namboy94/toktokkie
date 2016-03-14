@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 import os
+import shutil
 
 
 class FileRenamer(object):
@@ -39,5 +40,5 @@ class FileRenamer(object):
         extension = os.path.splitext(original_file_name)[1]
 
         new_file = os.path.join(os.path.dirname(file), new_name + extension)
-        os.rename(file, new_file)
+        shutil.move(file, new_file)
         return new_file

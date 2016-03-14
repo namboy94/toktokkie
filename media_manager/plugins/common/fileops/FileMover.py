@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 import os
+import shutil
 
 
 class FileMover(object):
@@ -39,6 +40,6 @@ class FileMover(object):
 
         file_name = os.path.basename(file)
         new_file = os.path.join(location, file_name)
-        os.rename(file, new_file)
+        shutil.move(file, new_file)
 
         return new_file
