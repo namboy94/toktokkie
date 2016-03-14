@@ -26,4 +26,5 @@ This file is part of media-manager.
 from media_manager.main import main
 
 if __name__ == '__main__':
+
     main("tk")
