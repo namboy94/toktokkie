@@ -40,6 +40,8 @@ upload_statistics:
     - cd
     - cd media-manager
     - rsync -avP --delete-after git_stats/ www.krumreyh.de@ssh.strato.de:~/git_stats_pages/media-manager
+    - ssh www.krumreyh.de@ssh.strato.de 'rsync -av --delete-after git_stats_pages Homepage/'
+
 
 delete_clone:
   stage: cleanup
