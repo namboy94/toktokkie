@@ -71,3 +71,5 @@ And now you should be set!
 Disclaimer:
 
 The developer(s) of this software is/are not liable for any unlawful use of the provided software.
+
+[Git Statistics](http://krumreyh.com/git_stats_pages/media-manager/general.html)
