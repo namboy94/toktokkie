@@ -9,7 +9,7 @@ clone:
   stage: setup
   script:
     - cd
-    - git clone http://gitlab.namibsun.net/namboy94/media_manager.git
+    - git clone http://gitlab.namibsun.net/namboy94/media-manager.git
 
 run_unit_tests:
   stage: test
