@@ -92,15 +92,17 @@ class GenericGtkGui(Gtk.Window):
     # Helper methods
 
     @staticmethod
-    def default_enter_key(widget, command, *additional_args):
+    def default_enter_key(widget, dummy, command, *additional_args):
         """
         Connects a command to the enter key for a GTK widget.
         This means, if the enter/return key is pressed while the widget is in focus,
         this command will be called.
         :param widget: the widget to which the command should be connected to
+        :param dummy: dummy element to make this method work
         :param command: the command to be executed when pressing the enter key
         :return: void
         """
+        str(dummy)
 
         def enter(internal_widget, event, internal_command, *more_args):
             """
@@ -110,8 +112,9 @@ class GenericGtkGui(Gtk.Window):
             :param internal_command: the command to be executed when pressing the enter key
             :return: void
             """
-            if event.keyval == Gdk.KEY_Return:
-                internal_command(internal_widget, more_args)
+            if internal_widget is not None:
+                if event.keyval == Gdk.KEY_Return:
+                    internal_command(more_args)
 
         widget.connect("key-press-event", enter, command, additional_args)
 
@@ -215,7 +218,6 @@ class GenericGtkGui(Gtk.Window):
         :return: the Label object
         """
         if height is not None and width is not None:
-            print("resize")
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(label_image)
             pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
             return Gtk.Image.new_from_pixbuf(pixbuf)
@@ -231,6 +233,7 @@ class GenericGtkGui(Gtk.Window):
         :param additional_args: additional arguments to be passed to the command
         :return: the Button object
         """
+
         button = Gtk.Button.new_with_label(button_text)
         if len(additional_args) == 0:
             button.connect("clicked", command)

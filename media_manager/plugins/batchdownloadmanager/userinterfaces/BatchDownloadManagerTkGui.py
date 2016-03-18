@@ -165,12 +165,15 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
             Grid.columnconfigure(self, i, weight=1)
             i += 1
 
-    def search_xdcc(self, widget):
+    def search_xdcc(self, widget, additional_args):
         """
         Searches for xdcc packs using the currently selected search engine
         :param widget: the search button
+        :param additional_args: Catches faulty additional args given by tkinter
         :return: void
         """
+        str(additional_args)
+
         def search_xdcc_thread():
             """
             To be run as an individual thread so that the GUI doesn't freeze while searching
