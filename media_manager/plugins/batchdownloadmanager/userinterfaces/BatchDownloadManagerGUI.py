@@ -250,6 +250,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
             if self.download_thread is None:
                 self.download_thread = Thread(target=start_download_thread)
             if not self.download_thread.is_alive():
+                self.download_thread = Thread(target=start_download_thread)
                 self.download_thread.start()
 
     def on_directory_changed(self, widget):

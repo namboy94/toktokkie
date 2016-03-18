@@ -40,6 +40,7 @@ class FileMover(object):
 
         file_name = os.path.basename(file)
         new_file = os.path.join(location, file_name)
+        print("Moving " + file_name + " to " + location)
         shutil.move(file, new_file)
 
         return new_file
