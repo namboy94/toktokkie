@@ -219,39 +219,27 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param widget: the Download Button
         :return: void
         """
-        def start_download_thread():
-            """
-            Starts the parallel running donload thread
-            """
-            preparation = self.prepare(self.destination.get_text(),
-                                       self.show.get_text(),
-                                       self.season.get_text(),
-                                       self.episode.get_text(),
-                                       self.main_icon_location.get_text(),
-                                       self.secondary_icon_location.get_text(),
-                                       self.get_current_selected_combo_box_option(self.method_combo_box))
+        preparation = self.prepare(self.destination.get_text(),
+                                   self.show.get_text(),
+                                   self.season.get_text(),
+                                   self.episode.get_text(),
+                                   self.main_icon_location.get_text(),
+                                   self.secondary_icon_location.get_text(),
+                                   self.get_current_selected_combo_box_option(self.method_combo_box))
 
-            if len(preparation) != 6:
-                self.show_message_dialog(preparation[0], preparation[1])
-                return
+        if len(preparation) != 6:
+            self.show_message_dialog(preparation[0], preparation[1])
+            return
 
-            selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
-            packs = []
-            for selection in selected_packs:
-                packs.append(self.search_result[selection])
-            if len(packs) == 0:
-                return
+        selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
+        packs = []
+        for selection in selected_packs:
+            packs.append(self.search_result[selection])
+        if len(packs) == 0:
+            return
 
-            downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
-            self.start_download_process(preparation, downloader, packs, self.rename_check.get_active())
-            self.search_thread = Thread(target=start_download_thread)
-
-        if widget is not None:
-            if self.download_thread is None:
-                self.download_thread = Thread(target=start_download_thread)
-            if not self.download_thread.is_alive():
-                self.download_thread = Thread(target=start_download_thread)
-                self.download_thread.start()
+        downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
+        self.start_download_process(preparation, downloader, packs, self.rename_check.get_active())
 
     def on_directory_changed(self, widget):
         """
