@@ -2,11 +2,14 @@
   <dictionary name="hermann">
     <words>
       <w>addons</w>
+      <w>addr</w>
       <w>beautifulsoup</w>
       <w>botname</w>
+      <w>botnickname</w>
       <w>confirmer</w>
       <w>createnew</w>
       <w>defaulttext</w>
+      <w>destdir</w>
       <w>dlscript</w>
       <w>episodename</w>
       <w>executer</w>
@@ -52,6 +55,7 @@
       <w>writestart</w>
       <w>xdcc</w>
       <w>xdccbot</w>
+      <w>xdccmsg</w>
     </words>
   </dictionary>
 </component>

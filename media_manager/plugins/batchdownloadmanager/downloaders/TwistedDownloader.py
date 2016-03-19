@@ -22,7 +22,7 @@ This file is part of media-manager.
 
 import os
 import shutil
-from subprocess import Popen, PIPE
+from subprocess import Popen
 from os.path import expanduser
 
 try:
