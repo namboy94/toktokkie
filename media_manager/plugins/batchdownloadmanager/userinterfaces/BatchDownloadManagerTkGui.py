@@ -226,8 +226,12 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         if len(packs) == 0:
             return
 
+        self.download_button["text"] = "Downloading..."
+
         downloader = self.download_engine_combo_box.get()
         self.start_download_process(preparation, downloader, packs, self.rename_check. var.get())
+
+        self.download_button["text"] = "Download"
 
     def on_directory_changed(self, widget):
         """

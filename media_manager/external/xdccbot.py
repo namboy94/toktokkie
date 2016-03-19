@@ -32,76 +32,72 @@ License:
 """
 
 import sys
+import os
 import logging as log
 
 try:
-    # noinspection PyUnresolvedReferences
     from twisted.words.protocols import irc
-    # noinspection PyUnresolvedReferences
     from twisted.internet import reactor, protocol
-    # noinspection PyUnresolvedReferences
     from twisted.python import log as twistedlog
 
 
     class XdccBot(irc.IRCClient):
 
         @property
-        def nickname(self):
+        def nickname( self ):
             return self.factory.nickname
 
-        def connection_made(self):
-            irc.IRCClient.connection_made(self)
+        def connectionMade(self):
+            irc.IRCClient.connectionMade(self)
             log.info("Bot connection made")
 
-        def signed_on(self):
+        def signedOn(self):
             log.info("Bot has signed on")
             self.join(self.factory.channel)
 
-        def joined(self, connected_channel):
-            log.info("Bot has joined channel %s" % connected_channel)
-            self.process_xdcc_requests()
+        def joined(self, channel):
+            log.info("Bot has joined channel %s" % channel)
+            self.processXdccRequests()
 
-        def process_xdcc_requests(self):
+        def processXdccRequests(self):
 
             xdccmsg = "XDCC SEND #%s"
 
-            if len(self.factory.xdcc_requests) > 0:
-                number = self.factory.xdcc_requests.pop(0)
-                self.msg(self.factory.xdcc_bot, xdccmsg % str(number))
+            if len(self.factory.xdccRequests) > 0:
+                number = self.factory.xdccRequests.pop(0)
+                self.msg(self.factory.xdccBot, xdccmsg % str(number))
             else:
                 reactor.stop()
 
         def privmsg(self, user, channel, msg):
             log.info("<%s> %s" % (user, msg))
 
-        def dcc_do_send(self, user, address, port, filename, size, data):
+        def dccDoSend(self, user, address, port, filename, size, data):
 
-            xdcc_factory = XdccDownloaderFactory(self,
-                                                 filename,
-                                                 self.factory.destdir,
-                                                 (user, self.factory.channel, data))
+            factory = XdccDownloaderFactory(self,
+                                            filename,
+                                            self.factory.destdir,
+                                            (user, self.factory.channel, data))
 
             if not hasattr(self, 'dcc_sessions'):
                 self.dcc_sessions = []
-            self.dcc_sessions.append(xdcc_factory)
+            self.dcc_sessions.append(factory)
 
-            reactor.connectTCP(address, port, xdcc_factory)
+            reactor.connectTCP(address, port, factory)
 
-        def dcc_download_finished(self, filename, success):
+        def dccDownloadFinished(self, filename, success):
 
-            log.info("Download of %s finished. Download status: %s" %
-                     (filename, success))
-            sys.exit(0)
-            # self.process_xdcc_requests()
+            log.info("DLCOMPLETE:%s" % filename)
+            self.processXdccRequests()
 
-    class XdccBotFactory(protocol.ClientFactory):
+    class XdccBotFactory( protocol.ClientFactory ):
 
-        def __init__(self, irc_channel, irc_nickname, xdcc_bot, xdcc_requests, destdir='.'):
-            self.channel = irc_channel
-            self.nickname = irc_nickname
+        def __init__( self, channel, nickname, xdccBot, xdccRequests, destdir='.'):
+            self.channel = channel
+            self.nickname = nickname
             self.destdir = destdir
-            self.xdcc_bot = xdcc_bot
-            self.xdcc_requests = xdcc_requests
+            self.xdccBot = xdccBot
+            self.xdccRequests = xdccRequests
 
         def clientConnectionLost(self, connector, reason):
             log.warning("Lost connection. Will try to reconnect. reason : %s" % reason)
@@ -118,45 +114,47 @@ try:
 
     class XdccDownloader(irc.DccFileReceive):
 
-        notify_block_size = 1024 * 1024
+        notifyBlockSize = 1024 * 1024
 
-        def __init__( self, filename, filesize=-1, query_data=None, destination_dir='.', resume_offset=0):
+        def __init__(self, filename, filesize=-1, queryData=None, destDir='.', resumeOffset=0):
 
-            irc.DccFileReceive.__init__( self, filename, filesize, query_data, destination_dir, resume_offset)
-            self.bytes_notify = 0
+            irc.DccFileReceive.__init__(self, filename, filesize, queryData, destDir, resumeOffset)
+            self.bytesNotify = 0
 
-        def is_download_successful(self):
-            return self.bytes_received == self.file_size
+        def isDownloadSuccessful(self):
+            return self.bytesReceived == self.fileSize
 
-        def data_received(self, data):
-            irc.DccFileReceive.data_received(self, data)
-            if self.bytes_received >= self.bytes_notify + self.notify_block_size:
+        def dataReceived(self, data):
+            irc.DccFileReceive.dataReceived(self, data)
+            if self.bytesReceived >= self.bytesNotify + self.notifyBlockSize:
 
-                self.bytes_notify += self.notify_block_size
+                self.bytesNotify += self.notifyBlockSize
 
-                log.info("%s is now at %s bytes" % (self.filename, self.bytes_received))
-                print("%s is now at %s bytes" % (self.filename, self.bytes_received))
+                log.info("PROGRESS:%s" % self.bytesReceived)
 
-        def connection_lost(self, reason):
+        def connectionLost(self, reason):
 
-            self.file_size = self.file.tell()
-            irc.DccFileReceive.connection_lost(self, reason)
+            self.fileSize = self.file.tell()
+            irc.DccFileReceive.connectionLost(self, reason)
 
-            if hasattr(self.factory.client, 'dcc_download_finished'):
-                self.factory.client.dcc_download_finished(self.filename, self.is_download_successful())
+            if hasattr(self.factory.client, 'dccDownloadFinished'):
+                self.factory.client.dccDownloadFinished(self.filename, self.isDownloadSuccessful())
 
     class XdccDownloaderFactory(protocol.ClientFactory):
 
-        def __init__(self, client, filename, destdir, query_data):
+        def __init__(self, client, filename, destdir, queryData):
             self.client = client
-            self.query_data = query_data
+            self.queryData = queryData
             self.filename = filename
             self.destdir = destdir
+            file_path = os.path.join(self.destdir, self.filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
 
         def buildProtocol(self, addr):
             downloader = XdccDownloader(self.filename,
                                         -1,
-                                        self.query_data,
+                                        self.queryData,
                                         self.destdir)
             downloader.factory = self
             return downloader
@@ -182,11 +180,10 @@ try:
         server, channel, nickname, xdccbot, dest_dir = sys.argv[1:6]
         xdccrequests = sys.argv[6:]
 
-        print(server, channel, nickname, xdccbot, xdccrequests)
-
         factory = XdccBotFactory(channel, nickname, xdccbot, xdccrequests, dest_dir)
         reactor.connectTCP(server, 6667, factory)
         reactor.run()
+        print("end")
 
 except ImportError:
     def get_file_loc():

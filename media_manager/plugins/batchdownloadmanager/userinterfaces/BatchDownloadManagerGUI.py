@@ -47,8 +47,6 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param parent: the parent gui
         :return: void
         """
-        from external.xdccbot import get_file_loc
-        print(get_file_loc())
         # Threads
         self.search_thread = None
         self.searching = False
@@ -242,8 +240,12 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         if len(packs) == 0:
             return
 
+        self.download_button.set_label("Downloading...")
+
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
         self.start_download_process(preparation, downloader, packs, self.rename_check.get_active())
+
+        self.download_button.set_label("Download")
 
     def on_directory_changed(self, widget):
         """

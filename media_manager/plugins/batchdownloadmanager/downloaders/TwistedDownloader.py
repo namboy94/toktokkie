@@ -22,7 +22,7 @@ This file is part of media-manager.
 
 import os
 import shutil
-from subprocess import Popen
+from subprocess import Popen, PIPE
 from os.path import expanduser
 
 try:
@@ -74,8 +74,9 @@ class TwistedDownloader(object):
         """
         script = os.path.join(expanduser('~'), ".mediamanager", "scripts", "xdccbot.py")
         dl_folder = os.path.join(expanduser('~'), "Downloads")
-        if not os.path.isfile(script):
-            shutil.copy(get_file_loc(), script)
+        if os.path.isfile(script):
+            os.remove(script)
+        shutil.copy(get_file_loc(), script)
 
         dl_command = ["python2",
                       script,
@@ -86,15 +87,24 @@ class TwistedDownloader(object):
                       dl_folder,
                       str(pack.packnumber)]
 
-        proc = Popen(dl_command)
-        stderr = proc.communicate()[1]
-        stderr = stderr.decode()
-        print(stderr)
-        file_name = stderr.split("Download of ")[1].split(" finished. Download")[0]
+        proc = Popen(dl_command, stderr=PIPE)
+        file_name = ""
+        while True:
+            line = proc.stderr.readline().decode().split("\n")[0]
+            if "PROGRESS:" in line:
+                print(line)
+            elif "DLCOMPLETE:" in line:
+                print(line)
+                file_name = line.split("DLCOMPLETE:")[1]
+            elif not line:
+                break
+        if not file_name:
+            raise Exception("Twisted Download Error")
+
         file_path = os.path.join(dl_folder, file_name)
 
         if self.auto_rename:
-            episode = Episode(file_path, self.show_name, self.episode_number, self.season_number)
+            episode = Episode(file_path, self.episode_number, self.season_number, self.show_name)
             episode.rename()
             self.episode_number += 1
             return episode.episode_file
