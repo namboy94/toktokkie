@@ -242,14 +242,12 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
 
         self.download_button.set_label("Downloading...")
 
-        progress_dict = {"total": len(packs), "total_progress": 0}
-
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
+        self.show_message_dialog("Downloading")
         self.start_download_process(preparation,
                                     downloader,
                                     packs,
-                                    self.rename_check.get_active(),
-                                    progress_dict)
+                                    self.rename_check.get_active())
 
         self.download_button.set_label("Download")
 

@@ -228,14 +228,11 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
 
         self.download_button["text"] = "Downloading..."
 
-        progress_dict = {"total": len(packs), "total_progress": 0}
-
         downloader = self.download_engine_combo_box.get()
         self.start_download_process(preparation,
                                     downloader,
                                     packs,
-                                    self.rename_check.var.get(),
-                                    progress_dict)
+                                    self.rename_check.var.get())
 
         self.download_button["text"] = "Download"
 
