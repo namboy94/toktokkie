@@ -30,12 +30,10 @@ try:
     from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
-    from media_manager.plugins.batchdownloadmanager.userinterfaces.GtkProgressWindow import GtkProgressWindow
 except ImportError:
     from guitemplates.gtk.GenericGtkGui import GenericGtkGui
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
-    from plugins.batchdownloadmanager.userinterfaces.GtkProgressWindow import GtkProgressWindow
 
 
 class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
@@ -244,12 +242,14 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
 
         self.download_button.set_label("Downloading...")
 
+        progress_dict = {"total": len(packs), "total_progress": 0}
+
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
         self.start_download_process(preparation,
                                     downloader,
                                     packs,
                                     self.rename_check.get_active(),
-                                    GtkProgressWindow(self))
+                                    progress_dict)
 
         self.download_button.set_label("Download")
 

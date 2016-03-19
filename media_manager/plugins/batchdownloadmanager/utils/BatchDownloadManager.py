@@ -169,7 +169,7 @@ class BatchDownloadManager(object):
                 "special": special, "new_directory": new_directory}
 
     @staticmethod
-    def start_download_process(preparation, downloader, packs, auto_rename, progresswindow):
+    def start_download_process(preparation, downloader, packs, auto_rename, progress_dict):
         """
         Starts the XDCC download
         :param preparation: the preparation dictionary created beforehand
@@ -182,21 +182,21 @@ class BatchDownloadManager(object):
         if downloader == "Hexchat Plugin":
             if auto_rename and not preparation["special"]:
                 files = HexChatPluginDownloader(packs,
-                                                progresswindow,
+                                                progress_dict,
                                                 preparation["show"],
                                                 preparation["first_episode"],
                                                 preparation["season"]).download_loop()
             else:
-                files = HexChatPluginDownloader(packs, progresswindow).download_loop()
+                files = HexChatPluginDownloader(packs, progress_dict).download_loop()
         elif downloader == "Twisted":
             if auto_rename and not preparation["special"]:
                 files = TwistedDownloader(packs,
-                                          progresswindow,
+                                          progress_dict,
                                           preparation["show"],
                                           preparation["first_episode"],
                                           preparation["season"]).download_loop()
             else:
-                files = TwistedDownloader(packs, progresswindow).download_loop()
+                files = TwistedDownloader(packs, progress_dict).download_loop()
 
         for file in files:
             FileMover.move_file(file, preparation["new_directory"])
