@@ -125,7 +125,7 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         self.search_button.grid(columnspan=4, column=0, row=6, sticky=W + E + N + S)
 
         self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_combo_box(["Hexchat Plugin", "Twisted"])
+        self.download_engine_combo_box = self.generate_combo_box(["Twisted", "Hexchat Plugin"])
         self.download_engine_label.grid(columnspan=2, column=0, row=7, sticky=W + E + N + S)
         self.download_engine_combo_box.grid(columnspan=2, column=2, row=7, sticky=W + E + N + S)
 

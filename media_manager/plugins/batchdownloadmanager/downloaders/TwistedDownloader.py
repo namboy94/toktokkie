@@ -20,12 +20,17 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from subprocess import Popen
+import os
+import shutil
+from subprocess import Popen, PIPE
+from os.path import expanduser
 
 try:
     from media_manager.plugins.renamer.objects.Episode import Episode
+    from media_manager.external.xdccbot import get_file_loc
 except ImportError:
     from plugins.renamer.objects.Episode import Episode
+    from external.xdccbot import get_file_loc
 
 
 class TwistedDownloader(object):
@@ -56,22 +61,42 @@ class TwistedDownloader(object):
         Starts the Download loop
         :return void
         """
+        files = []
         for pack in self.packs:
-            self.download(pack)
+            files.append(self.download(pack))
+        return files
 
-    # TODO Implement
     def download(self, pack):
         """
         Downloads a single pack
         :param pack: the pack to download
         :return void
         """
-        # TODO Look at Hexchatdownloader
-        #
-        # script = os.getenv("HOME") + "/.mediamanager/scripts/xdccbot.py"
-        # TODO Get bot name from config
-        Popen(["python2", "script", pack.server, pack.channel, "", pack.bot, str(pack.packnumber)])
+        script = os.path.join(expanduser('~'), ".mediamanager", "scripts", "xdccbot.py")
+        dl_folder = os.path.join(expanduser('~'), "Downloads")
+        if not os.path.isfile(script):
+            shutil.copy(get_file_loc(), script)
+
+        dl_command = ["python2",
+                      script,
+                      pack.server,
+                      pack.channel.split("#", 1)[1],
+                      "media_manager_python",
+                      pack.bot,
+                      dl_folder,
+                      str(pack.packnumber)]
+
+        proc = Popen(dl_command)
+        stderr = proc.communicate()[1]
+        stderr = stderr.decode()
+        print(stderr)
+        file_name = stderr.split("Download of ")[1].split(" finished. Download")[0]
+        file_path = os.path.join(dl_folder, file_name)
+
         if self.auto_rename:
-            # TODO read download path from config
-            Episode("", self.show_name, self.episode_number, self.season_number).rename()
+            episode = Episode(file_path, self.show_name, self.episode_number, self.season_number)
+            episode.rename()
             self.episode_number += 1
+            return episode.episode_file
+        else:
+            return file_path

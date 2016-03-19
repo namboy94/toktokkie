@@ -47,10 +47,11 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param parent: the parent gui
         :return: void
         """
+        from external.xdccbot import get_file_loc
+        print(get_file_loc())
         # Threads
         self.search_thread = None
         self.searching = False
-        self.download_thread = None
 
         # GUI Elements
         self.search_result = []
@@ -136,7 +137,7 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.grid.attach(self.search_button, 0, 45, 40, 5)
 
         self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_combo_box(["Hexchat Plugin", "Twisted"])
+        self.download_engine_combo_box = self.generate_combo_box(["Twisted", "Hexchat Plugin"])
         self.grid.attach(self.download_engine_label, 0, 55, 20, 5)
         self.grid.attach(self.download_engine_combo_box["combo_box"], 20, 55, 20, 5)
 
@@ -219,6 +220,9 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param widget: the Download Button
         :return: void
         """
+        if widget is None:
+            return
+
         preparation = self.prepare(self.destination.get_text(),
                                    self.show.get_text(),
                                    self.season.get_text(),
