@@ -28,10 +28,12 @@ try:
     from media_manager.guitemplates.tk.GenericTkGui import GenericTkGui
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from media_manager.plugins.batchdownloadmanager.userinterfaces.TkProgressWindow import TkProgressWindow
 except ImportError:
     from guitemplates.tk.GenericTkGui import GenericTkGui
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from plugins.batchdownloadmanager.userinterfaces.TkProgressWindow import TkProgressWindow
 
 
 class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
@@ -229,7 +231,11 @@ class BatchDownloadManagerTkGui(GenericTkGui, BatchDownloadManager):
         self.download_button["text"] = "Downloading..."
 
         downloader = self.download_engine_combo_box.get()
-        self.start_download_process(preparation, downloader, packs, self.rename_check. var.get())
+        self.start_download_process(preparation,
+                                    downloader,
+                                    packs,
+                                    self.rename_check.var.get(),
+                                    TkProgressWindow(self))
 
         self.download_button["text"] = "Download"
 

@@ -36,10 +36,11 @@ class HexChatPluginDownloader(object):
     XDCC Downloader that makes use of Hexchat's python scripting interface
     """
 
-    def __init__(self, packs, show_name="", episode_number=0, season_number=0):
+    def __init__(self, packs, progresswindow, show_name="", episode_number=0, season_number=0):
         """
         Constructor
         :param packs: the packs to be downloaded
+        :param progresswindow: The window that shows the progress of the downloads
         :param show_name: the show name for use with auto_rename
         :param episode_number: the (first) episode number for use with auto_rename
         :param season_number: the season number for use with auto_rename
@@ -54,6 +55,7 @@ class HexChatPluginDownloader(object):
             self.hexchat_config_location = os.path.join(os.path.expanduser('~'),
                                                         "AppData", "Roaming", "HexChat", "hexchat.conf")
         self.packs = packs
+        self.progresswindow = progresswindow
         self.script = open(self.script_location, 'w')
         self.download_dir = ""
 
