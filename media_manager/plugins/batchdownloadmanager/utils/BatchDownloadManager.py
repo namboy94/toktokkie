@@ -169,32 +169,35 @@ class BatchDownloadManager(object):
                 "special": special, "new_directory": new_directory}
 
     @staticmethod
-    def start_download_process(preparation, downloader, packs, auto_rename):
+    def start_download_process(preparation, downloader, packs, auto_rename, progress_struct):
         """
         Starts the XDCC download
         :param preparation: the preparation dictionary created beforehand
         :param downloader: the downloader to use
         :param packs: the packs to download
         :param auto_rename: bool that determines if the files will be auto-renamed
+        :param progress_struct: A ProgressStruct object to keep track of the download progress
         :return: void
         """
         files = []
         if downloader == "Hexchat Plugin":
             if auto_rename and not preparation["special"]:
                 files = HexChatPluginDownloader(packs,
+                                                progress_struct,
                                                 preparation["show"],
                                                 preparation["first_episode"],
                                                 preparation["season"]).download_loop()
             else:
-                files = HexChatPluginDownloader(packs).download_loop()
+                files = HexChatPluginDownloader(packs, progress_struct).download_loop()
         elif downloader == "Twisted":
             if auto_rename and not preparation["special"]:
                 files = TwistedDownloader(packs,
+                                          progress_struct,
                                           preparation["show"],
                                           preparation["first_episode"],
                                           preparation["season"]).download_loop()
             else:
-                files = TwistedDownloader(packs).download_loop()
+                files = TwistedDownloader(packs, progress_struct).download_loop()
 
         for file in files:
             FileMover.move_file(file, preparation["new_directory"])
