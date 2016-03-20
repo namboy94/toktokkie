@@ -258,6 +258,17 @@ class GenericGtkGui(Gtk.Window):
         return entry
 
     @staticmethod
+    def generate_progress_bar(start_percentage=0.0):
+        """
+        Generates a percentage-based Gtk Progress Bar
+        :param start_percentage: The percentage of the bar filled at the start
+        :return: the progress bar object
+        """
+        p_bar = Gtk.ProgressBar()
+        p_bar.set_fraction(start_percentage)
+        return p_bar
+
+    @staticmethod
     def generate_combo_box(options):
         """
         Generates a combo box with a given amount of options

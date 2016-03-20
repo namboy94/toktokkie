@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 import os
+import time
 from threading import Thread
 from gi.repository import GLib, GObject
 
@@ -30,10 +31,12 @@ try:
     from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
 except ImportError:
     from guitemplates.gtk.GenericGtkGui import GenericGtkGui
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
 
 
 class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
@@ -83,6 +86,9 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.search_results_label = None
         self.directory_content = None
         self.directory_content_label = None
+        self.total_progress_bar = None
+        self.single_progress_bar = None
+        self.download_speed_label = None
 
         # Initialization
         super().__init__("Batch Download Manager", parent, True)
@@ -160,6 +166,13 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.download_button = self.generate_simple_button("Start Download", self.start_download)
         self.grid.attach(self.download_button, 0, 95, 40, 5)
 
+        self.total_progress_bar = self.generate_progress_bar()
+        self.single_progress_bar = self.generate_progress_bar()
+        self.download_speed_label = self.generate_label("-")
+        self.grid.attach(self.total_progress_bar, 0, 105, 20, 5)
+        self.grid.attach(self.single_progress_bar, 20, 115, 20, 5)
+        self.grid.attach(self.download_speed_label, 0, 125, 40, 5)
+
         self.search_results_label = self.generate_label("Search Results")
         self.directory_content_label = self.generate_label("Episodes")
         self.grid.attach(self.search_results_label, 50, 0, 60, 5)
@@ -218,6 +231,23 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         :param widget: the Download Button
         :return: void
         """
+
+        def update_progress_thread(progress_struct):
+            """
+            Updates the progress UI elements
+            :param progress_struct: the progress structure to be displayed
+            :return: void
+            """
+            while True:
+                total_progress = float(progress_struct.total_progress) / float(progress_struct.total)
+                self.total_progress_bar.set_fraction(total_progress)
+                single_progress = float(progress_struct.single_progress) / float(progress_struct.single_size)
+                self.single_progress_bar.set_fraction(single_progress)
+                if progress_struct.total == progress_struct.total_progress:
+                    self.download_button.set_label("Download")
+                    break
+                time.sleep(1)
+
         if widget is None:
             return
 
@@ -243,13 +273,18 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.download_button.set_label("Downloading...")
 
         downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
-        self.show_message_dialog("Downloading")
-        self.start_download_process(preparation,
-                                    downloader,
-                                    packs,
-                                    self.rename_check.get_active())
+        progress = ProgressStruct()
+        progress.total = len(packs)
 
-        self.download_button.set_label("Download")
+        progress_thread = Thread(target=update_progress_thread, args=(progress,))
+        dl_thread = Thread(target=self.start_download_process, args=(preparation,
+                                                                     downloader,
+                                                                     packs,
+                                                                     self.rename_check.get_active(),
+                                                                     progress))
+
+        dl_thread.start()
+        progress_thread.start()
 
     def on_directory_changed(self, widget):
         """

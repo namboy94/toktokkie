@@ -39,16 +39,18 @@ class TwistedDownloader(object):
     The plan is to replace his script with one of my own once twisted supports python 3.
     """
     
-    def __init__(self, packs, show_name="", episode_number=0, season_number=0):
+    def __init__(self, packs, progress_struct, show_name="", episode_number=0, season_number=0):
         """
         Constructor
         :param packs: the packs to be downloaded
+        :param progress_struct: Structure that keeps track of download progress
         :param show_name: the show name for auto renaming
         :param episode_number: the (starting) episode number for auto renaming
         :param season_number: the season number for auto renaming
         :return: void
         """
         self.packs = packs
+        self.progress_struct = progress_struct
         self.auto_rename = False
         if show_name and episode_number > 0 and season_number > 0:
             self.show_name = show_name
@@ -64,6 +66,7 @@ class TwistedDownloader(object):
         files = []
         for pack in self.packs:
             files.append(self.download(pack))
+            self.progress_struct.total_progress += 1
         return files
 
     def download(self, pack):
@@ -93,6 +96,7 @@ class TwistedDownloader(object):
             line = proc.stderr.readline().decode().split("\n")[0]
             if "PROGRESS:" in line:
                 print(line)
+                self.progress_struct.single_progress = int(line.split("PROGRESS:")[1])
             elif "DLCOMPLETE:" in line:
                 print(line)
                 file_name = line.split("DLCOMPLETE:")[1]
