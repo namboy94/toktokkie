@@ -22,12 +22,12 @@ This file is part of media-manager.
 
 # imports
 try:
-    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from Globals import Globals
 except ImportError:
-    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from media_manager.Globals import Globals
 
 
-class MainGUI(GenericGtkGui):
+class MainGUI(Globals.selected_grid_gui_framework):
     """
     Class that implements the Main GUI
     """
@@ -46,8 +46,6 @@ class MainGUI(GenericGtkGui):
         Adds buttons for all plugins
         :return: void
         """
-        # logo_label = self.generate_image_label("/home/hermann/IDEs/projects/pycharm/media-manager/res/logo.png", 1, 1)
-        # self.grid.attach(logo_label, 1, 0, 1, 1)
 
         i = 0
         row = 0
@@ -67,8 +65,8 @@ class MainGUI(GenericGtkGui):
                 :return: void
                 """
                 if widget is not None:
-                    plugin[0].start_gui(self)
+                    plugin.start_gui(self)
 
-            button = self.generate_simple_button(self.plugins[i].get_name(), start_button_function, self.plugins[i])
+            button = self.generate_button(self.plugins[i].get_name(), start_button_function, self.plugins[i])
             self.grid.attach(button, column, row, 1, 1)
             i += 1

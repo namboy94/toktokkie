@@ -53,6 +53,7 @@ def main(ui_override=None):
 
     # Parse arguments
     if (len(sys.argv) > 1 and sys.argv[1] == "-tk") or ui_override == "tk":
+        Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
         try:
             from mainuserinterfaces.MainTkGui import MainTkGui as GlobalGui
             from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui

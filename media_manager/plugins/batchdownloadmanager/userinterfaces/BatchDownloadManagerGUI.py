@@ -87,7 +87,10 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.directory_content = None
         self.directory_content_label = None
         self.total_progress_bar = None
+        self.total_progress_label = None
         self.single_progress_bar = None
+        self.single_progress_label = None
+        self.download_speed = None
         self.download_speed_label = None
 
         # Initialization
@@ -167,11 +170,17 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         self.grid.attach(self.download_button, 0, 95, 40, 5)
 
         self.total_progress_bar = self.generate_progress_bar()
+        self.total_progress_label = self.generate_label("Total Progress")
         self.single_progress_bar = self.generate_progress_bar()
-        self.download_speed_label = self.generate_label("-")
-        self.grid.attach(self.total_progress_bar, 0, 105, 20, 5)
+        self.single_progress_label = self.generate_label("Single Progress")
+        self.download_speed = self.generate_label("-")
+        self.download_speed_label = self.generate_label("Download Speed")
+        self.grid.attach(self.total_progress_bar, 20, 105, 20, 5)
+        self.grid.attach(self.total_progress_label, 0, 105, 20, 5)
         self.grid.attach(self.single_progress_bar, 20, 115, 20, 5)
-        self.grid.attach(self.download_speed_label, 0, 125, 40, 5)
+        self.grid.attach(self.single_progress_label, 0, 115, 20, 5)
+        self.grid.attach(self.download_speed, 20, 125, 20, 5)
+        self.grid.attach(self.download_speed_label, 0, 125, 20, 5)
 
         self.search_results_label = self.generate_label("Search Results")
         self.directory_content_label = self.generate_label("Episodes")
@@ -266,7 +275,6 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
         packs = []
         for selection in selected_packs:
-            print(self.search_result[selection])
             packs.append(self.search_result[selection])
         if len(packs) == 0:
             return

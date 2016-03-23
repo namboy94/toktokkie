@@ -20,6 +20,9 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
+from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
+
 
 class Globals(object):
     """
@@ -77,3 +80,8 @@ class Globals(object):
             except ImportError:
                 from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
                     import BatchDownloadManagerTkGui as BatchDownloadManagerGui
+
+    selected_grid_gui_framework = Gtk3GridTemplate
+
+    gtk3_gui_template = Gtk3GridTemplate
+    tk_gui_template = TkGridTemplate

@@ -98,7 +98,7 @@ class TwistedDownloader(object):
         while True:
             line = proc.stderr.readline().decode().split("\n")[0]
             if "PROGRESS:" in line:
-                print(line)
+                print("PROGRESS" + line.split("PROGRESS")[1])
                 self.progress_struct.single_progress = int(line.split("PROGRESS:")[1])
             elif "DLCOMPLETE:" in line:
                 print(line)
