@@ -23,14 +23,14 @@ This file is part of media-manager.
 import os
 
 try:
-    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
-    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
-except ImportError:
-    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from Globals import Globals
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+except ImportError:
+    from media_manager.Globals import Globals
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
 
-class IconizerGUI(GenericGtkGui):
+class IconizerGUI(Globals.selected_grid_gui_framework):
     """
     GUI for the Iconizer plugin
     """
@@ -53,16 +53,16 @@ class IconizerGUI(GenericGtkGui):
         """
 
         self.directory_entry = self.generate_text_entry("Enter Directory here", self.iconize_start)
-        self.grid.attach(self.directory_entry, 0, 0, 3, 1)
+        self.position_absolute(self.directory_entry, 0, 0, 3, 1)
 
-        self.director_browser = self.generate_simple_button("Browse", self.browse_directory)
-        self.grid.attach(self.director_browser, 1, 1, 1, 1)
+        self.director_browser = self.generate_button("Browse", self.browse_directory)
+        self.position_absolute(self.director_browser, 1, 1, 1, 1)
 
-        self.start_button = self.generate_simple_button("Start", self.iconize_start)
-        self.grid.attach(self.start_button, 3, 0, 1, 1)
+        self.start_button = self.generate_button("Start", self.iconize_start)
+        self.position_absolute(self.start_button, 3, 0, 1, 1)
 
-        self.iconizer_method_combo_box = self.generate_combo_box(DeepIconizer.get_iconizer_options())
-        self.grid.attach(self.iconizer_method_combo_box["combo_box"], 3, 1, 1, 1)
+        self.iconizer_method_combo_box = self.generate_string_combo_box(DeepIconizer.get_iconizer_options())
+        self.position_absolute(self.iconizer_method_combo_box, 3, 1, 1, 1)
 
     def iconize_start(self, widget):
         """
@@ -73,9 +73,9 @@ class IconizerGUI(GenericGtkGui):
         if widget is None:
             return
 
-        directory = self.directory_entry.get_text()
+        directory = self.get_string_from_text_entry(self.directory_entry)
         if not os.path.isdir(directory):
-            self.show_message_dialog("Not a directory!")
+            self.show_message_dialog("Not a directory!", "")
             return
         children = os.listdir(directory)
         multiple = True
@@ -99,7 +99,7 @@ class IconizerGUI(GenericGtkGui):
         if widget is not None:
             selected_directory = self.show_directory_chooser_dialog()
             if selected_directory:
-                self.directory_entry.set_text(selected_directory)
+                self.set_text_entry_string(self.directory_entry, selected_directory)
 
     def iconize_dir(self, directory):
         """
@@ -107,7 +107,7 @@ class IconizerGUI(GenericGtkGui):
         :param directory: the directory to be iconized
         :return: void
         """
-        method = self.get_current_selected_combo_box_option(self.iconizer_method_combo_box)
+        method = self.get_string_from_current_selected_combo_box_option(self.iconizer_method_combo_box)
         has_icons = False
         for sub_directory in os.listdir(directory):
             if sub_directory == ".icons":

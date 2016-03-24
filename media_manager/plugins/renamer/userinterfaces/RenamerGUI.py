@@ -21,14 +21,14 @@ This file is part of media-manager.
 """
 
 try:
-    from media_manager.plugins.renamer.utils.Renamer import Renamer
-    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
-except ImportError:
     from plugins.renamer.utils.Renamer import Renamer
-    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
+    from Globals import Globals
+except ImportError:
+    from media_manager.plugins.renamer.utils.Renamer import Renamer
+    from media_manager.Globals import Globals
 
 
-class RenamerGUI(GenericGtkGui):
+class RenamerGUI(Globals.selected_grid_gui_framework):
     """
     GUI for the Renamer plugin
     """
@@ -49,14 +49,14 @@ class RenamerGUI(GenericGtkGui):
         Sets up all interface elements of the GUI
         :return: void
         """
-        self.button = self.generate_simple_button("Start", self.start_rename)
-        self.grid.attach(self.button, 4, 0, 1, 1)
+        self.button = self.generate_button("Start", self.start_rename)
+        self.position_absolute(self.button, 4, 0, 1, 1)
 
-        self.browse = self.generate_simple_button("Browse", self.browse_directory)
-        self.grid.attach(self.browse, 0, 0, 1, 1)
+        self.browse = self.generate_button("Browse", self.browse_directory)
+        self.position_absolute(self.browse, 0, 0, 1, 1)
 
         self.entry = self.generate_text_entry("", self.start_rename)
-        self.grid.attach(self.entry, 1, 0, 2, 1)
+        self.position_absolute(self.entry, 1, 0, 2, 1)
 
     def start_rename(self, widget):
         """
@@ -67,7 +67,7 @@ class RenamerGUI(GenericGtkGui):
         if widget is None:
             return
         try:
-            abs_dir = self.entry.get_text()
+            abs_dir = self.get_string_from_text_entry(self.entry)
             renamer = Renamer(abs_dir)
             confirmation = renamer.request_confirmation()
             if self.confirmer(confirmation):
@@ -75,7 +75,7 @@ class RenamerGUI(GenericGtkGui):
                 renamer.start_rename()
         except Exception as e:
             if str(e) == "Not a directory":
-                self.show_message_dialog(str(e))
+                self.show_message_dialog("Error, ", str(e))
             else:
                 raise e
 
@@ -88,7 +88,7 @@ class RenamerGUI(GenericGtkGui):
         if widget is not None:
             selected_directory = self.show_directory_chooser_dialog()
             if selected_directory:
-                self.entry.set_text(selected_directory)
+                self.set_text_entry_string(self.entry, selected_directory)
 
     def confirmer(self, confirmation):
         """
@@ -103,7 +103,7 @@ class RenamerGUI(GenericGtkGui):
             message += "\nto\n"
             message += confirmation[1][i]
             message += "\n?"
-            response = self.show_y_n_dialog("Confirmation", message)
+            response = self.show_yes_no_dialog("Confirmation", message)
             if not response:
                 return False
             i += 1

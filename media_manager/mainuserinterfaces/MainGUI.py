@@ -68,5 +68,5 @@ class MainGUI(Globals.selected_grid_gui_framework):
                     plugin.start_gui(self)
 
             button = self.generate_button(self.plugins[i].get_name(), start_button_function, self.plugins[i])
-            self.grid.attach(button, column, row, 1, 1)
+            self.position_absolute(button, column, row, 1, 1)
             i += 1
