@@ -29,8 +29,6 @@ class Globals(object):
     A class storing various global imports and/or variables
     """
 
+    selected_grid_gui_framework = None
     gtk3_gui_template = Gtk3GridTemplate
     tk_gui_template = TkGridTemplate
-
-    selected_grid_gui_framework = gtk3_gui_template
-

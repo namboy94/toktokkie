@@ -27,18 +27,14 @@ import configparser
 from os.path import expanduser
 
 try:
-    from plugins.PluginManager import PluginManager
-    from mainuserinterfaces.MainGUI import MainGUI
     from startup.Installer import Installer
     from Globals import Globals
 except ImportError:
-    from media_manager.plugins.PluginManager import PluginManager
-    from media_manager.mainuserinterfaces.MainGUI import MainGUI
     from media_manager.startup.Installer import Installer
     from media_manager.Globals import Globals
 
 
-def main(ui_override='gtk'):
+def main(ui_override="gtk"):
     """
     Main method that runs the program
     :return: void
@@ -46,12 +42,6 @@ def main(ui_override='gtk'):
 
     if not Installer().is_installed():
         Installer().install()
-
-    # ConfigParsing
-    config = configparser.ConfigParser()
-    config.read(os.path.join(expanduser('~'), ".mediamanager", "configs", "mainconfig"))
-    plugin_config = dict(config.items("plugins"))
-    active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Parse arguments
     if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
@@ -61,6 +51,19 @@ def main(ui_override='gtk'):
     else:
         print("No valid GUI framework specified. Please use either --gtk or --tk")
         sys.exit(1)
+
+    try:
+        from plugins.PluginManager import PluginManager
+        from mainuserinterfaces.MainGUI import MainGUI
+    except ImportError:
+        from media_manager.plugins.PluginManager import PluginManager
+        from media_manager.mainuserinterfaces.MainGUI import MainGUI
+
+    # ConfigParsing
+    config = configparser.ConfigParser()
+    config.read(os.path.join(expanduser('~'), ".mediamanager", "configs", "mainconfig"))
+    plugin_config = dict(config.items("plugins"))
+    active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Start the program
     gui = MainGUI(active_plugins)
