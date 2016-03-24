@@ -21,11 +21,11 @@ This file is part of media-manager.
 """
 
 try:
-    from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.Globals import Globals
-except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-    from Globals import Globals
+    from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+except ImportError:
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
 
 
 class IconizerPlugin(GenericPlugin):
@@ -57,4 +57,4 @@ class IconizerPlugin(GenericPlugin):
         :param parent_gui: the parent window
         :return void
         """
-        Globals.IconizerGui(parent_gui).start()
+        IconizerGUI(parent_gui).start()

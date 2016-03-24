@@ -24,9 +24,9 @@ import os
 import platform
 
 try:
-    from media_manager.plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
-except ImportError:
     from plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
+except ImportError:
+    from media_manager.plugins.iconizer.utils.iconizers.NautilusNemoIconizer import NautilusNemoIconizer
 
 
 class DeepIconizer(object):

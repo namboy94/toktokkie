@@ -21,9 +21,11 @@ This file is part of media-manager.
 """
 
 try:
-    from media_manager.plugins.common.GenericPlugin import GenericPlugin
-except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
+    from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+except ImportError:
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
 
 
 class RenamerPlugin(GenericPlugin):
@@ -55,4 +57,4 @@ class RenamerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return void
         """
-        Globals.RenamerGui(parent_gui).start()
+        RenamerGUI(parent_gui).start()

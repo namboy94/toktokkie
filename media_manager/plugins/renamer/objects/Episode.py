@@ -23,11 +23,11 @@ This file is part of media-manager.
 import os
 
 try:
-    from media_manager.plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
-    from media_manager.plugins.common.fileops.FileRenamer import FileRenamer
-except ImportError:
     from plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
     from plugins.common.fileops.FileRenamer import FileRenamer
+except ImportError:
+    from media_manager.plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
+    from media_manager.plugins.common.fileops.FileRenamer import FileRenamer
 
 
 class Episode(object):
