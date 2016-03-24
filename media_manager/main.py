@@ -27,16 +27,18 @@ import configparser
 from os.path import expanduser
 
 try:
-    from media_manager.plugins.PluginManager import PluginManager
-    from media_manager.startup.Installer import Installer
-    from media_manager.Globals import Globals
-except ImportError:
     from plugins.PluginManager import PluginManager
+    from mainuserinterfaces.MainGUI import MainGUI
     from startup.Installer import Installer
     from Globals import Globals
+except ImportError:
+    from media_manager.plugins.PluginManager import PluginManager
+    from media_manager.mainuserinterfaces.MainGUI import MainGUI
+    from media_manager.startup.Installer import Installer
+    from media_manager.Globals import Globals
 
 
-def main(ui_override=None):
+def main(ui_override='gtk'):
     """
     Main method that runs the program
     :return: void
@@ -52,27 +54,16 @@ def main(ui_override=None):
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Parse arguments
-    if (len(sys.argv) > 1 and sys.argv[1] == "-tk") or ui_override == "tk":
+    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
         Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
-        try:
-            from mainuserinterfaces.MainTkGui import MainTkGui as GlobalGui
-            from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui
-            from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
-                import BatchDownloadManagerTkGui as BatchDownloadManagerGui
-            from plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as IconizerGui
-        except ImportError:
-            from media_manager.mainuserinterfaces.MainTkGui import MainTkGui as GlobalGui
-            from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui
-            from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
-                import BatchDownloadManagerTkGui as BatchDownloadManagerGui
-            from media_manager.plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as IconizerGui
-        Globals.MainGui = GlobalGui
-        Globals.RenamerGui = RenamerGui
-        Globals.IconizerGui = IconizerGui
-        Globals.BatchDownloadManagerGui = BatchDownloadManagerGui
+    elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk":
+        Globals.selected_grid_gui_framework = Globals.tk_gui_template
+    else:
+        print("No valid GUI framework specified. Please use either --gtk or --tk")
+        sys.exit(1)
 
     # Start the program
-    gui = Globals.MainGui(active_plugins)
+    gui = MainGUI(active_plugins)
     gui.start()
 
 if __name__ == '__main__':

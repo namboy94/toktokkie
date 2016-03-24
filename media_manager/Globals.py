@@ -29,59 +29,8 @@ class Globals(object):
     A class storing various global imports and/or variables
     """
 
-    # main gui selection
-    MainGui = None
-    try:
-        from mainuserinterfaces.MainGUI import MainGUI as MainGui
-    except ImportError:
-        try:
-            from mainuserinterfaces.MainTkGui import MainTkGui as MainGui
-        except ImportError:
-            try:
-                from media_manager.mainuserinterfaces.MainGUI import MainGUI as MainGui
-            except ImportError:
-                from media_manager.mainuserinterfaces.MainTkGui import MainTkGui as MainGui
-                
-    # plugin gui selection
-    RenamerGui = None
-    try:
-        from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI as RenamerGui
-    except ImportError:
-        try:
-            from media_manager.plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui
-        except ImportError:
-            try:
-                from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI as RenamerGui
-            except ImportError:
-                from plugins.renamer.userinterfaces.RenamerTkGui import RenamerTkGui as RenamerGui
-    IconizerGui = None
-    try:
-        from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI as IconizerGui
-    except ImportError:
-        try:
-            from media_manager.plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as IconizerGui
-        except ImportError:
-            try:
-                from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI as IconizerGui
-            except ImportError:
-                from plugins.iconizer.userinterfaces.IconizerTkGui import IconizerTkGui as IconizerGui
-    BatchDownloadManagerGui = None
-    try:
-        from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
-            import BatchDownloadManagerGUI as BatchDownloadManagerGui
-    except ImportError:
-        try:
-            from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
-                import BatchDownloadManagerTkGui as BatchDownloadManagerGui
-        except ImportError:
-            try:
-                from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
-                    import BatchDownloadManagerGUI as BatchDownloadManagerGui
-            except ImportError:
-                from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerTkGui \
-                    import BatchDownloadManagerTkGui as BatchDownloadManagerGui
-
-    selected_grid_gui_framework = Gtk3GridTemplate
-
     gtk3_gui_template = Gtk3GridTemplate
     tk_gui_template = TkGridTemplate
+
+    selected_grid_gui_framework = gtk3_gui_template
+

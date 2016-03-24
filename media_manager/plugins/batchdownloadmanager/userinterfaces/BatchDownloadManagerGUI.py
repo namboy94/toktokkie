@@ -28,12 +28,11 @@ from gi.repository import GLib, GObject
 GObject.threads_init()
 
 try:
-    from media_manager.guitemplates.gtk.GenericGtkGui import GenericGtkGui
+
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
 except ImportError:
-    from guitemplates.gtk.GenericGtkGui import GenericGtkGui
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
