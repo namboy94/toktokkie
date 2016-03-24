@@ -21,11 +21,12 @@ This file is part of media-manager.
 """
 
 try:
-    from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.Globals import Globals
-except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-    from Globals import Globals
+    from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
+except ImportError:
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
+    from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
+        import BatchDownloadManagerGUI
 
 
 class BatchDownloadManagerPlugin(GenericPlugin):
@@ -57,4 +58,4 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return: void
         """
-        Globals.BatchDownloadManagerGui(parent_gui).start()
+        BatchDownloadManagerGUI(parent_gui).start()

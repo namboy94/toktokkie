@@ -26,13 +26,13 @@ from subprocess import Popen, PIPE
 from os.path import expanduser
 
 try:
-    from media_manager.plugins.renamer.objects.Episode import Episode
-    from media_manager.external.xdccbot import get_file_loc
-    from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
-except ImportError:
     from plugins.renamer.objects.Episode import Episode
     from external.xdccbot import get_file_loc
     from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
+except ImportError:
+    from media_manager.plugins.renamer.objects.Episode import Episode
+    from media_manager.external.xdccbot import get_file_loc
+    from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
 
 
 class TwistedDownloader(object):

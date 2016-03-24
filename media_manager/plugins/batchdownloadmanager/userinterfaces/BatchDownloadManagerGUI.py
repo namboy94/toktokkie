@@ -23,22 +23,23 @@ This file is part of media-manager.
 import os
 import time
 from threading import Thread
-from gi.repository import GLib, GObject
 
-GObject.threads_init()
+# TODO get rid of this:
+# GObject.threads_init()
 
 try:
-
-    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
-    from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
-    from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
-except ImportError:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from Globals import Globals
+except ImportError:
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from media_manager.Globals import Globals
 
 
-class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
+class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownloadManager):
     """
     GUI for the BatchDownloadManager plugin
     """
@@ -94,8 +95,6 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
 
         # Initialization
         super().__init__("Batch Download Manager", parent, True)
-        self.grid.set_column_homogeneous(False)
-        self.grid.set_row_homogeneous(False)
 
     def lay_out(self):
         """
@@ -104,94 +103,93 @@ class BatchDownloadManagerGUI(GenericGtkGui, BatchDownloadManager):
         """
 
         self.configure_label = self.generate_label("Options")
-        self.grid.attach(self.configure_label, 0, 0, 40, 5)
+        self.position_absolute(self.configure_label, 0, 0, 40, 5)
 
         self.destination_label = self.generate_label("Destination Directory")
-        self.destination = self.generate_text_entry("")
-        self.destination.connect("changed", self.on_directory_changed)
-        self.destination_browser = self.generate_simple_button("Browse", self.browse_for_destination)
-        self.grid.attach(self.destination_label, 0, 5, 8, 5)
-        self.grid.attach(self.destination_browser, 10, 5, 8, 5)
-        self.grid.attach(self.destination, 20, 5, 20, 5)
+        self.destination = self.generate_text_entry("", on_changed_command=self.on_directory_changed)
+        self.destination_browser = self.generate_button("Browse", self.browse_for_destination)
+        self.position_absolute(self.destination_label, 0, 5, 8, 5)
+        self.position_absolute(self.destination_browser, 10, 5, 8, 5)
+        self.position_absolute(self.destination, 20, 5, 20, 5)
 
         self.show_label = self.generate_label("Show Name")
         self.show = self.generate_text_entry("")
-        self.grid.attach(self.show_label, 0, 10, 20, 5)
-        self.grid.attach(self.show, 20, 10, 20, 5)
+        self.position_absolute(self.show_label, 0, 10, 20, 5)
+        self.position_absolute(self.show, 20, 10, 20, 5)
 
         self.season_label = self.generate_label("Season Number")
         self.season = self.generate_text_entry("")
-        self.grid.attach(self.season_label, 0, 15, 20, 5)
-        self.grid.attach(self.season, 20, 15, 20, 5)
+        self.position_absolute(self.season_label, 0, 15, 20, 5)
+        self.position_absolute(self.season, 20, 15, 20, 5)
 
         self.episode_label = self.generate_label("Starting Episode Number")
         self.episode = self.generate_text_entry("optional")
-        self.grid.attach(self.episode_label, 0, 20, 20, 5)
-        self.grid.attach(self.episode, 20, 20, 20, 5)
+        self.position_absolute(self.episode_label, 0, 20, 20, 5)
+        self.position_absolute(self.episode, 20, 20, 20, 5)
 
         self.search_label = self.generate_label("Search Term")
         self.search_field = self.generate_text_entry("", self.search_xdcc)
-        self.grid.attach(self.search_label, 0, 30, 20, 5)
-        self.grid.attach(self.search_field, 20, 30, 20, 5)
+        self.position_absolute(self.search_label, 0, 30, 20, 5)
+        self.position_absolute(self.search_field, 20, 30, 20, 5)
 
         self.search_engine_label = self.generate_label("Search Engine")
-        self.search_engine_combo_box = self.generate_combo_box(["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
-        self.grid.attach(self.search_engine_label, 0, 35, 20, 5)
-        self.grid.attach(self.search_engine_combo_box["combo_box"], 20, 35, 20, 5)
+        self.search_engine_combo_box = self.generate_string_combo_box(["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
+        self.position_absolute(self.search_engine_label, 0, 35, 20, 5)
+        self.position_absolute(self.search_engine_combo_box, 20, 35, 20, 5)
 
-        self.search_button = self.generate_simple_button("Start Search", self.search_xdcc)
-        self.grid.attach(self.search_button, 0, 45, 40, 5)
+        self.search_button = self.generate_button("Start Search", self.search_xdcc)
+        self.position_absolute(self.search_button, 0, 45, 40, 5)
 
         self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_combo_box(["Twisted", "Hexchat Plugin"])
-        self.grid.attach(self.download_engine_label, 0, 55, 20, 5)
-        self.grid.attach(self.download_engine_combo_box["combo_box"], 20, 55, 20, 5)
+        self.download_engine_combo_box = self.generate_string_combo_box(["Twisted", "Hexchat Plugin"])
+        self.position_absolute(self.download_engine_label, 0, 55, 20, 5)
+        self.position_absolute(self.download_engine_combo_box, 20, 55, 20, 5)
 
         self.options_label = self.generate_label("Options")
         self.rename_check = self.generate_check_box("Automatic Rename", True)
-        self.grid.attach(self.options_label, 0, 65, 20, 5)
-        self.grid.attach(self.rename_check, 20, 65, 20, 5)
+        self.position_absolute(self.options_label, 0, 65, 20, 5)
+        self.position_absolute(self.rename_check, 20, 65, 20, 5)
 
         self.main_icon_label = self.generate_label("Main Icon")
         self.secondary_icon_label = self.generate_label("Season Icon")
         self.main_icon_location = self.generate_text_entry("")
         self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
-        self.method_combo_box = self.generate_combo_box(DeepIconizer.get_iconizer_options())
-        self.grid.attach(self.main_icon_label, 0, 75, 20, 5)
-        self.grid.attach(self.secondary_icon_label, 0, 80, 20, 5)
-        self.grid.attach(self.main_icon_location, 20, 75, 20, 5)
-        self.grid.attach(self.secondary_icon_location, 20, 80, 20, 5)
-        self.grid.attach(self.method_label, 0, 85, 20, 5)
-        self.grid.attach(self.method_combo_box["combo_box"], 20, 85, 20, 5)
+        self.method_combo_box = self.generate_string_combo_box(DeepIconizer.get_iconizer_options())
+        self.position_absolute(self.main_icon_label, 0, 75, 20, 5)
+        self.position_absolute(self.secondary_icon_label, 0, 80, 20, 5)
+        self.position_absolute(self.main_icon_location, 20, 75, 20, 5)
+        self.position_absolute(self.secondary_icon_location, 20, 80, 20, 5)
+        self.position_absolute(self.method_label, 0, 85, 20, 5)
+        self.position_absolute(self.method_combo_box, 20, 85, 20, 5)
 
-        self.download_button = self.generate_simple_button("Start Download", self.start_download)
-        self.grid.attach(self.download_button, 0, 95, 40, 5)
+        self.download_button = self.generate_button("Start Download", self.start_download)
+        self.position_absolute(self.download_button, 0, 95, 40, 5)
 
-        self.total_progress_bar = self.generate_progress_bar()
+        self.total_progress_bar = self.generate_percentage_progress_bar()
         self.total_progress_label = self.generate_label("Total Progress")
-        self.single_progress_bar = self.generate_progress_bar()
+        self.single_progress_bar = self.generate_percentage_progress_bar()
         self.single_progress_label = self.generate_label("Single Progress")
         self.download_speed = self.generate_label("-")
         self.download_speed_label = self.generate_label("Download Speed")
-        self.grid.attach(self.total_progress_bar, 20, 105, 20, 5)
-        self.grid.attach(self.total_progress_label, 0, 105, 20, 5)
-        self.grid.attach(self.single_progress_bar, 20, 115, 20, 5)
-        self.grid.attach(self.single_progress_label, 0, 115, 20, 5)
-        self.grid.attach(self.download_speed, 20, 125, 20, 5)
-        self.grid.attach(self.download_speed_label, 0, 125, 20, 5)
+        self.position_absolute(self.total_progress_bar, 20, 105, 20, 5)
+        self.position_absolute(self.total_progress_label, 0, 105, 20, 5)
+        self.position_absolute(self.single_progress_bar, 20, 115, 20, 5)
+        self.position_absolute(self.single_progress_label, 0, 115, 20, 5)
+        self.position_absolute(self.download_speed, 20, 125, 20, 5)
+        self.position_absolute(self.download_speed_label, 0, 125, 20, 5)
 
         self.search_results_label = self.generate_label("Search Results")
         self.directory_content_label = self.generate_label("Episodes")
-        self.grid.attach(self.search_results_label, 50, 0, 60, 5)
-        self.grid.attach(self.directory_content_label, 120, 0, 20, 5)
+        self.position_absolute(self.search_results_label, 50, 0, 60, 5)
+        self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
 
-        self.search_results = self.generate_multi_list_box(
-            {"types": [int, str, int, str, str], "titles": ["#", "Bot", "Pack", "Size", "Filename"]})
-        self.grid.attach(self.search_results["scrollable"], 50, 5, 60, 95)
+        self.search_results = self.generate_primitive_multi_list_box(
+            {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
+        self.position_absolute(self.search_results, 50, 5, 60, 95)
 
-        self.directory_content = self.generate_multi_list_box({"types": [str], "titles": ["File Name"]})
-        self.grid.attach(self.directory_content["scrollable"], 120, 5, 20, 95)
+        self.directory_content = self.generate_primitive_multi_list_box({"File Name": (0, str)})
+        self.position_absolute(self.directory_content, 120, 5, 20, 95)
 
     def search_xdcc(self, widget):
         """

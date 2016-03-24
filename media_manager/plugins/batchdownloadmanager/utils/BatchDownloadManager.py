@@ -25,14 +25,6 @@ import os
 from subprocess import Popen
 
 try:
-    from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
-    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
-    from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
-    from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
-    from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
-    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
-    from media_manager.plugins.common.fileops.FileMover import FileMover
-except ImportError:
     from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
@@ -40,6 +32,14 @@ except ImportError:
     from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.common.fileops.FileMover import FileMover
+except ImportError:
+    from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
+    from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
+    from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from media_manager.plugins.common.fileops.FileMover import FileMover
 
 
 class BatchDownloadManager(object):

@@ -26,9 +26,9 @@ import platform
 from subprocess import Popen
 
 try:
-    from media_manager.plugins.renamer.objects.Episode import Episode
-except ImportError:
     from plugins.renamer.objects.Episode import Episode
+except ImportError:
+    from media_manager.plugins.renamer.objects.Episode import Episode
 
 
 class HexChatPluginDownloader(object):

@@ -21,7 +21,7 @@ This file is part of media-manager.
 """
 
 # imports
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def readme():
@@ -49,32 +49,7 @@ setup(name='media-manager',
       author='Hermann Krumrey',
       author_email='hermann@krumreyh.com',
       license='GNU GPL3',
-      packages=['media_manager',
-                'media_manager.external',
-                'media_manager.guitemplates',
-                'media_manager.guitemplates.gtk',
-                'media_manager.guitemplates.tk',
-                'media_manager.mainuserinterfaces',
-                'media_manager.plugins',
-                'media_manager.plugins.batchdownloadmanager',
-                'media_manager.plugins.batchdownloadmanager.downloaders',
-                'media_manager.plugins.batchdownloadmanager.searchengines',
-                'media_manager.plugins.batchdownloadmanager.searchengines.objects',
-                'media_manager.plugins.batchdownloadmanager.userinterfaces',
-                'media_manager.plugins.batchdownloadmanager.utils',
-                'media_manager.plugins.common',
-                'media_manager.plugins.common.fileops',
-                'media_manager.plugins.common.onlinedatagetters',
-                'media_manager.plugins.iconizer',
-                'media_manager.plugins.iconizer.userinterfaces',
-                'media_manager.plugins.iconizer.utils',
-                'media_manager.plugins.iconizer.utils.iconizers',
-                'media_manager.plugins.renamer',
-                'media_manager.plugins.renamer.objects',
-                'media_manager.plugins.renamer.userinterfaces',
-                'media_manager.plugins.renamer.utils',
-                'media_manager.startup'],
-      install_requires=['tvdb_api', 'beautifulsoup4', 'gfworks'],
+      packages=find_packages(),
       dependency_links=['https://git.gnome.org/browse/pygobject'],
       test_suite='nose.collector',
       tests_require=['nose'],

@@ -22,10 +22,8 @@ This file is part of media-manager.
 
 try:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.Globals import Globals
 except ImportError:
     from plugins.common.GenericPlugin import GenericPlugin
-    from Globals import Globals
 
 
 class RenamerPlugin(GenericPlugin):

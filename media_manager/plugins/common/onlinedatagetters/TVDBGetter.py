@@ -23,9 +23,9 @@ This file is part of media-manager.
 import tvdb_api
 
 try:
-    from media_manager.plugins.common.fileops.FileRenamer import FileRenamer
-except ImportError:
     from plugins.common.fileops.FileRenamer import FileRenamer
+except ImportError:
+    from media_manager.plugins.common.fileops.FileRenamer import FileRenamer
 
 
 class TVDBGetter(object):

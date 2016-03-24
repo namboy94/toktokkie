@@ -21,13 +21,13 @@ This file is part of media-manager.
 """
 
 try:
-    from media_manager.plugins.renamer.RenamerPlugin import RenamerPlugin
-    from media_manager.plugins.iconizer.IconizerPlugin import IconizerPlugin
-    from media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
-except ImportError:
     from plugins.renamer.RenamerPlugin import RenamerPlugin
     from plugins.iconizer.IconizerPlugin import IconizerPlugin
     from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+except ImportError:
+    from media_manager.plugins.renamer.RenamerPlugin import RenamerPlugin
+    from media_manager.plugins.iconizer.IconizerPlugin import IconizerPlugin
+    from media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
 
 
 class PluginManager(object):
