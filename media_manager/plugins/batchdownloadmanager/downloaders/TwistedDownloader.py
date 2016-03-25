@@ -27,11 +27,11 @@ from os.path import expanduser
 
 try:
     from plugins.renamer.objects.Episode import Episode
-    from external.xdccbot import get_file_loc
+    from external.__init__ import get_location
     from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
 except ImportError:
     from media_manager.plugins.renamer.objects.Episode import Episode
-    from media_manager.external.xdccbot import get_file_loc
+    from media_manager.external.__init__ import get_location
     from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
 
 
@@ -78,11 +78,9 @@ class TwistedDownloader(object):
         :param pack: the pack to download
         :return void
         """
-        script = os.path.join(expanduser('~'), ".mediamanager", "scripts", "xdccbot.py")
+        script = get_location("xdccbot.py")
+        print(script)
         dl_folder = os.path.join(expanduser('~'), "Downloads")
-        if os.path.isfile(script):
-            os.remove(script)
-        shutil.copy(get_file_loc(), script)
 
         dl_command = ["python2",
                       script,
