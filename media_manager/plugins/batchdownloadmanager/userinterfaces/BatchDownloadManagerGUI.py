@@ -22,7 +22,6 @@ This file is part of media-manager.
 
 import os
 import time
-from threading import Thread
 
 try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
@@ -86,8 +85,12 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.directory_content_label = None
         self.total_progress_bar = None
         self.total_progress_label = None
+        self.total_progress_current = None
+        self.total_progress_total = None
         self.single_progress_bar = None
         self.single_progress_label = None
+        self.single_progress_current = None
+        self.single_progress_total = None
         self.download_speed = None
         self.download_speed_label = None
 
@@ -167,14 +170,22 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
 
         self.total_progress_bar = self.generate_percentage_progress_bar()
         self.total_progress_label = self.generate_label("Total Progress")
+        self.total_progress_current = self.generate_label("")
+        self.total_progress_total = self.generate_label("")
         self.single_progress_bar = self.generate_percentage_progress_bar()
         self.single_progress_label = self.generate_label("Single Progress")
+        self.single_progress_current = self.generate_label("")
+        self.single_progress_total = self.generate_label("")
         self.download_speed = self.generate_label("-")
         self.download_speed_label = self.generate_label("Download Speed")
-        self.position_absolute(self.total_progress_bar, 20, 105, 20, 5)
-        self.position_absolute(self.total_progress_label, 0, 105, 20, 5)
-        self.position_absolute(self.single_progress_bar, 20, 115, 20, 5)
-        self.position_absolute(self.single_progress_label, 0, 115, 20, 5)
+        self.position_absolute(self.total_progress_bar, 18, 105, 19, 5)
+        self.position_absolute(self.total_progress_label, 0, 105, 15, 5)
+        self.position_absolute(self.total_progress_current, 15, 105, 3, 5)
+        self.position_absolute(self.total_progress_total, 37, 105, 3, 5)
+        self.position_absolute(self.single_progress_bar, 18, 115, 19, 5)
+        self.position_absolute(self.single_progress_label, 0, 115, 15, 5)
+        self.position_absolute(self.single_progress_current, 15, 115, 3, 5)
+        self.position_absolute(self.single_progress_total, 37, 115, 3, 5)
         self.position_absolute(self.download_speed, 20, 125, 20, 5)
         self.position_absolute(self.download_speed_label, 0, 125, 20, 5)
 
@@ -197,29 +208,35 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         :param widget: the search button
         :return: void
         """
-        def search_xdcc_thread():
+        if widget is None or self.searching or self.search_thread is not None:
+            return
+
+        def search():
             """
-            To be run as an individual thread so that the GUI doesn't freeze while searching
+            Searches using the speciifed search engine
             """
             self.searching = True
+            self.run_thread_safe(self.set_button_string, (self.search_button, "Searching..."))
 
-            self.set_button_string(self.search_button, "Searching...")
             search_engine = self.get_string_from_current_selected_combo_box_option(self.search_engine_combo_box)
             search_term = self.get_string_from_text_entry(self.search_field)
             self.search_result = self.conduct_xdcc_search(search_engine, search_term)
 
+        def search_xdcc_thread():
+            """
+            To be run as an individual thread so that the GUI doesn't freeze while searching
+            """
             self.clear_primitive_multi_list_box(self.search_results)
             i = 0
             for result in self.search_result:
                 choice = (i,) + result.to_tuple()
                 self.add_primitive_multi_list_box_element(self.search_results, choice)
                 i += 1
-            self.search_button.set_label("Start Search")
+            self.run_thread_safe(self.set_button_string, (self.search_button, "Start Search"))
             self.searching = False
             self.search_thread = None
 
-        if widget is not None and not self.searching and self.search_thread is None:
-                self.search_thread = self.run_sensitive_thread_in_parallel(search_xdcc_thread)
+        self.search_thread = self.run_sensitive_thread_in_parallel(target=search_xdcc_thread, insensitive_target=search)
 
     def start_download(self, widget):
         """
@@ -237,15 +254,53 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
             :param progress_struct: the progress structure to be displayed
             :return: void
             """
+            def complete_dl():
+                """
+                Run when the download has completed
+                """
+                self.set_button_string(self.download_button, "Download")
+                self.reset_percentage_progress_bar(self.single_progress_bar)
+                self.reset_percentage_progress_bar(self.total_progress_bar)
+                self.set_label_string(self.download_speed, "-")
+                self.clear_label_text(self.total_progress_current)
+                self.clear_label_text(self.total_progress_total)
+                self.clear_label_text(self.single_progress_current)
+                self.clear_label_text(self.single_progress_total)
+
+            last_single_progress_size = 0.0
+            speed_time_counter = 0
+
             while True:
                 total_progress = float(progress_struct.total_progress) / float(progress_struct.total)
-                self.total_progress_bar.set_fraction(total_progress)
-                single_progress = float(progress_struct.single_progress) / float(progress_struct.single_size)
-                self.single_progress_bar.set_fraction(single_progress)
+                self.run_thread_safe(self.set_progress_bar_float_percentage, (self.total_progress_bar, total_progress))
+                try:
+                    single_progress = float(progress_struct.single_progress) / float(progress_struct.single_size)
+                except ZeroDivisionError:
+                    single_progress = 0.0
+                self.run_thread_safe(self.set_progress_bar_float_percentage,
+                                     (self.single_progress_bar, single_progress))
+
+                self.run_thread_safe(self.set_label_string,
+                                     (self.total_progress_current, str(progress_struct.total_progress)))
+                self.run_thread_safe(self.set_label_string,
+                                     (self.total_progress_total, str(progress_struct.total)))
+                self.run_thread_safe(self.set_label_string,
+                                     (self.single_progress_current, str(progress_struct.single_progress)))
+                self.run_thread_safe(self.set_label_string,
+                                     (self.single_progress_total, str(progress_struct.single_size)))
+
+                if float(progress_struct.single_progress) != last_single_progress_size:
+                    speed = (float(progress_struct.single_progress) - last_single_progress_size) / speed_time_counter
+                    self.run_thread_safe(self.set_label_string, (self.download_speed, str(int(speed)) + " Byte/s"))
+                    speed_time_counter = 0
+                    last_single_progress_size = float(progress_struct.single_progress)
+
                 if progress_struct.total == progress_struct.total_progress:
-                    self.download_button.set_label("Download")
+                    self.run_thread_safe(complete_dl)
                     self.dl_progress = None
+                    self.run_thread_safe(self.on_directory_changed, (1,))
                     break
+                speed_time_counter += 1
                 time.sleep(1)
 
         preparation = self.prepare(self.get_string_from_text_entry(self.destination),
@@ -267,7 +322,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         if len(packs) == 0:
             return
 
-        self.set_button_string("Downloading...")
+        self.set_button_string(self.download_button, "Downloading...")
 
         downloader = self.get_string_from_current_selected_combo_box_option(self.download_engine_combo_box)
         progress = ProgressStruct()
@@ -300,7 +355,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
             if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
                 children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
                 for child in children:
-                    self.add_primitive_multi_list_box_element(child)
+                    self.add_primitive_multi_list_box_element(self.directory_content, (child,))
                 self.set_text_entry_string(self.episode, str(len(children) + 1))
                 self.set_text_entry_string(self.season, str(highest_season))
                 main_icon = os.path.join(directory, ".icons", "main.png")
