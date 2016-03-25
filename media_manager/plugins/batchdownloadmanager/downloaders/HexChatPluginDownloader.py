@@ -21,14 +21,18 @@ This file is part of media-manager.
 """
 
 import os
+import time
 import platform
 
 from subprocess import Popen
+from threading import Thread
 
 try:
     from plugins.renamer.objects.Episode import Episode
+    from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
 except ImportError:
     from media_manager.plugins.renamer.objects.Episode import Episode
+    from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
 
 
 class HexChatPluginDownloader(object):
@@ -56,6 +60,7 @@ class HexChatPluginDownloader(object):
                                                         "AppData", "Roaming", "HexChat", "hexchat.conf")
         self.packs = packs
         self.progress_struct = progress_struct
+        self.downloading = False
         self.script = open(self.script_location, 'w')
         self.download_dir = ""
 
@@ -144,15 +149,14 @@ class HexChatPluginDownloader(object):
         for line in script_end:
             self.script.write(line + "\n")
 
-    def __write_script__(self):
+    def __write_script__(self, pack):
         """
         Writes the downloader script
         :return: void
         """
         self.__write_start__()
-        for pack in self.packs:
-            self.script.write("channels.append(\"newserver irc://" + pack.server + "/" + pack.channel + "\")\n")
-            self.script.write("packs.append(\"msg " + pack.bot + " xdcc send #" + str(pack.packnumber) + "\")\n")
+        self.script.write("channels.append(\"newserver irc://" + pack.server + "/" + pack.channel + "\")\n")
+        self.script.write("packs.append(\"msg " + pack.bot + " xdcc send #" + str(pack.packnumber) + "\")\n")
         self.__write_end__()
         self.script.close()
 
@@ -161,21 +165,13 @@ class HexChatPluginDownloader(object):
         Starts the download loop
         :return a list of file paths leading to the downloaded files
         """
-        self.__write_script__()
-        if platform.system() == "Linux":
-            Popen(["hexchat"]).wait()
-        elif platform.system() == "Windows":
-            if os.path.isfile("C:\\Program Files\\HexChat\\hexchat.exe"):
-                Popen(["C:\\Program Files\\HexChat\\hexchat.exe"]).wait()
-            else:
-                return
-        else:
-            return
-
-        os.remove(self.script_location)
-
         downloaded = []
+
+        for pack in self.packs:
+            self.download_single(pack)
+
         self.packs.sort(key=lambda x: x.filename)
+
         if self.auto_rename:
             for pack in self.packs:
                 episode = Episode(os.path.join(self.download_dir, pack.filename),
@@ -187,3 +183,35 @@ class HexChatPluginDownloader(object):
             for pack in self.packs:
                 downloaded.append(os.path.join(self.download_dir, pack.filename))
         return downloaded
+
+    def download_single(self, pack):
+        self.progress_struct.single_size = FileSizeCalculator.get_byte_size_from_string(pack.size)
+        print(self.progress_struct.single_size)
+        progress_thread = Thread(target=self.update_progress, args=(pack,))
+
+        self.__write_script__(pack)
+        self.downloading = True
+        progress_thread.start()
+
+        if platform.system() == "Linux":
+            Popen(["hexchat"]).wait()
+        elif platform.system() == "Windows":
+            if os.path.isfile("C:\\Program Files\\HexChat\\hexchat.exe"):
+                Popen(["C:\\Program Files\\HexChat\\hexchat.exe"]).wait()
+        self.downloading = False
+        self.progress_struct.total_progress += 1
+        os.remove(self.script_location)
+
+    def update_progress(self, pack):
+        while self.downloading:
+            try:
+                self.progress_struct.single_progress = os.path.getsize(os.path.join(self.download_dir, pack.filename))
+            except os.error:
+                self.progress_struct.single_progress = 0
+            time.sleep(1)
+            print(os.path.join(self.download_dir, pack.filename))
+            print(self.progress_struct.single_progress)
+        self.progress_struct.single_progress = 0
+        self.progress_struct.single_size = 0
+
+
