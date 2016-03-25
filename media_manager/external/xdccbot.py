@@ -114,7 +114,7 @@ try:
 
     class XdccDownloader(irc.DccFileReceive):
 
-        notifyBlockSize = 1024 * 1024
+        notifyBlockSize = 512 * 512
 
         def __init__(self, filename, filesize=-1, queryData=None, destDir='.', resumeOffset=0):
 
