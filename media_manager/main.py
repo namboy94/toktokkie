@@ -44,7 +44,7 @@ def main(ui_override="gtk"):
         Installer().install()
 
     # Parse arguments
-    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
+    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") and ui_override == "gtk":
         Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
     elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk":
         Globals.selected_grid_gui_framework = Globals.tk_gui_template

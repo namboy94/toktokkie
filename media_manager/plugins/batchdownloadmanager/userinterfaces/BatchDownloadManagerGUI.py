@@ -24,9 +24,6 @@ import os
 import time
 from threading import Thread
 
-# TODO get rid of this:
-# GObject.threads_init()
-
 try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
@@ -53,6 +50,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         # Threads
         self.search_thread = None
         self.searching = False
+        self.dl_progress = None
 
         # GUI Elements
         self.search_result = []
@@ -133,7 +131,8 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.position_absolute(self.search_field, 20, 30, 20, 5)
 
         self.search_engine_label = self.generate_label("Search Engine")
-        self.search_engine_combo_box = self.generate_string_combo_box(["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
+        self.search_engine_combo_box = self.generate_string_combo_box(
+            ["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
         self.position_absolute(self.search_engine_label, 0, 35, 20, 5)
         self.position_absolute(self.search_engine_combo_box, 20, 35, 20, 5)
 
@@ -202,34 +201,25 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
             """
             To be run as an individual thread so that the GUI doesn't freeze while searching
             """
-            self.search_button.set_label("Searching...")
-            search_engine = self.get_current_selected_combo_box_option(self.search_engine_combo_box)
-            search_term = self.search_field.get_text()
+            self.searching = True
+
+            self.set_button_string(self.search_button, "Searching...")
+            search_engine = self.get_string_from_current_selected_combo_box_option(self.search_engine_combo_box)
+            search_term = self.get_string_from_text_entry(self.search_field)
             self.search_result = self.conduct_xdcc_search(search_engine, search_term)
 
-            def update_list():
-                """
-                Updates the list store with the search results
-                """
-                list_store = self.search_results["list_store"]
-                list_store.clear()
-                i = 0
-                for result in self.search_result:
-                    choice = (i,) + result.to_tuple()
-                    list_store.append(list(choice))
-                    i += 1
-                self.search_button.set_label("Start Search")
-                self.searching = False
+            self.clear_primitive_multi_list_box(self.search_results)
+            i = 0
+            for result in self.search_result:
+                choice = (i,) + result.to_tuple()
+                self.add_primitive_multi_list_box_element(self.search_results, choice)
+                i += 1
+            self.search_button.set_label("Start Search")
+            self.searching = False
+            self.search_thread = None
 
-            GLib.idle_add(update_list)
-            self.search_thread = Thread(target=search_xdcc_thread)
-
-        if widget is not None and not self.searching:
-            self.searching = True
-            if self.search_thread is None:
-                self.search_thread = Thread(target=search_xdcc_thread)
-            if not self.search_thread.is_alive():
-                self.search_thread.start()
+        if widget is not None and not self.searching and self.search_thread is None:
+                self.search_thread = self.run_sensitive_thread_in_parallel(search_xdcc_thread)
 
     def start_download(self, widget):
         """
@@ -237,6 +227,9 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         :param widget: the Download Button
         :return: void
         """
+
+        if widget is None or self.dl_progress is not None:
+            return
 
         def update_progress_thread(progress_struct):
             """
@@ -251,46 +244,40 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
                 self.single_progress_bar.set_fraction(single_progress)
                 if progress_struct.total == progress_struct.total_progress:
                     self.download_button.set_label("Download")
+                    self.dl_progress = None
                     break
                 time.sleep(1)
 
-        if widget is None:
-            return
-
-        preparation = self.prepare(self.destination.get_text(),
-                                   self.show.get_text(),
-                                   self.season.get_text(),
-                                   self.episode.get_text(),
-                                   self.main_icon_location.get_text(),
-                                   self.secondary_icon_location.get_text(),
-                                   self.get_current_selected_combo_box_option(self.method_combo_box))
+        preparation = self.prepare(self.get_string_from_text_entry(self.destination),
+                                   self.get_string_from_text_entry(self.show),
+                                   self.get_string_from_text_entry(self.season),
+                                   self.get_string_from_text_entry(self.episode),
+                                   self.get_string_from_text_entry(self.main_icon_location),
+                                   self.get_string_from_text_entry(self.secondary_icon_location),
+                                   self.get_string_from_current_selected_combo_box_option(self.method_combo_box))
 
         if len(preparation) != 6:
             self.show_message_dialog(preparation[0], preparation[1])
             return
 
-        selected_packs = self.get_selected_multi_list_box_elements(self.search_results)
+        selected_packs = self.get_list_of_selected_elements_from_multi_list_box(self.search_results)
         packs = []
         for selection in selected_packs:
-            packs.append(self.search_result[selection])
+            packs.append(self.search_result[selection[0]])
         if len(packs) == 0:
             return
 
-        self.download_button.set_label("Downloading...")
+        self.set_button_string("Downloading...")
 
-        downloader = self.get_current_selected_combo_box_option(self.download_engine_combo_box)
+        downloader = self.get_string_from_current_selected_combo_box_option(self.download_engine_combo_box)
         progress = ProgressStruct()
         progress.total = len(packs)
 
-        progress_thread = Thread(target=update_progress_thread, args=(progress,))
-        dl_thread = Thread(target=self.start_download_process, args=(preparation,
-                                                                     downloader,
-                                                                     packs,
-                                                                     self.rename_check.get_active(),
-                                                                     progress))
+        self.run_thread_in_parallel(target=update_progress_thread, args=(progress,))
 
-        dl_thread.start()
-        progress_thread.start()
+        self.run_thread_in_parallel(target=self.start_download_process,
+                                    args=(preparation, downloader, packs, self.rename_check.get_active(), progress))
+        self.dl_progress = progress
 
     def on_directory_changed(self, widget):
         """
@@ -300,12 +287,12 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         """
         if widget is None:
             return
-        directory = self.destination.get_text()
+        directory = self.get_string_from_text_entry(self.destination)
         show_name = os.path.basename(directory)
-        self.show.set_text(show_name)
-        self.search_field.set_text(show_name + " 1080")
+        self.set_text_entry_string(self.show, show_name)
+        self.set_text_entry_string(self.search_field, show_name)
 
-        self.directory_content["list_store"].clear()
+        self.clear_primitive_multi_list_box(self.directory_content)
         if os.path.isdir(directory):
             highest_season = 1
             while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
@@ -313,15 +300,15 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
             if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
                 children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
                 for child in children:
-                    self.directory_content["list_store"].append([child])
-                self.episode.set_text(str(len(children) + 1))
-                self.season.set_text(str(highest_season))
+                    self.add_primitive_multi_list_box_element(child)
+                self.set_text_entry_string(self.episode, str(len(children) + 1))
+                self.set_text_entry_string(self.season, str(highest_season))
                 main_icon = os.path.join(directory, ".icons", "main.png")
                 if os.path.isfile(main_icon):
-                    self.main_icon_location.set_text(main_icon)
+                    self.set_text_entry_string(self.main_icon_location, main_icon)
                 secondary_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
                 if os.path.isfile(secondary_icon):
-                    self.secondary_icon_location.set_text(secondary_icon)
+                    self.set_text_entry_string(self.secondary_icon_location, secondary_icon)
 
     def browse_for_destination(self, widget):
         """
@@ -331,4 +318,4 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         """
         if widget is not None:
             directory = self.show_directory_chooser_dialog()
-            self.destination.set_text(directory)
+            self.set_text_entry_string(self.destination, directory)

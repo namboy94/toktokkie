@@ -107,6 +107,8 @@ class IconizerGUI(Globals.selected_grid_gui_framework):
         :param directory: the directory to be iconized
         :return: void
         """
+        if not os.path.isdir(directory):
+            return
         method = self.get_string_from_current_selected_combo_box_option(self.iconizer_method_combo_box)
         has_icons = False
         for sub_directory in os.listdir(directory):
@@ -115,5 +117,6 @@ class IconizerGUI(Globals.selected_grid_gui_framework):
                 break
         if not has_icons:
             print("Error, " + directory + " has no subdirectory \".icons\"")
+            return
 
         DeepIconizer(directory, method).iconize()
