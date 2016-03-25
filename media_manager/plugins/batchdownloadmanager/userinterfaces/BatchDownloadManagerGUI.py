@@ -196,10 +196,10 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
 
         self.search_results = self.generate_primitive_multi_list_box(
             {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
-        self.position_absolute(self.search_results, 50, 5, 60, 95)
+        self.position_absolute(self.search_results, 50, 5, 60, 130)
 
         self.directory_content = self.generate_primitive_multi_list_box({"File Name": (0, str)})
-        self.position_absolute(self.directory_content, 120, 5, 20, 95)
+        self.position_absolute(self.directory_content, 120, 5, 20, 130)
 
     def search_xdcc(self, widget):
         """
@@ -331,7 +331,8 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.run_thread_in_parallel(target=update_progress_thread, args=(progress,))
 
         self.run_thread_in_parallel(target=self.start_download_process,
-                                    args=(preparation, downloader, packs, self.rename_check.get_active(), progress))
+                                    args=(preparation, downloader, packs,
+                                          self.get_boolean_from_check_box(self.rename_check), progress))
         self.dl_progress = progress
 
     def on_directory_changed(self, widget):
