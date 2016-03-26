@@ -107,6 +107,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         :return: void
         """
 
+        # Show Information
         self.configure_label = self.generate_label("Options")
         self.position_absolute(self.configure_label, 0, 0, 40, 5)
 
@@ -146,31 +147,46 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.search_button = self.generate_button("Start Search", self.search_xdcc)
         self.position_absolute(self.search_button, 0, 45, 40, 5)
 
-        self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_string_combo_box(["Twisted", "Hexchat Plugin"])
-        self.position_absolute(self.download_engine_label, 0, 55, 20, 5)
-        self.position_absolute(self.download_engine_combo_box, 20, 55, 20, 5)
-
-        self.options_label = self.generate_label("Options")
-        self.rename_check = self.generate_check_box("Automatic Rename", True)
-        self.position_absolute(self.options_label, 0, 65, 20, 5)
-        self.position_absolute(self.rename_check, 20, 65, 20, 5)
-
+        # Icon Information
         self.main_icon_label = self.generate_label("Main Icon")
         self.secondary_icon_label = self.generate_label("Season Icon")
         self.main_icon_location = self.generate_text_entry("")
         self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
         self.method_combo_box = self.generate_string_combo_box(DeepIconizer.get_iconizer_options())
-        self.position_absolute(self.main_icon_label, 0, 75, 20, 5)
-        self.position_absolute(self.secondary_icon_label, 0, 80, 20, 5)
-        self.position_absolute(self.main_icon_location, 20, 75, 20, 5)
-        self.position_absolute(self.secondary_icon_location, 20, 80, 20, 5)
-        self.position_absolute(self.method_label, 0, 85, 20, 5)
-        self.position_absolute(self.method_combo_box, 20, 85, 20, 5)
+        self.position_absolute(self.main_icon_label, 0, 55, 20, 5)
+        self.position_absolute(self.secondary_icon_label, 0, 60, 20, 5)
+        self.position_absolute(self.main_icon_location, 20, 55, 20, 5)
+        self.position_absolute(self.secondary_icon_location, 20, 60, 20, 5)
+        self.position_absolute(self.method_label, 0, 65, 20, 5)
+        self.position_absolute(self.method_combo_box, 20, 65, 20, 5)
+
+        # Multi List Boxes
+        self.search_results_label = self.generate_label("Search Results")
+        self.directory_content_label = self.generate_label("Episodes")
+        self.position_absolute(self.search_results_label, 50, 0, 60, 5)
+        self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
+
+        self.search_results = self.generate_primitive_multi_list_box(
+            {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
+        self.position_absolute(self.search_results, 50, 5, 70, 40)
+
+        self.directory_content = self.generate_primitive_multi_list_box({"File Name": (0, str)})
+        self.position_absolute(self.directory_content, 120, 5, 30, 40)
+
+        # Download Section
+        self.options_label = self.generate_label("Automatic Rename")
+        self.rename_check = self.generate_check_box("", True)
+        self.position_absolute(self.options_label, 80, 45, 15, 12)
+        self.position_absolute(self.rename_check, 95, 45, 15, 12)
+
+        self.download_engine_label = self.generate_label("Download Engine")
+        self.download_engine_combo_box = self.generate_string_combo_box(["Twisted", "Hexchat Plugin"])
+        self.position_absolute(self.download_engine_label, 80, 57, 15, 13)
+        self.position_absolute(self.download_engine_combo_box, 95, 57, 15, 13)
 
         self.download_button = self.generate_button("Start Download", self.start_download)
-        self.position_absolute(self.download_button, 0, 95, 40, 5)
+        self.position_absolute(self.download_button, 50, 45, 30, 25)
 
         self.total_progress_bar = self.generate_percentage_progress_bar()
         self.total_progress_label = self.generate_label("Total Progress")
@@ -186,32 +202,20 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.average_dl_speed_label = self.generate_label("Average Speed")
         self.time_left = self.generate_label("-")
         self.time_left_label = self.generate_label("Time Left")
-        self.position_absolute(self.total_progress_bar, 18, 105, 19, 5)
-        self.position_absolute(self.total_progress_label, 0, 105, 15, 5)
-        self.position_absolute(self.total_progress_current, 15, 105, 3, 5)
-        self.position_absolute(self.total_progress_total, 37, 105, 3, 5)
-        self.position_absolute(self.single_progress_bar, 18, 115, 19, 5)
-        self.position_absolute(self.single_progress_label, 0, 115, 15, 5)
-        self.position_absolute(self.single_progress_current, 15, 115, 3, 5)
-        self.position_absolute(self.single_progress_total, 37, 115, 3, 5)
-        self.position_absolute(self.download_speed, 18, 125, 19, 5)
-        self.position_absolute(self.download_speed_label, 0, 125, 15, 5)
-        self.position_absolute(self.average_dl_speed, 18, 130, 19, 5)
-        self.position_absolute(self.average_dl_speed_label, 0, 130, 15, 5)
-        self.position_absolute(self.time_left, 18, 135, 19, 5)
-        self.position_absolute(self.time_left_label, 0, 135, 15, 5)
-
-        self.search_results_label = self.generate_label("Search Results")
-        self.directory_content_label = self.generate_label("Episodes")
-        self.position_absolute(self.search_results_label, 50, 0, 60, 5)
-        self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
-
-        self.search_results = self.generate_primitive_multi_list_box(
-            {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
-        self.position_absolute(self.search_results, 50, 5, 60, 140)
-
-        self.directory_content = self.generate_primitive_multi_list_box({"File Name": (0, str)})
-        self.position_absolute(self.directory_content, 120, 5, 20, 140)
+        self.position_absolute(self.total_progress_bar, 128, 45, 19, 5)
+        self.position_absolute(self.total_progress_label, 110, 45, 15, 5)
+        self.position_absolute(self.total_progress_current, 125, 45, 3, 5)
+        self.position_absolute(self.total_progress_total, 147, 45, 3, 5)
+        self.position_absolute(self.single_progress_bar, 128, 50, 19, 5)
+        self.position_absolute(self.single_progress_label, 110, 50, 15, 5)
+        self.position_absolute(self.single_progress_current, 125, 50, 3, 5)
+        self.position_absolute(self.single_progress_total, 147, 50, 3, 5)
+        self.position_absolute(self.download_speed, 128, 55, 19, 5)
+        self.position_absolute(self.download_speed_label, 110, 55, 15, 5)
+        self.position_absolute(self.average_dl_speed, 128, 60, 19, 5)
+        self.position_absolute(self.average_dl_speed_label, 110, 60, 15, 5)
+        self.position_absolute(self.time_left, 128, 65, 19, 5)
+        self.position_absolute(self.time_left_label, 110, 65, 15, 5)
 
     def search_xdcc(self, widget):
         """
