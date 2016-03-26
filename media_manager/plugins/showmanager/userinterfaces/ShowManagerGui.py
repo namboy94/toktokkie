@@ -26,7 +26,7 @@ except ImportError:
     from media_manager.Globals import Globals
 
 
-class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
+class ShowManagerGui(Globals.selected_grid_gui_framework):
     """
     GUI for the Show Manager plugin
     """

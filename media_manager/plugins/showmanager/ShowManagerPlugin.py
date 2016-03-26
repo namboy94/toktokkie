@@ -22,7 +22,7 @@ This file is part of media-manager.
 
 try:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.showmanager.manager.userinterfaces.ShowManagerGUI import ShowManagerGUI
+    from plugins.showmanager.manager.userinterfaces.ShowManagerGUI import ShowManagerGui
     from Globals import Globals
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
@@ -39,19 +39,19 @@ class ShowManagerPlugin(GenericPlugin):
         """
         :return: "Batch Download Manager"
         """
-        return "Batch Download Manager"
+        return "Show Manager"
 
     def get_config_tag(self) -> str:
         """
         :return: "batch-download"
         """
-        return "batch-download"
+        return "show-manager"
 
     def get_command_name(self) -> str:
         """
         :return: "batch download"
         """
-        return "batch download"
+        return "show manager"
 
     def start_gui(self, parent_gui: Globals.selected_grid_gui_framework) -> str:
         """
@@ -59,4 +59,4 @@ class ShowManagerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return: void
         """
-        ShowManagerGUI(parent_gui).start()
+        ShowManagerGui(parent_gui).start()

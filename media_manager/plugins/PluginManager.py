@@ -24,10 +24,12 @@ try:
     from plugins.renamer.RenamerPlugin import RenamerPlugin
     from plugins.iconizer.IconizerPlugin import IconizerPlugin
     from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+    from plugins.media_manager.plugins.showmanager.ShowManagerPlugin import ShowManagerPlugin
 except ImportError:
     from media_manager.plugins.renamer.RenamerPlugin import RenamerPlugin
     from media_manager.plugins.iconizer.IconizerPlugin import IconizerPlugin
     from media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+    from media_manager.plugins.showmanager.ShowManagerPlugin import ShowManagerPlugin
 
 
 class PluginManager(object):
@@ -43,7 +45,8 @@ class PluginManager(object):
         """
         all_plugins = [RenamerPlugin(),
                        IconizerPlugin(),
-                       BatchDownloadManagerPlugin()]
+                       BatchDownloadManagerPlugin(),
+                       ShowManagerPlugin()]
         # New Plugins here
 
         self.active_plugins = []

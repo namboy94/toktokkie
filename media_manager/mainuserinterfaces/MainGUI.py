@@ -47,11 +47,15 @@ class MainGUI(Globals.selected_grid_gui_framework):
         :return: void
         """
 
+        modulo_var = 3
+        while len(self.plugins) % modulo_var != 0:
+            modulo_var -= 1
+
         i = 0
         row = 0
         column = -1
         while i < len(self.plugins):
-            if i % 3 == 0 and not i == 0:
+            if i % modulo_var == 0 and not i == 0:
                 row += 1
                 column = 0
             else:

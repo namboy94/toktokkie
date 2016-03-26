@@ -71,6 +71,7 @@ class Installer(object):
         file.write("renamer = True\n")
         file.write("batch-download = True\n")
         file.write("iconizer = True\n")
+        file.write("show-manager = True\n")
         file.write("\n[defaults]\n")
         file.write("downloader = hexchat\n#options = (twisted|hexchat)\n")
         file.close()
