@@ -35,7 +35,7 @@ except ImportError:
     from media_manager.Globals import Globals
 
 
-class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownloadManager):
+class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
     """
     GUI for the BatchDownloadManager plugin
     """
@@ -236,7 +236,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
 
             search_engine = self.get_string_from_current_selected_combo_box_option(self.search_engine_combo_box)
             search_term = self.get_string_from_text_entry(self.search_field)
-            self.search_result = self.conduct_xdcc_search(search_engine, search_term)
+            self.search_result = BatchDownloadManager.conduct_xdcc_search(search_engine, search_term)
 
         def search_xdcc_thread():
             """
@@ -331,13 +331,14 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
                 total_time_counter += 1
                 time.sleep(1)
 
-        preparation = self.prepare(self.get_string_from_text_entry(self.destination),
-                                   self.get_string_from_text_entry(self.show),
-                                   self.get_string_from_text_entry(self.season),
-                                   self.get_string_from_text_entry(self.episode),
-                                   self.get_string_from_text_entry(self.main_icon_location),
-                                   self.get_string_from_text_entry(self.secondary_icon_location),
-                                   self.get_string_from_current_selected_combo_box_option(self.method_combo_box))
+        preparation = BatchDownloadManager.prepare(self.get_string_from_text_entry(self.destination),
+                                                   self.get_string_from_text_entry(self.show),
+                                                   self.get_string_from_text_entry(self.season),
+                                                   self.get_string_from_text_entry(self.episode),
+                                                   self.get_string_from_text_entry(self.main_icon_location),
+                                                   self.get_string_from_text_entry(self.secondary_icon_location),
+                                                   self.get_string_from_current_selected_combo_box_option(
+                                                       self.method_combo_box))
 
         if len(preparation) != 6:
             self.show_message_dialog(preparation[0], preparation[1])
@@ -358,7 +359,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
 
         self.run_thread_in_parallel(target=update_progress_thread, args=(progress,))
 
-        self.run_thread_in_parallel(target=self.start_download_process,
+        self.run_thread_in_parallel(target=BatchDownloadManager.start_download_process,
                                     args=(preparation, downloader, packs,
                                           self.get_boolean_from_check_box(self.rename_check), progress))
         self.dl_progress = progress
