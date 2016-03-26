@@ -167,11 +167,11 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
         self.position_absolute(self.search_results_label, 50, 0, 60, 5)
         self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
 
-        self.search_results = self.generate_primitive_multi_list_box(
+        self.search_results = self.generate_primitive_multi_column_list_box(
             {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
         self.position_absolute(self.search_results, 50, 5, 70, 40)
 
-        self.directory_content = self.generate_primitive_multi_list_box({"File Name": (0, str)})
+        self.directory_content = self.generate_primitive_multi_column_list_box({"File Name": (0, str)})
         self.position_absolute(self.directory_content, 120, 5, 30, 40)
 
         # Download Section

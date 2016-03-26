@@ -31,7 +31,7 @@ class ShowManagerGui(Globals.selected_grid_gui_framework):
     GUI for the Show Manager plugin
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
         """
         Constructor
         :param parent: the parent gui
@@ -39,11 +39,42 @@ class ShowManagerGui(Globals.selected_grid_gui_framework):
         """
         # Initialization
         self.directory_browse_entry = None
-        super().__init__("Show Manager", parent, True)
+        self.directory_browse_button = None
+        self.directory_name_label = None
+        self.directory_content_list_box = None
 
-    def lay_out(self):
+        self.selected_show_name = None
+        self.selected_show_main_icon = None
+        self.selected_show_season_icon = None
+        self.selected_show_content_list_box = None
+        super().__init__("Show Manager", parent, True)
+        # self.grid.set_column_homogeneous(True)
+        # self.grid.set_row_homogeneous(True)
+
+    def lay_out(self) -> None:
         """
         Sets up all interface elements of the GUI
         :return: void
         """
-        self.position_absolute(self.directory_browse_entry, 0, 0, 0, 0)
+        self.directory_browse_entry = self.generate_text_entry("")
+        self.directory_browse_button = self.generate_button("Browse")
+        self.directory_name_label = self.generate_label("                                    ")
+        self.directory_content_list_box = self.generate_primitive_multi_column_list_box(
+            {"Directory": (0, str), "Show Name": (1, str)}, False)
+
+        self.position_absolute(self.directory_browse_entry, 0, 0, 10, 5)
+        self.position_absolute(self.directory_browse_button, 10, 0, 10, 5)
+        self.position_absolute(self.directory_name_label, 20, 0, 10, 5)
+        self.position_absolute(self.directory_content_list_box, 0, 5, 30, 50)
+
+        self.selected_show_name = self.generate_label("")
+        self.selected_show_main_icon = self.generate_label("Image goes Here")
+        self.selected_show_season_icon = self.generate_label("Image goes Here")
+        self.selected_show_content_list_box = self.generate_primitive_multi_column_list_box({"Show Name": (0, str)})
+
+        self.position_absolute(self.selected_show_name, 30, 0, 40, 10)
+        self.position_absolute(self.selected_show_main_icon, 30, 10, 20, 20)
+        self.position_absolute(self.selected_show_season_icon, 50, 10, 20, 20)
+        self.position_absolute(self.selected_show_content_list_box, 30, 30, 40, 25)
+
+
