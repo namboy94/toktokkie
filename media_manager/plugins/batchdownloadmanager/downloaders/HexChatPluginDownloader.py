@@ -186,7 +186,6 @@ class HexChatPluginDownloader(object):
 
     def download_single(self, pack):
         self.progress_struct.single_size = FileSizeCalculator.get_byte_size_from_string(pack.size)
-        print(self.progress_struct.single_size)
         progress_thread = Thread(target=self.update_progress, args=(pack,))
 
         self.__write_script__(pack)
@@ -209,8 +208,6 @@ class HexChatPluginDownloader(object):
             except os.error:
                 self.progress_struct.single_progress = 0
             time.sleep(1)
-            print(os.path.join(self.download_dir, pack.filename))
-            print(self.progress_struct.single_progress)
         self.progress_struct.single_progress = 0
         self.progress_struct.single_size = 0
 

@@ -148,7 +148,7 @@ class IxIRCGetter(GenericGetter):
         :param bot: the bot to check
         :return: void
         """
-        print()
+        str(bot)
 
     def get_channel(self, bot):
         """
@@ -156,4 +156,4 @@ class IxIRCGetter(GenericGetter):
         :param bot: the bot to check
         :return: void
         """
-        print()
+        str(bot)
