@@ -93,6 +93,10 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.single_progress_total = None
         self.download_speed = None
         self.download_speed_label = None
+        self.average_dl_speed = None
+        self.average_dl_speed_label = None
+        self.time_left = None
+        self.time_left_label = None
 
         # Initialization
         super().__init__("Batch Download Manager", parent, True)
@@ -178,6 +182,10 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.single_progress_total = self.generate_label("")
         self.download_speed = self.generate_label("-")
         self.download_speed_label = self.generate_label("Download Speed")
+        self.average_dl_speed = self.generate_label("-")
+        self.average_dl_speed_label = self.generate_label("Average Speed")
+        self.time_left = self.generate_label("-")
+        self.time_left_label = self.generate_label("Time Left")
         self.position_absolute(self.total_progress_bar, 18, 105, 19, 5)
         self.position_absolute(self.total_progress_label, 0, 105, 15, 5)
         self.position_absolute(self.total_progress_current, 15, 105, 3, 5)
@@ -186,8 +194,12 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
         self.position_absolute(self.single_progress_label, 0, 115, 15, 5)
         self.position_absolute(self.single_progress_current, 15, 115, 3, 5)
         self.position_absolute(self.single_progress_total, 37, 115, 3, 5)
-        self.position_absolute(self.download_speed, 20, 125, 20, 5)
-        self.position_absolute(self.download_speed_label, 0, 125, 20, 5)
+        self.position_absolute(self.download_speed, 18, 125, 19, 5)
+        self.position_absolute(self.download_speed_label, 0, 125, 15, 5)
+        self.position_absolute(self.average_dl_speed, 18, 130, 19, 5)
+        self.position_absolute(self.average_dl_speed_label, 0, 130, 15, 5)
+        self.position_absolute(self.time_left, 18, 135, 19, 5)
+        self.position_absolute(self.time_left_label, 0, 135, 15, 5)
 
         self.search_results_label = self.generate_label("Search Results")
         self.directory_content_label = self.generate_label("Episodes")
@@ -196,10 +208,10 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
 
         self.search_results = self.generate_primitive_multi_list_box(
             {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
-        self.position_absolute(self.search_results, 50, 5, 60, 130)
+        self.position_absolute(self.search_results, 50, 5, 60, 140)
 
         self.directory_content = self.generate_primitive_multi_list_box({"File Name": (0, str)})
-        self.position_absolute(self.directory_content, 120, 5, 20, 130)
+        self.position_absolute(self.directory_content, 120, 5, 20, 140)
 
     def search_xdcc(self, widget):
         """
@@ -266,41 +278,53 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework, BatchDownload
                 self.clear_label_text(self.total_progress_total)
                 self.clear_label_text(self.single_progress_current)
                 self.clear_label_text(self.single_progress_total)
+                self.on_directory_changed(1)
 
-            last_single_progress_size = 0.0
-            speed_time_counter = 0
-
-            while True:
+            def update():
+                """
+                Updates the widgets with new values
+                """
+                # calculate
                 total_progress = float(progress_struct.total_progress) / float(progress_struct.total)
-                self.run_thread_safe(self.set_progress_bar_float_percentage, (self.total_progress_bar, total_progress))
                 try:
                     single_progress = float(progress_struct.single_progress) / float(progress_struct.single_size)
                 except ZeroDivisionError:
                     single_progress = 0.0
-                self.run_thread_safe(self.set_progress_bar_float_percentage,
-                                     (self.single_progress_bar, single_progress))
 
-                self.run_thread_safe(self.set_label_string,
-                                     (self.total_progress_current, str(progress_struct.total_progress)))
-                self.run_thread_safe(self.set_label_string,
-                                     (self.total_progress_total, str(progress_struct.total)))
-                self.run_thread_safe(self.set_label_string,
-                                     (self.single_progress_current, str(progress_struct.single_progress)))
-                self.run_thread_safe(self.set_label_string,
-                                     (self.single_progress_total, str(progress_struct.single_size)))
+                # update
+                self.set_progress_bar_float_percentage(self.total_progress_bar, total_progress)
+                self.set_progress_bar_float_percentage(self.single_progress_bar, single_progress)
+                self.set_label_string(self.total_progress_current, str(progress_struct.total_progress))
+                self.set_label_string(self.total_progress_total, str(progress_struct.total))
+                self.set_label_string(self.single_progress_current, str(progress_struct.single_progress))
+                self.set_label_string(self.single_progress_total, str(progress_struct.single_size))
+
+            last_single_progress_size = 0.0
+            speed_time_counter = 0
+            total_time_counter = 0
+
+            while True:
+
+                self.run_thread_safe(update)
 
                 if float(progress_struct.single_progress) != last_single_progress_size:
                     speed = (float(progress_struct.single_progress) - last_single_progress_size) / speed_time_counter
-                    self.run_thread_safe(self.set_label_string, (self.download_speed, str(int(speed)) + " Byte/s"))
                     speed_time_counter = 0
                     last_single_progress_size = float(progress_struct.single_progress)
+
+                    average_speed = int(float(progress_struct.single_progress) / total_time_counter)
+                    time_left = int(progress_struct.single_size / average_speed)
+
+                    self.run_thread_safe(self.set_label_string, (self.download_speed, str(int(speed)) + " Byte/s"))
+                    self.run_thread_safe(self.set_label_string, (self.average_dl_speed, str(average_speed) + " Byte/s"))
+                    self.run_thread_safe(self.set_label_string, (self.time_left, str(time_left) + "s"))
 
                 if progress_struct.total == progress_struct.total_progress:
                     self.run_thread_safe(complete_dl)
                     self.dl_progress = None
-                    self.run_thread_safe(self.on_directory_changed, (1,))
                     break
                 speed_time_counter += 1
+                total_time_counter += 1
                 time.sleep(1)
 
         preparation = self.prepare(self.get_string_from_text_entry(self.destination),
