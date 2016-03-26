@@ -35,7 +35,7 @@ class PluginManager(object):
     Class that manages plugins and checks which plugins to run
     """
 
-    def __init__(self, config):
+    def __init__(self, config: dict) -> None:
         """
         Constructor
         Already checks which plugins to use
@@ -51,7 +51,7 @@ class PluginManager(object):
             if config[plugin.get_config_tag()].lower() in ["true", "yes", "1"]:
                 self.active_plugins.append(plugin)
 
-    def get_plugins(self):
+    def get_plugins(self) -> list:
         """
         Returns a list of plugins, which should be used by the user interface. (CLI or GUI)
         :return: the list of plugins

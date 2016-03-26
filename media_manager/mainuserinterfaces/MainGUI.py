@@ -32,7 +32,7 @@ class MainGUI(Globals.selected_grid_gui_framework):
     Class that implements the Main GUI
     """
 
-    def __init__(self, active_plugins):
+    def __init__(self, active_plugins) -> None:
         """
         Constructor
         :param active_plugins: The plugins to be displayed
@@ -41,7 +41,7 @@ class MainGUI(Globals.selected_grid_gui_framework):
         self.plugins = active_plugins
         super().__init__("Main Gui")
 
-    def lay_out(self):
+    def lay_out(self) -> None:
         """
         Adds buttons for all plugins
         :return: void

@@ -29,7 +29,7 @@ class Installer(object):
     Class that handles installation of the program
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Constructor
         :return: void
@@ -38,7 +38,7 @@ class Installer(object):
         self.config_dir = os.path.join(self.main_dir, "configs")
         self.main_config = os.path.join(self.config_dir, "mainconfig")
 
-    def is_installed(self):
+    def is_installed(self) -> bool:
         """
         Checks if the program is installed
         :return: True is it is installed, False if not
@@ -49,7 +49,7 @@ class Installer(object):
             return False
         return True
 
-    def install(self):
+    def install(self) -> None:
         """
         Installs the program
         :return: void
@@ -61,7 +61,7 @@ class Installer(object):
         if not os.path.isfile(self.main_config):
             self.__write_main_config__()
 
-    def __write_main_config__(self):
+    def __write_main_config__(self) -> None:
         """
         Writes a default config file
         :return: void

@@ -34,7 +34,7 @@ except ImportError:
     from media_manager.Globals import Globals
 
 
-def main(ui_override="gtk"):
+def main(ui_override: str = "gtk") -> None:
     """
     Main method that runs the program
     :return: void
