@@ -43,7 +43,7 @@ class GenericCli(object):
         """
         raise NotImplementedError()
 
-    def end(self):
+    def stop(self):
         """
         Ends the CLI and restarts the parent CLI, or exits with code 0 if no parent was defined
         """
