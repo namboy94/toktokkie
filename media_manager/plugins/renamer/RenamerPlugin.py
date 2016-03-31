@@ -23,9 +23,11 @@ This file is part of media-manager.
 try:
     from plugins.common.GenericPlugin import GenericPlugin
     from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+    from plugins.renamer.userinterfaces.RenamerCli import RenamerCli
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+    from media_manager.plugins.renamer.userinterfaces.RenamerCli import RenamerCli
 
 
 class RenamerPlugin(GenericPlugin):
@@ -50,6 +52,14 @@ class RenamerPlugin(GenericPlugin):
         :return "renamer"
         """
         return "renamer"
+
+    def start_cli(self, parent_cli):
+        """
+        Starts the CLI of the plugin
+        :param parent_cli: the parent cli
+        :return: void
+        """
+        RenamerCli(parent_cli).start()
 
     def start_gui(self, parent_gui):
         """

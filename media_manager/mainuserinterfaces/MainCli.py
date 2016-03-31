@@ -68,8 +68,8 @@ class MainCli(GenericCli):
                                "To exit, enter 'exit' or 'quit'\n"
                                "To get the list of plugins again, enter 'list'\n")
             try:
-                plugin_dict[int(user_input)].start_cli()
-            except ValueError or TypeError:
+                plugin_dict[int(user_input)].start_cli(self)
+            except (KeyError, ValueError):
                 if user_input.lower() in ["quit", "exit"]:
                     self.stop()
                 elif user_input.lower() == "list":

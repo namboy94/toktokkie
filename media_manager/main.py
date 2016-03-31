@@ -29,9 +29,11 @@ from os.path import expanduser
 try:
     from startup.Installer import Installer
     from Globals import Globals
+    from mainuserinterfaces.MainCli import MainCli
 except ImportError:
     from media_manager.startup.Installer import Installer
     from media_manager.Globals import Globals
+    from media_manager.mainuserinterfaces.MainCli import MainCli
 
 
 def main(ui_override: str = "") -> None:
@@ -43,14 +45,14 @@ def main(ui_override: str = "") -> None:
     if not Installer().is_installed():
         Installer().install()
 
+    cli_mode = False
     # Parse arguments
-    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") and ui_override == "gtk":
+    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
         Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
     elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk":
         Globals.selected_grid_gui_framework = Globals.tk_gui_template
     else:
-        print("No valid GUI framework specified. Please use either --gtk or --tk")
-        sys.exit(1)
+        cli_mode = True
 
     try:
         from plugins.PluginManager import PluginManager
@@ -66,8 +68,11 @@ def main(ui_override: str = "") -> None:
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # Start the program
-    gui = MainGUI(active_plugins)
-    gui.start()
+    if cli_mode:
+        MainCli(active_plugins).start()
+    else:
+        gui = MainGUI(active_plugins)
+        gui.start()
 
 if __name__ == '__main__':
     main()

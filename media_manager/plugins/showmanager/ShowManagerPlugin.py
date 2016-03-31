@@ -53,6 +53,14 @@ class ShowManagerPlugin(GenericPlugin):
         """
         return "show manager"
 
+    def start_cli(self, parent_cli):
+        """
+        Starts the CLI of the plugin
+        :param parent_cli: the parent cli
+        :return: void
+        """
+        raise NotImplementedError()
+
     def start_gui(self, parent_gui: Globals.selected_grid_gui_framework) -> str:
         """
         Starts the GUI, while hiding the parent until finished
