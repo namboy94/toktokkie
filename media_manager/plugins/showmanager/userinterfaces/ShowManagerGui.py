@@ -47,9 +47,8 @@ class ShowManagerGui(Globals.selected_grid_gui_framework):
         self.selected_show_main_icon = None
         self.selected_show_season_icon = None
         self.selected_show_content_list_box = None
+
         super().__init__("Show Manager", parent, True)
-        # self.grid.set_column_homogeneous(True)
-        # self.grid.set_row_homogeneous(True)
 
     def lay_out(self) -> None:
         """
@@ -76,5 +75,7 @@ class ShowManagerGui(Globals.selected_grid_gui_framework):
         self.position_absolute(self.selected_show_main_icon, 30, 10, 20, 20)
         self.position_absolute(self.selected_show_season_icon, 50, 10, 20, 20)
         self.position_absolute(self.selected_show_content_list_box, 30, 30, 40, 25)
+
+
 
 
