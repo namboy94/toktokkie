@@ -23,9 +23,11 @@ This file is part of media-manager.
 try:
     from plugins.common.GenericPlugin import GenericPlugin
     from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+    from plugins.iconizer.userinterfaces.IconizerCli import IconizerCli
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+    from media_manager.plugins.iconizer.userinterfaces.IconizerCli import IconizerCli
 
 
 class IconizerPlugin(GenericPlugin):
@@ -57,7 +59,7 @@ class IconizerPlugin(GenericPlugin):
         :param parent_cli: the parent cli
         :return: void
         """
-        raise NotImplementedError()
+        IconizerCli(parent_cli).start()
 
     def start_gui(self, parent_gui):
         """

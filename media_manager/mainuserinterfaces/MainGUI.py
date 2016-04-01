@@ -39,7 +39,7 @@ class MainGUI(Globals.selected_grid_gui_framework):
         :return: void
         """
         self.plugins = active_plugins
-        super().__init__("Main Gui")
+        super().__init__("Media Manager Version " + Globals.version_no)
 
     def lay_out(self) -> None:
         """
