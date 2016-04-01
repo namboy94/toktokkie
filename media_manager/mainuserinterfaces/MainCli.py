@@ -69,6 +69,8 @@ class MainCli(GenericCli):
                                "To get the list of plugins again, enter 'list'\n")
             try:
                 plugin_dict[int(user_input)].start_cli(self)
+                self.start()
+                return
             except (KeyError, ValueError):
                 if user_input.lower() in ["quit", "exit"]:
                     self.stop()

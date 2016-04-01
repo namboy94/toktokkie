@@ -23,10 +23,13 @@ This file is part of media-manager.
 try:
     from plugins.common.GenericPlugin import GenericPlugin
     from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
+    from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli import BatchDownloadManagerCli
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
         import BatchDownloadManagerGUI
+    from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli import \
+        BatchDownloadManagerCli
 
 
 class BatchDownloadManagerPlugin(GenericPlugin):
@@ -58,7 +61,7 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :param parent_cli: the parent cli
         :return: void
         """
-        raise NotImplementedError()
+        BatchDownloadManagerCli(parent_cli).start()
 
     def start_gui(self, parent_gui):
         """

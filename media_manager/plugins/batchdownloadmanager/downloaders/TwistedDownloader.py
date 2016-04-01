@@ -78,6 +78,8 @@ class TwistedDownloader(object):
         :param pack: the pack to download
         :return void
         """
+        print("Downloading pack: " + pack.to_string())
+
         script = get_location("xdccbot.py")
         dl_folder = os.path.join(expanduser('~'), "Downloads")
 
@@ -96,8 +98,10 @@ class TwistedDownloader(object):
             line = proc.stderr.readline().decode().split("\n")[0]
             if "PROGRESS:" in line:
                 self.progress_struct.single_progress = int(line.split("PROGRESS:")[1])
+                print(line.split("INFO:root:")[1] + " / " + self.progress_struct.single_size)
             elif "DLCOMPLETE:" in line:
                 file_name = line.split("DLCOMPLETE:")[1]
+                print("Finished Downloading " + file_name)
             elif not line:
                 break
         if not file_name:
