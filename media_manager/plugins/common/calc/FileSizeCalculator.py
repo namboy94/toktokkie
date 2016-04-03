@@ -20,6 +20,8 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import math
+
 
 class FileSizeCalculator(object):
     """
@@ -38,10 +40,15 @@ class FileSizeCalculator(object):
             unit = size_string[-1:].lower()
             multiplier = 1
             if unit == "k":
-                multiplier = 1000
-            elif unit == "m":
-                multiplier = 1000000
+                multiplier = math.pow(2, 10)
+            elif unit in "m":
+                multiplier = math.pow(2, 20)
             elif unit == "g":
-                multiplier = 1000000000
+                multiplier = math.pow(2, 30)
+            elif unit == "b":
+                new_unit = size_string[-2:]
+                new_unit = new_unit[:-1]
+                recursive_size_string = size_string[:-2] + new_unit
+                return FileSizeCalculator.get_byte_size_from_string(recursive_size_string)
             byte_size *= multiplier
         return byte_size

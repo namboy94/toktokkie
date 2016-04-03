@@ -31,6 +31,7 @@ from twisted.internet import reactor, protocol
 from twisted.python import log as twistedlog
 
 
+# noinspection PyPep8Naming, PyShadowingNames, PyAttributeOutsideInit
 class XdccBot(irc.IRCClient):
 
     @property
@@ -60,9 +61,13 @@ class XdccBot(irc.IRCClient):
             reactor.stop()
 
     def privmsg(self, user, channel, msg):
+        str(channel)
+        str(self)
         log.info("<%s> %s" % (user, msg))
 
     def dccDoSend(self, user, address, port, filename, size, data):
+
+        str(size)
 
         factory = XdccDownloaderFactory(self,
                                         filename,
@@ -78,12 +83,14 @@ class XdccBot(irc.IRCClient):
     def dccDownloadFinished(self, filename, success):
 
         log.info("DLCOMPLETE:%s" % filename)
+        str(success)
         self.processXdccRequests()
 
 
+# noinspection PyPep8Naming, PyShadowingNames
 class XdccBotFactory(protocol.ClientFactory):
 
-    def __init__( self, channel, nickname, xdccBot, xdccRequests, destdir='.'):
+    def __init__(self, channel, nickname, xdccBot, xdccRequests, destdir='.'):
         self.channel = channel
         self.nickname = nickname
         self.destdir = destdir
@@ -104,6 +111,7 @@ class XdccBotFactory(protocol.ClientFactory):
         reactor.stop()
 
 
+# noinspection PyPep8Naming, PyShadowingNames, PyAttributeOutsideInit
 class XdccDownloader(irc.DccFileReceive):
 
     notifyBlockSize = 512 * 512
@@ -133,6 +141,7 @@ class XdccDownloader(irc.DccFileReceive):
             self.factory.client.dccDownloadFinished(self.filename, self.isDownloadSuccessful())
 
 
+# noinspection PyPep8Naming, PyShadowingNames
 class XdccDownloaderFactory(protocol.ClientFactory):
 
     def __init__(self, client, filename, destdir, queryData):
@@ -176,4 +185,3 @@ if __name__ == "__main__":
     factory = XdccBotFactory(channel, nickname, xdccbot, xdccrequests, dest_dir)
     reactor.connectTCP(server, 6667, factory)
     reactor.run()
-    print("end")

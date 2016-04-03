@@ -21,7 +21,6 @@ This file is part of media-manager.
 """
 
 import os
-import time
 
 try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer

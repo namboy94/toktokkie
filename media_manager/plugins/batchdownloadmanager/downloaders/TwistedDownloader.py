@@ -98,7 +98,10 @@ class TwistedDownloader(object):
             line = proc.stderr.readline().decode().split("\n")[0]
             if "PROGRESS:" in line:
                 self.progress_struct.single_progress = int(line.split("PROGRESS:")[1])
-                print(line.split("INFO:root:")[1] + " / " + self.progress_struct.single_size)
+                single_progress = float(self.progress_struct.single_progress) / float(self.progress_struct.single_size)
+                single_progress *= 100.00
+                print(line.split("INFO:root:")[1] + " / " + str(self.progress_struct.single_size) +
+                      "(" + str(single_progress) + "%)", end="\r")
             elif "DLCOMPLETE:" in line:
                 file_name = line.split("DLCOMPLETE:")[1]
                 print("Finished Downloading " + file_name)

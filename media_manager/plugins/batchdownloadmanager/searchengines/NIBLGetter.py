@@ -79,6 +79,8 @@ class NIBLGetter(GenericGetter):
         """
         if bot == "HelloKitty" or "CR-" in bot:
             return "#horriblesubs"
+        elif bot == "E-D|Mashiro":
+            return "#exiled-destiny"
         else:
             return "#intel"
     

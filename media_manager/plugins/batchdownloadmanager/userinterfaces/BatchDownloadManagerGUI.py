@@ -289,14 +289,15 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
                 Updates the widgets with new values
                 """
                 # calculate
-                total_progress = float(progress_struct.total_progress) / float(progress_struct.total)
                 try:
                     single_progress = float(progress_struct.single_progress) / float(progress_struct.single_size)
                 except ZeroDivisionError:
                     single_progress = 0.0
+                total_progress = float(progress_struct.total_progress) / float(progress_struct.total)
+                total_progress_percentage = total_progress + (single_progress / progress_struct.total)
 
                 # update
-                self.set_progress_bar_float_percentage(self.total_progress_bar, total_progress)
+                self.set_progress_bar_float_percentage(self.total_progress_bar, total_progress_percentage)
                 self.set_progress_bar_float_percentage(self.single_progress_bar, single_progress)
                 self.set_label_string(self.total_progress_current, str(progress_struct.total_progress))
                 self.set_label_string(self.total_progress_total, str(progress_struct.total))
