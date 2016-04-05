@@ -20,22 +20,23 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-try:
-    from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
-    from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
-except ImportError:
-    print("Warning: gfworks could not be imported.")
-    Gtk3GridTemplate = None
-    TkGridTemplate = None
-
 
 class Globals(object):
     """
-    A class storing various global imports and/or variables
+    A class storing various global imports
     """
+
+    from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
+    from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
 
     selected_grid_gui_framework = Gtk3GridTemplate
     gtk3_gui_template = Gtk3GridTemplate
     tk_gui_template = TkGridTemplate
+
+
+class Version(object):
+    """
+    A class that stores the current version number as a string
+    """
 
     version_no = "0.8.9"

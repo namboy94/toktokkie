@@ -22,7 +22,7 @@ This file is part of media-manager.
 
 # imports
 from setuptools import setup, find_packages
-from media_manager.Globals import Globals
+from media_manager.Globals import Version
 
 
 def readme():
@@ -35,7 +35,7 @@ def readme():
 
 
 setup(name='media-manager',
-      version=Globals.version_no,
+      version=Version.version_no,
       description='A personal media manager program',
       long_description=readme(),
       classifiers=['Development Status :: 3 - Alpha',
