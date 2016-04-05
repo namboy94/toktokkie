@@ -35,7 +35,7 @@ def readme():
 
 
 setup(name='media-manager',
-      version=Version.version_no,
+      version=Globals.version_no,
       description='A personal media manager program',
       long_description=readme(),
       classifiers=['Development Status :: 3 - Alpha',
