@@ -26,11 +26,13 @@ try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from cli.exceptions.ReturnException import ReturnException
     from cli.GenericCli import GenericCli
 except ImportError:
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from media_manager.cli.exceptions.ReturnException import ReturnException
     from media_manager.cli.GenericCli import GenericCli
 
 
@@ -62,36 +64,43 @@ class BatchDownloadManagerCli(GenericCli):
         Starts the main program loop
         :return: void
         """
-        print("BATCH DOWNLOAD MANAGER PLUGIN\n")
 
-        self.directory = input("Enter the target download directory:\n")
+        try:
+            print("BATCH DOWNLOAD MANAGER PLUGIN\n")
 
-        self.show_name = input("Please enter the show name:\n")
-        if os.path.basename(self.directory) != self.show_name:
-            print("Are you sure that " + self.show_name + " is correct? (y/n)")
-            response = input()
-            if response != "y":
-                return
+            self.directory = self.ask_user("Enter the target download directory:\n")
 
-        while self.season == "":
-            try:
-                self.season = int(input("Please enter the season number:\n"))
-            except ValueError:
-                "Invalid integer value.\n"
+            self.show_name = self.ask_user("Please enter the show name:\n")
+            if os.path.basename(self.directory) != self.show_name:
+                print("Are you sure that " + self.show_name + " is correct? (y/n)")
+                response = self.ask_user()
+                if response != "y":
+                    return
 
-        while self.starting_episode_number == "":
-            try:
-                self.starting_episode_number = int(input("Please enter the first episode number:\n"))
-            except ValueError:
-                "Invalid integer value.\n"
+            while self.season == "":
+                try:
+                    self.season = int(self.ask_user("Please enter the season number:\n"))
+                except ValueError:
+                    "Invalid integer value.\n"
 
-        self.search_xdcc()
+            while self.starting_episode_number == "":
+                try:
+                    self.starting_episode_number = int(self.ask_user("Please enter the first episode number:\n"))
+                except ValueError:
+                    "Invalid integer value.\n"
 
-        auto_rename_prompt = input("Auto Rename? (y/n)")
-        if auto_rename_prompt == "y":
-            self.auto_rename = True
+            self.search_xdcc()
 
-        self.start_download()
+            auto_rename_prompt = self.ask_user("Auto Rename? (y/n)")
+            if auto_rename_prompt == "y":
+                self.auto_rename = True
+
+            self.start_download()
+
+            self.start()
+
+        except ReturnException:
+            self.stop()
 
     def search_xdcc(self):
         """
@@ -108,7 +117,7 @@ class BatchDownloadManagerCli(GenericCli):
                 print("2: ixIRC.com")
                 print("3: intel.haruhichan.com")
                 try:
-                    search_engine = int(input("Which search engine would you like to use?"))
+                    search_engine = int(self.ask_user("Which search engine would you like to use?"))
                     if search_engine == 1:
                         self.search_engine = "NIBL.co.uk"
                     elif search_engine == 2:
@@ -122,7 +131,7 @@ class BatchDownloadManagerCli(GenericCli):
                 except ValueError:
                     print("Not a valid integer")
 
-            search_term = input("Search for what?\n")
+            search_term = self.ask_user("Search for what?\n")
             print("searching...")
             search_result = BatchDownloadManager.conduct_xdcc_search(self.search_engine, search_term)
             print("Results:")
@@ -137,7 +146,8 @@ class BatchDownloadManagerCli(GenericCli):
             while selecting:
 
                 selection = \
-                    input("Enter a comma-delimited selection of packs to download, or blank to conduct a new search:\n")
+                    self.ask_user("Enter a comma-delimited selection of packs to download,"
+                                  " or blank to conduct a new search:\n")
 
                 if selection == "":
                     break
@@ -158,13 +168,13 @@ class BatchDownloadManagerCli(GenericCli):
                 print("Selection:")
                 for pack in selected_packs:
                     print(pack.to_string())
-                confirmation = input("Do you want to download these packs? (y/n)")
+                confirmation = self.ask_user("Do you want to download these packs? (y/n)")
                 if confirmation == "y":
                     searching = False
                     selecting = False
                     self.selected_packs = selected_packs
                 else:
-                    re_search_prompt = input("Do you want to re-search? (y/n)")
+                    re_search_prompt = self.ask_user("Do you want to re-search? (y/n)")
                     if re_search_prompt == "y":
                         selecting = False
 

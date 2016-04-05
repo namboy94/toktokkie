@@ -22,9 +22,11 @@ This file is part of media-manager.
 
 try:
     from plugins.renamer.utils.Renamer import Renamer
+    from cli.exceptions.ReturnException import ReturnException
     from cli.GenericCli import GenericCli
 except ImportError:
     from media_manager.plugins.renamer.utils.Renamer import Renamer
+    from media_manager.cli.exceptions.ReturnException import ReturnException
     from media_manager.cli.GenericCli import GenericCli
 
 
@@ -46,25 +48,28 @@ class RenamerCli(GenericCli):
         Starts the renaming process
         :return: void
         """
-        print("RENAMER PLUGIN\n\n")
-        directory = input("Enter the show/series directory path:\n")
-
         try:
-            renamer = Renamer(directory)
-            confirmation = renamer.request_confirmation()
-            if self.confirmer(confirmation):
-                print("Renaming...")
-                renamer.confirm(confirmation)
-                renamer.start_rename()
-                print("Renaming successful.")
-            else:
-                print("Renaming cancelled.")
-        except Exception as e:
-            if str(e) == "Not a directory":
-                print("Entered directory is not valid\n")
-            else:
-                raise e
-        self.stop()
+
+            print("RENAMER PLUGIN\n\n")
+            directory = self.ask_user("Enter the show/series directory path:\n")
+
+            try:
+                renamer = Renamer(directory)
+                confirmation = renamer.request_confirmation()
+                if self.confirmer(confirmation):
+                    print("Renaming...")
+                    renamer.confirm(confirmation)
+                    renamer.start_rename()
+                    print("Renaming successful.")
+                else:
+                    print("Renaming cancelled.")
+            except Exception as e:
+                if str(e) == "Not a directory":
+                    print("Entered directory is not valid\n")
+            self.start()
+
+        except ReturnException:
+            self.stop()
 
     @staticmethod
     def confirmer(confirmation):

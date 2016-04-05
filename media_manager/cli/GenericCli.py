@@ -23,6 +23,11 @@ This file is part of media-manager.
 # imports
 import sys
 
+try:
+    from cli.exceptions.ReturnException import ReturnException
+except ImportError:
+    from media_manager.cli.exceptions.ReturnException import ReturnException
+
 
 class GenericCli(object):
     """
@@ -51,3 +56,17 @@ class GenericCli(object):
             self.parent.start()
         else:
             sys.exit(0)
+
+    @staticmethod
+    def ask_user(message=None):
+        """
+        Creates a user prompt with default behaviours, reducing code reuse
+        """
+        if message is not None:
+            user_response = input(message)
+        else:
+            user_response = input()
+        if user_response.lower() in ["quit", "return", "exit"]:
+            raise ReturnException
+        else:
+            return user_response
