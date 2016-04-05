@@ -22,7 +22,7 @@ This file is part of media-manager.
 
 # imports
 from setuptools import setup, find_packages
-from media_manager.Globals import Version
+from media_manager.Globals import Globals
 
 
 def readme():
