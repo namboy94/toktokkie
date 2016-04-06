@@ -71,7 +71,7 @@ class RenamerPlugin(GenericPlugin):
             valid = True
 
         if valid:
-            print("Do Stuff")
+            RenamerCli(None).mainloop(getattr(args, "renamer-directory"))
         else:
             print("Invalid argument combination passed")
 

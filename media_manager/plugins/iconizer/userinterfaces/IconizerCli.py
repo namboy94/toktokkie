@@ -58,14 +58,14 @@ class IconizerCli(GenericCli):
         :return void
         """
 
-        if directory is not None:
+        if directory is None:
             directory = self.ask_user("Enter the directory to iconize:\n")
 
         if not os.path.isdir(directory):
             print("No valid directory entered")
             return
 
-        if directory is not None:
+        if directory is None:
 
             print("Which iconizing method would you like to use?\n")
             i = 1

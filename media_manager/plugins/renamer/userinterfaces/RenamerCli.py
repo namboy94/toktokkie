@@ -50,12 +50,13 @@ class RenamerCli(GenericCli):
         """
         super().start("RENAMER PLUGIN\n")
 
-    def mainloop(self):
+    def mainloop(self, directory=None):
         """
         Starts the renaming process
         :return: void
         """
-        directory = self.ask_user("Enter the show/series directory path:\n")
+        if directory is None:
+            directory = self.ask_user("Enter the show/series directory path:\n")
 
         try:
             renamer = Renamer(directory)

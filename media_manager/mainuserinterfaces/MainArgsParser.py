@@ -49,8 +49,6 @@ class MainArgsParser(object):
                 parser.add_argument("--" + argument["tag"], help=argument["desc"], dest=argument["tag"])
         args = parser.parse_args()
 
-        print(args)
-
         exactly_one_plugin = False
 
         for plugin in self.plugins:
