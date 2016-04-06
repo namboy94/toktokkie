@@ -46,7 +46,8 @@ class GenericPlugin(object):
 
     def get_parser_arguments(self):
         """
-        :return: list of dictionaries, consisting of argument tags and descriptions
+        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.
+                    the first tuple element contains boolean values, the others store string values
         """
         raise NotImplementedError()
 

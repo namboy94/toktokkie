@@ -53,6 +53,31 @@ class IconizerPlugin(GenericPlugin):
         """
         return "iconizer"
 
+    def get_parser_arguments(self):
+        """
+        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.
+                    the first tuple element contains boolean values, the others store string values
+        """
+        return ([{"tag": "iconizer-use-nautilus", "desc": "Use the nautilus iconizer"},
+                 {"tag": "iconizer-use-nemo", "desc": "Use the nemo iconizer"}],
+
+                [{"tag": "iconizer-directory", "desc": "The Directory to be iconized by the iconizer"}])
+
+    def start_args_parse(self, args):
+        """
+        Runs the plugin in arg parse mode
+        """
+        valid = False
+        if getattr(args, "iconizer-directory"):
+            if getattr(args, "iconizer_use_nautilus") ^ \
+                    getattr(args, "iconizer_use_nemo"):
+                valid = True
+
+        if valid:
+            print("Do Stuff")
+        else:
+            print("Invalid argument combination passed")
+
     def start_cli(self, parent_cli):
         """
         Starts the CLI of the plugin

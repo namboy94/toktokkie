@@ -53,7 +53,26 @@ class ShowManagerPlugin(GenericPlugin):
         """
         :return: "batch download"
         """
-        return "show manager"
+        return "show-manager"
+
+    def get_parser_arguments(self):
+        """
+        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.
+                    the first tuple element contains boolean values, the others store string values
+        """
+        return ([],
+                [])
+
+    def start_args_parse(self, args):
+        """
+        Runs the plugin in arg parse mode
+        """
+        valid = False
+
+        if valid:
+            print("Do Stuff")
+        else:
+            print("Invalid argument combination passed")
 
     def start_cli(self, parent_cli):
         """
@@ -63,7 +82,7 @@ class ShowManagerPlugin(GenericPlugin):
         """
         ShowManagerCli(parent_cli).start()
 
-    def start_gui(self, parent_gui: Globals.selected_grid_gui_framework) -> str:
+    def start_gui(self, parent_gui: Globals.selected_grid_gui_framework):
         """
         Starts the GUI, while hiding the parent until finished
         :param parent_gui: the parent gui window

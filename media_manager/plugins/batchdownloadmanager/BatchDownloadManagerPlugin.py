@@ -53,7 +53,42 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         """
         :return: "batch download"
         """
-        return "batch download"
+        return "batch-download"
+
+    def get_parser_arguments(self):
+        """
+        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.
+                    the first tuple element contains boolean values, the others store string values
+        """
+        return ([{"tag": "bdlm-defaults", "desc": "Flag to set the batch download manager to use "
+                                                  "the default values from the destination directory"},
+                 {"tag": "bdlm-showname", "desc": "The show name to be used by the batch download manager"},
+                 {"tag": "bdlm-season", "desc": "The season number to be used by the batch download manager"},
+                 {"tag": "bdlm-firstepisode", "desc": "The episode number to be used by the batch download manager"},
+                 {"tag": "bdlm-use-nibl", "desc": "Use the NIBL pack searcher with the batch download manager"},
+                 {"tag": "bdlm-use-intel", "desc": "Use the Intel Haruhichan searcher with the batch download manager"},
+                 {"tag": "bdlm-use-xirc", "desc": "Use the xIrc searcher with the batch download manager"}],
+
+                [{"tag": "bdlm-directory", "desc": "The destination directory of the batch download manager"}])
+
+    def start_args_parse(self, args):
+        """
+        Runs the plugin in arg parse mode
+        """
+        valid = False
+        if getattr(args, "bdlm-directory"):
+            if getattr(args, "bdlm-defaults") ^ (getattr(args, "bdlm-showname") and
+                                                 getattr(args, "bdlm-season") and
+                                                 getattr(args, "bdlm-firstepisode")):
+                if getattr(args, "bdlm-use-nibl") ^ \
+                        getattr(args, "bdlm-use-intel") ^ \
+                        getattr(args, "bdlm-use-xirc"):
+                    valid = True
+
+        if valid:
+            print("Do Stuff")
+        else:
+            print("Invalid argument combination passed")
 
     def start_cli(self, parent_cli):
         """

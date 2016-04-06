@@ -4,6 +4,7 @@
       <w>addons</w>
       <w>addr</w>
       <w>argparser</w>
+      <w>bdlm</w>
       <w>beautifulsoup</w>
       <w>botname</w>
       <w>botnickname</w>
@@ -16,6 +17,7 @@
       <w>episodename</w>
       <w>executer</w>
       <w>filesize</w>
+      <w>firstepisode</w>
       <w>fsutil</w>
       <w>getenv</w>
       <w>gobject</w>
@@ -48,6 +50,7 @@
       <w>renamer</w>
       <w>rizon</w>
       <w>searchdownload</w>
+      <w>showname</w>
       <w>slist</w>
       <w>stderr</w>
       <w>stdout</w>
@@ -61,6 +64,7 @@
       <w>xdcc</w>
       <w>xdccbot</w>
       <w>xdccmsg</w>
+      <w>xirc</w>
     </words>
   </dictionary>
 </component>

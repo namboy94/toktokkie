@@ -43,15 +43,18 @@ class MainArgsParser(object):
         for plugin in self.plugins:
             parser.add_argument("--" + plugin.get_command_name(),
                                 help="Starts plugin " + plugin.get_name(), action="store_true")
-            for argument in plugin.get_parser_arguments():
-                parser.add_argument("--" + argument["tag"],
-                                    help="Starts plugin " + argument["desc"], action="store_true")
+            for argument in plugin.get_parser_arguments()[0]:
+                parser.add_argument("--" + argument["tag"], help=argument["desc"], action="store_true")
+            for argument in plugin.get_parser_arguments()[1]:
+                parser.add_argument("--" + argument["tag"], help=argument["desc"], dest=argument["tag"])
         args = parser.parse_args()
+
+        print(args)
 
         exactly_one_plugin = False
 
         for plugin in self.plugins:
-            if getattr(args, plugin.get_command_name()):
+            if getattr(args, plugin.get_command_name().replace("-", "_")):
                 if not exactly_one_plugin:
                     exactly_one_plugin = True
                 elif exactly_one_plugin:
@@ -59,7 +62,7 @@ class MainArgsParser(object):
                     sys.exit(1)
 
         for plugin in self.plugins:
-            if getattr(args, plugin.get_command_name()):
+            if getattr(args, plugin.get_command_name().replace("-", "_")):
                 if len(sys.argv) == 2:
                     plugin.start_cli(None)
                 else:
