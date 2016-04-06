@@ -33,4 +33,4 @@ class Globals(object):
     gtk3_gui_template = Gtk3GridTemplate
     tk_gui_template = TkGridTemplate
 
-    version_no = "0.9.1"
+    version_no = "0.9.1.1"

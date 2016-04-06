@@ -27,4 +27,8 @@ from media_manager.main import main
 
 if __name__ == '__main__':
 
-    main("tk")
+    try:
+        main("tk")
+    except KeyboardInterrupt:
+        print("\nThanks for using media-manager!")
+        sys.exit(0)

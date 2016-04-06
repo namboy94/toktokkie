@@ -26,4 +26,9 @@ This file is part of media-manager.
 from media_manager.main import main
 
 if __name__ == '__main__':
-    main()
+
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nThanks for using media-manager!")
+        sys.exit(0)
