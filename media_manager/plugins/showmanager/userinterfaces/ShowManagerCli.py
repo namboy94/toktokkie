@@ -20,42 +20,35 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+try:
+    from cli.GenericCli import GenericCli
+except ImportError:
+    from media_manager.cli.GenericCli import GenericCli
 
-class GenericPlugin(object):
+
+class ShowManagerCli(GenericCli):
     """
-    Generic Plugin that serves as a unified interface for the plugins.
+    CLI for the Show Manager plugin
     """
 
-    def get_name(self):
+    def __init__(self, parent: GenericCli) -> None:
         """
-        :return: the name of this plugin
-        """
-        raise NotImplementedError()
-
-    def get_command_name(self):
-        """
-        :return: the command that starts ths plugin
-        """
-        raise NotImplementedError()
-
-    def get_config_tag(self):
-        """
-        :return: the config tag of this plugin
-        """
-        raise NotImplementedError()
-
-    def start_cli(self, parent_cli):
-        """
-        Starts the CLI of the plugin
-        :param parent_cli: the parent cli
+        Constructor
+        :param parent: the parent cli
         :return: void
         """
-        raise NotImplementedError()
+        super().__init__(parent)
 
-    def start_gui(self, parent_gui):
+    def start(self, title=None):
         """
-        Starts the GUI of the plugin
-        :param parent_gui: the gui's parent
+        Starts the plugin main loop
         :return: void
         """
-        raise NotImplementedError()
+        super().start("Show Manager Plugin")
+
+    def mainloop(self):
+        """
+        The plugin main loop
+        :return: void
+        """
+        self.ask_user("Not Implemented. Enter quit to return.")

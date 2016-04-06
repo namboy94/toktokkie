@@ -22,11 +22,13 @@ This file is part of media-manager.
 
 try:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.showmanager.manager.userinterfaces.ShowManagerGUI import ShowManagerGui
+    from plugins.showmanager.userinterfaces.ShowManagerGUI import ShowManagerGui
+    from plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
     from Globals import Globals
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.showmanager.userinterfaces.ShowManagerGui import ShowManagerGui
+    from media_manager.plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
     from media_manager.Globals import Globals
 
 
@@ -59,7 +61,7 @@ class ShowManagerPlugin(GenericPlugin):
         :param parent_cli: the parent cli
         :return: void
         """
-        raise NotImplementedError()
+        ShowManagerCli(parent_cli).start()
 
     def start_gui(self, parent_gui: Globals.selected_grid_gui_framework) -> str:
         """
