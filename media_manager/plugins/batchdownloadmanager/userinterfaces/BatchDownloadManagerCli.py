@@ -59,48 +59,52 @@ class BatchDownloadManagerCli(GenericCli):
         self.selected_packs = []
         self.auto_rename = False
 
-    def start(self):
+    def start(self, title=None):
         """
         Starts the main program loop
         :return: void
         """
+        super().start("BATCH DOWNLOAD MANAGER PLUGIN\n")
 
-        try:
-            print("BATCH DOWNLOAD MANAGER PLUGIN\n")
+    def mainloop(self):
+        """
+        The main program loop
+        :return: void
+        """
+        self.directory = self.ask_user("Enter the target download directory:")
+        if not self.directory:
+            print("Invalid directory")
+            return
 
-            self.directory = self.ask_user("Enter the target download directory:\n")
+        show_name, season, starting_episode_number = self.check_show_directory(self.directory)
 
-            self.show_name = self.ask_user("Please enter the show name:\n")
-            if os.path.basename(self.directory) != self.show_name:
-                print("Are you sure that " + self.show_name + " is correct? (y/n)")
-                response = self.ask_user()
-                if response != "y":
-                    return
+        self.show_name = self.ask_user("Please enter the show name:", default=show_name)
+        if os.path.basename(self.directory) != self.show_name:
+            print("Are you sure that " + self.show_name + " is correct? (y/n)")
+            response = self.ask_user()
+            if response != "y":
+                return
 
-            while self.season == "":
-                try:
-                    self.season = int(self.ask_user("Please enter the season number:\n"))
-                except ValueError:
-                    "Invalid integer value.\n"
+        while self.season == "":
+            try:
+                self.season = int(self.ask_user("Please enter the season number:", default=season))
+            except ValueError:
+                "Invalid integer value.\n"
 
-            while self.starting_episode_number == "":
-                try:
-                    self.starting_episode_number = int(self.ask_user("Please enter the first episode number:\n"))
-                except ValueError:
-                    "Invalid integer value.\n"
+        while self.starting_episode_number == "":
+            try:
+                self.starting_episode_number = int(self.ask_user("Please enter the first episode number:",
+                                                                 default=starting_episode_number))
+            except ValueError:
+                "Invalid integer value.\n"
 
-            self.search_xdcc()
+        self.search_xdcc()
 
-            auto_rename_prompt = self.ask_user("Auto Rename? (y/n)")
-            if auto_rename_prompt == "y":
-                self.auto_rename = True
+        auto_rename_prompt = self.ask_user("Auto Rename? (y/n)")
+        if auto_rename_prompt == "y":
+            self.auto_rename = True
 
-            self.start_download()
-
-            self.start()
-
-        except ReturnException:
-            self.stop()
+        self.start_download()
 
     def search_xdcc(self):
         """
@@ -117,7 +121,7 @@ class BatchDownloadManagerCli(GenericCli):
                 print("2: ixIRC.com")
                 print("3: intel.haruhichan.com")
                 try:
-                    search_engine = int(self.ask_user("Which search engine would you like to use?"))
+                    search_engine = int(self.ask_user("Which search engine would you like to use?", default="1"))
                     if search_engine == 1:
                         self.search_engine = "NIBL.co.uk"
                     elif search_engine == 2:
@@ -131,7 +135,7 @@ class BatchDownloadManagerCli(GenericCli):
                 except ValueError:
                     print("Not a valid integer")
 
-            search_term = self.ask_user("Search for what?\n")
+            search_term = self.ask_user("Search for what?", default=self.show_name)
             print("searching...")
             search_result = BatchDownloadManager.conduct_xdcc_search(self.search_engine, search_term)
             print("Results:")
@@ -205,3 +209,24 @@ class BatchDownloadManagerCli(GenericCli):
 
         BatchDownloadManager.start_download_process(
             preparation, downloader, self.selected_packs, self.auto_rename, progress)
+
+    @staticmethod
+    def check_show_directory(directory):
+        """
+        method that calculates the default values for a show directory
+        :param directory: the directory to be checked
+        :return: the show name, the highest season, the amount of episodes
+        """
+        show_name = os.path.basename(directory)
+        highest_season = 0
+        episode_amount = 0
+
+        if os.path.isdir(directory):
+            highest_season = 1
+            while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
+                highest_season += 1
+            if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
+                children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
+                episode_amount = len(children) + 1
+
+        return show_name, str(highest_season), str(episode_amount)

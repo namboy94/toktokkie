@@ -45,42 +45,43 @@ class MainCli(GenericCli):
         super().__init__()
         self.plugins = active_plugins
 
-    def start(self) -> None:
+    def start(self, title=None) -> None:
         """
-        Adds buttons for all plugins
+        Starts the CLI
         :return: void
         """
-        try:
+        super().start("MEDIA MANAGER VERSION " + Globals.version_no + "\n\n" + "Available Plugins:")
 
-            print("MEDIA MANAGER VERSION " + Globals.version_no + "\n\n")
-            print("Available Plugins:\n\n")
+    def mainloop(self):
+        """
+        The main loop of the CLI
+        :return: void
+        """
+        print()
 
-            plugin_dict = {}
-            plugin_list = []
+        plugin_dict = {}
+        plugin_list = []
 
-            i = 1
-            for plugin in self.plugins:
-                plugin_list.append("\t" + str(i) + ". " + plugin.get_name() + "\n")
-                plugin_dict[i] = plugin
-                i += 1
+        i = 1
+        for plugin in self.plugins:
+            plugin_list.append("\t" + str(i) + ". " + plugin.get_name())
+            plugin_dict[i] = plugin
+            i += 1
 
-            for entry in plugin_list:
-                print(entry)
+        for entry in plugin_list:
+            print(entry)
 
-            while True:
-                user_input = self.ask_user("Select plugin by entering the plugin index number.\n"
-                                           "To exit, enter 'exit' or 'quit'\n"
-                                           "To get the list of plugins again, enter 'list'\n")
-                try:
-                    plugin_dict[int(user_input)].start_cli(self)
-                    self.start()
-                    return
-                except (KeyError, ValueError):
-                    if user_input.lower() == "list":
-                        for entry in plugin_list:
-                            print(entry)
-                    else:
-                        print("Unrecognized Command\n")
-
-        except ReturnException:
-            self.stop()
+        while True:
+            user_input = self.ask_user("\nSelect plugin by entering the plugin index number."
+                                       "\nTo exit, enter 'exit' or 'quit'"
+                                       "\nTo get the list of plugins again, enter 'list'\n")
+            try:
+                print()
+                plugin_dict[int(user_input)].start_cli(self)
+                return
+            except (KeyError, ValueError):
+                if user_input.lower() == "list":
+                    for entry in plugin_list:
+                        print(entry)
+                else:
+                    print("Unrecognized Command")

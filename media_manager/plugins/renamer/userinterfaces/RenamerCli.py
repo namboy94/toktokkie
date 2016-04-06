@@ -43,33 +43,33 @@ class RenamerCli(GenericCli):
         """
         super().__init__(parent)
 
-    def start(self):
+    def start(self, title=None):
+        """
+        Starts the plugin main loop
+        :return: void
+        """
+        super().start("RENAMER PLUGIN\n")
+
+    def mainloop(self):
         """
         Starts the renaming process
         :return: void
         """
+        directory = self.ask_user("Enter the show/series directory path:\n")
+
         try:
-
-            print("RENAMER PLUGIN\n\n")
-            directory = self.ask_user("Enter the show/series directory path:\n")
-
-            try:
-                renamer = Renamer(directory)
-                confirmation = renamer.request_confirmation()
-                if self.confirmer(confirmation):
-                    print("Renaming...")
-                    renamer.confirm(confirmation)
-                    renamer.start_rename()
-                    print("Renaming successful.")
-                else:
-                    print("Renaming cancelled.")
-            except Exception as e:
-                if str(e) == "Not a directory":
-                    print("Entered directory is not valid\n")
-            self.start()
-
-        except ReturnException:
-            self.stop()
+            renamer = Renamer(directory)
+            confirmation = renamer.request_confirmation()
+            if self.confirmer(confirmation):
+                print("Renaming...")
+                renamer.confirm(confirmation)
+                renamer.start_rename()
+                print("Renaming successful.")
+            else:
+                print("Renaming cancelled.")
+        except Exception as e:
+            if str(e) == "Not a directory":
+                print("Entered directory is not valid\n")
 
     @staticmethod
     def confirmer(confirmation):

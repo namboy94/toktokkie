@@ -45,60 +45,58 @@ class IconizerCli(GenericCli):
         self.selected_iconizer = None
         super().__init__(parent)
 
-    def start(self):
+    def start(self, title=None):
+        """
+        Starts the plugin main loop
+        :return void
+        """
+        super().start("ICONIZER PLUGIN\n")
+
+    def mainloop(self):
         """
         Starts the iconizing process
         :return void
         """
-        try:
 
-            print("ICONIZER PLUGIN\n")
+        directory = self.ask_user("Enter the directory to iconize:\n")
+        if not os.path.isdir(directory):
+            print("No valid directory entered")
+            return
 
-            directory = self.ask_user("Enter the directory to iconize:\n")
-            if not os.path.isdir(directory):
-                print("No valid directory entered")
-                return
+        print("Which iconizing method would you like to use?\n")
+        i = 1
+        iconizer_dict = {}
+        for option in DeepIconizer.get_iconizer_options():
+            print(str(i) + ":" + option)
+            iconizer_dict[i] = option
+            i += 1
 
-            print("Which iconizing method would you like to use?\n")
-            i = 1
-            iconizer_dict = {}
-            for option in DeepIconizer.get_iconizer_options():
-                print(str(i) + ":" + option)
-                iconizer_dict[i] = option
-                i += 1
+        self.selected_iconizer = None
 
-            self.selected_iconizer = None
+        iconizer_selected = False
+        while not iconizer_selected:
+            user_iconizer = self.ask_user()
+            try:
+                self.selected_iconizer = iconizer_dict[int(user_iconizer)]
+                iconizer_selected = True
+            except (ValueError, KeyError):
+                print("Invalid selection. Please enter the index of the preferred iconizer method\n")
 
-            iconizer_selected = False
-            while not iconizer_selected:
-                user_iconizer = self.ask_user()
-                try:
-                    self.selected_iconizer = iconizer_dict[int(user_iconizer)]
-                    iconizer_selected = True
-                except (ValueError, KeyError):
-                    print("Invalid selection. Please enter the index of the preferred iconizer method\n")
+        children = os.listdir(directory)
+        multiple = True
+        for child in children:
+            if child == ".icons":
+                multiple = False
+                break
 
-            children = os.listdir(directory)
-            multiple = True
+        print("Iconizing Start")
+
+        if multiple:
             for child in children:
-                if child == ".icons":
-                    multiple = False
-                    break
-
-            print("Iconizing Start")
-
-            if multiple:
-                for child in children:
-                    self.iconize_dir(os.path.join(directory, child))
-            else:
-                self.iconize_dir(directory)
-
-            print("Iconizing End")
-
-            self.start()
-
-        except ReturnException:
-            self.stop()
+                self.iconize_dir(os.path.join(directory, child))
+        else:
+            self.iconize_dir(directory)
+        print("Iconizing End")
 
     def iconize_dir(self, directory):
         """

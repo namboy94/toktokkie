@@ -75,4 +75,8 @@ def main(ui_override: str = "") -> None:
         gui.start()
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nThanks for using media-manager!")
+        sys.exit(0)

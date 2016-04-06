@@ -21,6 +21,8 @@ This file is part of media-manager.
 """
 
 # imports
+# noinspection PyUnresolvedReferences
+import readline
 import sys
 
 try:
@@ -42,31 +44,57 @@ class GenericCli(object):
         """
         self.parent = parent
 
-    def start(self):
+    def start(self, title=None):
         """
         Starts the CLI
+        :param title: Title text shown once
+        :return: void
         """
-        raise NotImplementedError()
+        try:
+            if title is not None:
+                print(title)
+            while True:
+                self.mainloop()
+        except ReturnException:
+            print()
+            self.stop()
 
     def stop(self):
         """
         Ends the CLI and restarts the parent CLI, or exits with code 0 if no parent was defined
+        :return: void
         """
         if self.parent is not None:
             self.parent.start()
         else:
             sys.exit(0)
 
+    def mainloop(self):
+        """
+        The main loop of the CLI
+        :return: void
+        """
+        raise NotImplementedError()
+
     @staticmethod
-    def ask_user(message=None):
+    def ask_user(message=None, default=None):
         """
         Creates a user prompt with default behaviours, reducing code reuse
+        :param message: Message to be displayed to the user
+        :param default: Default value if only enter/return is pressed
         """
-        if message is not None:
-            user_response = input(message)
+        if default is None:
+            prompt_message = message
         else:
-            user_response = input()
+            prompt_message = message + "[" + default + "]"
+
+        if message is not None:
+            user_response = input(prompt_message)
+        else:
+            user_response = input("\n")
         if user_response.lower() in ["quit", "return", "exit"]:
             raise ReturnException
+        elif user_response == "" and default is not None:
+            return default
         else:
             return user_response
