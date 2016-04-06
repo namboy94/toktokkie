@@ -30,10 +30,12 @@ try:
     from startup.Installer import Installer
     from Globals import Globals
     from mainuserinterfaces.MainCli import MainCli
+    from mainuserinterfaces.MainArgsParser import MainArgsParser
 except ImportError:
     from media_manager.startup.Installer import Installer
     from media_manager.Globals import Globals
     from media_manager.mainuserinterfaces.MainCli import MainCli
+    from media_manager.mainuserinterfaces.MainArgsParser import MainArgsParser
 
 
 def main(ui_override: str = "") -> None:
@@ -46,11 +48,15 @@ def main(ui_override: str = "") -> None:
         Installer().install()
 
     cli_mode = False
+    cli_arg_mode = False
+
     # Parse arguments
     if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
         Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
     elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk":
         Globals.selected_grid_gui_framework = Globals.tk_gui_template
+    elif len(sys.argv) > 1:
+        cli_arg_mode = True
     else:
         cli_mode = True
 
@@ -70,6 +76,8 @@ def main(ui_override: str = "") -> None:
     # Start the program
     if cli_mode:
         MainCli(active_plugins).start()
+    elif cli_arg_mode:
+        MainArgsParser(active_plugins).run()
     else:
         gui = MainGUI(active_plugins)
         gui.start()

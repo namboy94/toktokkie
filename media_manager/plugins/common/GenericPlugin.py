@@ -44,6 +44,18 @@ class GenericPlugin(object):
         """
         raise NotImplementedError()
 
+    def get_parser_arguments(self):
+        """
+        :return: list of dictionaries, consisting of argument tags and descriptions
+        """
+        raise NotImplementedError()
+
+    def start_args_parse(self, args):
+        """
+        Runs the plugin in arg parse mode
+        """
+        raise NotImplementedError()
+
     def start_cli(self, parent_cli):
         """
         Starts the CLI of the plugin
