@@ -74,7 +74,12 @@ class IconizerPlugin(GenericPlugin):
                 valid = True
 
         if valid:
-            print("Do Stuff")
+            cli = None
+            if getattr(args, "iconizer_use_nautilus"):
+                cli = IconizerCli(None, "Nautilus")
+            elif getattr(args, "iconizer_use_nemo"):
+                cli = IconizerCli(None, "Nemo")
+            cli.mainloop(getattr(args, "iconizer-directory"))
         else:
             print("Invalid argument combination passed")
 

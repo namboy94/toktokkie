@@ -69,6 +69,9 @@ class ShowManagerPlugin(GenericPlugin):
         """
         valid = False
 
+        if True:
+            valid = True
+
         if valid:
             print("Do Stuff")
         else:

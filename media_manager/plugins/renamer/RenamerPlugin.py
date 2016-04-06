@@ -67,6 +67,9 @@ class RenamerPlugin(GenericPlugin):
         """
         valid = False
 
+        if getattr(args, "renamer-directory"):
+            valid = True
+
         if valid:
             print("Do Stuff")
         else:
