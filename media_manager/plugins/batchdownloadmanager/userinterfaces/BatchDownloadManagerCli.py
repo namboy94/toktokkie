@@ -66,47 +66,77 @@ class BatchDownloadManagerCli(GenericCli):
         """
         super().start("BATCH DOWNLOAD MANAGER PLUGIN\n")
 
-    def mainloop(self):
+    def mainloop(self, directory=None, use_defaults=None, show_name_override=None,
+                 season_number_override=None, first_episode_override=None,
+                 search_engine=None, search_term=None, auto_rename=None):
         """
         The main program loop
         :return: void
         """
-        self.directory = self.ask_user("Enter the target download directory:")
+        self.directory = directory
+        if self.directory is None:
+            self.directory = self.ask_user("Enter the target download directory:")
         if not self.directory:
             print("Invalid directory")
             return
 
         show_name, season, starting_episode_number = self.check_show_directory(self.directory)
 
-        self.show_name = self.ask_user("Please enter the show name:", default=show_name)
-        if os.path.basename(self.directory) != self.show_name:
-            print("Are you sure that " + self.show_name + " is correct? (y/n)")
-            response = self.ask_user()
-            if response != "y":
-                return
+        if directory is None:
 
-        while self.season == "":
-            try:
-                self.season = int(self.ask_user("Please enter the season number:", default=season))
-            except ValueError:
-                "Invalid integer value.\n"
+            self.show_name = self.ask_user("Please enter the show name:", default=show_name)
+            if os.path.basename(self.directory) != self.show_name:
+                print("Are you sure that " + self.show_name + " is correct? (y/n)")
+                response = self.ask_user()
+                if response != "y":
+                    return
 
-        while self.starting_episode_number == "":
-            try:
-                self.starting_episode_number = int(self.ask_user("Please enter the first episode number:",
-                                                                 default=starting_episode_number))
-            except ValueError:
-                "Invalid integer value.\n"
+            while self.season == "":
+                try:
+                    self.season = int(self.ask_user("Please enter the season number:", default=season))
+                except ValueError:
+                    "Invalid integer value.\n"
 
-        self.search_xdcc()
+            while self.starting_episode_number == "":
+                try:
+                    self.starting_episode_number = int(self.ask_user("Please enter the first episode number:",
+                                                                     default=starting_episode_number))
+                except ValueError:
+                    "Invalid integer value.\n"
+            self.search_xdcc()
 
-        auto_rename_prompt = self.ask_user("Auto Rename? (y/n)")
-        if auto_rename_prompt == "y":
-            self.auto_rename = True
+        else:
+            if use_defaults is not None:
+                self.show_name = show_name
+                self.season = season
+                self.starting_episode_number = starting_episode_number
+            if show_name_override is not None:
+                self.show_name = show_name_override
+            if season_number_override is not None:
+                self.season = season_number_override
+            if first_episode_override is not None:
+                self.starting_episode_number = first_episode_override
+            if search_term is None:
+                search_term = self.show_name
+
+            self.search_xdcc(search_engine, search_term)
+
+        if auto_rename is None:
+
+            auto_rename_prompt = self.ask_user("Auto Rename? (y/n)")
+            if auto_rename_prompt == "y":
+                self.auto_rename = True
+
+        else:
+
+            if auto_rename:
+                self.auto_rename = True
+            else:
+                self.auto_rename = False
 
         self.start_download()
 
-    def search_xdcc(self):
+    def search_xdcc(self, search_engine_override=None, search_term_override=None):
         """
         Searches for xdcc packs
         :return: void
@@ -114,7 +144,11 @@ class BatchDownloadManagerCli(GenericCli):
         searching = True
         print("Starting Search Procedure:")
         while searching:
-            search_engine_selected = False
+            if search_engine_override is not None:
+                search_engine_selected = True
+                self.search_engine = search_engine_override
+            else:
+                search_engine_selected = False
             while not search_engine_selected:
                 print("Search Engine Options:\n")
                 print("1: NIBL.co.uk")
@@ -125,9 +159,9 @@ class BatchDownloadManagerCli(GenericCli):
                     if search_engine == 1:
                         self.search_engine = "NIBL.co.uk"
                     elif search_engine == 2:
-                        self.search_engine = "NIBL.co.uk"
+                        self.search_engine = "ixIRC.com"
                     elif search_engine == 3:
-                        self.search_engine = "NIBL.co.uk"
+                        self.search_engine = "intel.haruhichan.com"
                     else:
                         print("Invalid index")
                         continue
@@ -135,7 +169,10 @@ class BatchDownloadManagerCli(GenericCli):
                 except ValueError:
                     print("Not a valid integer")
 
-            search_term = self.ask_user("Search for what?", default=self.show_name)
+            search_term = search_term_override
+            if search_term_override is None:
+                search_term = self.ask_user("Search for what?", default=self.show_name)
+
             print("searching...")
             search_result = BatchDownloadManager.conduct_xdcc_search(self.search_engine, search_term)
             print("Results:")
@@ -149,9 +186,8 @@ class BatchDownloadManagerCli(GenericCli):
             selecting = True
             while selecting:
 
-                selection = \
-                    self.ask_user("Enter a comma-delimited selection of packs to download,"
-                                  " or blank to conduct a new search:\n")
+                selection = self.ask_user("Enter a comma-delimited selection of packs to download, "
+                                          "or blank to conduct a new search:\n")
 
                 if selection == "":
                     break
@@ -178,9 +214,10 @@ class BatchDownloadManagerCli(GenericCli):
                     selecting = False
                     self.selected_packs = selected_packs
                 else:
-                    re_search_prompt = self.ask_user("Do you want to re-search? (y/n)")
-                    if re_search_prompt == "y":
-                        selecting = False
+                    if search_term_override is None:
+                        re_search_prompt = self.ask_user("Do you want to re-search? (y/n)")
+                        if re_search_prompt == "y":
+                            selecting = False
 
     def start_download(self):
         """

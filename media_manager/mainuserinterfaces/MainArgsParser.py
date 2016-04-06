@@ -59,9 +59,15 @@ class MainArgsParser(object):
                     print("Illegal argument combination. Only select one plugin at a time")
                     sys.exit(1)
 
+        plugin_run = False
+
         for plugin in self.plugins:
             if getattr(args, plugin.get_command_name().replace("-", "_")):
                 if len(sys.argv) == 2:
                     plugin.start_cli(None)
                 else:
                     plugin.start_args_parse(args)
+                plugin_run = True
+
+        if not plugin_run:
+            print("No valid plugin specified")
