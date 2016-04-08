@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader &mdash; media-manager 0.9.1.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.9.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="media-manager 0.9.1.2 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
+
+<span class="sd">This file is part of media-manager.</span>
+
+<span class="sd">    media-manager is a program that allows convenient managing of various</span>
+<span class="sd">    local media collections, mostly focused on video.</span>
+
+<span class="sd">    media-manager is free software: you can redistribute it and/or modify</span>
+<span class="sd">    it under the terms of the GNU General Public License as published by</span>
+<span class="sd">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    (at your option) any later version.</span>
+
+<span class="sd">    media-manager is distributed in the hope that it will be useful,</span>
+<span class="sd">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    GNU General Public License for more details.</span>
+
+<span class="sd">    You should have received a copy of the GNU General Public License</span>
+<span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">expanduser</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">plugins.renamer.objects.Episode</span> <span class="kn">import</span> <span class="n">Episode</span>
+    <span class="kn">from</span> <span class="nn">external.__init__</span> <span class="kn">import</span> <span class="n">get_location</span>
+    <span class="kn">from</span> <span class="nn">plugins.common.calc.FileSizeCalculator</span> <span class="kn">import</span> <span class="n">FileSizeCalculator</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">media_manager.plugins.renamer.objects.Episode</span> <span class="kn">import</span> <span class="n">Episode</span>
+    <span class="kn">from</span> <span class="nn">media_manager.external.__init__</span> <span class="kn">import</span> <span class="n">get_location</span>
+    <span class="kn">from</span> <span class="nn">media_manager.plugins.common.calc.FileSizeCalculator</span> <span class="kn">import</span> <span class="n">FileSizeCalculator</span>
+
+
+<div class="viewcode-block" id="TwistedDownloader"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader">[docs]</a><span class="k">class</span> <span class="nc">TwistedDownloader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for Gregory Eric Sanderson Turcot Temlett MacDonnell Forbes&#39;s XDCC Downloader</span>
+<span class="sd">    The plan is to replace his script with one of my own once twisted supports python 3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packs</span><span class="p">,</span> <span class="n">progress_struct</span><span class="p">,</span> <span class="n">show_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">episode_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">season_number</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        :param packs: the packs to be downloaded</span>
+<span class="sd">        :param progress_struct: Structure that keeps track of download progress</span>
+<span class="sd">        :param show_name: the show name for auto renaming</span>
+<span class="sd">        :param episode_number: the (starting) episode number for auto renaming</span>
+<span class="sd">        :param season_number: the season number for auto renaming</span>
+<span class="sd">        :return: void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">packs</span> <span class="o">=</span> <span class="n">packs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span> <span class="o">=</span> <span class="n">progress_struct</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_rename</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">show_name</span> <span class="ow">and</span> <span class="n">episode_number</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">season_number</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_name</span> <span class="o">=</span> <span class="n">show_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">episode_number</span> <span class="o">=</span> <span class="n">episode_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">season_number</span> <span class="o">=</span> <span class="n">season_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auto_rename</span> <span class="o">=</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="TwistedDownloader.download_loop"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader.download_loop">[docs]</a>    <span class="k">def</span> <span class="nf">download_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the Download loop</span>
+<span class="sd">        :return void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">packs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_size</span> <span class="o">=</span> <span class="n">FileSizeCalculator</span><span class="o">.</span><span class="n">get_byte_size_from_string</span><span class="p">(</span><span class="n">pack</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">pack</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">total_progress</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">files</span></div>
+
+<div class="viewcode-block" id="TwistedDownloader.download"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pack</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads a single pack</span>
+<span class="sd">        :param pack: the pack to download</span>
+<span class="sd">        :return void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Downloading pack: &quot;</span> <span class="o">+</span> <span class="n">pack</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+        <span class="n">script</span> <span class="o">=</span> <span class="n">get_location</span><span class="p">(</span><span class="s2">&quot;xdccbot.py&quot;</span><span class="p">)</span>
+        <span class="n">dl_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s2">&quot;Downloads&quot;</span><span class="p">)</span>
+
+        <span class="n">dl_command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;python2&quot;</span><span class="p">,</span>
+                      <span class="n">script</span><span class="p">,</span>
+                      <span class="n">pack</span><span class="o">.</span><span class="n">server</span><span class="p">,</span>
+                      <span class="n">pack</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
+                      <span class="s2">&quot;media_manager_python&quot;</span><span class="p">,</span>
+                      <span class="n">pack</span><span class="o">.</span><span class="n">bot</span><span class="p">,</span>
+                      <span class="n">dl_folder</span><span class="p">,</span>
+                      <span class="nb">str</span><span class="p">(</span><span class="n">pack</span><span class="o">.</span><span class="n">packnumber</span><span class="p">)]</span>
+
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">dl_command</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;PROGRESS:&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_progress</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;PROGRESS:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">single_progress</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_progress</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_size</span><span class="p">)</span>
+                <span class="n">single_progress</span> <span class="o">*=</span> <span class="mf">100.00</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;INFO:root:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; / &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_size</span><span class="p">)</span> <span class="o">+</span>
+                      <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">single_progress</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%)&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;DLCOMPLETE:&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">file_name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;DLCOMPLETE:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Finished Downloading &quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">file_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Twisted Download Error&quot;</span><span class="p">)</span>
+
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dl_folder</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_rename</span><span class="p">:</span>
+            <span class="n">episode</span> <span class="o">=</span> <span class="n">Episode</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">episode_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">season_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_name</span><span class="p">)</span>
+            <span class="n">episode</span><span class="o">.</span><span class="n">rename</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">episode_number</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">episode</span><span class="o">.</span><span class="n">episode_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">file_path</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Hermann Krumrey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

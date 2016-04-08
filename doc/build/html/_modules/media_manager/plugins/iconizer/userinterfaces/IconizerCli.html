@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>media_manager.plugins.iconizer.userinterfaces.IconizerCli &mdash; media-manager 0.9.1.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.9.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="media-manager 0.9.1.2 documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for media_manager.plugins.iconizer.userinterfaces.IconizerCli</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
+
+<span class="sd">This file is part of media-manager.</span>
+
+<span class="sd">    media-manager is a program that allows convenient managing of various</span>
+<span class="sd">    local media collections, mostly focused on video.</span>
+
+<span class="sd">    media-manager is free software: you can redistribute it and/or modify</span>
+<span class="sd">    it under the terms of the GNU General Public License as published by</span>
+<span class="sd">    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">    (at your option) any later version.</span>
+
+<span class="sd">    media-manager is distributed in the hope that it will be useful,</span>
+<span class="sd">    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">    GNU General Public License for more details.</span>
+
+<span class="sd">    You should have received a copy of the GNU General Public License</span>
+<span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cli.GenericCli</span> <span class="kn">import</span> <span class="n">GenericCli</span>
+    <span class="kn">from</span> <span class="nn">cli.exceptions.ReturnException</span> <span class="kn">import</span> <span class="n">ReturnException</span>
+    <span class="kn">from</span> <span class="nn">plugins.iconizer.utils.DeepIconizer</span> <span class="kn">import</span> <span class="n">DeepIconizer</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">media_manager.cli.GenericCli</span> <span class="kn">import</span> <span class="n">GenericCli</span>
+    <span class="kn">from</span> <span class="nn">media_manager.cli.exceptions.ReturnException</span> <span class="kn">import</span> <span class="n">ReturnException</span>
+    <span class="kn">from</span> <span class="nn">media_manager.plugins.iconizer.utils.DeepIconizer</span> <span class="kn">import</span> <span class="n">DeepIconizer</span>
+
+
+<div class="viewcode-block" id="IconizerCli"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli">[docs]</a><span class="k">class</span> <span class="nc">IconizerCli</span><span class="p">(</span><span class="n">GenericCli</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GCLI for the Iconizer plugin</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">selected_iconizer</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        :return: void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_iconizer</span> <span class="o">=</span> <span class="n">selected_iconizer</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IconizerCli.start"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the plugin main loop</span>
+<span class="sd">        :return void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;ICONIZER PLUGIN</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IconizerCli.mainloop"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the iconizing process</span>
+<span class="sd">        :return void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask_user</span><span class="p">(</span><span class="s2">&quot;Enter the directory to iconize:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No valid directory entered&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Which iconizing method would you like to use?</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">iconizer_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">DeepIconizer</span><span class="o">.</span><span class="n">get_iconizer_options</span><span class="p">():</span>
+                <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">option</span><span class="p">)</span>
+                <span class="n">iconizer_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">option</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">iconizer_selected</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">iconizer_selected</span><span class="p">:</span>
+                <span class="n">user_iconizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask_user</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">selected_iconizer</span> <span class="o">=</span> <span class="n">iconizer_dict</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">user_iconizer</span><span class="p">)]</span>
+                    <span class="n">iconizer_selected</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Invalid selection. Please enter the index of the preferred iconizer method</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">children</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="n">multiple</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child</span> <span class="o">==</span> <span class="s2">&quot;.icons&quot;</span><span class="p">:</span>
+                <span class="n">multiple</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">break</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Iconizing Start&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">multiple</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">iconize_dir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">child</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iconize_dir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Iconizing End&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IconizerCli.iconize_dir"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.iconize_dir">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iconizes a single folder</span>
+<span class="sd">        :param directory: the directory to be iconized</span>
+<span class="sd">        :return: void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Iconizing &quot;</span> <span class="o">+</span> <span class="n">directory</span><span class="p">)</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_iconizer</span>
+        <span class="n">has_icons</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">sub_directory</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sub_directory</span> <span class="o">==</span> <span class="s2">&quot;.icons&quot;</span><span class="p">:</span>
+                <span class="n">has_icons</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_icons</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Error, &quot;</span> <span class="o">+</span> <span class="n">directory</span> <span class="o">+</span> <span class="s2">&quot; has no subdirectory </span><span class="se">\&quot;</span><span class="s2">.icons</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">DeepIconizer</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span><span class="o">.</span><span class="n">iconize</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Hermann Krumrey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
