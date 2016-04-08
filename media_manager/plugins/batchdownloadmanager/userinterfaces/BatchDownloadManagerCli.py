@@ -73,6 +73,8 @@ class BatchDownloadManagerCli(GenericCli):
         The main program loop
         :return: void
         """
+        self.restore_start_state()
+
         self.directory = directory
         if self.directory is None:
             self.directory = self.ask_user("Enter the target download directory:")
@@ -267,3 +269,19 @@ class BatchDownloadManagerCli(GenericCli):
                 episode_amount = len(children) + 1
 
         return show_name, str(highest_season), str(episode_amount)
+
+    def restore_start_state(self):
+        """
+        Restores the state of the BatchDownloadManagerCli object to what it was at the beginning.
+        :return: void
+        """
+        self.directory = ""
+        self.show_name = ""
+        self.season = ""
+        self.starting_episode_number = ""
+        self.search_engine = ""
+        self.main_icon = ""
+        self.secondary_icon = ""
+        self.iconizer = ""
+        self.selected_packs = []
+        self.auto_rename = False
