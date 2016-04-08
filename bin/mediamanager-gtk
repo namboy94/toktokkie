@@ -23,12 +23,14 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import sys
+
 from media_manager.main import main
 
 if __name__ == '__main__':
 
     try:
-        main()
+        main("gtk")
     except KeyboardInterrupt:
         print("\nThanks for using media-manager!")
         sys.exit(0)
