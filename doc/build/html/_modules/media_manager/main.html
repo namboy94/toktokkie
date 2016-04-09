@@ -64,7 +64,6 @@
 <span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">configparser</span>
@@ -72,38 +71,60 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">startup.Installer</span> <span class="kn">import</span> <span class="n">Installer</span>
-    <span class="kn">from</span> <span class="nn">Globals</span> <span class="kn">import</span> <span class="n">Globals</span>
+    <span class="kn">from</span> <span class="nn">metadata</span> <span class="kn">import</span> <span class="n">Globals</span>
     <span class="kn">from</span> <span class="nn">mainuserinterfaces.MainCli</span> <span class="kn">import</span> <span class="n">MainCli</span>
     <span class="kn">from</span> <span class="nn">mainuserinterfaces.MainArgsParser</span> <span class="kn">import</span> <span class="n">MainArgsParser</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">media_manager.startup.Installer</span> <span class="kn">import</span> <span class="n">Installer</span>
-    <span class="kn">from</span> <span class="nn">media_manager.Globals</span> <span class="kn">import</span> <span class="n">Globals</span>
+    <span class="kn">from</span> <span class="nn">media_manager.metadata</span> <span class="kn">import</span> <span class="n">Globals</span>
     <span class="kn">from</span> <span class="nn">media_manager.mainuserinterfaces.MainCli</span> <span class="kn">import</span> <span class="n">MainCli</span>
     <span class="kn">from</span> <span class="nn">media_manager.mainuserinterfaces.MainArgsParser</span> <span class="kn">import</span> <span class="n">MainArgsParser</span>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../media_manager.main.html#media_manager.main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">ui_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../media_manager.html#media_manager.main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">ui_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Main method that runs the program</span>
-<span class="sd">    :return: void</span>
+<span class="sd">    Main method that runs the program.</span>
+
+<span class="sd">    It can be used without parameters, in which case it will start in interactive</span>
+<span class="sd">    command line mode.</span>
+
+<span class="sd">    Other options include using the --gtk or --tk flags to start either a GTK 3- or</span>
+<span class="sd">    a Tkinter-based graphical user interface. This can also be accomplished by</span>
+<span class="sd">    passing &#39;gtk&#39; or &#39;tk&#39; as the ui_override parameter of the main method.</span>
+
+<span class="sd">    Furthermore, the program can be used as a pure non-interactive application.</span>
+<span class="sd">    The options that are available if used like this can be viewed using the</span>
+<span class="sd">    --help flag.</span>
+
+<span class="sd">    :param ui_override: Can override the program mode programmatically</span>
+<span class="sd">    :return: None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># This checks if the program is already correctly installed in the user&#39;s</span>
+    <span class="c1"># home directory, if this is not the case the program will be installed now.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">Installer</span><span class="p">()</span><span class="o">.</span><span class="n">is_installed</span><span class="p">():</span>
         <span class="n">Installer</span><span class="p">()</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
 
     <span class="n">cli_mode</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">cli_arg_mode</span> <span class="o">=</span> <span class="bp">False</span>
 
-    <span class="c1"># Parse arguments</span>
+    <span class="c1"># Basic parsing of the arguments, which helps establish in which mode the program</span>
+    <span class="c1"># should be started</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;--gtk&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ui_override</span> <span class="o">==</span> <span class="s2">&quot;gtk&quot;</span><span class="p">:</span>
+        <span class="c1"># This will select the GTK GUI as the selected framework</span>
         <span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span> <span class="o">=</span> <span class="n">Globals</span><span class="o">.</span><span class="n">gtk3_gui_template</span>
     <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;--tk&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ui_override</span> <span class="o">==</span> <span class="s2">&quot;tk&quot;</span><span class="p">:</span>
+        <span class="c1"># This will select the Tkinter GUI as the selected framework</span>
         <span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span> <span class="o">=</span> <span class="n">Globals</span><span class="o">.</span><span class="n">tk_gui_template</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># This will be the mode for non-interactive CLI use</span>
         <span class="n">cli_arg_mode</span> <span class="o">=</span> <span class="bp">True</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># If this is selected, the program will start in interactive CLI use</span>
         <span class="n">cli_mode</span> <span class="o">=</span> <span class="bp">True</span>
 
+    <span class="c1"># This import has to happen at this point, since the graphical frameworks from</span>
+    <span class="c1"># gfworks have not been defined correctly in the Globals class before this.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">plugins.PluginManager</span> <span class="kn">import</span> <span class="n">PluginManager</span>
         <span class="kn">from</span> <span class="nn">mainuserinterfaces.MainGUI</span> <span class="kn">import</span> <span class="n">MainGUI</span>
@@ -111,13 +132,14 @@
         <span class="kn">from</span> <span class="nn">media_manager.plugins.PluginManager</span> <span class="kn">import</span> <span class="n">PluginManager</span>
         <span class="kn">from</span> <span class="nn">media_manager.mainuserinterfaces.MainGUI</span> <span class="kn">import</span> <span class="n">MainGUI</span>
 
-    <span class="c1"># ConfigParsing</span>
+    <span class="c1"># This parses the config file located in the user&#39;s home directory to establish</span>
+    <span class="c1"># which plugins should be run.</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
     <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s2">&quot;.mediamanager&quot;</span><span class="p">,</span> <span class="s2">&quot;configs&quot;</span><span class="p">,</span> <span class="s2">&quot;mainconfig&quot;</span><span class="p">))</span>
     <span class="n">plugin_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s2">&quot;plugins&quot;</span><span class="p">))</span>
     <span class="n">active_plugins</span> <span class="o">=</span> <span class="n">PluginManager</span><span class="p">(</span><span class="n">plugin_config</span><span class="p">)</span><span class="o">.</span><span class="n">get_plugins</span><span class="p">()</span>
 
-    <span class="c1"># Start the program</span>
+    <span class="c1"># The program starts here, using the selected mode</span>
     <span class="k">if</span> <span class="n">cli_mode</span><span class="p">:</span>
         <span class="n">MainCli</span><span class="p">(</span><span class="n">active_plugins</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">cli_arg_mode</span><span class="p">:</span>
@@ -126,7 +148,9 @@
         <span class="n">gui</span> <span class="o">=</span> <span class="n">MainGUI</span><span class="p">(</span><span class="n">active_plugins</span><span class="p">)</span>
         <span class="n">gui</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
+<span class="c1"># This executes the main method</span>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Keyboard Interrupts are caught and display a farewell message when they occur.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">main</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>

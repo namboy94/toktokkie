@@ -28,12 +28,12 @@ try:
     from plugins.common.GenericPlugin import GenericPlugin
     from plugins.showmanager.userinterfaces.ShowManagerGUI import ShowManagerGui
     from plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
-    from Globals import Globals
+    from metadata import Globals
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.showmanager.userinterfaces.ShowManagerGui import ShowManagerGui
     from media_manager.plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
-    from media_manager.Globals import Globals
+    from media_manager.metadata import Globals
 
 
 class ShowManagerPlugin(GenericPlugin):

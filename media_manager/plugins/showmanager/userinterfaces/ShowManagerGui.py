@@ -25,9 +25,9 @@ LICENSE
 """
 
 try:
-    from Globals import Globals
+    from metadata import Globals
 except ImportError:
-    from media_manager.Globals import Globals
+    from media_manager.metadata import Globals
 
 
 class ShowManagerGui(Globals.selected_grid_gui_framework):

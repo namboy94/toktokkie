@@ -30,11 +30,34 @@ from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
 
 class Globals(object):
     """
-    A class storing various global imports and/or variables
+    A class that stores the currently selected GUI framework to enable cross-platform use using
+    gfworks. Future plans of gfworks may be able to make this admittedly ugly construct
+    obsolete, but as of right now it is required
     """
 
-    selected_grid_gui_framework = Gtk3GridTemplate
-    gtk3_gui_template = Gtk3GridTemplate
-    tk_gui_template = TkGridTemplate
+    selected_grid_gui_framework = None
+    """
+    This stores the selected GUI framework, it is initialized as None and will be initialized
+    at some point in the main module's main method as either Gtk3GridTemplate or TkGridTemplate
+    """
 
-    version_no = "0.9.1.2"
+    gtk3_gui_template = Gtk3GridTemplate
+    """
+    A constant variable that stores the GTK 3 Grid Template class type
+    """
+
+    tk_gui_template = TkGridTemplate
+    """
+    A constant variable that stores the Tk Grid Template class type
+    """
+
+
+"""
+The metadata is stored here. It can be used by any other module in this project this way, most
+notably by the setup.py file
+"""
+
+version_number = "0.9.1.2"
+"""
+The current version of the program.
+"""

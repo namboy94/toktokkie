@@ -68,11 +68,11 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">cli.GenericCli</span> <span class="kn">import</span> <span class="n">GenericCli</span>
     <span class="kn">from</span> <span class="nn">cli.exceptions.ReturnException</span> <span class="kn">import</span> <span class="n">ReturnException</span>
-    <span class="kn">from</span> <span class="nn">Globals</span> <span class="kn">import</span> <span class="n">Globals</span>
+    <span class="kn">import</span> <span class="nn">metadata</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">media_manager.cli.GenericCli</span> <span class="kn">import</span> <span class="n">GenericCli</span>
     <span class="kn">from</span> <span class="nn">media_manager.cli.exceptions.ReturnException</span> <span class="kn">import</span> <span class="n">ReturnException</span>
-    <span class="kn">from</span> <span class="nn">media_manager.Globals</span> <span class="kn">import</span> <span class="n">Globals</span>
+    <span class="kn">import</span> <span class="nn">media_manager.metadata</span> <span class="kn">as</span> <span class="nn">metadata</span>
 
 
 <div class="viewcode-block" id="MainCli"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.MainCli.html#media_manager.mainuserinterfaces.MainCli.MainCli">[docs]</a><span class="k">class</span> <span class="nc">MainCli</span><span class="p">(</span><span class="n">GenericCli</span><span class="p">):</span>
@@ -94,7 +94,7 @@
 <span class="sd">        Starts the CLI</span>
 <span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;MEDIA MANAGER VERSION &quot;</span> <span class="o">+</span> <span class="n">Globals</span><span class="o">.</span><span class="n">version_no</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Available Plugins:&quot;</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;MEDIA MANAGER VERSION &quot;</span> <span class="o">+</span> <span class="n">metadata</span><span class="o">.</span><span class="n">version_number</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Available Plugins:&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MainCli.mainloop"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.MainCli.html#media_manager.mainuserinterfaces.MainCli.MainCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

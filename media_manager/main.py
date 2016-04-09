@@ -24,7 +24,6 @@ This file is part of media-manager.
 LICENSE
 """
 
-
 import os
 import sys
 import configparser
@@ -32,38 +31,60 @@ from os.path import expanduser
 
 try:
     from startup.Installer import Installer
-    from Globals import Globals
+    from metadata import Globals
     from mainuserinterfaces.MainCli import MainCli
     from mainuserinterfaces.MainArgsParser import MainArgsParser
 except ImportError:
     from media_manager.startup.Installer import Installer
-    from media_manager.Globals import Globals
+    from media_manager.metadata import Globals
     from media_manager.mainuserinterfaces.MainCli import MainCli
     from media_manager.mainuserinterfaces.MainArgsParser import MainArgsParser
 
 
 def main(ui_override: str = "") -> None:
     """
-    Main method that runs the program
-    :return: void
+    Main method that runs the program.
+
+    It can be used without parameters, in which case it will start in interactive
+    command line mode.
+
+    Other options include using the --gtk or --tk flags to start either a GTK 3- or
+    a Tkinter-based graphical user interface. This can also be accomplished by
+    passing 'gtk' or 'tk' as the ui_override parameter of the main method.
+
+    Furthermore, the program can be used as a pure non-interactive application.
+    The options that are available if used like this can be viewed using the
+    --help flag.
+
+    :param ui_override: Can override the program mode programmatically
+    :return: None
     """
 
+    # This checks if the program is already correctly installed in the user's
+    # home directory, if this is not the case the program will be installed now.
     if not Installer().is_installed():
         Installer().install()
 
     cli_mode = False
     cli_arg_mode = False
 
-    # Parse arguments
+    # Basic parsing of the arguments, which helps establish in which mode the program
+    # should be started
     if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
+        # This will select the GTK GUI as the selected framework
         Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
     elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk":
+        # This will select the Tkinter GUI as the selected framework
         Globals.selected_grid_gui_framework = Globals.tk_gui_template
     elif len(sys.argv) > 1:
+        # This will be the mode for non-interactive CLI use
         cli_arg_mode = True
     else:
+        # If this is selected, the program will start in interactive CLI use
         cli_mode = True
 
+    # This import has to happen at this point, since the graphical frameworks from
+    # gfworks have not been defined correctly in the Globals class before this.
     try:
         from plugins.PluginManager import PluginManager
         from mainuserinterfaces.MainGUI import MainGUI
@@ -71,13 +92,14 @@ def main(ui_override: str = "") -> None:
         from media_manager.plugins.PluginManager import PluginManager
         from media_manager.mainuserinterfaces.MainGUI import MainGUI
 
-    # ConfigParsing
+    # This parses the config file located in the user's home directory to establish
+    # which plugins should be run.
     config = configparser.ConfigParser()
     config.read(os.path.join(expanduser('~'), ".mediamanager", "configs", "mainconfig"))
     plugin_config = dict(config.items("plugins"))
     active_plugins = PluginManager(plugin_config).get_plugins()
 
-    # Start the program
+    # The program starts here, using the selected mode
     if cli_mode:
         MainCli(active_plugins).start()
     elif cli_arg_mode:
@@ -86,7 +108,9 @@ def main(ui_override: str = "") -> None:
         gui = MainGUI(active_plugins)
         gui.start()
 
+# This executes the main method
 if __name__ == '__main__':
+    # Keyboard Interrupts are caught and display a farewell message when they occur.
     try:
         main()
     except KeyboardInterrupt:

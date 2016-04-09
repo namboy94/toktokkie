@@ -28,11 +28,11 @@ LICENSE
 try:
     from cli.GenericCli import GenericCli
     from cli.exceptions.ReturnException import ReturnException
-    from Globals import Globals
+    import metadata
 except ImportError:
     from media_manager.cli.GenericCli import GenericCli
     from media_manager.cli.exceptions.ReturnException import ReturnException
-    from media_manager.Globals import Globals
+    import media_manager.metadata as metadata
 
 
 class MainCli(GenericCli):
@@ -54,7 +54,7 @@ class MainCli(GenericCli):
         Starts the CLI
         :return: void
         """
-        super().start("MEDIA MANAGER VERSION " + Globals.version_no + "\n\n" + "Available Plugins:")
+        super().start("MEDIA MANAGER VERSION " + metadata.version_number + "\n\n" + "Available Plugins:")
 
     def mainloop(self):
         """

@@ -27,10 +27,10 @@ LICENSE
 import os
 
 try:
-    from Globals import Globals
+    from metadata import Globals
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
 except ImportError:
-    from media_manager.Globals import Globals
+    from media_manager.metadata import Globals
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
 

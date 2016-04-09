@@ -31,12 +31,12 @@ try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
-    from Globals import Globals
+    from metadata import Globals
 except ImportError:
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
-    from media_manager.Globals import Globals
+    from media_manager.metadata import Globals
 
 
 class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):

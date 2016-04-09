@@ -15,18 +15,18 @@ Subpackages
 Submodules
 ----------
 
-media_manager.Globals module
-----------------------------
-
-.. automodule:: media_manager.Globals
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 media_manager.main module
 -------------------------
 
 .. automodule:: media_manager.main
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+media_manager.metadata module
+-----------------------------
+
+.. automodule:: media_manager.metadata
     :members:
     :undoc-members:
     :show-inheritance:

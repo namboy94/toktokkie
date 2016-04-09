@@ -26,10 +26,10 @@ LICENSE
 
 try:
     from plugins.renamer.utils.Renamer import Renamer
-    from Globals import Globals
+    from metadata import Globals
 except ImportError:
     from media_manager.plugins.renamer.utils.Renamer import Renamer
-    from media_manager.Globals import Globals
+    from media_manager.metadata import Globals
 
 
 class RenamerGUI(Globals.selected_grid_gui_framework):

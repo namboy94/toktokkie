@@ -26,9 +26,11 @@ LICENSE
 
 # imports
 try:
-    from Globals import Globals
+    import metadata
+    from metadata import Globals
 except ImportError:
-    from media_manager.Globals import Globals
+    import media_manager.metadata as metadata
+    from media_manager.metadata import Globals
 
 
 class MainGUI(Globals.selected_grid_gui_framework):
@@ -43,7 +45,7 @@ class MainGUI(Globals.selected_grid_gui_framework):
         :return: void
         """
         self.plugins = active_plugins
-        super().__init__("Media Manager Version " + Globals.version_no)
+        super().__init__("Media Manager Version " + metadata.version_number)
 
     def lay_out(self) -> None:
         """
