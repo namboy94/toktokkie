@@ -24,6 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="media-manager 0.9.1.2 documentation" href="index.html" />
+    <link rel="up" title="media_manager.plugins.batchdownloadmanager package" href="media_manager.plugins.batchdownloadmanager.html" />
+    <link rel="next" title="media_manager.plugins.batchdownloadmanager.searchengines package" href="media_manager.plugins.batchdownloadmanager.searchengines.html" />
+    <link rel="prev" title="media_manager.plugins.batchdownloadmanager package" href="media_manager.plugins.batchdownloadmanager.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -36,14 +39,66 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-media_manager.plugins.batchdownloadmanager.downloaders">
-<span id="media-manager-plugins-batchdownloadmanager-downloaders-package"></span><h1>media_manager.plugins.batchdownloadmanager.downloaders package<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.downloaders" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="media-manager-plugins-batchdownloadmanager-downloaders-package">
+<h1>media_manager.plugins.batchdownloadmanager.downloaders package<a class="headerlink" href="#media-manager-plugins-batchdownloadmanager-downloaders-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
 </div>
+<div class="section" id="module-media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader">
+<span id="media-manager-plugins-batchdownloadmanager-downloaders-hexchatplugindownloader-module"></span><h2>media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.</code><code class="descname">HexChatPluginDownloader</code><span class="sig-paren">(</span><em>packs</em>, <em>progress_struct</em>, <em>show_name=''</em>, <em>episode_number=0</em>, <em>season_number=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/HexChatPluginDownloader.html#HexChatPluginDownloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>XDCC Downloader that makes use of Hexchat&#8217;s python scripting interface</p>
+<dl class="method">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_loop">
+<code class="descname">download_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/HexChatPluginDownloader.html#HexChatPluginDownloader.download_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the download loop
+:return a list of file paths leading to the downloaded files</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_single">
+<code class="descname">download_single</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/HexChatPluginDownloader.html#HexChatPluginDownloader.download_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_single" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.update_progress">
+<code class="descname">update_progress</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/HexChatPluginDownloader.html#HexChatPluginDownloader.update_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.update_progress" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader">
+<span id="media-manager-plugins-batchdownloadmanager-downloaders-twisteddownloader-module"></span><h2>media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.</code><code class="descname">TwistedDownloader</code><span class="sig-paren">(</span><em>packs</em>, <em>progress_struct</em>, <em>show_name=''</em>, <em>episode_number=0</em>, <em>season_number=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/TwistedDownloader.html#TwistedDownloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Wrapper for Gregory Eric Sanderson Turcot Temlett MacDonnell Forbes&#8217;s XDCC Downloader
+The plan is to replace his script with one of my own once twisted supports python 3.</p>
+<dl class="method">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/TwistedDownloader.html#TwistedDownloader.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a single pack
+:param pack: the pack to download
+:return void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader.download_loop">
+<code class="descname">download_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/downloaders/TwistedDownloader.html#TwistedDownloader.download_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader.TwistedDownloader.download_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the Download loop
+:return void</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.batchdownloadmanager.downloaders">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.downloaders" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -57,6 +112,9 @@
   <ul>
 <li><a class="reference internal" href="#">media_manager.plugins.batchdownloadmanager.downloaders package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader">media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader">media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.downloaders">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -64,6 +122,14 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="media_manager.html">media_manager package</a><ul>
+  <li><a href="media_manager.plugins.html">media_manager.plugins package</a><ul>
+  <li><a href="media_manager.plugins.batchdownloadmanager.html">media_manager.plugins.batchdownloadmanager package</a><ul>
+      <li>Previous: <a href="media_manager.plugins.batchdownloadmanager.html" title="previous chapter">media_manager.plugins.batchdownloadmanager package</a></li>
+      <li>Next: <a href="media_manager.plugins.batchdownloadmanager.searchengines.html" title="next chapter">media_manager.plugins.batchdownloadmanager.searchengines package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>

@@ -24,6 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="media-manager 0.9.1.2 documentation" href="index.html" />
+    <link rel="up" title="media_manager.plugins.renamer package" href="media_manager.plugins.renamer.html" />
+    <link rel="next" title="media_manager.plugins.renamer.utils package" href="media_manager.plugins.renamer.utils.html" />
+    <link rel="prev" title="media_manager.plugins.renamer.objects package" href="media_manager.plugins.renamer.objects.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -36,14 +39,86 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-media_manager.plugins.renamer.userinterfaces">
-<span id="media-manager-plugins-renamer-userinterfaces-package"></span><h1>media_manager.plugins.renamer.userinterfaces package<a class="headerlink" href="#module-media_manager.plugins.renamer.userinterfaces" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="media-manager-plugins-renamer-userinterfaces-package">
+<h1>media_manager.plugins.renamer.userinterfaces package<a class="headerlink" href="#media-manager-plugins-renamer-userinterfaces-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
 </div>
+<div class="section" id="module-media_manager.plugins.renamer.userinterfaces.RenamerCli">
+<span id="media-manager-plugins-renamer-userinterfaces-renamercli-module"></span><h2>media_manager.plugins.renamer.userinterfaces.RenamerCli module<a class="headerlink" href="#module-media_manager.plugins.renamer.userinterfaces.RenamerCli" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.renamer.userinterfaces.RenamerCli.</code><code class="descname">RenamerCli</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerCli.html#RenamerCli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="media_manager.cli.GenericCli.html#media_manager.cli.GenericCli.GenericCli" title="media_manager.cli.GenericCli.GenericCli"><code class="xref py py-class docutils literal"><span class="pre">media_manager.cli.GenericCli.GenericCli</span></code></a></p>
+<p>CLI for the Renamer plugin</p>
+<dl class="staticmethod">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli.confirmer">
+<em class="property">static </em><code class="descname">confirmer</code><span class="sig-paren">(</span><em>confirmation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerCli.html#RenamerCli.confirmer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli.confirmer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks the user for confirmation before continuing the rename
+:param confirmation: the confirmation
+:return: False if the user did not confirm the rename, True otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli.mainloop">
+<code class="descname">mainloop</code><span class="sig-paren">(</span><em>directory=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerCli.html#RenamerCli.mainloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli.mainloop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the renaming process
+:return: void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli.start">
+<code class="descname">start</code><span class="sig-paren">(</span><em>title=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerCli.html#RenamerCli.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerCli.RenamerCli.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the plugin main loop
+:return: void</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.renamer.userinterfaces.RenamerGUI">
+<span id="media-manager-plugins-renamer-userinterfaces-renamergui-module"></span><h2>media_manager.plugins.renamer.userinterfaces.RenamerGUI module<a class="headerlink" href="#module-media_manager.plugins.renamer.userinterfaces.RenamerGUI" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.renamer.userinterfaces.RenamerGUI.</code><code class="descname">RenamerGUI</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerGUI.html#RenamerGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">gfworks.templates.gtk3.Gtk3GridTemplate.Gtk3GridTemplate</span></code></p>
+<p>GUI for the Renamer plugin</p>
+<dl class="method">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.browse_directory">
+<code class="descname">browse_directory</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerGUI.html#RenamerGUI.browse_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.browse_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows a directory chooser dialog and sets the entry to the result of the browse
+:param widget: the button that called this method
+:return: void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.confirmer">
+<code class="descname">confirmer</code><span class="sig-paren">(</span><em>confirmation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerGUI.html#RenamerGUI.confirmer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.confirmer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks the user for confirmation before continuing the rename
+:param confirmation: the confirmation
+:return: False if the user did not confirm the rename, True otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.lay_out">
+<code class="descname">lay_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerGUI.html#RenamerGUI.lay_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.lay_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up all interface elements of the GUI
+:return: void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.start_rename">
+<code class="descname">start_rename</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/userinterfaces/RenamerGUI.html#RenamerGUI.start_rename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.userinterfaces.RenamerGUI.RenamerGUI.start_rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the renaming process
+:param widget: the button that started this method
+:return: void</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.renamer.userinterfaces">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.renamer.userinterfaces" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -57,6 +132,9 @@
   <ul>
 <li><a class="reference internal" href="#">media_manager.plugins.renamer.userinterfaces package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.renamer.userinterfaces.RenamerCli">media_manager.plugins.renamer.userinterfaces.RenamerCli module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.renamer.userinterfaces.RenamerGUI">media_manager.plugins.renamer.userinterfaces.RenamerGUI module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.renamer.userinterfaces">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -64,6 +142,14 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="media_manager.html">media_manager package</a><ul>
+  <li><a href="media_manager.plugins.html">media_manager.plugins package</a><ul>
+  <li><a href="media_manager.plugins.renamer.html">media_manager.plugins.renamer package</a><ul>
+      <li>Previous: <a href="media_manager.plugins.renamer.objects.html" title="previous chapter">media_manager.plugins.renamer.objects package</a></li>
+      <li>Next: <a href="media_manager.plugins.renamer.utils.html" title="next chapter">media_manager.plugins.renamer.utils package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>

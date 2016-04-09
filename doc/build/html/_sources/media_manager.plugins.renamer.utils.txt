@@ -1,15 +1,22 @@
 media_manager.plugins.renamer.utils package
 ===========================================
 
-.. automodule:: media_manager.plugins.renamer.utils
+Submodules
+----------
+
+media_manager.plugins.renamer.utils.Renamer module
+--------------------------------------------------
+
+.. automodule:: media_manager.plugins.renamer.utils.Renamer
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
 
-.. toctree::
+Module contents
+---------------
 
-   media_manager.plugins.renamer.utils.Renamer
-
+.. automodule:: media_manager.plugins.renamer.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

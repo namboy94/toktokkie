@@ -24,6 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="media-manager 0.9.1.2 documentation" href="index.html" />
+    <link rel="up" title="media_manager.plugins package" href="media_manager.plugins.html" />
+    <link rel="next" title="media_manager.plugins.showmanager.userinterfaces package" href="media_manager.plugins.showmanager.userinterfaces.html" />
+    <link rel="prev" title="media_manager.plugins.renamer.utils package" href="media_manager.plugins.renamer.utils.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -36,16 +39,17 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-media_manager.plugins.showmanager">
-<span id="media-manager-plugins-showmanager-package"></span><h1>media_manager.plugins.showmanager package<a class="headerlink" href="#module-media_manager.plugins.showmanager" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="media-manager-plugins-showmanager-package">
+<h1>media_manager.plugins.showmanager package<a class="headerlink" href="#media-manager-plugins-showmanager-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="media_manager.plugins.showmanager.userinterfaces.html">media_manager.plugins.showmanager.userinterfaces package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.showmanager.userinterfaces.html#submodules">Submodules</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.showmanager.userinterfaces.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.showmanager.userinterfaces.html#module-media_manager.plugins.showmanager.userinterfaces.ShowManagerCli">media_manager.plugins.showmanager.userinterfaces.ShowManagerCli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.showmanager.userinterfaces.html#module-media_manager.plugins.showmanager.userinterfaces.ShowManagerGui">media_manager.plugins.showmanager.userinterfaces.ShowManagerGui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.showmanager.userinterfaces.html#module-media_manager.plugins.showmanager.userinterfaces">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -53,10 +57,94 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
 </div>
+<div class="section" id="module-media_manager.plugins.showmanager.ShowManagerPlugin">
+<span id="media-manager-plugins-showmanager-showmanagerplugin-module"></span><h2>media_manager.plugins.showmanager.ShowManagerPlugin module<a class="headerlink" href="#module-media_manager.plugins.showmanager.ShowManagerPlugin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.showmanager.ShowManagerPlugin.</code><code class="descname">ShowManagerPlugin</code><a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin" title="media_manager.plugins.common.GenericPlugin.GenericPlugin"><code class="xref py py-class docutils literal"><span class="pre">media_manager.plugins.common.GenericPlugin.GenericPlugin</span></code></a></p>
+<p>Class that handles the calls to the Show Manager</p>
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_command_name">
+<code class="descname">get_command_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; str<a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.get_command_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_command_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">&#8220;batch download&#8221;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_config_tag">
+<code class="descname">get_config_tag</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; str<a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.get_config_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_config_tag" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">&#8220;batch-download&#8221;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; str<a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">&#8220;Batch Download Manager&#8221;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_parser_arguments">
+<code class="descname">get_parser_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.get_parser_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.get_parser_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple of two list of dictionaries, consisting of argument tags and descriptions.
+the first tuple element contains boolean values, the others store string values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.start_args_parse">
+<code class="descname">start_args_parse</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.start_args_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.start_args_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the plugin in arg parse mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.start_cli">
+<code class="descname">start_cli</code><span class="sig-paren">(</span><em>parent_cli</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.start_cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.start_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the CLI of the plugin
+:param parent_cli: the parent cli
+:return: void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.start_gui">
+<code class="descname">start_gui</code><span class="sig-paren">(</span><em>parent_gui: gfworks.templates.gtk3.Gtk3GridTemplate.Gtk3GridTemplate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/showmanager/ShowManagerPlugin.html#ShowManagerPlugin.start_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.showmanager.ShowManagerPlugin.ShowManagerPlugin.start_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the GUI, while hiding the parent until finished
+:param parent_gui: the parent gui window
+:return: void</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.showmanager">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.showmanager" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -71,6 +159,8 @@
 <li><a class="reference internal" href="#">media_manager.plugins.showmanager package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.showmanager.ShowManagerPlugin">media_manager.plugins.showmanager.ShowManagerPlugin module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.showmanager">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -78,6 +168,12 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="media_manager.html">media_manager package</a><ul>
+  <li><a href="media_manager.plugins.html">media_manager.plugins package</a><ul>
+      <li>Previous: <a href="media_manager.plugins.renamer.utils.html" title="previous chapter">media_manager.plugins.renamer.utils package</a></li>
+      <li>Next: <a href="media_manager.plugins.showmanager.userinterfaces.html" title="next chapter">media_manager.plugins.showmanager.userinterfaces package</a></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>

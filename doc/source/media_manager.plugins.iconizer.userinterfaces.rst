@@ -1,16 +1,30 @@
 media_manager.plugins.iconizer.userinterfaces package
 =====================================================
 
-.. automodule:: media_manager.plugins.iconizer.userinterfaces
+Submodules
+----------
+
+media_manager.plugins.iconizer.userinterfaces.IconizerCli module
+----------------------------------------------------------------
+
+.. automodule:: media_manager.plugins.iconizer.userinterfaces.IconizerCli
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
+media_manager.plugins.iconizer.userinterfaces.IconizerGUI module
+----------------------------------------------------------------
 
-.. toctree::
+.. automodule:: media_manager.plugins.iconizer.userinterfaces.IconizerGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-   media_manager.plugins.iconizer.userinterfaces.IconizerCli
-   media_manager.plugins.iconizer.userinterfaces.IconizerGUI
 
+Module contents
+---------------
+
+.. automodule:: media_manager.plugins.iconizer.userinterfaces
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,17 +1,38 @@
 media_manager.mainuserinterfaces package
 ========================================
 
-.. automodule:: media_manager.mainuserinterfaces
+Submodules
+----------
+
+media_manager.mainuserinterfaces.MainArgsParser module
+------------------------------------------------------
+
+.. automodule:: media_manager.mainuserinterfaces.MainArgsParser
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
+media_manager.mainuserinterfaces.MainCli module
+-----------------------------------------------
 
-.. toctree::
+.. automodule:: media_manager.mainuserinterfaces.MainCli
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-   media_manager.mainuserinterfaces.MainArgsParser
-   media_manager.mainuserinterfaces.MainCli
-   media_manager.mainuserinterfaces.MainGUI
+media_manager.mainuserinterfaces.MainGUI module
+-----------------------------------------------
 
+.. automodule:: media_manager.mainuserinterfaces.MainGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: media_manager.mainuserinterfaces
+    :members:
+    :undoc-members:
+    :show-inheritance:

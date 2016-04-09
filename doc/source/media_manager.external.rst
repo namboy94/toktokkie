@@ -1,15 +1,22 @@
 media_manager.external package
 ==============================
 
-.. automodule:: media_manager.external
+Submodules
+----------
+
+media_manager.external.xdccbot module
+-------------------------------------
+
+.. automodule:: media_manager.external.xdccbot
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
 
-.. toctree::
+Module contents
+---------------
 
-   media_manager.external.xdccbot
-
+.. automodule:: media_manager.external
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,16 +1,30 @@
 media_manager.plugins.batchdownloadmanager.userinterfaces package
 =================================================================
 
-.. automodule:: media_manager.plugins.batchdownloadmanager.userinterfaces
+Submodules
+----------
+
+media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli module
+----------------------------------------------------------------------------------------
+
+.. automodule:: media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
+media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI module
+----------------------------------------------------------------------------------------
 
-.. toctree::
+.. automodule:: media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-   media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli
-   media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI
 
+Module contents
+---------------
+
+.. automodule:: media_manager.plugins.batchdownloadmanager.userinterfaces
+    :members:
+    :undoc-members:
+    :show-inheritance:

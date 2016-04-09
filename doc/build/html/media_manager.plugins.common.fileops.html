@@ -24,6 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="media-manager 0.9.1.2 documentation" href="index.html" />
+    <link rel="up" title="media_manager.plugins.common package" href="media_manager.plugins.common.html" />
+    <link rel="next" title="media_manager.plugins.common.onlinedatagetters package" href="media_manager.plugins.common.onlinedatagetters.html" />
+    <link rel="prev" title="media_manager.plugins.common.calc package" href="media_manager.plugins.common.calc.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -36,14 +39,50 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-media_manager.plugins.common.fileops">
-<span id="media-manager-plugins-common-fileops-package"></span><h1>media_manager.plugins.common.fileops package<a class="headerlink" href="#module-media_manager.plugins.common.fileops" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="media-manager-plugins-common-fileops-package">
+<h1>media_manager.plugins.common.fileops package<a class="headerlink" href="#media-manager-plugins-common-fileops-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
 </div>
+<div class="section" id="module-media_manager.plugins.common.fileops.FileMover">
+<span id="media-manager-plugins-common-fileops-filemover-module"></span><h2>media_manager.plugins.common.fileops.FileMover module<a class="headerlink" href="#module-media_manager.plugins.common.fileops.FileMover" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.common.fileops.FileMover.FileMover">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.common.fileops.FileMover.</code><code class="descname">FileMover</code><a class="reference internal" href="_modules/media_manager/plugins/common/fileops/FileMover.html#FileMover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.common.fileops.FileMover.FileMover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Class that contains static methods to help move files</p>
+<dl class="staticmethod">
+<dt id="media_manager.plugins.common.fileops.FileMover.FileMover.move_file">
+<em class="property">static </em><code class="descname">move_file</code><span class="sig-paren">(</span><em>file</em>, <em>location</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/common/fileops/FileMover.html#FileMover.move_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.common.fileops.FileMover.FileMover.move_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves a file to a new location.
+:param location: the new location of the file
+:param file: the file to be moved
+:return: void</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.common.fileops.FileRenamer">
+<span id="media-manager-plugins-common-fileops-filerenamer-module"></span><h2>media_manager.plugins.common.fileops.FileRenamer module<a class="headerlink" href="#module-media_manager.plugins.common.fileops.FileRenamer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.common.fileops.FileRenamer.FileRenamer">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.common.fileops.FileRenamer.</code><code class="descname">FileRenamer</code><a class="reference internal" href="_modules/media_manager/plugins/common/fileops/FileRenamer.html#FileRenamer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.common.fileops.FileRenamer.FileRenamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Class that contains static methods to help rename files</p>
+<dl class="staticmethod">
+<dt id="media_manager.plugins.common.fileops.FileRenamer.FileRenamer.rename_file">
+<em class="property">static </em><code class="descname">rename_file</code><span class="sig-paren">(</span><em>file</em>, <em>new_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/common/fileops/FileRenamer.html#FileRenamer.rename_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.common.fileops.FileRenamer.FileRenamer.rename_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renames a file to a new file name, keeping the extension and file path.
+:param file: the file to be renamed
+:param new_name: the new name of the file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.common.fileops">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.common.fileops" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -57,6 +96,9 @@
   <ul>
 <li><a class="reference internal" href="#">media_manager.plugins.common.fileops package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.common.fileops.FileMover">media_manager.plugins.common.fileops.FileMover module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.common.fileops.FileRenamer">media_manager.plugins.common.fileops.FileRenamer module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.common.fileops">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -64,6 +106,14 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="media_manager.html">media_manager package</a><ul>
+  <li><a href="media_manager.plugins.html">media_manager.plugins package</a><ul>
+  <li><a href="media_manager.plugins.common.html">media_manager.plugins.common package</a><ul>
+      <li>Previous: <a href="media_manager.plugins.common.calc.html" title="previous chapter">media_manager.plugins.common.calc package</a></li>
+      <li>Next: <a href="media_manager.plugins.common.onlinedatagetters.html" title="next chapter">media_manager.plugins.common.onlinedatagetters package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>

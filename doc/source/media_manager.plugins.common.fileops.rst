@@ -1,16 +1,30 @@
 media_manager.plugins.common.fileops package
 ============================================
 
-.. automodule:: media_manager.plugins.common.fileops
+Submodules
+----------
+
+media_manager.plugins.common.fileops.FileMover module
+-----------------------------------------------------
+
+.. automodule:: media_manager.plugins.common.fileops.FileMover
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
+media_manager.plugins.common.fileops.FileRenamer module
+-------------------------------------------------------
 
-.. toctree::
+.. automodule:: media_manager.plugins.common.fileops.FileRenamer
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-   media_manager.plugins.common.fileops.FileMover
-   media_manager.plugins.common.fileops.FileRenamer
 
+Module contents
+---------------
+
+.. automodule:: media_manager.plugins.common.fileops
+    :members:
+    :undoc-members:
+    :show-inheritance:

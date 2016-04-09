@@ -1,11 +1,6 @@
 media_manager.plugins.batchdownloadmanager package
 ==================================================
 
-.. automodule:: media_manager.plugins.batchdownloadmanager
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -19,7 +14,19 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
+media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin module
+----------------------------------------------------------------------------
 
-   media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin
+.. automodule:: media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: media_manager.plugins.batchdownloadmanager
+    :members:
+    :undoc-members:
+    :show-inheritance:

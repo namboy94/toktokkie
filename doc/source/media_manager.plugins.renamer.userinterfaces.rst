@@ -1,16 +1,30 @@
 media_manager.plugins.renamer.userinterfaces package
 ====================================================
 
-.. automodule:: media_manager.plugins.renamer.userinterfaces
+Submodules
+----------
+
+media_manager.plugins.renamer.userinterfaces.RenamerCli module
+--------------------------------------------------------------
+
+.. automodule:: media_manager.plugins.renamer.userinterfaces.RenamerCli
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
+media_manager.plugins.renamer.userinterfaces.RenamerGUI module
+--------------------------------------------------------------
 
-.. toctree::
+.. automodule:: media_manager.plugins.renamer.userinterfaces.RenamerGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-   media_manager.plugins.renamer.userinterfaces.RenamerCli
-   media_manager.plugins.renamer.userinterfaces.RenamerGUI
 
+Module contents
+---------------
+
+.. automodule:: media_manager.plugins.renamer.userinterfaces
+    :members:
+    :undoc-members:
+    :show-inheritance:

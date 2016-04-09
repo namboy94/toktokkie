@@ -1,11 +1,6 @@
 media_manager.plugins package
 =============================
 
-.. automodule:: media_manager.plugins
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -20,7 +15,19 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
+media_manager.plugins.PluginManager module
+------------------------------------------
 
-   media_manager.plugins.PluginManager
+.. automodule:: media_manager.plugins.PluginManager
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: media_manager.plugins
+    :members:
+    :undoc-members:
+    :show-inheritance:

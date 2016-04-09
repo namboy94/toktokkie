@@ -1,15 +1,22 @@
 media_manager.plugins.renamer.objects package
 =============================================
 
-.. automodule:: media_manager.plugins.renamer.objects
+Submodules
+----------
+
+media_manager.plugins.renamer.objects.Episode module
+----------------------------------------------------
+
+.. automodule:: media_manager.plugins.renamer.objects.Episode
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
 
-.. toctree::
+Module contents
+---------------
 
-   media_manager.plugins.renamer.objects.Episode
-
+.. automodule:: media_manager.plugins.renamer.objects
+    :members:
+    :undoc-members:
+    :show-inheritance:

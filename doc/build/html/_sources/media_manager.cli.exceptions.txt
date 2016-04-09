@@ -1,15 +1,22 @@
 media_manager.cli.exceptions package
 ====================================
 
-.. automodule:: media_manager.cli.exceptions
+Submodules
+----------
+
+media_manager.cli.exceptions.ReturnException module
+---------------------------------------------------
+
+.. automodule:: media_manager.cli.exceptions.ReturnException
     :members:
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
 
-.. toctree::
+Module contents
+---------------
 
-   media_manager.cli.exceptions.ReturnException
-
+.. automodule:: media_manager.cli.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:

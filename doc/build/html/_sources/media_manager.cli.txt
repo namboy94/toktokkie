@@ -1,11 +1,6 @@
 media_manager.cli package
 =========================
 
-.. automodule:: media_manager.cli
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -16,7 +11,19 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
+media_manager.cli.GenericCli module
+-----------------------------------
 
-   media_manager.cli.GenericCli
+.. automodule:: media_manager.cli.GenericCli
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: media_manager.cli
+    :members:
+    :undoc-members:
+    :show-inheritance:

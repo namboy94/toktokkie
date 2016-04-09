@@ -24,6 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="media-manager 0.9.1.2 documentation" href="index.html" />
+    <link rel="up" title="media_manager.plugins.renamer package" href="media_manager.plugins.renamer.html" />
+    <link rel="next" title="media_manager.plugins.showmanager package" href="media_manager.plugins.showmanager.html" />
+    <link rel="prev" title="media_manager.plugins.renamer.userinterfaces package" href="media_manager.plugins.renamer.userinterfaces.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -36,14 +39,59 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-media_manager.plugins.renamer.utils">
-<span id="media-manager-plugins-renamer-utils-package"></span><h1>media_manager.plugins.renamer.utils package<a class="headerlink" href="#module-media_manager.plugins.renamer.utils" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="media-manager-plugins-renamer-utils-package">
+<h1>media_manager.plugins.renamer.utils package<a class="headerlink" href="#media-manager-plugins-renamer-utils-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
 </div>
+<div class="section" id="module-media_manager.plugins.renamer.utils.Renamer">
+<span id="media-manager-plugins-renamer-utils-renamer-module"></span><h2>media_manager.plugins.renamer.utils.Renamer module<a class="headerlink" href="#module-media_manager.plugins.renamer.utils.Renamer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="media_manager.plugins.renamer.utils.Renamer.Renamer">
+<em class="property">class </em><code class="descclassname">media_manager.plugins.renamer.utils.Renamer.</code><code class="descname">Renamer</code><span class="sig-paren">(</span><em>directory</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/utils/Renamer.html#Renamer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.utils.Renamer.Renamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Class that renames a directory of episodes</p>
+<dl class="method">
+<dt id="media_manager.plugins.renamer.utils.Renamer.Renamer.confirm">
+<code class="descname">confirm</code><span class="sig-paren">(</span><em>confirmation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/utils/Renamer.html#Renamer.confirm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.utils.Renamer.Renamer.confirm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirms the rename process
+:param confirmation: to check the confirmation once more
+:return void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.utils.Renamer.Renamer.format_seasons">
+<code class="descname">format_seasons</code><span class="sig-paren">(</span><em>seasons</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/utils/Renamer.html#Renamer.format_seasons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.utils.Renamer.Renamer.format_seasons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats the seasons
+:param seasons: the seasons to be formatted
+:return: the new seasons</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.utils.Renamer.Renamer.parse_directory">
+<code class="descname">parse_directory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/utils/Renamer.html#Renamer.parse_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.utils.Renamer.Renamer.parse_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the given directory
+:return: void</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.utils.Renamer.Renamer.request_confirmation">
+<code class="descname">request_confirmation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/utils/Renamer.html#Renamer.request_confirmation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.utils.Renamer.Renamer.request_confirmation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request for user confirmation
+:return the confirmation prompt as double list thingy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_manager.plugins.renamer.utils.Renamer.Renamer.start_rename">
+<code class="descname">start_rename</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/renamer/utils/Renamer.html#Renamer.start_rename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.renamer.utils.Renamer.Renamer.start_rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the renaming process</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-media_manager.plugins.renamer.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.renamer.utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -57,6 +105,8 @@
   <ul>
 <li><a class="reference internal" href="#">media_manager.plugins.renamer.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.renamer.utils.Renamer">media_manager.plugins.renamer.utils.Renamer module</a></li>
+<li><a class="reference internal" href="#module-media_manager.plugins.renamer.utils">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -64,6 +114,14 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="media_manager.html">media_manager package</a><ul>
+  <li><a href="media_manager.plugins.html">media_manager.plugins package</a><ul>
+  <li><a href="media_manager.plugins.renamer.html">media_manager.plugins.renamer package</a><ul>
+      <li>Previous: <a href="media_manager.plugins.renamer.userinterfaces.html" title="previous chapter">media_manager.plugins.renamer.userinterfaces package</a></li>
+      <li>Next: <a href="media_manager.plugins.showmanager.html" title="next chapter">media_manager.plugins.showmanager package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>
