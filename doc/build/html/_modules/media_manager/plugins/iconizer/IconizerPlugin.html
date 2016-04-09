@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.iconizer.IconizerPlugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -70,30 +74,30 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.iconizer.userinterfaces.IconizerCli</span> <span class="kn">import</span> <span class="n">IconizerCli</span>
 
 
-<div class="viewcode-block" id="IconizerPlugin"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin">[docs]</a><span class="k">class</span> <span class="nc">IconizerPlugin</span><span class="p">(</span><span class="n">GenericPlugin</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin">[docs]</a><span class="k">class</span> <span class="nc">IconizerPlugin</span><span class="p">(</span><span class="n">GenericPlugin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that handles iconizing of folders</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="IconizerPlugin.get_name"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.get_name"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return &quot;Iconizer&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;Iconizer&quot;</span></div>
 
-<div class="viewcode-block" id="IconizerPlugin.get_config_tag"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_config_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.get_config_tag"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_config_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return &quot;iconizer&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;iconizer&quot;</span></div>
 
-<div class="viewcode-block" id="IconizerPlugin.get_command_name"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_command_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.get_command_name"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_command_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return &quot;iconizer&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;iconizer&quot;</span></div>
 
-<div class="viewcode-block" id="IconizerPlugin.get_parser_arguments"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_parser_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">get_parser_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.get_parser_arguments"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.get_parser_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">get_parser_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.</span>
 <span class="sd">                    the first tuple element contains boolean values, the others store string values</span>
@@ -103,7 +107,7 @@
 
                 <span class="p">[{</span><span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;iconizer-directory&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;The Directory to be iconized by the iconizer&quot;</span><span class="p">}])</span></div>
 
-<div class="viewcode-block" id="IconizerPlugin.start_args_parse"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.start_args_parse">[docs]</a>    <span class="k">def</span> <span class="nf">start_args_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.start_args_parse"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.start_args_parse">[docs]</a>    <span class="k">def</span> <span class="nf">start_args_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the plugin in arg parse mode</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -123,7 +127,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Invalid argument combination passed&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IconizerPlugin.start_cli"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.start_cli">[docs]</a>    <span class="k">def</span> <span class="nf">start_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_cli</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.start_cli"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.start_cli">[docs]</a>    <span class="k">def</span> <span class="nf">start_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_cli</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the CLI of the plugin</span>
 <span class="sd">        :param parent_cli: the parent cli</span>
@@ -131,7 +135,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">IconizerCli</span><span class="p">(</span><span class="n">parent_cli</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="IconizerPlugin.start_gui"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.start_gui">[docs]</a>    <span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_gui</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerPlugin.start_gui"><a class="viewcode-back" href="../../../../media_manager.plugins.iconizer.IconizerPlugin.html#media_manager.plugins.iconizer.IconizerPlugin.IconizerPlugin.start_gui">[docs]</a>    <span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_gui</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the GUI, while hiding the parent until finished</span>
 <span class="sd">        :param parent_gui: the parent window</span>

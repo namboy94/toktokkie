@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.renamer.objects.Episode</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -70,7 +74,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.common.fileops.FileRenamer</span> <span class="kn">import</span> <span class="n">FileRenamer</span>
 
 
-<div class="viewcode-block" id="Episode"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.objects.html#media_manager.plugins.renamer.objects.Episode.Episode">[docs]</a><span class="k">class</span> <span class="nc">Episode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Episode"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.objects.Episode.html#media_manager.plugins.renamer.objects.Episode.Episode">[docs]</a><span class="k">class</span> <span class="nc">Episode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Episode Object, containing important episode info used for renaming and stuff</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -98,7 +102,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__generate_tvdb_name__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__generate_new_name__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Episode.rename"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.objects.html#media_manager.plugins.renamer.objects.Episode.Episode.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Episode.rename"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.objects.Episode.html#media_manager.plugins.renamer.objects.Episode.Episode.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Renames the original file</span>
 <span class="sd">        :return void</span>
@@ -108,7 +112,7 @@
         <span class="k">except</span> <span class="n">FileNotFoundError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">episode_file</span> <span class="o">=</span> <span class="n">FileRenamer</span><span class="o">.</span><span class="n">rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">episode_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_name</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="Episode.print"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.objects.html#media_manager.plugins.renamer.objects.Episode.Episode.print">[docs]</a>    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Episode.print"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.objects.Episode.html#media_manager.plugins.renamer.objects.Episode.Episode.print">[docs]</a>    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prints the episode object</span>
 <span class="sd">        :return void</span>

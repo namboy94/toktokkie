@@ -1,4 +1,6 @@
 """
+LICENSE:
+
 Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
@@ -18,6 +20,8 @@ This file is part of media-manager.
 
     You should have received a copy of the GNU General Public License
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
+
+LICENSE
 """
 
 import argparse

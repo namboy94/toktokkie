@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -71,12 +75,12 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack</span> <span class="kn">import</span> <span class="n">XDCCPack</span>
 
 
-<div class="viewcode-block" id="NIBLGetter"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter">[docs]</a><span class="k">class</span> <span class="nc">NIBLGetter</span><span class="p">(</span><span class="n">GenericGetter</span><span class="p">):</span>
+<div class="viewcode-block" id="NIBLGetter"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter">[docs]</a><span class="k">class</span> <span class="nc">NIBLGetter</span><span class="p">(</span><span class="n">GenericGetter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that gets xdcc packlists from nibl.co.uk</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="NIBLGetter.search"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NIBLGetter.search"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Conducts the search</span>
 <span class="sd">        :return: the search results as a list of XDCCPack objects</span>
@@ -111,7 +115,7 @@
 
         <span class="k">return</span> <span class="n">results</span></div>
     
-<div class="viewcode-block" id="NIBLGetter.get_channel"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+<div class="viewcode-block" id="NIBLGetter.get_channel"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the channel for a given bot</span>
 <span class="sd">        :param bot: the bot</span>
@@ -124,7 +128,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;#intel&quot;</span></div>
     
-<div class="viewcode-block" id="NIBLGetter.get_server"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_server">[docs]</a>    <span class="k">def</span> <span class="nf">get_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+<div class="viewcode-block" id="NIBLGetter.get_server"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_server">[docs]</a>    <span class="k">def</span> <span class="nf">get_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the server for a given bot</span>
 <span class="sd">        :param bot: the bot</span>

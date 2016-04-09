@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -76,7 +80,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.cli.GenericCli</span> <span class="kn">import</span> <span class="n">GenericCli</span>
 
 
-<div class="viewcode-block" id="BatchDownloadManagerCli"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli">[docs]</a><span class="k">class</span> <span class="nc">BatchDownloadManagerCli</span><span class="p">(</span><span class="n">GenericCli</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerCli"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli">[docs]</a><span class="k">class</span> <span class="nc">BatchDownloadManagerCli</span><span class="p">(</span><span class="n">GenericCli</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CLI for the BatchDownloadManager plugin</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -99,20 +103,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_packs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auto_rename</span> <span class="o">=</span> <span class="bp">False</span>
 
-<div class="viewcode-block" id="BatchDownloadManagerCli.start"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerCli.start"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the main program loop</span>
 <span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;BATCH DOWNLOAD MANAGER PLUGIN</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerCli.mainloop"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">show_name_override</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="BatchDownloadManagerCli.mainloop"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">use_defaults</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">show_name_override</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">season_number_override</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">first_episode_override</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">search_engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">search_term</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">auto_rename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The main program loop</span>
 <span class="sd">        :return: void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restore_start_state</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask_user</span><span class="p">(</span><span class="s2">&quot;Enter the target download directory:&quot;</span><span class="p">)</span>
@@ -176,7 +182,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_download</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerCli.search_xdcc"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.search_xdcc">[docs]</a>    <span class="k">def</span> <span class="nf">search_xdcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_engine_override</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">search_term_override</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerCli.search_xdcc"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.search_xdcc">[docs]</a>    <span class="k">def</span> <span class="nf">search_xdcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_engine_override</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">search_term_override</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Searches for xdcc packs</span>
 <span class="sd">        :return: void</span>
@@ -259,7 +265,7 @@
                         <span class="k">if</span> <span class="n">re_search_prompt</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
                             <span class="n">selecting</span> <span class="o">=</span> <span class="bp">False</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerCli.start_download"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start_download">[docs]</a>    <span class="k">def</span> <span class="nf">start_download</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerCli.start_download"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start_download">[docs]</a>    <span class="k">def</span> <span class="nf">start_download</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the Download</span>
 <span class="sd">        :return: void</span>
@@ -288,7 +294,7 @@
             <span class="n">preparation</span><span class="p">,</span> <span class="n">downloader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_packs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_rename</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BatchDownloadManagerCli.check_show_directory"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.check_show_directory">[docs]</a>    <span class="k">def</span> <span class="nf">check_show_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerCli.check_show_directory"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.check_show_directory">[docs]</a>    <span class="k">def</span> <span class="nf">check_show_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        method that calculates the default values for a show directory</span>
 <span class="sd">        :param directory: the directory to be checked</span>
@@ -306,7 +312,23 @@
                 <span class="n">children</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s2">&quot;Season &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">highest_season</span><span class="p">)))</span>
                 <span class="n">episode_amount</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">show_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">highest_season</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">episode_amount</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">show_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">highest_season</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">episode_amount</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BatchDownloadManagerCli.restore_start_state"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.restore_start_state">[docs]</a>    <span class="k">def</span> <span class="nf">restore_start_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restores the state of the BatchDownloadManagerCli object to what it was at the beginning.</span>
+<span class="sd">        :return: void</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">starting_episode_number</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_engine</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_icon</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secondary_icon</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iconizer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_packs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_rename</span> <span class="o">=</span> <span class="bp">False</span></div></div>
 </pre></div>
 
           </div>

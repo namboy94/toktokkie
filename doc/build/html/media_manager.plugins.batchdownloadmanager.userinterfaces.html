@@ -36,141 +36,14 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="media-manager-plugins-batchdownloadmanager-userinterfaces-package">
-<h1>media_manager.plugins.batchdownloadmanager.userinterfaces package<a class="headerlink" href="#media-manager-plugins-batchdownloadmanager-userinterfaces-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-media_manager.plugins.batchdownloadmanager.userinterfaces">
+<span id="media-manager-plugins-batchdownloadmanager-userinterfaces-package"></span><h1>media_manager.plugins.batchdownloadmanager.userinterfaces package<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
 </div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli">
-<span id="media-manager-plugins-batchdownloadmanager-userinterfaces-batchdownloadmanagercli-module"></span><h2>media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.</code><code class="descname">BatchDownloadManagerCli</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerCli.html#BatchDownloadManagerCli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cli.GenericCli.GenericCli</span></code></p>
-<p>CLI for the BatchDownloadManager plugin</p>
-<dl class="staticmethod">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.check_show_directory">
-<em class="property">static </em><code class="descname">check_show_directory</code><span class="sig-paren">(</span><em>directory</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerCli.html#BatchDownloadManagerCli.check_show_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.check_show_directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>method that calculates the default values for a show directory
-:param directory: the directory to be checked
-:return: the show name, the highest season, the amount of episodes</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.mainloop">
-<code class="descname">mainloop</code><span class="sig-paren">(</span><em>directory=None</em>, <em>use_defaults=None</em>, <em>show_name_override=None</em>, <em>season_number_override=None</em>, <em>first_episode_override=None</em>, <em>search_engine=None</em>, <em>search_term=None</em>, <em>auto_rename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerCli.html#BatchDownloadManagerCli.mainloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.mainloop" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main program loop
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.search_xdcc">
-<code class="descname">search_xdcc</code><span class="sig-paren">(</span><em>search_engine_override=None</em>, <em>search_term_override=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerCli.html#BatchDownloadManagerCli.search_xdcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.search_xdcc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searches for xdcc packs
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start">
-<code class="descname">start</code><span class="sig-paren">(</span><em>title=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerCli.html#BatchDownloadManagerCli.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the main program loop
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start_download">
-<code class="descname">start_download</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerCli.html#BatchDownloadManagerCli.start_download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli.BatchDownloadManagerCli.start_download" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the Download
-:return: void</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI">
-<span id="media-manager-plugins-batchdownloadmanager-userinterfaces-batchdownloadmanagergui-module"></span><h2>media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.</code><code class="descname">BatchDownloadManagerGUI</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerGUI.html#BatchDownloadManagerGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">gfworks.templates.gtk3.Gtk3GridTemplate.Gtk3GridTemplate</span></code></p>
-<p>GUI for the BatchDownloadManager plugin</p>
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.browse_for_destination">
-<code class="descname">browse_for_destination</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerGUI.html#BatchDownloadManagerGUI.browse_for_destination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.browse_for_destination" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens a file browser dialog to select a directory to the show&#8217;s root directory
-:param widget: the button that caused this method call
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.lay_out">
-<code class="descname">lay_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerGUI.html#BatchDownloadManagerGUI.lay_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.lay_out" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets up all interface elements of the GUI
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.on_directory_changed">
-<code class="descname">on_directory_changed</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerGUI.html#BatchDownloadManagerGUI.on_directory_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.on_directory_changed" title="Permalink to this definition">¶</a></dt>
-<dd><p>method run when the directory changes
-:param widget: the changed widget
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.search_xdcc">
-<code class="descname">search_xdcc</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerGUI.html#BatchDownloadManagerGUI.search_xdcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.search_xdcc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searches for xdcc packs using the currently selected search engine, using a seperate thread
-If a search is already running, it won&#8217;t start a new search
-:param widget: the search button
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.start_download">
-<code class="descname">start_download</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/userinterfaces/BatchDownloadManagerGUI.html#BatchDownloadManagerGUI.start_download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.start_download" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the Download
-:param widget: the Download Button
-:return: void</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.userinterfaces">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -184,9 +57,6 @@ If a search is already running, it won&#8217;t start a new search
   <ul>
 <li><a class="reference internal" href="#">media_manager.plugins.batchdownloadmanager.userinterfaces package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli">media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI">media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.userinterfaces">Module contents</a></li>
 </ul>
 </li>
 </ul>

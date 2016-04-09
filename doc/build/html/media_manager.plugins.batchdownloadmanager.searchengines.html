@@ -36,16 +36,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="media-manager-plugins-batchdownloadmanager-searchengines-package">
-<h1>media_manager.plugins.batchdownloadmanager.searchengines package<a class="headerlink" href="#media-manager-plugins-batchdownloadmanager-searchengines-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-media_manager.plugins.batchdownloadmanager.searchengines">
+<span id="media-manager-plugins-batchdownloadmanager-searchengines-package"></span><h1>media_manager.plugins.batchdownloadmanager.searchengines package<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.searchengines" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="media_manager.plugins.batchdownloadmanager.searchengines.objects.html">media_manager.plugins.batchdownloadmanager.searchengines.objects package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.batchdownloadmanager.searchengines.objects.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.batchdownloadmanager.searchengines.objects.html#module-media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack">media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.batchdownloadmanager.searchengines.objects.html#module-media_manager.plugins.batchdownloadmanager.searchengines.objects">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.batchdownloadmanager.searchengines.objects.html#submodules">Submodules</a><ul class="simple">
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -53,205 +53,10 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
 </div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter">
-<span id="media-manager-plugins-batchdownloadmanager-searchengines-genericgetter-module"></span><h2>media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.</code><code class="descname">GenericGetter</code><span class="sig-paren">(</span><em>search_term</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/GenericGetter.html#GenericGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Class that defines interfaces for modules that search xdcc pack lists</p>
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_channel">
-<code class="descname">get_channel</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/GenericGetter.html#GenericGetter.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_channel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks to which channel a given bot belongs to
-:param bot: the bot to check for
-:return: the channel</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_server">
-<code class="descname">get_server</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/GenericGetter.html#GenericGetter.get_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks to which server a given bot belongs to.
-:param bot: the bot&#8217;s name to be used
-:return: the server name</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.search">
-<code class="descname">search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/GenericGetter.html#GenericGetter.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conducts the search
-:return: the search results as a list of XDCCPack objects</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter">
-<span id="media-manager-plugins-batchdownloadmanager-searchengines-intelgetter-module"></span><h2>media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.</code><code class="descname">IntelGetter</code><span class="sig-paren">(</span><em>search_term</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IntelGetter.html#IntelGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter</span></code></p>
-<p>Class that gets xdcc pack lists from intel.haruhichan.com</p>
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter.get_channel">
-<code class="descname">get_channel</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IntelGetter.html#IntelGetter.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter.get_channel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the channel for a given bot
-:param bot: the bot
-:return: the channel</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter.get_server">
-<code class="descname">get_server</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IntelGetter.html#IntelGetter.get_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter.get_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the server for a given bot
-:param bot: the bot
-:return: the server</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter.search">
-<code class="descname">search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IntelGetter.html#IntelGetter.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter.IntelGetter.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conducts the search
-:return: the search results as a list of XDCCPack objects</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter">
-<span id="media-manager-plugins-batchdownloadmanager-searchengines-ixircgetter-module"></span><h2>media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.</code><code class="descname">IxIRCGetter</code><span class="sig-paren">(</span><em>search_term</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IxIRCGetter.html#IxIRCGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter</span></code></p>
-<p>Class that gets xdcc packlists from ixirc.com</p>
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_channel">
-<code class="descname">get_channel</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IxIRCGetter.html#IxIRCGetter.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_channel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Not needed due to how this getter is designed
-:param bot: the bot to check
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_server">
-<code class="descname">get_server</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IxIRCGetter.html#IxIRCGetter.get_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Not needed due to how this getter is designed
-:param bot: the bot to check
-:return: void</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.search">
-<code class="descname">search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/IxIRCGetter.html#IxIRCGetter.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conducts the search
-:return: the search results as a list of XDCCPack objects</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter">
-<span id="media-manager-plugins-batchdownloadmanager-searchengines-niblgetter-module"></span><h2>media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter module<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.</code><code class="descname">NIBLGetter</code><span class="sig-paren">(</span><em>search_term</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/NIBLGetter.html#NIBLGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter</span></code></p>
-<p>Class that gets xdcc packlists from nibl.co.uk</p>
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_channel">
-<code class="descname">get_channel</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/NIBLGetter.html#NIBLGetter.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_channel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the channel for a given bot
-:param bot: the bot
-:return: the channel</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_server">
-<code class="descname">get_server</code><span class="sig-paren">(</span><em>bot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/NIBLGetter.html#NIBLGetter.get_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.get_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the server for a given bot
-:param bot: the bot
-:return: the server</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.search">
-<code class="descname">search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/batchdownloadmanager/searchengines/NIBLGetter.html#NIBLGetter.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter.NIBLGetter.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conducts the search
-:return: the search results as a list of XDCCPack objects</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.batchdownloadmanager.searchengines">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.batchdownloadmanager.searchengines" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -266,11 +71,6 @@ along with media-manager.  If not, see &lt;<a class="reference external" href="h
 <li><a class="reference internal" href="#">media_manager.plugins.batchdownloadmanager.searchengines package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter">media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter">media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter">media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter">media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.batchdownloadmanager.searchengines">Module contents</a></li>
 </ul>
 </li>
 </ul>

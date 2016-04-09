@@ -36,17 +36,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="media-manager-plugins-iconizer-utils-package">
-<h1>media_manager.plugins.iconizer.utils package<a class="headerlink" href="#media-manager-plugins-iconizer-utils-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-media_manager.plugins.iconizer.utils">
+<span id="media-manager-plugins-iconizer-utils-package"></span><h1>media_manager.plugins.iconizer.utils package<a class="headerlink" href="#module-media_manager.plugins.iconizer.utils" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="media_manager.plugins.iconizer.utils.iconizers.html">media_manager.plugins.iconizer.utils.iconizers package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.iconizer.utils.iconizers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.iconizer.utils.iconizers.html#module-media_manager.plugins.iconizer.utils.iconizers.NautilusNemoIconizer">media_manager.plugins.iconizer.utils.iconizers.NautilusNemoIconizer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.iconizer.utils.iconizers.html#module-media_manager.plugins.iconizer.utils.iconizers.WindowsIconizer">media_manager.plugins.iconizer.utils.iconizers.WindowsIconizer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.iconizer.utils.iconizers.html#module-media_manager.plugins.iconizer.utils.iconizers">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="media_manager.plugins.iconizer.utils.iconizers.html#submodules">Submodules</a><ul class="simple">
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -54,55 +53,10 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
 </div>
-<div class="section" id="module-media_manager.plugins.iconizer.utils.DeepIconizer">
-<span id="media-manager-plugins-iconizer-utils-deepiconizer-module"></span><h2>media_manager.plugins.iconizer.utils.DeepIconizer module<a class="headerlink" href="#module-media_manager.plugins.iconizer.utils.DeepIconizer" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2015,2016 Hermann Krumrey</p>
-<p>This file is part of media-manager.</p>
-<blockquote>
-<div><p>media-manager is a program that allows convenient managing of various
-local media collections, mostly focused on video.</p>
-<p>media-manager is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>media-manager is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with media-manager.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-</div></blockquote>
-<dl class="class">
-<dt id="media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer">
-<em class="property">class </em><code class="descclassname">media_manager.plugins.iconizer.utils.DeepIconizer.</code><code class="descname">DeepIconizer</code><span class="sig-paren">(</span><em>directory</em>, <em>method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/iconizer/utils/DeepIconizer.html#DeepIconizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Class that handles the iconization of a parent directory and its children</p>
-<dl class="staticmethod">
-<dt id="media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer.get_children">
-<em class="property">static </em><code class="descname">get_children</code><span class="sig-paren">(</span><em>directory</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/iconizer/utils/DeepIconizer.html#DeepIconizer.get_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer.get_children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the names and directory paths of the children of a directory
-:param directory: the directory to be used
-:return: the names and directories as a list of length 2</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer.get_iconizer_options">
-<em class="property">static </em><code class="descname">get_iconizer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/iconizer/utils/DeepIconizer.html#DeepIconizer.get_iconizer_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer.get_iconizer_options" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer.iconize">
-<code class="descname">iconize</code><span class="sig-paren">(</span><em>directory=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/media_manager/plugins/iconizer/utils/DeepIconizer.html#DeepIconizer.iconize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.plugins.iconizer.utils.DeepIconizer.DeepIconizer.iconize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the iconization process
-:param directory: the directory to iconize</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-media_manager.plugins.iconizer.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-media_manager.plugins.iconizer.utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -117,8 +71,6 @@ along with media-manager.  If not, see &lt;<a class="reference external" href="h
 <li><a class="reference internal" href="#">media_manager.plugins.iconizer.utils package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.iconizer.utils.DeepIconizer">media_manager.plugins.iconizer.utils.DeepIconizer module</a></li>
-<li><a class="reference internal" href="#module-media_manager.plugins.iconizer.utils">Module contents</a></li>
 </ul>
 </li>
 </ul>

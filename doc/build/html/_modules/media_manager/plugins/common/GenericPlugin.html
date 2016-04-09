@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.common.GenericPlugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,46 +60,48 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="GenericPlugin"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin">[docs]</a><span class="k">class</span> <span class="nc">GenericPlugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin">[docs]</a><span class="k">class</span> <span class="nc">GenericPlugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generic Plugin that serves as a unified interface for the plugins.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GenericPlugin.get_name"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.get_name"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: the name of this plugin</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericPlugin.get_command_name"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_command_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.get_command_name"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_command_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: the command that starts ths plugin</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericPlugin.get_config_tag"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_config_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.get_config_tag"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_config_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: the config tag of this plugin</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericPlugin.get_parser_arguments"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_parser_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">get_parser_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.get_parser_arguments"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.get_parser_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">get_parser_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.</span>
 <span class="sd">                    the first tuple element contains boolean values, the others store string values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericPlugin.start_args_parse"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.start_args_parse">[docs]</a>    <span class="k">def</span> <span class="nf">start_args_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.start_args_parse"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.start_args_parse">[docs]</a>    <span class="k">def</span> <span class="nf">start_args_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the plugin in arg parse mode</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericPlugin.start_cli"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.start_cli">[docs]</a>    <span class="k">def</span> <span class="nf">start_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_cli</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.start_cli"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.start_cli">[docs]</a>    <span class="k">def</span> <span class="nf">start_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_cli</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the CLI of the plugin</span>
 <span class="sd">        :param parent_cli: the parent cli</span>
@@ -105,7 +109,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericPlugin.start_gui"><a class="viewcode-back" href="../../../../media_manager.plugins.common.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.start_gui">[docs]</a>    <span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_gui</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericPlugin.start_gui"><a class="viewcode-back" href="../../../../media_manager.plugins.common.GenericPlugin.html#media_manager.plugins.common.GenericPlugin.GenericPlugin.start_gui">[docs]</a>    <span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_gui</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the GUI of the plugin</span>
 <span class="sd">        :param parent_gui: the gui&#39;s parent</span>

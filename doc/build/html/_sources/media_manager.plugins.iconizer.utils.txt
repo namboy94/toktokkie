@@ -1,6 +1,11 @@
 media_manager.plugins.iconizer.utils package
 ============================================
 
+.. automodule:: media_manager.plugins.iconizer.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -11,19 +16,7 @@ Subpackages
 Submodules
 ----------
 
-media_manager.plugins.iconizer.utils.DeepIconizer module
---------------------------------------------------------
+.. toctree::
 
-.. automodule:: media_manager.plugins.iconizer.utils.DeepIconizer
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   media_manager.plugins.iconizer.utils.DeepIconizer
 
-
-Module contents
----------------
-
-.. automodule:: media_manager.plugins.iconizer.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:

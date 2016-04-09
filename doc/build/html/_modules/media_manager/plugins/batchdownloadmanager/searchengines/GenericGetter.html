@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,10 +60,12 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="GenericGetter"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter">[docs]</a><span class="k">class</span> <span class="nc">GenericGetter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericGetter"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter">[docs]</a><span class="k">class</span> <span class="nc">GenericGetter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that defines interfaces for modules that search xdcc pack lists</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -73,14 +77,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">search_term</span> <span class="o">=</span> <span class="n">search_term</span>
 
-<div class="viewcode-block" id="GenericGetter.search"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericGetter.search"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Conducts the search</span>
 <span class="sd">        :return: the search results as a list of XDCCPack objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericGetter.get_server"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_server">[docs]</a>    <span class="k">def</span> <span class="nf">get_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericGetter.get_server"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_server">[docs]</a>    <span class="k">def</span> <span class="nf">get_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks to which server a given bot belongs to.</span>
 <span class="sd">        :param bot: the bot&#39;s name to be used</span>
@@ -88,7 +92,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericGetter.get_channel"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericGetter.get_channel"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.GenericGetter.GenericGetter.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks to which channel a given bot belongs to</span>
 <span class="sd">        :param bot: the bot to check for</span>

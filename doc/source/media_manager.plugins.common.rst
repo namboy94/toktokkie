@@ -1,6 +1,11 @@
 media_manager.plugins.common package
 ====================================
 
+.. automodule:: media_manager.plugins.common
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -13,19 +18,7 @@ Subpackages
 Submodules
 ----------
 
-media_manager.plugins.common.GenericPlugin module
--------------------------------------------------
+.. toctree::
 
-.. automodule:: media_manager.plugins.common.GenericPlugin
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   media_manager.plugins.common.GenericPlugin
 
-
-Module contents
----------------
-
-.. automodule:: media_manager.plugins.common
-    :members:
-    :undoc-members:
-    :show-inheritance:

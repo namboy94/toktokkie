@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.cli.GenericCli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># imports</span>
@@ -71,7 +75,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.cli.exceptions.ReturnException</span> <span class="kn">import</span> <span class="n">ReturnException</span>
 
 
-<div class="viewcode-block" id="GenericCli"><a class="viewcode-back" href="../../../media_manager.cli.html#media_manager.cli.GenericCli.GenericCli">[docs]</a><span class="k">class</span> <span class="nc">GenericCli</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericCli"><a class="viewcode-back" href="../../../media_manager.cli.GenericCli.html#media_manager.cli.GenericCli.GenericCli">[docs]</a><span class="k">class</span> <span class="nc">GenericCli</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that defines some behaviour of the CLI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -84,7 +88,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
 
-<div class="viewcode-block" id="GenericCli.start"><a class="viewcode-back" href="../../../media_manager.cli.html#media_manager.cli.GenericCli.GenericCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericCli.start"><a class="viewcode-back" href="../../../media_manager.cli.GenericCli.html#media_manager.cli.GenericCli.GenericCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the CLI</span>
 <span class="sd">        :param title: Title text shown once</span>
@@ -99,7 +103,7 @@
             <span class="k">print</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GenericCli.stop"><a class="viewcode-back" href="../../../media_manager.cli.html#media_manager.cli.GenericCli.GenericCli.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericCli.stop"><a class="viewcode-back" href="../../../media_manager.cli.GenericCli.html#media_manager.cli.GenericCli.GenericCli.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ends the CLI and restarts the parent CLI, or exits with code 0 if no parent was defined</span>
 <span class="sd">        :return: void</span>
@@ -109,7 +113,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GenericCli.mainloop"><a class="viewcode-back" href="../../../media_manager.cli.html#media_manager.cli.GenericCli.GenericCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericCli.mainloop"><a class="viewcode-back" href="../../../media_manager.cli.GenericCli.html#media_manager.cli.GenericCli.GenericCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The main loop of the CLI</span>
 <span class="sd">        :return: void</span>
@@ -117,7 +121,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="GenericCli.ask_user"><a class="viewcode-back" href="../../../media_manager.cli.html#media_manager.cli.GenericCli.GenericCli.ask_user">[docs]</a>    <span class="k">def</span> <span class="nf">ask_user</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericCli.ask_user"><a class="viewcode-back" href="../../../media_manager.cli.GenericCli.html#media_manager.cli.GenericCli.GenericCli.ask_user">[docs]</a>    <span class="k">def</span> <span class="nf">ask_user</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a user prompt with default behaviours, reducing code reuse</span>
 <span class="sd">        :param message: Message to be displayed to the user</span>

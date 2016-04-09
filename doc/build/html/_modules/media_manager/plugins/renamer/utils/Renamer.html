@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.renamer.utils.Renamer</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -68,7 +72,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.renamer.objects.Episode</span> <span class="kn">import</span> <span class="n">Episode</span>
 
 
-<div class="viewcode-block" id="Renamer"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.html#media_manager.plugins.renamer.utils.Renamer.Renamer">[docs]</a><span class="k">class</span> <span class="nc">Renamer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Renamer"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.Renamer.html#media_manager.plugins.renamer.utils.Renamer.Renamer">[docs]</a><span class="k">class</span> <span class="nc">Renamer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that renames a directory of episodes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -83,7 +87,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parse_directory</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">confirmed</span> <span class="o">=</span> <span class="bp">False</span>
 
-<div class="viewcode-block" id="Renamer.parse_directory"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.html#media_manager.plugins.renamer.utils.Renamer.Renamer.parse_directory">[docs]</a>    <span class="k">def</span> <span class="nf">parse_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Renamer.parse_directory"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.Renamer.html#media_manager.plugins.renamer.utils.Renamer.Renamer.parse_directory">[docs]</a>    <span class="k">def</span> <span class="nf">parse_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parses the given directory</span>
 <span class="sd">        :return: void</span>
@@ -108,7 +112,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">episodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Episode</span><span class="p">(</span><span class="n">episode_dir</span><span class="p">,</span> <span class="n">episode_number</span><span class="p">,</span> <span class="n">season_number</span><span class="p">,</span> <span class="n">show_name</span><span class="p">))</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="Renamer.request_confirmation"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.html#media_manager.plugins.renamer.utils.Renamer.Renamer.request_confirmation">[docs]</a>    <span class="k">def</span> <span class="nf">request_confirmation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Renamer.request_confirmation"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.Renamer.html#media_manager.plugins.renamer.utils.Renamer.Renamer.request_confirmation">[docs]</a>    <span class="k">def</span> <span class="nf">request_confirmation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request for user confirmation</span>
 <span class="sd">        :return the confirmation prompt as double list thingy</span>
@@ -119,7 +123,7 @@
             <span class="n">confirmation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">episode</span><span class="o">.</span><span class="n">new_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">confirmation</span></div>
 
-<div class="viewcode-block" id="Renamer.confirm"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.html#media_manager.plugins.renamer.utils.Renamer.Renamer.confirm">[docs]</a>    <span class="k">def</span> <span class="nf">confirm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confirmation</span><span class="p">):</span>
+<div class="viewcode-block" id="Renamer.confirm"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.Renamer.html#media_manager.plugins.renamer.utils.Renamer.Renamer.confirm">[docs]</a>    <span class="k">def</span> <span class="nf">confirm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confirmation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Confirms the rename process</span>
 <span class="sd">        :param confirmation: to check the confirmation once more</span>
@@ -132,7 +136,7 @@
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">confirmed</span> <span class="o">=</span> <span class="bp">True</span></div>
 
-<div class="viewcode-block" id="Renamer.start_rename"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.html#media_manager.plugins.renamer.utils.Renamer.Renamer.start_rename">[docs]</a>    <span class="k">def</span> <span class="nf">start_rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Renamer.start_rename"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.Renamer.html#media_manager.plugins.renamer.utils.Renamer.Renamer.start_rename">[docs]</a>    <span class="k">def</span> <span class="nf">start_rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the renaming process</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -141,7 +145,7 @@
         <span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">episodes</span><span class="p">:</span>
             <span class="n">episode</span><span class="o">.</span><span class="n">rename</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Renamer.format_seasons"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.html#media_manager.plugins.renamer.utils.Renamer.Renamer.format_seasons">[docs]</a>    <span class="k">def</span> <span class="nf">format_seasons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seasons</span><span class="p">):</span>
+<div class="viewcode-block" id="Renamer.format_seasons"><a class="viewcode-back" href="../../../../../media_manager.plugins.renamer.utils.Renamer.html#media_manager.plugins.renamer.utils.Renamer.Renamer.format_seasons">[docs]</a>    <span class="k">def</span> <span class="nf">format_seasons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seasons</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Formats the seasons</span>
 <span class="sd">        :param seasons: the seasons to be formatted</span>

@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.iconizer.userinterfaces.IconizerGUI</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -70,7 +74,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.iconizer.utils.DeepIconizer</span> <span class="kn">import</span> <span class="n">DeepIconizer</span>
 
 
-<div class="viewcode-block" id="IconizerGUI"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI">[docs]</a><span class="k">class</span> <span class="nc">IconizerGUI</span><span class="p">(</span><span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerGUI"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerGUI.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI">[docs]</a><span class="k">class</span> <span class="nc">IconizerGUI</span><span class="p">(</span><span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GUI for the Iconizer plugin</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -86,7 +90,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">iconizer_method_combo_box</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s2">&quot;Iconizer&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="IconizerGUI.lay_out"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.lay_out">[docs]</a>    <span class="k">def</span> <span class="nf">lay_out</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerGUI.lay_out"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerGUI.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.lay_out">[docs]</a>    <span class="k">def</span> <span class="nf">lay_out</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets up all interface elements of the GUI</span>
 <span class="sd">        :return: void</span>
@@ -104,7 +108,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">iconizer_method_combo_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_string_combo_box</span><span class="p">(</span><span class="n">DeepIconizer</span><span class="o">.</span><span class="n">get_iconizer_options</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">position_absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iconizer_method_combo_box</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IconizerGUI.iconize_start"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.iconize_start">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerGUI.iconize_start"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerGUI.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.iconize_start">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the iconizing process</span>
 <span class="sd">        :param widget: the widget that started this method</span>
@@ -130,7 +134,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">iconize_dir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IconizerGUI.browse_directory"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.browse_directory">[docs]</a>    <span class="k">def</span> <span class="nf">browse_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerGUI.browse_directory"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerGUI.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.browse_directory">[docs]</a>    <span class="k">def</span> <span class="nf">browse_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shows a directory chooser dialog and sets the entry to the result of the browse</span>
 <span class="sd">        :param widget: the button that called this method</span>
@@ -141,7 +145,7 @@
             <span class="k">if</span> <span class="n">selected_directory</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_text_entry_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory_entry</span><span class="p">,</span> <span class="n">selected_directory</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IconizerGUI.iconize_dir"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.iconize_dir">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerGUI.iconize_dir"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerGUI.html#media_manager.plugins.iconizer.userinterfaces.IconizerGUI.IconizerGUI.iconize_dir">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iconizes a single folder</span>
 <span class="sd">        :param directory: the directory to be iconized</span>

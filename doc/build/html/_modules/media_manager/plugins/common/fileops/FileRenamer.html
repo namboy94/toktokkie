@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.common.fileops.FileRenamer</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,19 +60,21 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 
 
-<div class="viewcode-block" id="FileRenamer"><a class="viewcode-back" href="../../../../../media_manager.plugins.common.fileops.html#media_manager.plugins.common.fileops.FileRenamer.FileRenamer">[docs]</a><span class="k">class</span> <span class="nc">FileRenamer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FileRenamer"><a class="viewcode-back" href="../../../../../media_manager.plugins.common.fileops.FileRenamer.html#media_manager.plugins.common.fileops.FileRenamer.FileRenamer">[docs]</a><span class="k">class</span> <span class="nc">FileRenamer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that contains static methods to help rename files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="FileRenamer.rename_file"><a class="viewcode-back" href="../../../../../media_manager.plugins.common.fileops.html#media_manager.plugins.common.fileops.FileRenamer.FileRenamer.rename_file">[docs]</a>    <span class="k">def</span> <span class="nf">rename_file</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
+<div class="viewcode-block" id="FileRenamer.rename_file"><a class="viewcode-back" href="../../../../../media_manager.plugins.common.fileops.FileRenamer.html#media_manager.plugins.common.fileops.FileRenamer.FileRenamer.rename_file">[docs]</a>    <span class="k">def</span> <span class="nf">rename_file</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Renames a file to a new file name, keeping the extension and file path.</span>
 <span class="sd">        :param file: the file to be renamed</span>

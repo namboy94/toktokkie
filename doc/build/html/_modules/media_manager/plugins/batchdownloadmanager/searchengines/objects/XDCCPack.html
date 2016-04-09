@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,10 +60,12 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE:</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="XDCCPack"><a class="viewcode-back" href="../../../../../../media_manager.plugins.batchdownloadmanager.searchengines.objects.html#media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.XDCCPack">[docs]</a><span class="k">class</span> <span class="nc">XDCCPack</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="XDCCPack"><a class="viewcode-back" href="../../../../../../media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.html#media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.XDCCPack">[docs]</a><span class="k">class</span> <span class="nc">XDCCPack</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that models an XDCC Pack Object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -83,14 +87,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">packnumber</span> <span class="o">=</span> <span class="n">packnumber</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
 
-<div class="viewcode-block" id="XDCCPack.to_string"><a class="viewcode-back" href="../../../../../../media_manager.plugins.batchdownloadmanager.searchengines.objects.html#media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.XDCCPack.to_string">[docs]</a>    <span class="k">def</span> <span class="nf">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="XDCCPack.to_string"><a class="viewcode-back" href="../../../../../../media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.html#media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.XDCCPack.to_string">[docs]</a>    <span class="k">def</span> <span class="nf">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the bot information as a string</span>
 <span class="sd">        :return: the bot information as a string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;  -  &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot</span> <span class="o">+</span> <span class="s2">&quot;  -  Size:&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span></div>
 
-<div class="viewcode-block" id="XDCCPack.to_tuple"><a class="viewcode-back" href="../../../../../../media_manager.plugins.batchdownloadmanager.searchengines.objects.html#media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.XDCCPack.to_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="XDCCPack.to_tuple"><a class="viewcode-back" href="../../../../../../media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.html#media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack.XDCCPack.to_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the bot information as a tuple</span>
 <span class="sd">        :return: the bot information as a tuple</span>

@@ -16,7 +16,7 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath("../../media_manager"))
+sys.path.insert(0, "/home/hermann/IDEs/projects/pycharm/media-manager")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -364,3 +364,12 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
+
+from sphinx.ext.autodoc import between
+
+
+def setup(app):
+    # Register a sphinx.ext.autodoc.between listener to ignore everything
+    # between lines that contain the word IGNORE
+    app.connect('autodoc-process-docstring', between('^.*LICENSE.*$', exclude=True))
+    return app

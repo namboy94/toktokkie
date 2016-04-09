@@ -11,12 +11,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: media_manager.Globals
-
-.. autoclass:: Globals
-      :members:
-
-
 Indices and tables
 ==================
 

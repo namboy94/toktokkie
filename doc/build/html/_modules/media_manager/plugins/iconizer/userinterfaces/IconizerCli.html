@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.iconizer.userinterfaces.IconizerCli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -72,7 +76,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.iconizer.utils.DeepIconizer</span> <span class="kn">import</span> <span class="n">DeepIconizer</span>
 
 
-<div class="viewcode-block" id="IconizerCli"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli">[docs]</a><span class="k">class</span> <span class="nc">IconizerCli</span><span class="p">(</span><span class="n">GenericCli</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerCli"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerCli.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli">[docs]</a><span class="k">class</span> <span class="nc">IconizerCli</span><span class="p">(</span><span class="n">GenericCli</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GCLI for the Iconizer plugin</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -85,14 +89,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_iconizer</span> <span class="o">=</span> <span class="n">selected_iconizer</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-<div class="viewcode-block" id="IconizerCli.start"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerCli.start"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerCli.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the plugin main loop</span>
 <span class="sd">        :return void</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;ICONIZER PLUGIN</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IconizerCli.mainloop"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerCli.mainloop"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerCli.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the iconizing process</span>
 <span class="sd">        :return void</span>
@@ -140,7 +144,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">iconize_dir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Iconizing End&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IconizerCli.iconize_dir"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.iconize_dir">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+<div class="viewcode-block" id="IconizerCli.iconize_dir"><a class="viewcode-back" href="../../../../../media_manager.plugins.iconizer.userinterfaces.IconizerCli.html#media_manager.plugins.iconizer.userinterfaces.IconizerCli.IconizerCli.iconize_dir">[docs]</a>    <span class="k">def</span> <span class="nf">iconize_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iconizes a single folder</span>
 <span class="sd">        :param directory: the directory to be iconized</span>

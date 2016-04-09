@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.renamer.RenamerPlugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -70,30 +74,30 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.renamer.userinterfaces.RenamerCli</span> <span class="kn">import</span> <span class="n">RenamerCli</span>
 
 
-<div class="viewcode-block" id="RenamerPlugin"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin">[docs]</a><span class="k">class</span> <span class="nc">RenamerPlugin</span><span class="p">(</span><span class="n">GenericPlugin</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin">[docs]</a><span class="k">class</span> <span class="nc">RenamerPlugin</span><span class="p">(</span><span class="n">GenericPlugin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that handles renaming of episodes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="RenamerPlugin.get_name"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.get_name"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return &quot;Renamer&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;Renamer&quot;</span></div>
 
-<div class="viewcode-block" id="RenamerPlugin.get_config_tag"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_config_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.get_config_tag"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_config_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return &quot;renamer&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;renamer&quot;</span></div>
 
-<div class="viewcode-block" id="RenamerPlugin.get_command_name"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_command_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.get_command_name"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_command_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return &quot;renamer&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;renamer&quot;</span></div>
 
-<div class="viewcode-block" id="RenamerPlugin.get_parser_arguments"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_parser_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">get_parser_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.get_parser_arguments"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.get_parser_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">get_parser_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.</span>
 <span class="sd">                    the first tuple element contains boolean values, the others store string values</span>
@@ -101,7 +105,7 @@
         <span class="k">return</span> <span class="p">([],</span>
                 <span class="p">[{</span><span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;renamer-directory&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;The directory whose content should be renamed&quot;</span><span class="p">}])</span></div>
 
-<div class="viewcode-block" id="RenamerPlugin.start_args_parse"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.start_args_parse">[docs]</a>    <span class="k">def</span> <span class="nf">start_args_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.start_args_parse"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.start_args_parse">[docs]</a>    <span class="k">def</span> <span class="nf">start_args_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the plugin in arg parse mode</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -115,7 +119,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Invalid argument combination passed&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RenamerPlugin.start_cli"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.start_cli">[docs]</a>    <span class="k">def</span> <span class="nf">start_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_cli</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.start_cli"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.start_cli">[docs]</a>    <span class="k">def</span> <span class="nf">start_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_cli</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the CLI of the plugin</span>
 <span class="sd">        :param parent_cli: the parent cli</span>
@@ -123,7 +127,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">RenamerCli</span><span class="p">(</span><span class="n">parent_cli</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="RenamerPlugin.start_gui"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.start_gui">[docs]</a>    <span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_gui</span><span class="p">):</span>
+<div class="viewcode-block" id="RenamerPlugin.start_gui"><a class="viewcode-back" href="../../../../media_manager.plugins.renamer.RenamerPlugin.html#media_manager.plugins.renamer.RenamerPlugin.RenamerPlugin.start_gui">[docs]</a>    <span class="k">def</span> <span class="nf">start_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_gui</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the GUI, while hiding the parent until finished</span>
 <span class="sd">        :param parent_gui: the parent gui window</span>

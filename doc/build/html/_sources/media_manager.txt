@@ -1,6 +1,11 @@
 media_manager package
 =====================
 
+.. automodule:: media_manager
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -15,27 +20,8 @@ Subpackages
 Submodules
 ----------
 
-media_manager.Globals module
-----------------------------
+.. toctree::
 
-.. automodule:: media_manager.Globals
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   media_manager.Globals
+   media_manager.main
 
-media_manager.main module
--------------------------
-
-.. automodule:: media_manager.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: media_manager
-    :members:
-    :undoc-members:
-    :show-inheritance:

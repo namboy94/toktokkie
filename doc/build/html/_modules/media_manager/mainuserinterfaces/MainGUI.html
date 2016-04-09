@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.mainuserinterfaces.MainGUI</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># imports</span>
@@ -67,7 +71,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.Globals</span> <span class="kn">import</span> <span class="n">Globals</span>
 
 
-<div class="viewcode-block" id="MainGUI"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.html#media_manager.mainuserinterfaces.MainGUI.MainGUI">[docs]</a><span class="k">class</span> <span class="nc">MainGUI</span><span class="p">(</span><span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span><span class="p">):</span>
+<div class="viewcode-block" id="MainGUI"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.MainGUI.html#media_manager.mainuserinterfaces.MainGUI.MainGUI">[docs]</a><span class="k">class</span> <span class="nc">MainGUI</span><span class="p">(</span><span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that implements the Main GUI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -81,7 +85,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="n">active_plugins</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s2">&quot;Media Manager Version &quot;</span> <span class="o">+</span> <span class="n">Globals</span><span class="o">.</span><span class="n">version_no</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MainGUI.lay_out"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.html#media_manager.mainuserinterfaces.MainGUI.MainGUI.lay_out">[docs]</a>    <span class="k">def</span> <span class="nf">lay_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MainGUI.lay_out"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.MainGUI.html#media_manager.mainuserinterfaces.MainGUI.MainGUI.lay_out">[docs]</a>    <span class="k">def</span> <span class="nf">lay_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds buttons for all plugins</span>
 <span class="sd">        :return: void</span>

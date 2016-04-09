@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -75,7 +79,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.common.calc.FileSizeCalculator</span> <span class="kn">import</span> <span class="n">FileSizeCalculator</span>
 
 
-<div class="viewcode-block" id="HexChatPluginDownloader"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader">[docs]</a><span class="k">class</span> <span class="nc">HexChatPluginDownloader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="HexChatPluginDownloader"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader">[docs]</a><span class="k">class</span> <span class="nc">HexChatPluginDownloader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    XDCC Downloader that makes use of Hexchat&#39;s python scripting interface</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -200,7 +204,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__write_end__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="HexChatPluginDownloader.download_loop"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_loop">[docs]</a>    <span class="k">def</span> <span class="nf">download_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HexChatPluginDownloader.download_loop"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_loop">[docs]</a>    <span class="k">def</span> <span class="nf">download_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the download loop</span>
 <span class="sd">        :return a list of file paths leading to the downloaded files</span>
@@ -224,7 +228,7 @@
                 <span class="n">downloaded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">pack</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">downloaded</span></div>
 
-<div class="viewcode-block" id="HexChatPluginDownloader.download_single"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_single">[docs]</a>    <span class="k">def</span> <span class="nf">download_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pack</span><span class="p">):</span>
+<div class="viewcode-block" id="HexChatPluginDownloader.download_single"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.download_single">[docs]</a>    <span class="k">def</span> <span class="nf">download_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pack</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_size</span> <span class="o">=</span> <span class="n">FileSizeCalculator</span><span class="o">.</span><span class="n">get_byte_size_from_string</span><span class="p">(</span><span class="n">pack</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
         <span class="n">progress_thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_progress</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">pack</span><span class="p">,))</span>
 
@@ -241,7 +245,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">total_progress</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_location</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HexChatPluginDownloader.update_progress"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.update_progress">[docs]</a>    <span class="k">def</span> <span class="nf">update_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pack</span><span class="p">):</span>
+<div class="viewcode-block" id="HexChatPluginDownloader.update_progress"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.html#media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader.HexChatPluginDownloader.update_progress">[docs]</a>    <span class="k">def</span> <span class="nf">update_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pack</span><span class="p">):</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloading</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">progress_struct</span><span class="o">.</span><span class="n">single_progress</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">pack</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>

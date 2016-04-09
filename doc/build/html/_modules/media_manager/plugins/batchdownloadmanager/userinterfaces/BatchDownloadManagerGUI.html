@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -75,7 +79,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.Globals</span> <span class="kn">import</span> <span class="n">Globals</span>
 
 
-<div class="viewcode-block" id="BatchDownloadManagerGUI"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI">[docs]</a><span class="k">class</span> <span class="nc">BatchDownloadManagerGUI</span><span class="p">(</span><span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerGUI"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI">[docs]</a><span class="k">class</span> <span class="nc">BatchDownloadManagerGUI</span><span class="p">(</span><span class="n">Globals</span><span class="o">.</span><span class="n">selected_grid_gui_framework</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GUI for the BatchDownloadManager plugin</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -141,7 +145,7 @@
         <span class="c1"># Initialization</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s2">&quot;Batch Download Manager&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BatchDownloadManagerGUI.lay_out"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.lay_out">[docs]</a>    <span class="k">def</span> <span class="nf">lay_out</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerGUI.lay_out"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.lay_out">[docs]</a>    <span class="k">def</span> <span class="nf">lay_out</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets up all interface elements of the GUI</span>
 <span class="sd">        :return: void</span>
@@ -257,7 +261,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">position_absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_left</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">position_absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_left_label</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerGUI.search_xdcc"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.search_xdcc">[docs]</a>    <span class="k">def</span> <span class="nf">search_xdcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerGUI.search_xdcc"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.search_xdcc">[docs]</a>    <span class="k">def</span> <span class="nf">search_xdcc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Searches for xdcc packs using the currently selected search engine, using a seperate thread</span>
 <span class="sd">        If a search is already running, it won&#39;t start a new search</span>
@@ -294,7 +298,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">search_thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_sensitive_thread_in_parallel</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">search_xdcc_thread</span><span class="p">,</span> <span class="n">insensitive_target</span><span class="o">=</span><span class="n">search</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerGUI.start_download"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.start_download">[docs]</a>    <span class="k">def</span> <span class="nf">start_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerGUI.start_download"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.start_download">[docs]</a>    <span class="k">def</span> <span class="nf">start_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the Download</span>
 <span class="sd">        :param widget: the Download Button</span>
@@ -405,7 +409,7 @@
                                           <span class="bp">self</span><span class="o">.</span><span class="n">get_boolean_from_check_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rename_check</span><span class="p">),</span> <span class="n">progress</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dl_progress</span> <span class="o">=</span> <span class="n">progress</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerGUI.on_directory_changed"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.on_directory_changed">[docs]</a>    <span class="k">def</span> <span class="nf">on_directory_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerGUI.on_directory_changed"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.on_directory_changed">[docs]</a>    <span class="k">def</span> <span class="nf">on_directory_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        method run when the directory changes</span>
 <span class="sd">        :param widget: the changed widget</span>
@@ -436,7 +440,7 @@
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">secondary_icon</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">set_text_entry_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secondary_icon_location</span><span class="p">,</span> <span class="n">secondary_icon</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BatchDownloadManagerGUI.browse_for_destination"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.browse_for_destination">[docs]</a>    <span class="k">def</span> <span class="nf">browse_for_destination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+<div class="viewcode-block" id="BatchDownloadManagerGUI.browse_for_destination"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.html#media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI.BatchDownloadManagerGUI.browse_for_destination">[docs]</a>    <span class="k">def</span> <span class="nf">browse_for_destination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens a file browser dialog to select a directory to the show&#39;s root directory</span>
 <span class="sd">        :param widget: the button that caused this method call</span>

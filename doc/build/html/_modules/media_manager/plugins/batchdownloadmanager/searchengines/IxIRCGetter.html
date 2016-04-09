@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,6 +60,8 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -71,12 +75,12 @@
     <span class="kn">from</span> <span class="nn">media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack</span> <span class="kn">import</span> <span class="n">XDCCPack</span>
 
 
-<div class="viewcode-block" id="IxIRCGetter"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter">[docs]</a><span class="k">class</span> <span class="nc">IxIRCGetter</span><span class="p">(</span><span class="n">GenericGetter</span><span class="p">):</span>
+<div class="viewcode-block" id="IxIRCGetter"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter">[docs]</a><span class="k">class</span> <span class="nc">IxIRCGetter</span><span class="p">(</span><span class="n">GenericGetter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that gets xdcc packlists from ixirc.com</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="IxIRCGetter.search"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IxIRCGetter.search"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Conducts the search</span>
 <span class="sd">        :return: the search results as a list of XDCCPack objects</span>
@@ -182,7 +186,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">next_element</span><span class="p">:</span>
                 <span class="n">line_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="IxIRCGetter.get_server"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_server">[docs]</a>    <span class="k">def</span> <span class="nf">get_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+<div class="viewcode-block" id="IxIRCGetter.get_server"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_server">[docs]</a>    <span class="k">def</span> <span class="nf">get_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Not needed due to how this getter is designed</span>
 <span class="sd">        :param bot: the bot to check</span>
@@ -190,7 +194,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">str</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IxIRCGetter.get_channel"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
+<div class="viewcode-block" id="IxIRCGetter.get_channel"><a class="viewcode-back" href="../../../../../media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.html#media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter.IxIRCGetter.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Not needed due to how this getter is designed</span>
 <span class="sd">        :param bot: the bot to check</span>

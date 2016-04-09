@@ -39,6 +39,8 @@
             
   <h1>Source code for media_manager.mainuserinterfaces.MainArgsParser</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LICENSE:</span>
+
 <span class="sd">Copyright 2015,2016 Hermann Krumrey</span>
 
 <span class="sd">This file is part of media-manager.</span>
@@ -58,13 +60,15 @@
 
 <span class="sd">    You should have received a copy of the GNU General Public License</span>
 <span class="sd">    along with media-manager.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">LICENSE</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 
-<div class="viewcode-block" id="MainArgsParser"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.html#media_manager.mainuserinterfaces.MainArgsParser.MainArgsParser">[docs]</a><span class="k">class</span> <span class="nc">MainArgsParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="MainArgsParser"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.MainArgsParser.html#media_manager.mainuserinterfaces.MainArgsParser.MainArgsParser">[docs]</a><span class="k">class</span> <span class="nc">MainArgsParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that implements an Argument Parser that enables non-interactive use of the media manager program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -77,7 +81,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="n">active_plugins</span>
 
-<div class="viewcode-block" id="MainArgsParser.run"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.html#media_manager.mainuserinterfaces.MainArgsParser.MainArgsParser.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MainArgsParser.run"><a class="viewcode-back" href="../../../media_manager.mainuserinterfaces.MainArgsParser.html#media_manager.mainuserinterfaces.MainArgsParser.MainArgsParser.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">:</span>
