@@ -27,6 +27,23 @@ LICENSE
 import os
 from os.path import expanduser
 
+main_dir = os.path.join(expanduser('~'), ".mediamanager")
+"""
+The main directory path used for installation. It is located in the user's home directory
+in a subdirectory named .mediamanager, which will show as a hidden directory in Linux.
+"""
+
+config_dir = os.path.join(main_dir, "configs")
+"""
+The config file directory path. This is a subdirectory of main_dir. It is designated to hold various
+configuration files.
+"""
+
+main_config = os.path.join(config_dir, "mainconfig")
+"""
+The path to the main configuration file of the program.
+"""
+
 
 class Installer(object):
     """
@@ -40,24 +57,8 @@ class Installer(object):
     in expanding the project further should it become more complicated in the future
     """
 
-    main_dir = os.path.join(expanduser('~'), ".mediamanager")
-    """
-    The main directory path used for installation. It is located in the user's home directory
-    in a subdirectory named .mediamanager, which will show as a hidden directory in Linux.
-    """
-
-    config_dir = os.path.join(main_dir, "configs")
-    """
-    The config file directory path. This is a subdirectory of main_dir. It is designated to hold various
-    configuration files.
-    """
-
-    main_config = os.path.join(config_dir, "mainconfig")
-    """
-    The path to the main configuration file of the program.
-    """
-
-    def is_installed(self) -> bool:
+    @staticmethod
+    def is_installed() -> bool:
         """
         Checks if the program is installed
         :return: True is it is installed, False if not
@@ -65,33 +66,35 @@ class Installer(object):
         # This checks if the previously defined directories and files exist or not
         # If they all exist, the program is installed, otherwise the program
         # is not installed and has to be installed in the next step
-        if not os.path.isdir(self.main_dir) or \
-                not os.path.isdir(self.config_dir) or \
-                not os.path.isfile(self.main_config):
+        if not os.path.isdir(main_dir) or \
+                not os.path.isdir(config_dir) or \
+                not os.path.isfile(main_config):
             return False
         return True
 
-    def install(self) -> None:
+    @staticmethod
+    def install() -> None:
         """
         Installs the program in the user's home directory
         :return: None
         """
         # Checks each of the directories and files again if they exit and adds them
         # if necessary
-        if not os.path.isdir(self.main_dir):
-            os.makedirs(self.main_dir)
-        if not os.path.isdir(self.config_dir):
-            os.makedirs(self.config_dir)
-        if not os.path.isfile(self.main_config):
+        if not os.path.isdir(main_dir):
+            os.makedirs(main_dir)
+        if not os.path.isdir(config_dir):
+            os.makedirs(config_dir)
+        if not os.path.isfile(main_config):
             # Here, a default config file is written
-            self.__write_main_config__()
+            Installer.__write_main_config__()
 
-    def __write_main_config__(self) -> None:
+    @staticmethod
+    def __write_main_config__() -> None:
         """
         Writes a default main config file
         :return: None
         """
-        file = open(self.main_config, "w")
+        file = open(main_config, "w")
         # The active plugins section
         file.write("[plugins]\n")
         file.write("renamer = True\n")

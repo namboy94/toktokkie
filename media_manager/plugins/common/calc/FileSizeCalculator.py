@@ -38,21 +38,21 @@ class FileSizeCalculator(object):
         Turns a size string into a byte integer
         """
         try:
-            byte_size = int(size_string)
+            byte_size = int(float(size_string))
         except ValueError:
-            byte_size = int(size_string[:-1])
-            unit = size_string[-1:].lower()
+            try:
+                byte_size = int(float(size_string[:-1]))
+                unit = size_string[-1:].lower()
+            except ValueError:
+                byte_size = int(float(size_string[:-2]))
+                unit = size_string[-2:].lower()
+
             multiplier = 1
-            if unit == "k":
+            if unit in ["k", "kb"]:
                 multiplier = math.pow(2, 10)
-            elif unit in "m":
+            elif unit in ["m", "mb"]:
                 multiplier = math.pow(2, 20)
-            elif unit == "g":
+            elif unit in ["g", "gb"]:
                 multiplier = math.pow(2, 30)
-            elif unit == "b":
-                new_unit = size_string[-2:]
-                new_unit = new_unit[:-1]
-                recursive_size_string = size_string[:-2] + new_unit
-                return FileSizeCalculator.get_byte_size_from_string(recursive_size_string)
             byte_size *= multiplier
         return byte_size

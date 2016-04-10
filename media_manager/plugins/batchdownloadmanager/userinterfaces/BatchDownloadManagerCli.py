@@ -253,6 +253,8 @@ class BatchDownloadManagerCli(GenericCli):
         BatchDownloadManager.start_download_process(
             preparation, downloader, self.selected_packs, self.auto_rename, progress)
 
+        print("Download complete")
+
     @staticmethod
     def check_show_directory(directory):
         """

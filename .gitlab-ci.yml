@@ -15,7 +15,7 @@ clone:
 uninstall:
   stage: setup
   script:
-    - sudo pip3.5 uninstall media_manager
+    - sudo pip3.5 uninstall -y media_manager
 
 run_unit_tests:
   stage: test

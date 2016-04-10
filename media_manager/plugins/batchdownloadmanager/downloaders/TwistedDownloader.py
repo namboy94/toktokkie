@@ -45,7 +45,7 @@ class TwistedDownloader(object):
     The plan is to replace his script with one of my own once twisted supports python 3.
     """
     
-    def __init__(self, packs, progress_struct, show_name="", episode_number=0, season_number=0):
+    def __init__(self, packs, progress_struct, target_directory, show_name="", episode_number=0, season_number=0):
         """
         Constructor
         :param packs: the packs to be downloaded
@@ -53,11 +53,13 @@ class TwistedDownloader(object):
         :param show_name: the show name for auto renaming
         :param episode_number: the (starting) episode number for auto renaming
         :param season_number: the season number for auto renaming
+        :param target_directory: The target download directory
         :return: void
         """
         self.packs = packs
         self.progress_struct = progress_struct
         self.auto_rename = False
+        self.target_directory = target_directory
         if show_name and episode_number > 0 and season_number > 0:
             self.show_name = show_name
             self.episode_number = episode_number
@@ -85,7 +87,7 @@ class TwistedDownloader(object):
         print("Downloading pack: " + pack.to_string())
 
         script = get_location("xdccbot.py")
-        dl_folder = os.path.join(expanduser('~'), "Downloads")
+        dl_folder = self.target_directory
 
         dl_command = ["python2",
                       script,
@@ -104,8 +106,9 @@ class TwistedDownloader(object):
                 self.progress_struct.single_progress = int(line.split("PROGRESS:")[1])
                 single_progress = float(self.progress_struct.single_progress) / float(self.progress_struct.single_size)
                 single_progress *= 100.00
+                single_progress_formated_string = "%.2f" % single_progress
                 print(line.split("INFO:root:")[1] + " / " + str(self.progress_struct.single_size) +
-                      " (" + str(int(single_progress)) + "%)", end="\r")
+                      " (" + single_progress_formated_string + "%)", end="\r")
             elif "DLCOMPLETE:" in line:
                 file_name = line.split("DLCOMPLETE:")[1]
                 print("Finished Downloading " + file_name)
