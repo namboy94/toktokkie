@@ -12,6 +12,11 @@ clone:
     - git clone http://gitlab.namibsun.net/namboy94/media-manager.git
     - git clone git@gitlab.namibsun.net:namboy94/media-manager.wiki.git
 
+uninstall:
+  stage: setup
+  script:
+    - sudo pip3.5 uninstall media_manager
+
 run_unit_tests:
   stage: test
   script:
@@ -75,6 +80,7 @@ delete_clone:
 
 upgrade_from_pypi:
   stage: upgrade
+  when: always
   script:
     - sudo pip3.5 install media_manager --upgrade
     - sleep 5
