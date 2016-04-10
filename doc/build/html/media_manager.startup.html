@@ -47,14 +47,26 @@
 <span id="media-manager-startup-installer-module"></span><h2>media_manager.startup.Installer module<a class="headerlink" href="#module-media_manager.startup.Installer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="media_manager.startup.Installer.Installer">
-<em class="property">class </em><code class="descclassname">media_manager.startup.Installer.</code><code class="descname">Installer</code> &rarr; None<a class="reference internal" href="_modules/media_manager/startup/Installer.html#Installer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.startup.Installer.Installer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">media_manager.startup.Installer.</code><code class="descname">Installer</code><a class="reference internal" href="_modules/media_manager/startup/Installer.html#Installer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.startup.Installer.Installer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Class that handles installation of the program</p>
+<p>This Class handles the installation of the program</p>
+<p>The media-manager program uses a hidden config directory inside the
+user&#8217;s home directory to store various files, like a file containing
+the active plugins</p>
+<p>It is currently very bare bones and not all that necessary, but it may help
+in expanding the project further should it become more complicated in the future</p>
+<dl class="attribute">
+<dt id="media_manager.startup.Installer.Installer.config_dir">
+<code class="descname">config_dir</code><em class="property"> = '/home/hermann/.mediamanager/configs'</em><a class="headerlink" href="#media_manager.startup.Installer.Installer.config_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>The config file directory path. This is a subdirectory of main_dir. It is designated to hold various
+configuration files.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="media_manager.startup.Installer.Installer.install">
 <code class="descname">install</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; None<a class="reference internal" href="_modules/media_manager/startup/Installer.html#Installer.install"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.startup.Installer.Installer.install" title="Permalink to this definition">¶</a></dt>
-<dd><p>Installs the program
-:return: void</p>
+<dd><p>Installs the program in the user&#8217;s home directory
+:return: None</p>
 </dd></dl>
 
 <dl class="method">
@@ -62,6 +74,19 @@
 <code class="descname">is_installed</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; bool<a class="reference internal" href="_modules/media_manager/startup/Installer.html#Installer.is_installed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#media_manager.startup.Installer.Installer.is_installed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the program is installed
 :return: True is it is installed, False if not</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="media_manager.startup.Installer.Installer.main_config">
+<code class="descname">main_config</code><em class="property"> = '/home/hermann/.mediamanager/configs/mainconfig'</em><a class="headerlink" href="#media_manager.startup.Installer.Installer.main_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to the main configuration file of the program.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="media_manager.startup.Installer.Installer.main_dir">
+<code class="descname">main_dir</code><em class="property"> = '/home/hermann/.mediamanager'</em><a class="headerlink" href="#media_manager.startup.Installer.Installer.main_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main directory path used for installation. It is located in the user&#8217;s home directory
+in a subdirectory named .mediamanager, which will show as a hidden directory in Linux.</p>
 </dd></dl>
 
 </dd></dl>

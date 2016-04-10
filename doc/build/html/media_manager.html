@@ -291,9 +291,11 @@ obsolete, but as of right now it is required</p>
 
 <dl class="attribute">
 <dt id="media_manager.metadata.Globals.selected_grid_gui_framework">
-<code class="descname">selected_grid_gui_framework</code><em class="property"> = None</em><a class="headerlink" href="#media_manager.metadata.Globals.selected_grid_gui_framework" title="Permalink to this definition">¶</a></dt>
-<dd><p>This stores the selected GUI framework, it is initialized as None and will be initialized
-at some point in the main module&#8217;s main method as either Gtk3GridTemplate or TkGridTemplate</p>
+<code class="descname">selected_grid_gui_framework</code><a class="headerlink" href="#media_manager.metadata.Globals.selected_grid_gui_framework" title="Permalink to this definition">¶</a></dt>
+<dd><p>This stores the selected GUI framework, it is initialized as TkGridTemplate to avoid NoneType
+errors. The variable will be correctly set at some point in the main module&#8217;s main method as
+either Gtk3GridTemplate or TkGridTemplate.</p>
+<p>alias of <code class="xref py py-class docutils literal"><span class="pre">TkGridTemplate</span></code></p>
 </dd></dl>
 
 <dl class="attribute">

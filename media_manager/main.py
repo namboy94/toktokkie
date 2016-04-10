@@ -29,6 +29,8 @@ import sys
 import configparser
 from os.path import expanduser
 
+# This import construct enables the program to be run when installed via
+# setuptools as well as portable
 try:
     from startup.Installer import Installer
     from metadata import Globals
@@ -62,8 +64,8 @@ def main(ui_override: str = "") -> None:
 
     # This checks if the program is already correctly installed in the user's
     # home directory, if this is not the case the program will be installed now.
-    if not Installer().is_installed():
-        Installer().install()
+    if not Installer.is_installed():
+        Installer.install()
 
     cli_mode = False
     cli_arg_mode = False

@@ -69,6 +69,8 @@
 <span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">expanduser</span>
 
+<span class="c1"># This import construct enables the program to be run when installed via</span>
+<span class="c1"># setuptools as well as portable</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">startup.Installer</span> <span class="kn">import</span> <span class="n">Installer</span>
     <span class="kn">from</span> <span class="nn">metadata</span> <span class="kn">import</span> <span class="n">Globals</span>
@@ -81,7 +83,7 @@
     <span class="kn">from</span> <span class="nn">media_manager.mainuserinterfaces.MainArgsParser</span> <span class="kn">import</span> <span class="n">MainArgsParser</span>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../media_manager.html#media_manager.main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">ui_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../media_manager.main.html#media_manager.main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">ui_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main method that runs the program.</span>
 
@@ -102,8 +104,8 @@
 
     <span class="c1"># This checks if the program is already correctly installed in the user&#39;s</span>
     <span class="c1"># home directory, if this is not the case the program will be installed now.</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">Installer</span><span class="p">()</span><span class="o">.</span><span class="n">is_installed</span><span class="p">():</span>
-        <span class="n">Installer</span><span class="p">()</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Installer</span><span class="o">.</span><span class="n">is_installed</span><span class="p">():</span>
+        <span class="n">Installer</span><span class="o">.</span><span class="n">install</span><span class="p">()</span>
 
     <span class="n">cli_mode</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">cli_arg_mode</span> <span class="o">=</span> <span class="bp">False</span>

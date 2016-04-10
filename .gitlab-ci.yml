@@ -10,6 +10,7 @@ clone:
   script:
     - cd
     - git clone http://gitlab.namibsun.net/namboy94/media-manager.git
+    - git clone git@gitlab.namibsun.net:namboy94/media-manager.wiki.git
 
 run_unit_tests:
   stage: test
@@ -24,6 +25,21 @@ generate_statistics:
     - cd
     - cd media-manager
     - git_stats generate
+
+generate_documentation:
+  stage: test
+  script:
+    - cd
+    - cd media-manager/doc
+    - make clean
+    - make buildsource
+    - make html
+    - cd
+    - cd media-manager.wiki
+    - rm -rf html
+    - cp -r ../media-manager/doc/build/html .
+    - git add *
+    - git commit -m "updated documentation"
 
 upload_to_pypi:
   stage: upload
@@ -42,12 +58,20 @@ upload_statistics:
     - rsync -avP --delete-after git_stats/ www.krumreyh.de@ssh.strato.de:~/git_stats_pages/media-manager
     - ssh www.krumreyh.de@ssh.strato.de 'rsync -av --delete-after git_stats_pages Homepage/'
 
+upload_documentation:
+  stage: upload
+  script:
+    - cd
+    - cd media-manager.wiki
+    - git push -u origin master
 
 delete_clone:
   stage: cleanup
+  when: always
   script:
     - cd
     - rm -rf media-manager
+    - rm -rf media-manager.wiki
 
 upgrade_from_pypi:
   stage: upgrade

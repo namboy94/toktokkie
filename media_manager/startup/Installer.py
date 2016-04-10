@@ -30,23 +30,41 @@ from os.path import expanduser
 
 class Installer(object):
     """
-    Class that handles installation of the program
+    This Class handles the installation of the program
+
+    The media-manager program uses a hidden config directory inside the
+    user's home directory to store various files, like a file containing
+    the active plugins
+
+    It is currently very bare bones and not all that necessary, but it may help
+    in expanding the project further should it become more complicated in the future
     """
 
-    def __init__(self) -> None:
-        """
-        Constructor
-        :return: void
-        """
-        self.main_dir = os.path.join(expanduser('~'), ".mediamanager")
-        self.config_dir = os.path.join(self.main_dir, "configs")
-        self.main_config = os.path.join(self.config_dir, "mainconfig")
+    main_dir = os.path.join(expanduser('~'), ".mediamanager")
+    """
+    The main directory path used for installation. It is located in the user's home directory
+    in a subdirectory named .mediamanager, which will show as a hidden directory in Linux.
+    """
+
+    config_dir = os.path.join(main_dir, "configs")
+    """
+    The config file directory path. This is a subdirectory of main_dir. It is designated to hold various
+    configuration files.
+    """
+
+    main_config = os.path.join(config_dir, "mainconfig")
+    """
+    The path to the main configuration file of the program.
+    """
 
     def is_installed(self) -> bool:
         """
         Checks if the program is installed
         :return: True is it is installed, False if not
         """
+        # This checks if the previously defined directories and files exist or not
+        # If they all exist, the program is installed, otherwise the program
+        # is not installed and has to be installed in the next step
         if not os.path.isdir(self.main_dir) or \
                 not os.path.isdir(self.config_dir) or \
                 not os.path.isfile(self.main_config):
@@ -55,27 +73,35 @@ class Installer(object):
 
     def install(self) -> None:
         """
-        Installs the program
-        :return: void
+        Installs the program in the user's home directory
+        :return: None
         """
+        # Checks each of the directories and files again if they exit and adds them
+        # if necessary
         if not os.path.isdir(self.main_dir):
             os.makedirs(self.main_dir)
         if not os.path.isdir(self.config_dir):
             os.makedirs(self.config_dir)
         if not os.path.isfile(self.main_config):
+            # Here, a default config file is written
             self.__write_main_config__()
 
     def __write_main_config__(self) -> None:
         """
-        Writes a default config file
-        :return: void
+        Writes a default main config file
+        :return: None
         """
         file = open(self.main_config, "w")
+        # The active plugins section
         file.write("[plugins]\n")
         file.write("renamer = True\n")
         file.write("batch-download = True\n")
         file.write("iconizer = True\n")
         file.write("show-manager = True\n")
+
+        # Here are some default things entered. Even though I believe that they
+        # are not used anywhere in the program, but they at least don't break anything.
+        # And they may proove useful in the future
         file.write("\n[defaults]\n")
         file.write("downloader = hexchat\n#options = (twisted|hexchat)\n")
-        file.close()
+        file.close()  # close, because that's what you should do!

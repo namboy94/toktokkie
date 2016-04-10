@@ -26,7 +26,7 @@ LICENSE
 
 try:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.showmanager.userinterfaces.ShowManagerGUI import ShowManagerGui
+    from plugins.showmanager.userinterfaces.ShowManagerGui import ShowManagerGui
     from plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
     from metadata import Globals
 except ImportError:

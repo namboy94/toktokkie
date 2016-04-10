@@ -28,7 +28,7 @@ try:
     from plugins.renamer.RenamerPlugin import RenamerPlugin
     from plugins.iconizer.IconizerPlugin import IconizerPlugin
     from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
-    from plugins.media_manager.plugins.showmanager.ShowManagerPlugin import ShowManagerPlugin
+    from plugins.showmanager.ShowManagerPlugin import ShowManagerPlugin
 except ImportError:
     from media_manager.plugins.renamer.RenamerPlugin import RenamerPlugin
     from media_manager.plugins.iconizer.IconizerPlugin import IconizerPlugin

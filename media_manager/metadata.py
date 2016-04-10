@@ -35,10 +35,11 @@ class Globals(object):
     obsolete, but as of right now it is required
     """
 
-    selected_grid_gui_framework = None
+    selected_grid_gui_framework = TkGridTemplate
     """
-    This stores the selected GUI framework, it is initialized as None and will be initialized
-    at some point in the main module's main method as either Gtk3GridTemplate or TkGridTemplate
+    This stores the selected GUI framework, it is initialized as TkGridTemplate to avoid NoneType
+    errors. The variable will be correctly set at some point in the main module's main method as
+    either Gtk3GridTemplate or TkGridTemplate.
     """
 
     gtk3_gui_template = Gtk3GridTemplate
