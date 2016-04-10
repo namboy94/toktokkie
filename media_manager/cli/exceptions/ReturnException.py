@@ -27,6 +27,7 @@ LICENSE
 
 class ReturnException(Exception):
     """
-    Exception that gets called when the user enters a command which will result in exiting the current cli mode
+    This class models an Exception that gets raised by the GenericCli when the user
+    enters a command which will result in exiting the current CLI.
     """
     pass
