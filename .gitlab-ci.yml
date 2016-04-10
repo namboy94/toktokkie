@@ -38,7 +38,7 @@ generate_documentation:
     - cd media-manager.wiki
     - rm -rf html
     - cp -r ../media-manager/doc/build/html .
-    - git add *
+    - git add --all
     - git commit -m "updated documentation"
 
 upload_to_pypi:
