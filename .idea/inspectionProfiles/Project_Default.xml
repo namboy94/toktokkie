@@ -28,6 +28,7 @@
           <option value="gi.repository.GObject" />
           <option value="twisted.internet.reactor.stop" />
           <option value="twisted.internet.reactor.*" />
+          <option value="object.start" />
         </list>
       </option>
     </inspection_tool>

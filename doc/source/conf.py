@@ -369,8 +369,15 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 from sphinx.ext.autodoc import between
 
 
+def skip(app, what, name, obj, skip, options):
+    if name == "__init__":
+        return False
+    return skip
+
+
 def setup(app):
     # Register a sphinx.ext.autodoc.between listener to ignore everything
     # between lines that contain the word IGNORE
     app.connect('autodoc-process-docstring', between('^.*LICENSE.*$', exclude=True))
+    app.connect("autodoc-skip-member", skip)
     return app

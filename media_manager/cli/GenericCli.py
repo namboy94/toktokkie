@@ -37,68 +37,122 @@ except ImportError:
 
 class GenericCli(object):
     """
-    Class that defines some behaviour of the CLI
+    Class that defines how a CLI has to react.
+    It defines interface structures to somewhat standardize the methods how
+    user input is parsed.
     """
 
+    parent = None
+    """
+    A reference to a possible parent CLI, to which this CLI can return to in case
+    quit() is called
+    """
+
+    # parent is actually a GenericCli object
     def __init__(self, parent=None) -> None:
         """
-        Constructor
-        :param parent: The parent CLI to which the CLI can return to
-        :return: void
+        Constructor of the GenericCli Class
+
+        Creates a new CLI object. It has the option to store a reference
+        to a parent CLI as a local variable.
+
+        If a parent is specified, the program will return into said parent
+        when the stop() method is called. Otherwise, the program will end.
+
+        :param parent: The parent CLI to which the CLI can return to.
+                        It is a GenericCli object.
+        :return: None
         """
         self.parent = parent
 
-    def start(self, title=None):
+    def start(self, title: str = None) -> None:
         """
-        Starts the CLI
-        :param title: Title text shown once
-        :return: void
+        Starts the CLI.
+
+        It loops the mainloop method indefinitely and checks for ReturnExceptions,
+        which cause the CLI to return to its parent or quit completely.
+
+        :param title: A string that is shown only once at the beginning of the loop
+        :return: None
         """
+        # Try/Except to catch ReturnExceptions, which indicate that the user wants to quit
+        # the CLI.
         try:
+            # Only show the title once, or not at all if none was specified
             if title is not None:
                 print(title)
+
+            # This loops the CLI indefinitely
             while True:
                 self.mainloop()
+
         except ReturnException:
+            # The print call generates a new empty line as a seperator.
+            # This is purely aesthetical.
             print()
+            # Stops the CLI
             self.stop()
 
-    def stop(self):
+    def stop(self) -> None:
         """
-        Ends the CLI and restarts the parent CLI, or exits with code 0 if no parent was defined
-        :return: void
+        Ends the CLI and restarts the parent CLI, or exits with code 0 if no parent was defined.
+        :return: None
         """
         if self.parent is not None:
+            # Re-starts the parent if it was specified in the constructor
             self.parent.start()
         else:
+            # Else the program exits with exit code 0
             sys.exit(0)
 
-    def mainloop(self):
+    def mainloop(self) -> None:
         """
-        The main loop of the CLI
+        This method defines a single loop of the program. It is called repeatedly until the
+        CLI quits. This method must be implemented by subclasses of GenericCli
         :return: void
         """
         raise NotImplementedError()
 
     @staticmethod
-    def ask_user(message=None, default=None):
+    def ask_user(message: str = None, default=None) -> str:
         """
-        Creates a user prompt with default behaviours, reducing code reuse
-        :param message: Message to be displayed to the user
-        :param default: Default value if only enter/return is pressed
-        """
-        if default is None:
-            prompt_message = message
-        else:
-            prompt_message = message + "[" + default + "]"
+        Creates a user prompt with default behaviours, reducing code reuse.
+        It is used like a smarter input() method.
 
+        It checks if the user enters quit, return or exit, in which case the
+        method raises a ReturnException which should be handled by the start()
+        method.
+
+        This method also supports the use of a default response, which will be returned
+        if the user enters an empty string.
+
+        A message can also be displayed to the user before the actual prompt.
+
+        :param message: Optional message to be displayed to the user
+        :param default: Optional default value if only enter/return is pressed
+        :raises ReturnException: If the user enters quit, return or exit, this
+                    Exception is raised in order for the start method to correctly
+                    handle this case
+        :return: The user input
+        """
+
+        # Creates the message string
+        prompt_message = ""
         if message is not None:
-            user_response = input(prompt_message)
-        else:
-            user_response = input("\n")
+            prompt_message = message
+        if default is not None:
+            prompt_message += "[" + default + "]"
+
+        # Asks the user for input
+        user_response = input(prompt_message)
+
+        # Does rudimentary checks of the user input
         if user_response.lower() in ["quit", "return", "exit"]:
+            # Raises Exception to quit the CLI
             raise ReturnException
         elif user_response == "" and default is not None:
+            # Returns the default string, user entered nothing
             return default
         else:
+            # Returns the string entered by the user
             return user_response

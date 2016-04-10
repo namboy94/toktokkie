@@ -26,50 +26,92 @@ LICENSE
 
 import argparse
 import sys
+from typing import List
+
+try:
+    from plugins.common.GenericPlugin import GenericPlugin
+except ImportError:
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
 
 
 class MainArgsParser(object):
     """
-    Class that implements an Argument Parser that enables non-interactive use of the media manager program
+    Class that implements an Argument Parser that enables non-interactive use
+    of the media manager program
+
+    It defines a Argument Parser that queries the different possible options
+    from the currently active plugins
     """
 
-    def __init__(self, active_plugins) -> None:
+    active_plugins = []
+    """
+    A list of the active plugins, established via the constructor
+    """
+
+    def __init__(self, active_plugins: List[GenericPlugin]) -> None:
         """
-        Constructor
+        Constructor of the MainArgsParser
+
+        It stores the active plugins as a local lost variable
+
         :param active_plugins: The plugins to be enabled
-        :return: void
+        :return: None
         """
         self.plugins = active_plugins
 
-    def run(self):
+    def run(self) -> None:
+        """
+        Runs the argument parser.
+
+        It sets up the argument parser first, getting the arguments from the active
+        plugins, then parses them and acts according to the user's input in
+        conclusion.
+
+        :return: None
+        """
+        # Creates a new ArgumentParser object
         parser = argparse.ArgumentParser()
 
+        # Gets command line options from all active plugins
         for plugin in self.plugins:
+            # This adds the option to specify which plugin will be used
             parser.add_argument("--" + plugin.get_command_name(),
                                 help="Starts plugin " + plugin.get_name(), action="store_true")
+            # This adds additional True/False flag values to the argument parser
             for argument in plugin.get_parser_arguments()[0]:
                 parser.add_argument("--" + argument["tag"], help=argument["desc"], action="store_true")
+            # This adds additional String storing options to the argument parser
             for argument in plugin.get_parser_arguments()[1]:
                 parser.add_argument("--" + argument["tag"], help=argument["desc"], dest=argument["tag"])
+
+        # This parses the arguments
         args = parser.parse_args()
 
+        # This is a check that there is only one plugin selected.
+        # If this is not the case, the passed arguments are rejected as an invalid
+        # argument combination and the program ends
         exactly_one_plugin = False
-
         for plugin in self.plugins:
+            # getattr is used in conjunction with replace("-", "_") because the
+            # argument parser mangles the names somehow
             if getattr(args, plugin.get_command_name().replace("-", "_")):
-                if not exactly_one_plugin:
+                if not exactly_one_plugin:  # If this is the first found plugin
                     exactly_one_plugin = True
-                elif exactly_one_plugin:
+                elif exactly_one_plugin:  # If another plugin was already found
                     print("Illegal argument combination. Only select one plugin at a time")
                     sys.exit(1)
 
+        # This now runs the plugin.
         plugin_run = False
-
         for plugin in self.plugins:
+            # getattr is used in conjunction with replace("-", "_") because the
+            # argument parser mangles the names somehow
             if getattr(args, plugin.get_command_name().replace("-", "_")):
                 if len(sys.argv) == 2:
+                    # This just starts the CLI of that plugin in interactive mode
                     plugin.start_cli(None)
                 else:
+                    # This runs the plugin in true argument-passing mode
                     plugin.start_args_parse(args)
                 plugin_run = True
 
