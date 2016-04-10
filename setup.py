@@ -34,9 +34,9 @@ def readme():
         return f.read()
 
 
-setup(name='media-manager',
+setup(name=metadata.project_name,
       version=metadata.version_number,
-      description='A personal media manager program',
+      description=metadata.project_description,
       long_description=readme(),
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: End Users/Desktop',
@@ -46,10 +46,10 @@ setup(name='media-manager',
                    'Natural Language :: English',
                    'Operating System :: POSIX :: Linux'
                    ],
-      url='http://namibsun.net/namboy94/media-manager',
-      author='Hermann Krumrey',
-      author_email='hermann@krumreyh.com',
-      license='GNU GPL3',
+      url=metadata.project_url,
+      author=metadata.author_name,
+      author_email=metadata.author_email,
+      license=metadata.license_type,
       packages=find_packages(),
       install_requires=['tvdb_api', 'beautifulsoup4', 'gfworks'],
       dependency_links=['https://git.gnome.org/browse/pygobject'],

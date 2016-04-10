@@ -58,7 +58,38 @@ The metadata is stored here. It can be used by any other module in this project 
 notably by the setup.py file
 """
 
+project_name = "media-manager"
+"""
+The name of the project
+"""
+
+project_description = "A personal media manager program"
+"""
+A short description of the project
+"""
+
 version_number = "0.9.1.2"
 """
 The current version of the program.
+"""
+
+project_url = "http://namibsun.net/namboy94/media-manager"
+"""
+A URL linking to the home page of the project, in this case a
+self-hosted Gitlab page
+"""
+
+author_name = "Hermann Krumrey"
+"""
+The name(s) of the project author(s)
+"""
+
+author_email = "hermann@krumreyh.com"
+"""
+The email address(es) of the project author(s)
+"""
+
+license_type = "GNU GPL3"
+"""
+The project's license type
 """
