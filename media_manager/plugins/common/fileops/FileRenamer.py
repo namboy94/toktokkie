@@ -24,25 +24,26 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 import shutil
 
 
 class FileRenamer(object):
     """
-    Class that contains static methods to help rename files
+    Class that contains static methods to help rename files using convenient
+    method arguments
     """
 
     @staticmethod
-    def rename_file(file, new_name):
+    def rename_file(file: str, new_name: str) -> str:
         """
         Renames a file to a new file name, keeping the extension and file path.
         :param file: the file to be renamed
         :param new_name: the new name of the file
         """
-        original_file_name = os.path.basename(file)
-        extension = os.path.splitext(original_file_name)[1]
-
-        new_file = os.path.join(os.path.dirname(file), new_name + extension)
-        shutil.move(file, new_file)
-        return new_file
+        original_file_name = os.path.basename(file)  # Get the original file name (for calc'ing the extension)
+        extension = os.path.splitext(original_file_name)[1]  # Get the file extension
+        new_file = os.path.join(os.path.dirname(file), new_name + extension)  # Calculate the new file path
+        shutil.move(file, new_file)  # Rename the file
+        return new_file  # Return the new path to the file

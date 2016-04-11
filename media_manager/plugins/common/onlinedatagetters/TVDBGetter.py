@@ -25,6 +25,7 @@ LICENSE
 """
 
 import tvdb_api
+from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
 
 try:
     from plugins.common.fileops.FileRenamer import FileRenamer
@@ -34,49 +35,60 @@ except ImportError:
 
 class TVDBGetter(object):
     """
-    the TVDBGetter class
+    Class that uses the tvdb_api to get information from thetvdb.com
+
+    It's possile to find episode names for tv shows, as well as rename episode files
+    using conventions accepted by most major media management software like
+    Plex or Kodi/XBMC
     """
 
-    def __init__(self, tv_show, season, episode):
+    tv_show = ""
+    """
+    The TV show to search
+    """
+
+    season = -1
+    """
+    The Season number to search
+    """
+
+    episode = -1
+    """
+    The episode number to search
+    """
+
+    def __init__(self, tv_show: str, season: int, episode: int) -> None:
         """
-        Constructor
+        Constructor for the TVDBGetter class, which stores the metadata for the
+        searched episode name as local variables
+
         :param tv_show: the tv show's name
         :param season: the season to search
         :param episode: the episode to search
-        :return: void
+        :return: None
         """
         self.tv_show = tv_show
         self.season = season
         self.episode = episode
 
-    def find_episode_name(self):
+    def find_episode_name(self) -> str:
         """
         Finds the episode name and returns it as string
-        :return the episode name
+        :return: the episode name
         """
         return self.__get_episode_name__()
 
-    def rename_episode_file(self, file):
-        """
-        Finds the episode name and then renames a file.
-        :param file: the file top rename
-        :return: void
-        """
-        new_name = self.__get_episode_name__()
-        if new_name:
-            FileRenamer.rename_file(file, new_name)
-
     def __get_episode_name__(self):
         """
-        Searches for the episode name
-        :return: the episode name, or "" if an exception occured
+        Searches for the episode name with help of the TV Database
+        :return: the episode name, or "Episode X" if an exception occured
         """
         try:
+            # Get the episode name from tvdb
             tvdb = tvdb_api.Tvdb()
             episode_info = tvdb[self.tv_show][self.season][self.episode]
             episode_name = episode_info['episodename']
             return episode_name
-        except Exception as e:
-            print("Check which kind of Exception this is")
-            print(str(e))
-            return ""
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound):
+            # If not found, just return generic name
+            return "Episode " + str(self.episode)
