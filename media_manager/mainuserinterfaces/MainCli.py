@@ -25,67 +25,113 @@ LICENSE
 """
 
 # imports
+from typing import List
+
 try:
     from cli.GenericCli import GenericCli
     from cli.exceptions.ReturnException import ReturnException
+    from plugins.common.GenericPlugin import GenericPlugin
     import metadata
 except ImportError:
     from media_manager.cli.GenericCli import GenericCli
     from media_manager.cli.exceptions.ReturnException import ReturnException
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
     import media_manager.metadata as metadata
 
 
 class MainCli(GenericCli):
     """
-    Class that implements the Main CLI
+    Class that implements the Main CLI for the media manager program
+
+    It prints the current version of the program to the console, then lists
+    all the available plugins, then prints an instructional string to the console
+    and waits for user input.
+
+    A plugin is selected by entering the index number displayed to the left of the
+    plugin name.
     """
 
-    def __init__(self, active_plugins) -> None:
+    plugin_dict = {}
+    """
+    A dictionary that maps index numbers to plugins
+    """
+
+    plugin_list_string = ""
+    """
+    The plugins displayed together with their indices as a newline-separated string
+    They are sorted via their indices in ascending order
+    """
+
+    def __init__(self, active_plugins: List[GenericPlugin]) -> None:
         """
-        Constructor
+        Constructor of the Main CLI
+
+        It invokes the GenericCli's init Constructor  without specifying
+        a parent, as this is the top-level CLI of the program.
+
+        It also stores the list of active plugins given via parameter as a
+        local variable.
+
+        These plugins are then parsed and added to the plugin_dict and plugin_list
+        accordingly.
+
         :param active_plugins: The plugins to be displayed
-        :return: void
+        :return: None
         """
         super().__init__()
-        self.plugins = active_plugins
 
-    def start(self, title=None) -> None:
-        """
-        Starts the CLI
-        :return: void
-        """
-        super().start("MEDIA MANAGER VERSION " + metadata.version_number + "\n\n" + "Available Plugins:")
+        # Parse the plugins
+        i = 1  # index number counter
+        for plugin in active_plugins:
+            # This is the name of the plugin + the index number, prepended by a tab character and appended by newline
+            self.plugin_list_string += "\t" + str(i) + ". " + plugin.get_name() + "\n"
+            # stores the plugin into the dictionary with the tag being the index number
+            self.plugin_dict[i] = plugin
+            i += 1  # increment the index number
 
-    def mainloop(self):
+    def start(self, title: str = None) -> None:
         """
-        The main loop of the CLI
-        :return: void
+        Starts the CLI by invoking the GenericCli's start method with a title,
+        which prints the name of the program and the current version number as well as
+        "Available Plugins:" and all active plugins (the strings from plugin_list)
+
+        :return: None
         """
+        # Generates the Greeting/Title Message
+        greeting_message = "MEDIA MANAGER VERSION " +\
+                           metadata.version_number +\
+                           "\n\n" + "Available Plugins:\n" +\
+                           self.plugin_list_string
+
+        super().start(greeting_message)
+
+    def mainloop(self) -> None:
+        """
+        The main looping method of the CLI. This will be repeated until the user
+        either quits the program or starts one of the plugins
+
+        It asks the user for input and allows him/her to start a plugin,
+        quit the program or list all available plugins once more
+
+        :return: None
+        """
+        # Prints an empty string to create a sperator between loops
         print()
 
-        plugin_dict = {}
-        plugin_list = []
-
-        i = 1
-        for plugin in self.plugins:
-            plugin_list.append("\t" + str(i) + ". " + plugin.get_name())
-            plugin_dict[i] = plugin
-            i += 1
-
-        for entry in plugin_list:
-            print(entry)
-
-        while True:
-            user_input = self.ask_user("\nSelect plugin by entering the plugin index number."
-                                       "\nTo exit, enter 'exit' or 'quit'"
-                                       "\nTo get the list of plugins again, enter 'list'\n")
-            try:
-                print()
-                plugin_dict[int(user_input)].start_cli(self)
-                return
-            except (KeyError, ValueError):
-                if user_input.lower() == "list":
-                    for entry in plugin_list:
-                        print(entry)
-                else:
-                    print("Unrecognized Command")
+        # Asks the user for input
+        user_input = self.ask_user("\nSelect plugin by entering the plugin index number."
+                                   "\nTo exit, enter 'exit' or 'quit'"
+                                   "\nTo get the list of plugins again, enter 'list'\n")
+        try:
+            print()  # empty line
+            self.plugin_dict[int(user_input)].start_cli(self)  # Try to start the plugin
+            # This leads to KeyErrors if an invalid key is entered, say 100 if there are only 5 plugins
+            # ValueErrors can occur when the user doesn't enter a string that can be parsed as an integer
+            return
+        except (KeyError, ValueError):  # If starting the plugin fails, parse the user input further
+            if user_input.lower() == "list":
+                print(self.plugin_list_string)
+                # This lists all plugin options once more
+            else:
+                print("Unrecognized Command")
+                # If all fails, give the user this message

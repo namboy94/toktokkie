@@ -24,6 +24,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
 from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
 

@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 LICENSE:
 
@@ -24,6 +25,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 import sys
 import configparser
