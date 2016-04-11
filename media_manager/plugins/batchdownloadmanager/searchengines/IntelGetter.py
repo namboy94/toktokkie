@@ -24,8 +24,10 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import requests
 from bs4 import BeautifulSoup
+from typing import List
 
 try:
     from plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
@@ -37,63 +39,84 @@ except ImportError:
 
 class IntelGetter(GenericGetter):
     """
-    Class that gets xdcc pack lists from intel.haruhichan.com
+    Class that searches the xdcc pack lists from intel.haruhichan.com
     """
     
-    def search(self):
+    def search(self) -> List[XDCCPack]:
         """
-        Conducts the search
+        Method that conducts the xdcc pack search
+
         :return: the search results as a list of XDCCPack objects
         """
-        split_search_term = self.search_term.split(" ")
+        split_search_term = self.search_term.split(" ")  # Splits the search term into single words
+
+        # Generate the search string that can be inserted into intel.haruhichan.com's URL
+        # to conduct a search
+        # Intel Haruhichan uses %20 to separate spaces in their search query URLs
         prepared_search_term = split_search_term[0]
         i = 1
         while i < len(split_search_term):
             prepared_search_term += "%20" + split_search_term[i]
             i += 1
 
-        url = "http://intel.haruhichan.com/?s=" + prepared_search_term
-        content = BeautifulSoup(requests.get(url).text, "html.parser")
-        packs = content.select("td")
+        # Get information from the website
+        url = "http://intel.haruhichan.com/?s=" + prepared_search_term  # Generate the URL
+        content = BeautifulSoup(requests.get(url).text, "html.parser")  # Parse the HTML
+        packs = content.select("td")  # Only get 'td' elements from the HTML
 
-        results = []
+        results = []  # List of search results (XDCCPack objects)
 
-        i = 0
+        i = 0  # Start at the beginning
         bot = ""
         packnumber = ""
         size = ""
         for line in packs:
-            if i % 5 == 0:
+
+            # Explanation how this works:
+            # Every fifth 'td' element is the start of a new search result. They go in order:
+            #       1. Bot Name
+            #       2. Pack Number
+            #       3. Requests (Not used)
+            #       4. File Size
+            #       5. File Name
+            #
+            # This means, that we check with modulo 5 at which td element we currently are, and increment i
+            # after every loop.
+            # If we are at the fifth element, we have all the information we need to generate an XDCCPack
+
+            if i % 5 == 0:  # First Column
                 bot = line.text
-            elif (i - 1) % 5 == 0:
+            elif (i - 1) % 5 == 0:  # Second Column
                 packnumber = int(line.text)
-            elif (i - 2) % 5 == 0:
-                i += 1
+            elif (i - 2) % 5 == 0:  # Third Column (Skip)
+                i += 1  # Move to next 'td' element
                 continue
-            elif (i - 3) % 5 == 0:
+            elif (i - 3) % 5 == 0:  # Fourth Column
                 size = line.text
-            elif (i - 4) % 5 == 0:
+            elif (i - 4) % 5 == 0:  # Fifth/Last Column (Generate XDCCPack)
                 filename = line.text
                 channel = self.get_channel(bot)
                 server = self.get_server(bot)
                 result = XDCCPack(filename, server, channel, bot, packnumber, size)
                 results.append(result)
-            i += 1
+            i += 1  # Move to next 'td element'
 
         return results
 
-    def get_channel(self, bot):
+    def get_server(self, bot: str) -> str:
         """
-        Gets the channel for a given bot
-        :param bot: the bot
-        :return: the channel
+        Checks to which server a given xdcc-serving bot belongs to.
+
+        :param bot: the bot to check the server name for
+        :return: the server name
         """
         return "#intel"
 
-    def get_server(self, bot):
+    def get_channel(self, bot: str) -> str:
         """
-        Gets the server for a given bot
-        :param bot: the bot
-        :return: the server
+        Checks to which channel a given xdcc-serving bot belongs to
+
+        :param bot: the bot to check the channel name for
+        :return: the channel name
         """
         return "irc.rizon.net"

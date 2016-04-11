@@ -32,11 +32,17 @@ try:
 except ImportError:
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
 
+
 class GenericGetter(object):
     """
     Class that defines interfaces for modules that search xdcc pack lists
 
     This enables the seamless addition of additional search engines in the future
+    """
+
+    search_term = ""
+    """
+    The search term used in the search query
     """
 
     def __init__(self, search_term: str) -> None:
@@ -68,6 +74,7 @@ class GenericGetter(object):
     def get_channel(self, bot: str) -> str:
         """
         Checks to which channel a given xdcc-serving bot belongs to
+
         :param bot: the bot to check the channel name for
         :return: the channel name
         """

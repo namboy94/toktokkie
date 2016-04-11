@@ -24,8 +24,10 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import requests
 from bs4 import BeautifulSoup
+from typing import List
 
 try:
     from plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
@@ -37,14 +39,19 @@ except ImportError:
 
 class IxIRCGetter(GenericGetter):
     """
-    Class that gets xdcc packlists from ixirc.com
+    Class that searches the xdcc pack lists from ixirc.com
     """
 
-    def search(self):
+    def search(self) -> List[XDCCPack]:
         """
-        Conducts the search
+        Method that conducts the xdcc pack search. This also automatically finds out the bot and channel
+        via web parsing, so the two methods get_channel and get_server are not needed
+
         :return: the search results as a list of XDCCPack objects
         """
+
+        # Generate search URL.
+        # ixIRC.com replaces spaces with + symbols.
         split_search_term = self.search_term.split(" ")
         prepared_search_term = split_search_term[0]
         i = 1
@@ -52,52 +59,61 @@ class IxIRCGetter(GenericGetter):
             prepared_search_term += "+" + split_search_term[i]
             i += 1
 
-        number_of_pages = 1
+        # Check how many pages need to be parsed:
+        number_of_pages = 1  # Minimum amount of pages to parse
 
+        # Get information from web page
         base_url = "https://ixirc.com/?q=" + prepared_search_term
         content = BeautifulSoup(requests.get(base_url).text, "html.parser")
-        page_analysis = content.select("h3")
+        page_analysis = content.select("h3")  # Search all 'h3' elements of the web page
 
         if "Over" in page_analysis[0].text:
+            # If 'Over' is used in the h3 section of the page, it means that this is not the last
+            # page with search results. It displays "Over X episodes" on all pages except the last, where
+            # the exact amount of results is mentioned and the word 'Over' is omitted
             number_of_pages = 2
 
+        urls = [base_url]
+
+        # Check for more pages and add their URLs t the urls list.
         analysing = False
         if number_of_pages == 2:
             analysing = True
         while analysing:
+            # The new URL specifies a page number using &pn=
             url = "https://ixirc.com/?q=" + prepared_search_term + "&pn=" + str(number_of_pages - 1)
+            urls.append(url)
             content = BeautifulSoup(requests.get(url).text, "html.parser")
             page_analysis = content.select("h3")
             if "Over" in page_analysis[0].text:
+                # Found another page
                 number_of_pages += 1
                 continue
             else:
+                # All pages found
                 analysing = False
 
-        i = 1
-        urls = [base_url]
-        while i < number_of_pages:
-            urls.append("https://ixirc.com/?q=" + prepared_search_term + "&pn=" + str(i))
-            i += 1
-
+        # Establish search results
         results = []
-
         for url in urls:
-            content = BeautifulSoup(requests.get(url).text, "html.parser")
-            packs = content.select("td")
-            self.__getPageResults__(packs, results)
+            self.__get_page_results__(url, results)
 
         return results
 
     @staticmethod
-    def __getPageResults__(packs, results):
+    def __get_page_results__(url: str, results: List[XDCCPack]) -> None:
         """
-        Gets the page results?
-        I apologize for this docstring
-        :param packs: the packs
-        :param results: the results
-        :return: void
+        This parses a single ixIRC page to find all search results from that one URL
+        :param url: the URL to parse
+        :param results: the list of search results to which these new results will be added to
+        :return: None
         """
+        # get page info with beautifulsoup
+        content = BeautifulSoup(requests.get(url).text, "html.parser")
+        # Get the 'td' elements of the page
+        packs = content.select("td")
+
+        # Initialize the pack variables
         file_name = ""
         bot = ""
         server = ""
@@ -110,6 +126,8 @@ class IxIRCGetter(GenericGetter):
         aborted = False
         next_element = False
 
+        # Holy fuck what the fuck is this fucking shit?
+        # TODO make sense of this, comment everything
         for line in packs:
             if next_element and line.text == "":
                 continue
@@ -146,18 +164,22 @@ class IxIRCGetter(GenericGetter):
             if not next_element:
                 line_count += 1
 
-    def get_server(self, bot):
+    def get_server(self, bot: str) -> str:
         """
-        Not needed due to how this getter is designed
-        :param bot: the bot to check
-        :return: void
-        """
-        str(bot)
+        Checks to which server a given xdcc-serving bot belongs to.
 
-    def get_channel(self, bot):
+        :param bot: the bot to check the server name for
+        :return: the server name
         """
-        Not needed due to how this getter is designed
-        :param bot: the bot to check
-        :return: void
+        # Unnecessary
+        return ""
+
+    def get_channel(self, bot: str) -> str:
         """
-        str(bot)
+        Checks to which channel a given xdcc-serving bot belongs to
+
+        :param bot: the bot to check the channel name for
+        :return: the channel name
+        """
+        # Unnecessary
+        return ""

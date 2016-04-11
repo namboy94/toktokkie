@@ -24,6 +24,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import requests
 from bs4 import BeautifulSoup
 
@@ -37,12 +38,13 @@ except ImportError:
 
 class NIBLGetter(GenericGetter):
     """
-    Class that gets xdcc packlists from nibl.co.uk
+    Class that searches the xdcc pack lists from nibl.co.uk
     """
 
     def search(self):
         """
-        Conducts the search
+        Method that conducts the xdcc pack search
+
         :return: the search results as a list of XDCCPack objects
         """
         split_search_term = self.search_term.split(" ")
@@ -74,24 +76,27 @@ class NIBLGetter(GenericGetter):
             i += 1
 
         return results
-    
-    def get_channel(self, bot):
+
+    def get_server(self, bot: str) -> str:
         """
-        Gets the channel for a given bot
-        :param bot: the bot
-        :return: the channel
+        Checks to which server a given xdcc-serving bot belongs to.
+
+        :param bot: the bot to check the server name for
+        :return: the server name
         """
+
         if bot == "HelloKitty" or "CR-" in bot:
             return "#horriblesubs"
         elif bot == "E-D|Mashiro":
             return "#exiled-destiny"
         else:
             return "#intel"
-    
-    def get_server(self, bot):
+
+    def get_channel(self, bot: str) -> str:
         """
-        Gets the server for a given bot
-        :param bot: the bot
-        :return: the server
+        Checks to which channel a given xdcc-serving bot belongs to
+
+        :param bot: the bot to check the channel name for
+        :return: the channel name
         """
         return "irc.rizon.net"
