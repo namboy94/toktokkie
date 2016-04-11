@@ -33,13 +33,11 @@ from typing import List
 try:
     from external.__init__ import get_location  # This import is used to find the file location of the twisted script
     from plugins.renamer.objects.Episode import Episode
-    from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
 except ImportError:
     from media_manager.external.__init__ import get_location
     from media_manager.plugins.renamer.objects.Episode import Episode
-    from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
 
@@ -145,7 +143,7 @@ class TwistedDownloader(object):
         :return: The file path to the downloaded file
         """
         # Set approximate total size of the single download
-        self.progress_struct.single_size = FileSizeCalculator.get_byte_size_from_string(pack.size)
+        self.progress_struct.single_size = pack.size
 
         # Print informational string, which file is being downloaded
         print("Downloading pack: " + pack.to_string())

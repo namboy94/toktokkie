@@ -34,13 +34,11 @@ from typing import List
 
 try:
     from plugins.renamer.objects.Episode import Episode
-    from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from plugins.common.fileops.FileMover import FileMover
 except ImportError:
     from media_manager.plugins.renamer.objects.Episode import Episode
-    from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from media_manager.plugins.common.fileops.FileMover import FileMover
@@ -361,7 +359,7 @@ class HexChatPluginDownloader(object):
         :return: None
         """
         # Find out approximate size of the file to download
-        self.progress_struct.single_size = FileSizeCalculator.get_byte_size_from_string(pack.size)
+        self.progress_struct.single_size = pack.size
 
         while self.downloading:  # Update progress while the file is downloading
             try:

@@ -24,38 +24,51 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
+from typing import List
+
+try:
+    from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+except ImportError:
+    from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
 
 class GenericGetter(object):
     """
     Class that defines interfaces for modules that search xdcc pack lists
+
+    This enables the seamless addition of additional search engines in the future
     """
 
-    def __init__(self, search_term):
+    def __init__(self, search_term: str) -> None:
         """
-        Constructor
-        :param: search_term: the term for which a search should be done.
+        Constructor for a generic XDCC Search Engine. It saves the search term as a local variable
+
+        :param: search_term: the term for which a search should be conducted.
+        :return: None
         """
         self.search_term = search_term
 
-    def search(self):
+    def search(self) -> List[XDCCPack]:
         """
-        Conducts the search
+        Conducts the actual search and turns the reslts into XDCCPack objects
+
         :return: the search results as a list of XDCCPack objects
         """
         raise NotImplementedError()
 
-    def get_server(self, bot):
+    def get_server(self, bot: str) -> str:
         """
-        Checks to which server a given bot belongs to.
-        :param bot: the bot's name to be used
+        Checks to which server a given xdcc-serving bot belongs to.
+
+        :param bot: the bot to check the server name for
         :return: the server name
         """
         raise NotImplementedError()
 
-    def get_channel(self, bot):
+    def get_channel(self, bot: str) -> str:
         """
-        Checks to which channel a given bot belongs to
-        :param bot: the bot to check for
-        :return: the channel
+        Checks to which channel a given xdcc-serving bot belongs to
+        :param bot: the bot to check the channel name for
+        :return: the channel name
         """
         raise NotImplementedError()
