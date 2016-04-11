@@ -24,36 +24,74 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 import time
 import platform
-
 from subprocess import Popen
 from threading import Thread
+from typing import List
 
 try:
     from plugins.renamer.objects.Episode import Episode
     from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
+    from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+    from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
 except ImportError:
     from media_manager.plugins.renamer.objects.Episode import Episode
     from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
+    from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+    from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
 
 
 class HexChatPluginDownloader(object):
     """
     XDCC Downloader that makes use of Hexchat's python scripting interface
+
+    This Downloader requires that Hexchat is properly installed on the user's
+    system, along with the python plugin for hexchat.
     """
 
-    def __init__(self, packs, progress_struct, show_name="", episode_number=0, season_number=0):
+    script_location = ""
+    """
+    The location of the script that hooks into Hexchat to start the downloading process
+    It is contained in the addons directory of the hexchat configuration directory
+    """
+
+    hexchat_config_location = ""
+    """
+    The path to the hexchat configuration file
+    """
+
+    packs = []
+    """
+    A list of packs to be downloaded
+    """
+
+    progress_struct = None
+    """
+    A ProgressStruct object which can be used by for example a graphical user interface for
+    cross-thread communication, so that the GUI knows the current progress of the download
+    """
+
+    def __init__(self, packs: List[XDCCPack], progress_struct: ProgressStruct, target_directory: str,
+                 show_name: str = "", episode_number: int = 0, season_number: int = 0) -> None:
         """
-        Constructor
-        :param packs: the packs to be downloaded
+        Constructor for the HexChatPluginDownloader
+
+        It takes information on the files to download as parameters and then calculates various
+        file system paths etc as well as ensure that the Hexchat configuration is correct
+
+        :param packs: a list of the packs to be downloaded
         :param progress_struct: Structure to keep track of download progress
+        :param target_directory: The target download directory
         :param show_name: the show name for use with auto_rename
         :param episode_number: the (first) episode number for use with auto_rename
         :param season_number: the season number for use with auto_rename
-        :return: void
+        :return: None
         """
+
+        # Platform check: Different paths for different systems
         if platform.system() == "Linux":
             self.script_location = os.path.join(os.path.expanduser('~'), ".config", "hexchat", "addons", "dlscript.py")
             self.hexchat_config_location = os.path.join(os.path.expanduser('~'), ".config", "hexchat", "hexchat.conf")
@@ -62,17 +100,21 @@ class HexChatPluginDownloader(object):
                                                 "AppData", "Roaming", "HexChat", "addons", "dlscript.py")
             self.hexchat_config_location = os.path.join(os.path.expanduser('~'),
                                                         "AppData", "Roaming", "HexChat", "hexchat.conf")
+
+        # Store parameters
         self.packs = packs
         self.progress_struct = progress_struct
         self.downloading = False
         self.script = open(self.script_location, 'w')
-        self.download_dir = ""
+        self.download_dir = target_directory
+        current_dl_dir = ""
 
-        hexchat_config = open(self.hexchat_config_location, 'r')
-        content = hexchat_config.read()
-        hexchat_config.close()
-        new_content = []
-        for line in content.split("\n"):
+        # Read the hexchat config file
+        hexchat_config = open(self.hexchat_config_location, 'r')  # open file for reading
+        content = hexchat_config.read().split("\n")  # read text from file line-wise
+        hexchat_config.close()  # Close file
+        new_content = []  # Initialize empty list to store the new content of the file once everything was verified
+        for line in content:
             if "gui_join_dialog" in line:
                 new_content.append("gui_join_dialog = 0")
             elif "dcc_auto_recv" in line:
@@ -80,8 +122,8 @@ class HexChatPluginDownloader(object):
             elif "gui_slist_skip" in line:
                 new_content.append("gui_slist_skip = 1")
             elif "dcc_dir = " in line:
-                self.download_dir = line.split("dcc_dir = ")[1].split("\n")[0]
-                new_content.append(line)
+                current_dl_dir = line.split("dcc_dir = ")[1].split("\n")[0]
+                new_content.append("dcc_dir = " + self.download_dir)
             else:
                 new_content.append(line)
         new_content.pop()
@@ -92,6 +134,8 @@ class HexChatPluginDownloader(object):
             for line in new_content:
                 hexchat_config.write(line + "\n")
             hexchat_config.close()
+        elif platform.system() == "Windows":
+            self.download_dir = current_dl_dir
 
         self.auto_rename = False
         if show_name and episode_number > 0 and season_number > 0:
