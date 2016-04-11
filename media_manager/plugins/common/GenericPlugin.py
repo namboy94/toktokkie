@@ -27,13 +27,12 @@ LICENSE
 # imports
 from argparse import Namespace
 from typing import Dict, Tuple, List
+from gfworks.interfaces.GenericWindow import GenericWindow
 
 try:
-    from mainuserinterfaces.MainGUI import MainGUI
-    from mainuserinterfaces.MainCli import MainCli
+    from cli.GenericCli import GenericCli
 except ImportError:
-    from media_manager.mainuserinterfaces.MainGUI import MainGUI
-    from media_manager.mainuserinterfaces.MainCli import MainCli
+    from media_manager.cli.GenericCli import GenericCli
 
 
 class GenericPlugin(object):
@@ -100,7 +99,7 @@ class GenericPlugin(object):
         """
         raise NotImplementedError()
 
-    def start_cli(self, parent_cli: MainCli) -> None:
+    def start_cli(self, parent_cli: GenericCli) -> None:
         """
         Starts the CLI of the plugin in interactive mode
         :param parent_cli: the parent cli to which the plugin can return to
@@ -108,7 +107,7 @@ class GenericPlugin(object):
         """
         raise NotImplementedError()
 
-    def start_gui(self, parent_gui: MainGUI) -> None:
+    def start_gui(self, parent_gui: GenericWindow) -> None:
         """
         Starts the GUI of the plugin
         :param parent_gui: the gui's parent to which the plugin can return to
