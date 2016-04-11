@@ -64,11 +64,7 @@ def main(ui_override: str = "") -> None:
     :return: None
     """
 
-    # This checks if the program is already correctly installed in the user's
-    # home directory, if this is not the case the program will be installed now.
-    if not Installer.is_installed():
-        Installer.install()
-
+    # First, the used mode of the program is determined using sys.argv
     cli_mode = False
     cli_arg_mode = False
 
@@ -95,6 +91,11 @@ def main(ui_override: str = "") -> None:
     except ImportError:
         from media_manager.plugins.PluginManager import PluginManager
         from media_manager.mainuserinterfaces.MainGUI import MainGUI
+
+    # This checks if the program is already correctly installed in the user's
+    # home directory, if this is not the case the program will be installed now.
+    if not Installer.is_installed():
+        Installer.install()
 
     # This parses the config file located in the user's home directory to establish
     # which plugins should be run.

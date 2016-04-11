@@ -24,8 +24,16 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
+import configparser
 from os.path import expanduser
+from typing import Dict
+
+try:
+    from plugins.PluginManager import PluginManager
+except ImportError:
+    from media_manager.plugins.PluginManager import PluginManager
 
 main_dir = os.path.join(expanduser('~'), ".mediamanager")
 """
@@ -61,6 +69,7 @@ class Installer(object):
     def is_installed() -> bool:
         """
         Checks if the program is installed
+
         :return: True is it is installed, False if not
         """
         # This checks if the previously defined directories and files exist or not
@@ -70,12 +79,15 @@ class Installer(object):
                 not os.path.isdir(config_dir) or \
                 not os.path.isfile(main_config):
             return False
+        if not Installer.__ensure_config_file_integrity__(False):
+            return False
         return True
 
     @staticmethod
     def install() -> None:
         """
         Installs the program in the user's home directory
+
         :return: None
         """
         # Checks each of the directories and files again if they exit and adds them
@@ -88,23 +100,64 @@ class Installer(object):
             # Here, a default config file is written
             Installer.__write_main_config__()
 
+        Installer.__ensure_config_file_integrity__(True)
+
     @staticmethod
-    def __write_main_config__() -> None:
+    def __write_main_config__(plugin_override: Dict[str, str]=None) -> None:
         """
         Writes a default main config file
+        :param plugin_override: A dictionary that can be used to customize the plugin configuration
+                in the config file.
         :return: None
         """
         file = open(main_config, "w")
         # The active plugins section
         file.write("[plugins]\n")
-        file.write("renamer = True\n")
-        file.write("batch-download = True\n")
-        file.write("iconizer = True\n")
-        file.write("show-manager = True\n")
+
+        if plugin_override is None:
+            for plugin in PluginManager.all_plugins:
+                file.write(plugin.get_config_tag() + " = True\n")
+        else:
+            # noinspection PyTypeChecker
+            for key in plugin_override:
+                file.write(key + " = " + plugin_override[key] + "\n")
 
         # Here are some default things entered. Even though I believe that they
         # are not used anywhere in the program, but they at least don't break anything.
-        # And they may proove useful in the future
+        # And they may prove useful in the future
         file.write("\n[defaults]\n")
         file.write("downloader = hexchat\n#options = (twisted|hexchat)\n")
         file.close()  # close, because that's what you should do!
+
+    @staticmethod
+    def __ensure_config_file_integrity__(write_new: bool = False) -> bool:
+        """
+        Checks if the config file is correctly configured. If this is not the case,
+        missing plugins will be added to to the file with the values 'False'
+
+        :return: The state of the integrity of the config file
+        """
+
+        # Read the config like in the main method
+        config = configparser.ConfigParser()
+        config.read(main_config)
+        plugin_config = dict(config.items("plugins"))
+
+        corrected_plugins = {}  # {name: bool}
+        integrity = True
+
+        for plugin in PluginManager.all_plugins:
+            try:
+                # Check if plugin is in file
+                corrected_plugins[plugin.get_config_tag()] = plugin_config[plugin.get_config_tag()]
+            except KeyError:
+                # Otherwise add it to dictionary with 'False'
+                corrected_plugins[plugin.get_config_tag()] = 'False'
+                integrity = False
+
+        if write_new:
+            # write new, correct config file
+            Installer.__write_main_config__(corrected_plugins)
+            integrity = True
+
+        return integrity

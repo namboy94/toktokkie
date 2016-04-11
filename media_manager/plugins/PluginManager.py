@@ -24,43 +24,67 @@ This file is part of media-manager.
 LICENSE
 """
 
+from typing import Dict, List
+
 try:
     from plugins.renamer.RenamerPlugin import RenamerPlugin
     from plugins.iconizer.IconizerPlugin import IconizerPlugin
     from plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
     from plugins.showmanager.ShowManagerPlugin import ShowManagerPlugin
+    from plugins.common.GenericPlugin import GenericPlugin
 except ImportError:
     from media_manager.plugins.renamer.RenamerPlugin import RenamerPlugin
     from media_manager.plugins.iconizer.IconizerPlugin import IconizerPlugin
     from media_manager.plugins.batchdownloadmanager.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
     from media_manager.plugins.showmanager.ShowManagerPlugin import ShowManagerPlugin
+    from media_manager.plugins.common.GenericPlugin import GenericPlugin
 
 
 class PluginManager(object):
     """
-    Class that manages plugins and checks which plugins to run
+    Class that manages plugins and checks which plugins to run using the config
+    Files stored in the user's home directory
     """
 
-    def __init__(self, config: dict) -> None:
+    all_plugins = [RenamerPlugin(),
+                   IconizerPlugin(),
+                   BatchDownloadManagerPlugin(),
+                   ShowManagerPlugin(),
+                   # new plugins here
+                   ]
+    """
+    A list of all plugins contained inside the project. This list needs to be manually
+    updated whenever a new plugin is added to the project.
+    """
+
+    active_plugins = []
+    """
+    A list of plugins that are active according to the configuration file
+    """
+
+    def __init__(self, config: Dict[str, str]) -> None:
         """
-        Constructor
-        Already checks which plugins to use
+        Constructor of the PluginManager class
+
+        It gets a ConfigParser-generated config dictionary of the form {'tag': 'boolean-value'}
+        passed as argument by the main method of the main project module
+
+        The config dictionary contains the entries in the config file's [plugin] section
+
+        It establishes which Plugins are to be marked as active according to the configuration file.
+
         :param config: the config file's [plugin] section as a dictionary
         """
-        all_plugins = [RenamerPlugin(),
-                       IconizerPlugin(),
-                       BatchDownloadManagerPlugin(),
-                       ShowManagerPlugin()]
-        # New Plugins here
-
-        self.active_plugins = []
-        for plugin in all_plugins:
+        for plugin in self.all_plugins:
+            # Check if value is set to true or equivalent
             if config[plugin.get_config_tag()].lower() in ["true", "yes", "1"]:
+                # If yes, add to active plugins list
                 self.active_plugins.append(plugin)
 
-    def get_plugins(self) -> list:
+    def get_plugins(self) -> List[GenericPlugin]:
         """
-        Returns a list of plugins, which should be used by the user interface. (CLI or GUI)
+        Returns a list of plugins of active plugins, which can then be used
+        by the user interfaces. (CLI or GUI)
         :return: the list of plugins
         """
         return self.active_plugins
