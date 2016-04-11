@@ -186,17 +186,13 @@ class BatchDownloadManager(object):
         files = []
         if downloader == "Hexchat Plugin":
             if auto_rename and not preparation["special"]:
-                files = HexChatPluginDownloader(packs,
+                HexChatPluginDownloader(packs,
                                                 progress_struct,
                                                 preparation["show"],
                                                 preparation["first_episode"],
                                                 preparation["season"]).download_loop()
             else:
-                files = HexChatPluginDownloader(packs, progress_struct).download_loop()
-
-            # This is legacy, Twisted downloader already does this on its own.
-            for file in files:
-                FileMover.move_file(file, preparation["new_directory"])
+                HexChatPluginDownloader(packs, progress_struct).download_loop()
 
         elif downloader == "Twisted":
             if auto_rename and not preparation["special"]:

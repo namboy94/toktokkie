@@ -37,11 +37,13 @@ try:
     from plugins.common.calc.FileSizeCalculator import FileSizeCalculator
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from plugins.common.fileops.FileMover import FileMover
 except ImportError:
     from media_manager.plugins.renamer.objects.Episode import Episode
     from media_manager.plugins.common.calc.FileSizeCalculator import FileSizeCalculator
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from media_manager.plugins.common.fileops.FileMover import FileMover
 
 
 class HexChatPluginDownloader(object):
@@ -74,6 +76,52 @@ class HexChatPluginDownloader(object):
     cross-thread communication, so that the GUI knows the current progress of the download
     """
 
+    target_directory = ""
+    """
+    The target directory for the downloaded files
+    """
+
+    download_dir = ""
+    """
+    The download directory to which the files will initially be downloaded to
+    """
+
+    script = None
+    """
+    The script object, opened by the __init__ method with the location of the script file
+    It is opened in write mode, which erases previous content and generates this file
+    if it did not exist beforehand
+    """
+
+    show_name = ""
+    """
+    The name of the show of which files are downloaded for
+    (Only used when auto-renaming)
+    """
+
+    episode_number = -1
+    """
+    The episode number of the first episode to be downloaded
+    (Only used when auto-renaming)
+    """
+
+    season_number = -1
+    """
+    The season number for the files currently being downloaded
+    (Only used when auto-renaming)
+    """
+
+    downloading = False
+    """
+    Keeps track if the program is currently downloading or not
+    """
+
+    auto_rename = False
+    """
+    This boolean is True if the program is supposed to automatically rename the downloaded files,
+    but otherwise it defaults to False
+    """
+
     def __init__(self, packs: List[XDCCPack], progress_struct: ProgressStruct, target_directory: str,
                  show_name: str = "", episode_number: int = 0, season_number: int = 0) -> None:
         """
@@ -104,159 +152,226 @@ class HexChatPluginDownloader(object):
         # Store parameters
         self.packs = packs
         self.progress_struct = progress_struct
-        self.downloading = False
-        self.script = open(self.script_location, 'w')
+        self.target_directory = target_directory
         self.download_dir = target_directory
-        current_dl_dir = ""
+        self.script = open(self.script_location, 'w')  # Opens the script file for writing
+
+        current_dl_dir = ""  # Temporary variable to hold the download directory specified by the config file
 
         # Read the hexchat config file
         hexchat_config = open(self.hexchat_config_location, 'r')  # open file for reading
         content = hexchat_config.read().split("\n")  # read text from file line-wise
         hexchat_config.close()  # Close file
         new_content = []  # Initialize empty list to store the new content of the file once everything was verified
-        for line in content:
+
+        for line in content:  # Parse the lines
             if "gui_join_dialog" in line:
-                new_content.append("gui_join_dialog = 0")
+                new_content.append("gui_join_dialog = 0")  # Disables the join dialog
             elif "dcc_auto_recv" in line:
-                new_content.append("dcc_auto_recv = 2")
+                new_content.append("dcc_auto_recv = 2")  # Enables DCC Auto Receive, no user interaction necessary
             elif "gui_slist_skip" in line:
-                new_content.append("gui_slist_skip = 1")
+                new_content.append("gui_slist_skip = 1")  # Skips the server list
             elif "dcc_dir = " in line:
-                current_dl_dir = line.split("dcc_dir = ")[1].split("\n")[0]
-                new_content.append("dcc_dir = " + self.download_dir)
+                current_dl_dir = line.split("dcc_dir = ")[1].split("\n")[0]  # Temporarily saves current download dir
+                new_content.append("dcc_dir = " + self.download_dir)  # Sets download directory to target_directory
             else:
                 new_content.append(line)
         new_content.pop()
 
         # TODO get this to work on Windows
+        # There are some weird reading issues if this runs on Windows at the moment,
+        # the current solution is to fall back to using the current configuration of hexchat
         if platform.system() == "Linux":
-            hexchat_config = open(self.hexchat_config_location, 'w')
-            for line in new_content:
-                hexchat_config.write(line + "\n")
-            hexchat_config.close()
+            # This writes the new config file to the hexchat config
+            hexchat_config = open(self.hexchat_config_location, 'w')  # open the config file
+            for line in new_content:  # Write every line to the file
+                hexchat_config.write(line + "\n")  # rite the line + newline character
+            hexchat_config.close()  # Close the config file
         elif platform.system() == "Windows":
-            self.download_dir = current_dl_dir
+            self.download_dir = current_dl_dir  # Reset the download directory to the one stored in the original config
 
-        self.auto_rename = False
-        if show_name and episode_number > 0 and season_number > 0:
+        if show_name and episode_number > 0 and season_number > 0:  # Only if a show name
+                                                                    # and episode/season number are defined
             self.auto_rename = True
             self.show_name = show_name
             self.episode_number = int(episode_number)
             self.season_number = int(season_number)
 
-    def __write_start__(self):
+    def __write_start__(self) -> None:
         """
-        Writes the beginning of the downloader script
-        :return: void
+        Writes the beginning of the downloader script to the opened script file
+
+        It defines the metadata used by Hexchat's scripting engine, handles imports,
+        defines methods for downloading and listener methods for when downloads
+        fail or complete successfully
+
+        :return: None
         """
-        script_start = ["__module_name__ = \"xdcc_executer\"",
-                        "__module_version__ = \"1.0\"",
-                        "__module_description__ = \"Python XDCC Executer\"\n",
-                        "import hexchat",
-                        "import sys\n",
-                        "def download(word, word_eol, userdata):",
-                        "\thexchat.command(packs[0])",
-                        "\treturn hexchat.EAT_HEXCHAT\n",
-                        "def downloadComplete(word, word_eol, userdata):",
-                        "\thexchat.command('quit')",
-                        "\tchannels.pop(0)",
-                        "\tpacks.pop(0)",
-                        "\tif len(channels) == 0:",
-                        "\t\tsys.exit(1)",
-                        "\telse:",
-                        "\t\thexchat.command(channels[0])",
-                        "\treturn hexchat.EAT_HEXCHAT\n",
-                        "def downloadFailed(word, word_eol, userdata):",
-                        "\tfailed.append(packs[0])",
-                        "\thexchat.command('quit')",
-                        "\tchannels.pop(0)",
-                        "\tpacks.pop(0)",
-                        "\tif len(channels) == 0:",
-                        "\t\tsys.exit(1)",
-                        "\telse:",
-                        "\t\thexchat.command(channels[0])",
-                        "\treturn hexchat.EAT_HEXCHAT\n",
-                        "failed = []",
-                        "channels = []",
-                        "packs = []\n"]
-        for line in script_start:
+        script_start = [    # This is metadata required by the Hexchat scripting engine
+                            "__module_name__ = \"xdcc_executer\"",
+                            "__module_version__ = \"1.0\"",
+                            "__module_description__ = \"Python XDCC Executer\"\n",
+
+                            # imports
+                            "import hexchat",
+                            "import sys\n",
+
+                            # starts a download
+                            "def download(word, word_eol, userdata):",
+                            "\thexchat.command(packs[0])",  # send download message
+                            "\treturn hexchat.EAT_HEXCHAT\n",  # Eat stdout
+
+                            # method run when a download completes successfully
+                            "def downloadComplete(word, word_eol, userdata):",
+                            "\thexchat.command('quit')",  # Quits the current channel
+                            "\tchannels.pop(0)",  # Removes the channel from which the pack was downloaded
+                            "\tpacks.pop(0)",  # Removes the downloaded pack
+                            "\tif len(channels) == 0:",  # If all downloads complete
+                            "\t\tsys.exit(0)",  # Exit the program
+                            "\telse:",  # Else download the next file
+                            "\t\thexchat.command(channels[0])",  # Join next channel
+                            "\treturn hexchat.EAT_HEXCHAT\n",  # Eat stdout
+
+                            # method run when a download fails
+                            "def downloadFailed(word, word_eol, userdata):",
+                            "\tfailed.append(packs[0])",  # append to failed packs
+                            "\thexchat.command('quit')",  # Quit the current channel
+                            "\tchannels.pop(0)",  # Remove the last used channel
+                            "\tpacks.pop(0)",  # Remove the last used pack
+                            "\tif len(channels) == 0:",  # If done,
+                            "\t\tsys.exit(1)",  # quit the program
+                            "\telse:",  # continue otherwise
+                            "\t\thexchat.command(channels[0])",  # join next channel
+                            "\treturn hexchat.EAT_HEXCHAT\n",  # eat stdout
+
+                            # Variables
+                            "failed = []",  # List of failed packs
+                            "channels = []",  # List of channels
+                            "packs = []\n"]  # List of packs to download
+
+        for line in script_start:  # Write to file
             self.script.write(line + "\n")
 
-    def __write_end__(self):
+    def __write_end__(self) -> None:
         """
         Writes the end of the downloader script
-        :return: void
+
+        It implements the hooks into hexchat's hook system with which
+        the script can react to different status changes and events
+
+        :return: None
         """
-        script_end = ["hexchat.command(channels[0])",
-                      "hexchat.hook_print(\"You Join\", download)",
+        script_end = ["hexchat.command(channels[0])",  # This joins the first channel, starting the downloads
+                      "hexchat.hook_print(\"You Join\", download)",  # Runs download() once connected to a channel
+                      # Runs downloadComplete if a download completes
                       "hexchat.hook_print(\"DCC RECV Complete\", downloadComplete)",
+                      # Runs downloadFailed() if a download stalls
                       "hexchat.hook_print(\"DCC STALL\", downloadFailed)",
+                      # Runs downloadFailed() if a download is aborted
                       "hexchat.hook_print(\"DCC RECV Abort\", downloadFailed)",
+                      # Runs downloadFailed() if a download fails
                       "hexchat.hook_print(\"DCC RECV Failed\", downloadFailed)",
+                      # Runs downloadFailed() if a download times out
                       "hexchat.hook_print(\"DCC Timeout\", downloadFailed)"]
-        for line in script_end:
+
+        for line in script_end:  # Write to file
             self.script.write(line + "\n")
 
-    def __write_script__(self, pack):
+    def __write_script__(self, pack: XDCCPack) -> None:
         """
-        Writes the downloader script
-        :return: void
+        Writes the downloader script to the script file an closes the file
+
+        :return: None
         """
-        self.__write_start__()
+        self.__write_start__()  # Write the start of the file
+        # Write middle section of the file, specifying the pack and channel to be downloaded from
         self.script.write("channels.append(\"newserver irc://" + pack.server + "/" + pack.channel + "\")\n")
         self.script.write("packs.append(\"msg " + pack.bot + " xdcc send #" + str(pack.packnumber) + "\")\n")
-        self.__write_end__()
-        self.script.close()
+        self.__write_end__()  # Write the end of the script
+        self.script.close()  # Close the script file
 
-    def download_loop(self):
+    def download_loop(self) -> List[str]:
         """
-        Starts the download loop
-        :return a list of file paths leading to the downloaded files
+        Starts the download loop.
+
+        This downloads all packs given via the constructor sequentially
+
+        :return: a list of file paths leading to the downloaded files
         """
-        downloaded = []
+        downloaded = []  # List of paths to downloaded files
 
-        for pack in self.packs:
-            self.download_single(pack)
+        for pack in self.packs:  # Downloads every pack
+            self.download_single(pack)  # Downloads a single pack
 
-        self.packs.sort(key=lambda x: x.filename)
+        self.packs.sort(key=lambda x: x.filename)  # Sorts the packs by file name
 
-        if self.auto_rename:
+        if self.auto_rename:  # Automatically renames the files if specified
             for pack in self.packs:
-                episode = Episode(os.path.join(self.download_dir, pack.filename),
+                episode = Episode(os.path.join(self.download_dir, pack.filename),  # Creates Episode object
                                   self.episode_number, self.season_number, self.show_name)
-                episode.rename()
-                downloaded.append(episode.episode_file)
-                self.episode_number += 1
-        else:
+                episode.rename()  # Auto-tvdb-renames the file
+                downloaded.append(episode.episode_file)  # Appends file path to list of downloaded files
+                self.episode_number += 1  # Increment episode number for next episode
+        else:  # If not auto rename, just add all pack file paths to the list of downloaded files
             for pack in self.packs:
                 downloaded.append(os.path.join(self.download_dir, pack.filename))
+
+        downloaded_at_target = []
+        if self.download_dir != self.target_directory:  # If target dir is not download dir, move files to target dir
+            for downloaded_file in downloaded:
+                # Moves file and appends new file path to downloaded_at_target
+                downloaded_at_target.append(FileMover.move_file(downloaded_file, self.target_directory))
+            downloaded = downloaded_at_target  # replace old file paths with new ones
+
         return downloaded
 
-    def download_single(self, pack):
-        self.progress_struct.single_size = FileSizeCalculator.get_byte_size_from_string(pack.size)
+    def download_single(self, pack: XDCCPack) -> None:
+        """
+        Downloads a single pack using the Hexchat Downloader Script
+
+        This does not work if no working Hexchat installation (including the Hexchat python scripting plugin)
+        is present on the user's system.
+
+        :param pack: The pack to be downloaded
+        :return: None
+        """
+        # Create new thread that updates the Progress Struct
         progress_thread = Thread(target=self.update_progress, args=(pack,))
 
-        self.__write_script__(pack)
-        self.downloading = True
-        progress_thread.start()
+        self.__write_script__(pack)  # Write download script for the pack to download
+        self.downloading = True  # Sets the downloading boolean to let other threads know that the download is running
+        progress_thread.start()  # Start the progress updater thread
 
+        # Starts Hexchat
         if platform.system() == "Linux":
             Popen(["hexchat"]).wait()
         elif platform.system() == "Windows":
             if os.path.isfile("C:\\Program Files\\HexChat\\hexchat.exe"):
                 Popen(["C:\\Program Files\\HexChat\\hexchat.exe"]).wait()
-        self.downloading = False
-        self.progress_struct.total_progress += 1
-        os.remove(self.script_location)
+        # Download Complete
 
-    def update_progress(self, pack):
-        while self.downloading:
+        self.downloading = False  # Let other thread know we're done
+        self.progress_struct.total_progress += 1  # Increment the total progress
+        os.remove(self.script_location)  # Deletes script file
+
+    def update_progress(self, pack: XDCCPack) -> None:
+        """
+        Updates the progress structure based on how far the download has progressed
+        :param pack: The pack that is currently being downloaded
+        :return: None
+        """
+        # Find out approximate size of the file to download
+        self.progress_struct.single_size = FileSizeCalculator.get_byte_size_from_string(pack.size)
+
+        while self.downloading:  # Update progress while the file is downloading
             try:
+                # Get the current file size of the program
                 self.progress_struct.single_progress = os.path.getsize(os.path.join(self.download_dir, pack.filename))
             except os.error:
+                # If the file does not exist yet, set the progress to 0
                 self.progress_struct.single_progress = 0
-            time.sleep(1)
+            time.sleep(1)  # Always sleep a second between updates
+
+        # Reset the progress values once the download has completed
         self.progress_struct.single_progress = 0
         self.progress_struct.single_size = 0
-
-
