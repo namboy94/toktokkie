@@ -26,11 +26,11 @@ LICENSE
 
 try:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+    from plugins.renamer.userinterfaces.RenamerGui import RenamerGui
     from plugins.renamer.userinterfaces.RenamerCli import RenamerCli
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.plugins.renamer.userinterfaces.RenamerGUI import RenamerGUI
+    from media_manager.plugins.renamer.userinterfaces.RenamerGui import RenamerGui
     from media_manager.plugins.renamer.userinterfaces.RenamerCli import RenamerCli
 
 
@@ -93,4 +93,4 @@ class RenamerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return void
         """
-        RenamerGUI(parent_gui).start()
+        RenamerGui(parent_gui).start()

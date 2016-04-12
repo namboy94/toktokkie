@@ -32,7 +32,7 @@ except ImportError:
     from media_manager.metadata import Globals
 
 
-class RenamerGUI(Globals.selected_grid_gui_framework):
+class RenamerGui(Globals.selected_grid_gui_framework):
     """
     GUI for the Renamer plugin
     """

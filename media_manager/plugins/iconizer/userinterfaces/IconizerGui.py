@@ -34,7 +34,7 @@ except ImportError:
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
 
 
-class IconizerGUI(Globals.selected_grid_gui_framework):
+class IconizerGui(Globals.selected_grid_gui_framework):
     """
     GUI for the Iconizer plugin
     """

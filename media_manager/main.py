@@ -82,13 +82,13 @@ def main(ui_override: str = "") -> None:
     # gfworks have not been defined correctly in the Globals class before this.
     try:
         from plugins.PluginManager import PluginManager
-        from mainuserinterfaces.MainGUI import MainGUI
+        from mainuserinterfaces.MainGui import MainGui
         from mainuserinterfaces.MainCli import MainCli
         from mainuserinterfaces.MainArgsParser import MainArgsParser
         from startup.Installer import Installer
     except ImportError:
         from media_manager.plugins.PluginManager import PluginManager
-        from media_manager.mainuserinterfaces.MainGUI import MainGUI
+        from media_manager.mainuserinterfaces.MainGui import MainGui
         from media_manager.mainuserinterfaces.MainCli import MainCli
         from media_manager.mainuserinterfaces.MainArgsParser import MainArgsParser
         from media_manager.startup.Installer import Installer
@@ -111,7 +111,7 @@ def main(ui_override: str = "") -> None:
     elif cli_arg_mode:
         MainArgsParser(active_plugins).run()
     else:
-        gui = MainGUI(active_plugins)
+        gui = MainGui(active_plugins)
         gui.start()
 
 # This executes the main method

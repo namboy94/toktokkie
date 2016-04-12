@@ -27,12 +27,12 @@ LICENSE
 
 try:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI import BatchDownloadManagerGUI
+    from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGui import BatchDownloadManagerGui
     from plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli import BatchDownloadManagerCli
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGUI \
-        import BatchDownloadManagerGUI
+    from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerGui \
+        import BatchDownloadManagerGui
     from media_manager.plugins.batchdownloadmanager.userinterfaces.BatchDownloadManagerCli import \
         BatchDownloadManagerCli
 
@@ -143,4 +143,4 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :param parent_gui: the parent gui window
         :return: void
         """
-        BatchDownloadManagerGUI(parent_gui).start()
+        BatchDownloadManagerGui(parent_gui).start()

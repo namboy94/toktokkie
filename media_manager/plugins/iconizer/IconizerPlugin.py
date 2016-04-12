@@ -26,11 +26,11 @@ LICENSE
 
 try:
     from plugins.common.GenericPlugin import GenericPlugin
-    from plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+    from plugins.iconizer.userinterfaces.IconizerGui import IconizerGui
     from plugins.iconizer.userinterfaces.IconizerCli import IconizerCli
 except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
-    from media_manager.plugins.iconizer.userinterfaces.IconizerGUI import IconizerGUI
+    from media_manager.plugins.iconizer.userinterfaces.IconizerGui import IconizerGui
     from media_manager.plugins.iconizer.userinterfaces.IconizerCli import IconizerCli
 
 
@@ -101,4 +101,4 @@ class IconizerPlugin(GenericPlugin):
         :param parent_gui: the parent window
         :return void
         """
-        IconizerGUI(parent_gui).start()
+        IconizerGui(parent_gui).start()

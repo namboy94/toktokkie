@@ -40,7 +40,7 @@ except ImportError:
     from media_manager.metadata import Globals
 
 
-class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
+class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
     """
     GUI for the BatchDownloadManager plugin
     """
@@ -299,7 +299,7 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
 
     def __init__(self, parent: Globals.selected_grid_gui_framework):
         """
-        Constructor for the BatchDownloadManagerGUI class
+        Constructor for the BatchDownloadManagerGui class
 
         It initializes a gfworks Window with the title "Batch Download Manager" and
         hides the parent window.

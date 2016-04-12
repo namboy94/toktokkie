@@ -37,7 +37,7 @@ except ImportError:
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
 
 
-class MainGUI(Globals.selected_grid_gui_framework):
+class MainGui(Globals.selected_grid_gui_framework):
     """
     Class that implements the Main GUI of the media manager program
 
