@@ -67,16 +67,20 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         """
         return ([{"tag": "bdlm-defaults", "desc": "Flag to set the batch download manager to use "
                                                   "the default values from the destination directory"},
+                 {"tag": "bdlm-use-nibl", "desc": "Use the NIBL pack searcher with the batch download manager"},
+                 {"tag": "bdlm-use-intel", "desc": "Use the Intel Haruhichan searcher with the batch download manager"},
+                 {"tag": "bdlm-use-xirc", "desc": "Use the ixIrc searcher with the batch download manager"},
+                 {"tag": "bdlm-auto-rename", "desc": "Flag that sets if the files should be auto renamed"},
+                 {"tag": "bdlm-search", "desc": "Only searches for packs"}
+                 ],
+
+                [{"tag": "bdlm-directory", "desc": "The destination directory of the batch download manager"},
+                 {"tag": "bdlm-search-term", "desc": "A custom search term for the search xdcc search"},
                  {"tag": "bdlm-showname", "desc": "The show name to be used by the batch download manager"},
                  {"tag": "bdlm-season", "desc": "The season number to be used by the batch download manager"},
                  {"tag": "bdlm-firstepisode", "desc": "The episode number to be used by the batch download manager"},
-                 {"tag": "bdlm-use-nibl", "desc": "Use the NIBL pack searcher with the batch download manager"},
-                 {"tag": "bdlm-use-intel", "desc": "Use the Intel Haruhichan searcher with the batch download manager"},
-                 {"tag": "bdlm-use-xirc", "desc": "Use the xIrc searcher with the batch download manager"},
-                 {"tag": "bdlm-auto-rename", "desc": "Flag that sets if the files should be auto renamed"},
-                 {"tag": "bdlm-search-term", "desc": "A custom search term for the search xdcc search"}],
-
-                [{"tag": "bdlm-directory", "desc": "The destination directory of the batch download manager"}])
+                 {"tag": "bdlm-download-selection", "desc": "The packs to be downloaded"}
+                 ])
 
     def start_args_parse(self, args):
         """
@@ -84,13 +88,14 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         """
         valid = False
         if getattr(args, "bdlm-directory"):
-            if getattr(args, "bdlm_defaults") ^ (getattr(args, "bdlm_showname") and
-                                                 getattr(args, "bdlm_season") and
-                                                 getattr(args, "bdlm_firstepisode")):
+            if getattr(args, "bdlm_defaults") ^ (getattr(args, "bdlm-showname") and
+                                                 getattr(args, "bdlm-season") and
+                                                 getattr(args, "bdlm-firstepisode")):
                 if getattr(args, "bdlm_use_nibl") ^ \
                         getattr(args, "bdlm_use_intel") ^ \
                         getattr(args, "bdlm_use_xirc"):
-                    valid = True
+                    if getattr(args, "bdlm_search") ^ getattr(args, "bdlm-download-selection"):
+                        valid = True
 
         if valid:
             search_engine = None
@@ -101,18 +106,26 @@ class BatchDownloadManagerPlugin(GenericPlugin):
             elif getattr(args, "bdlm_use_xirc"):
                 search_engine = "ixIRC.com"
 
-            if getattr(args, "bdlm_defaults"):
-                BatchDownloadManagerCli(None).mainloop(directory=getattr(args, "bdlm-directory"), use_defaults=True,
-                                                       search_engine=search_engine,
-                                                       auto_rename=getattr(args, "bdlm_auto_rename"))
+            if getattr(args, "bdlm_search"):
+                pack_selection = ""
             else:
-                BatchDownloadManagerCli(None).mainloop(directory=getattr(args, "bdlm-directory"), use_defaults=False,
-                                                       show_name_override=getattr(args, "bdlm_showname"),
-                                                       season_number_override=getattr(args, "bdlm_season"),
-                                                       first_episode_override=getattr(args, "bdlm_firstepisode"),
-                                                       search_engine=search_engine,
-                                                       search_term=getattr(args, "bdlm_search_term"),
-                                                       auto_rename=getattr(args, "bdlm_auto_rename"))
+                pack_selection = getattr(args, "bdlm-download-selection")
+            if getattr(args, "bdlm_defaults"):
+                BatchDownloadManagerCli().mainloop(directory=getattr(args, "bdlm-directory"),
+                                                   use_defaults=True,
+                                                   search_engine=search_engine,
+                                                   auto_rename=getattr(args, "bdlm_auto_rename"),
+                                                   download_selection_override=pack_selection)
+            else:
+                BatchDownloadManagerCli().mainloop(directory=getattr(args, "bdlm-directory"),
+                                                   use_defaults=False,
+                                                   show_name_override=getattr(args, "bdlm-showname"),
+                                                   season_number_override=getattr(args, "bdlm-season"),
+                                                   first_episode_override=getattr(args, "bdlm-firstepisode"),
+                                                   search_engine=search_engine,
+                                                   search_term=getattr(args, "bdlm-search-term"),
+                                                   auto_rename=getattr(args, "bdlm_auto_rename"),
+                                                   download_selection_override=pack_selection)
         else:
             print("Invalid argument combination passed")
 

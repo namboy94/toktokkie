@@ -24,7 +24,10 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
+import sys
+from typing import Tuple
 
 try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
@@ -43,79 +46,174 @@ except ImportError:
 class BatchDownloadManagerCli(GenericCli):
     """
     CLI for the BatchDownloadManager plugin
+
+    It enables the user to search and download XDCC packs
     """
 
-    def __init__(self, parent):
+    directory = ""
+    """
+    The directory path to the show to which the downloaded XDCC Packs belong to
+    """
+
+    show_name = ""
+    """
+    The show name of the files to be downloaded
+    """
+
+    season = ""
+    """
+    The season number of the files to be downloaded
+    """
+
+    starting_episode_number = ""
+    """
+    The first episode number to be downloaded, others will be matched with increments of this number
+    """
+
+    search_engine = ""
+    """
+    Which search engine was selected by the user
+    """
+
+    main_icon = ""
+    """
+    The main icon used for the folder containing the show
+    """
+
+    secondary_icon = ""
+    """
+    The icon for the specific season for which episodes will be downloaded
+    """
+
+    iconizer = ""
+    """
+    Which iconizer method was selected by the user
+    """
+
+    selected_packs = []
+    """
+    A list of the packs selected by the user to download
+    """
+
+    auto_rename = False
+    """
+    Flag that sets if the files should be auto-renamed after the download completes
+    """
+
+    def __init__(self, parent: GenericCli = None) -> None:
         """
-        Constructor
+        Constructor of the BatchDownloadManagerCLi Class
+        It calls the Constructor of the GenericCli Class
+
         :param parent: the parent gui
-        :return: void
+        :return: None
         """
         super().__init__(parent)
-        self.directory = ""
-        self.show_name = ""
-        self.season = ""
-        self.starting_episode_number = ""
-        self.search_engine = ""
-        self.main_icon = ""
-        self.secondary_icon = ""
-        self.iconizer = ""
-        self.selected_packs = []
-        self.auto_rename = False
 
-    def start(self, title=None):
+    def start(self, title: str = None) -> None:
         """
-        Starts the main program loop
-        :return: void
+        Starts the main program loop with the title 'BATCH DOWNLOAD MANAGER PLUGIN'
+
+        :return: None
         """
         super().start("BATCH DOWNLOAD MANAGER PLUGIN\n")
 
-    def mainloop(self, directory=None, use_defaults=None, show_name_override=None,
-                 season_number_override=None, first_episode_override=None,
-                 search_engine=None, search_term=None, auto_rename=None):
+    def mainloop(self,
+                 directory: str = None, use_defaults: bool = None, show_name_override: str = None,
+                 season_number_override: str = None, first_episode_override: str = None,
+                 search_engine: str = None, search_term: str = None, auto_rename: bool = None,
+                 download_selection_override: str = None) -> None:
         """
         The main program loop
-        :return: void
-        """
-        self.restore_start_state()
 
-        self.directory = directory
-        if self.directory is None:
+        If called without arguments, the CLI starts in interactive mode, otherwise the given arguments are
+        used to define the attributes normally given by the user via the ask_user() method
+
+        All parameters are optional and only used in non-interactive argument mode
+
+        :param directory: The directory path to which the downloaded files are saved
+        :param use_defaults: Flag that automatically sets things like show name, season number etc. to values calculated
+                                via parsing the target directory's content
+        :param show_name_override: This overrides the show name, higher priority than use_defaults
+        :param season_number_override: This overrides the season number, higher priority than use_defaults
+        :param first_episode_override: This overrides the first episode number, higher priority than use_defaults
+        :param search_engine: This is the search engine to be used when searching for XDCC packs
+        :param search_term: The search term to be used in the xdcc search, higher priority than use_defaults
+        :param auto_rename: Flag that sets if the progra should automatically rename files according to thetvdb.com
+        :param download_selection_override: A selection of packs to download can be specified here as a
+                                            comma-delimited string of index numbers
+        :return: None
+        """
+        self.restore_start_state()  # This resets the class variables to their default state
+
+        # Sanity check:
+        # This checks if only valid option types were selected
+        valid = \
+            (directory is None and use_defaults is None and show_name_override is None and
+             season_number_override is None and first_episode_override is None and search_engine is None and
+             search_term is None and auto_rename is None and download_selection_override is None) ^ \
+            (directory is not None and use_defaults and search_engine is not None and auto_rename is not None and
+             download_selection_override is not None) ^ \
+            (directory is not None and not use_defaults and show_name_override is not None and
+             season_number_override is not None and first_episode_override is not None and
+             search_engine is not None and search_term is not None and auto_rename is not None and
+             download_selection_override is not None)
+
+        # If an invalid option was found, notify the user and end the program
+        if not valid:
+            print("Invalid combination of arguments. This should not be happening, please contact the"
+                  "developer at hermann@krumreyh.com to make him fix the issue.")
+            sys.exit(1)
+
+        # Finds out target directory
+        self.directory = directory  # Set it to given parameter (May be None)
+        if self.directory is None:  # Interactive Mode
             self.directory = self.ask_user("Enter the target download directory:")
-        if not self.directory:
+        if not self.directory:  # Check if directory was entered
             print("Invalid directory")
             return
 
+        # calculate show name, season number and first episode number from the given directory
+        # These are subject to be changed by the user
         show_name, season, starting_episode_number = self.check_show_directory(self.directory)
 
+        # This is used in interactive mode
         if directory is None:
 
+            # Asks the user for the show name, defaults to the calculated one from before
             self.show_name = self.ask_user("Please enter the show name:", default=show_name)
             if os.path.basename(self.directory) != self.show_name:
-                print("Are you sure that " + self.show_name + " is correct? (y/n)")
-                response = self.ask_user()
-                if response != "y":
-                    return
+                response = self.ask_user("Are you sure that " + self.show_name + " is correct? (y/n)")
+                if response.lower() != "y":
+                    return  # End this loop if user says no.
 
+            # Gets the season number from the user
+            # loops until the user gives a valid response
             while self.season == "":
                 try:
                     self.season = int(self.ask_user("Please enter the season number:", default=season))
                 except ValueError:
                     "Invalid integer value.\n"
 
+            # Gets the first episode number from the user
+            # loops until the user gives a valid response
             while self.starting_episode_number == "":
                 try:
                     self.starting_episode_number = int(self.ask_user("Please enter the first episode number:",
                                                                      default=starting_episode_number))
                 except ValueError:
                     "Invalid integer value.\n"
+
+            # Starts the XDCC search part
             self.search_xdcc()
 
+        # This is used in non-interactive argument mode
         else:
-            if use_defaults is not None:
+            if use_defaults is not None:  # If the 'use defaults' flag is set, just take the calculated values.
                 self.show_name = show_name
                 self.season = season
                 self.starting_episode_number = starting_episode_number
+            # But they can still be override, the single overrides have higher priority
             if show_name_override is not None:
                 self.show_name = show_name_override
             if season_number_override is not None:
@@ -125,43 +223,62 @@ class BatchDownloadManagerCli(GenericCli):
             if search_term is None:
                 search_term = self.show_name
 
-            self.search_xdcc(search_engine, search_term)
+            # Start the XDCC search part with override parameters
+            self.search_xdcc(search_engine, search_term, download_selection_override)
 
+        # If in interactive mode, ask the user if he would like the files to be auto-renamed
         if auto_rename is None:
 
             auto_rename_prompt = self.ask_user("Auto Rename? (y/n)")
             if auto_rename_prompt == "y":
                 self.auto_rename = True
-
-        else:
-
-            if auto_rename:
-                self.auto_rename = True
             else:
                 self.auto_rename = False
 
-        self.start_download()
+        # Else we just take the option given via parameter
+        else:
+            self.auto_rename = auto_rename
 
-    def search_xdcc(self, search_engine_override=None, search_term_override=None):
+        self.start_download()  # Start the download!
+
+    def search_xdcc(self, search_engine_override: str = None, search_term_override: str = None,
+                    download_selection_override: str = None) -> None:
         """
-        Searches for xdcc packs
-        :return: void
+        Searches packlists for xdcc packs.
+
+        In interactive mode, this asks the user to specify a search engine and search term, then the results are
+        displayed and the user can select which packs he wants to download by specifying a comma-seperated
+        string of index numbers. The index numbers are displayed when listing the search results.
+
+        In argument parse mode, the user interaction can be completely bypassed.
+
+        :param search_engine_override: Used to override the search engine in argument mode
+        :param search_term_override: Used to override the search term in argument mode
+        :param download_selection_override: Can be specified to automatically select packs from the search results
+        :return: None
         """
-        searching = True
-        print("Starting Search Procedure:")
+
+        searching = True  # True as long as the search isn't done
+        print("Starting Search Procedure:")  # Let the user know that we've started the search procedure
         while searching:
+            # This can override the search engine via the arguments
             if search_engine_override is not None:
                 search_engine_selected = True
                 self.search_engine = search_engine_override
             else:
                 search_engine_selected = False
+            # But if not specified, ask the user until he gives a satisfactory answer
             while not search_engine_selected:
+                # These are the search engines that are available
                 print("Search Engine Options:\n")
                 print("1: NIBL.co.uk")
                 print("2: ixIRC.com")
                 print("3: intel.haruhichan.com")
                 try:
+                    # ask the user
                     search_engine = int(self.ask_user("Which search engine would you like to use?", default="1"))
+
+                    # Determine the search engine type
                     if search_engine == 1:
                         self.search_engine = "NIBL.co.uk"
                     elif search_engine == 2:
@@ -173,64 +290,96 @@ class BatchDownloadManagerCli(GenericCli):
                         continue
                     search_engine_selected = True
                 except ValueError:
+                    # If user didn't enter a int value
                     print("Not a valid integer")
 
+            # Establish the search term, ask user if not specified
             search_term = search_term_override
             if search_term_override is None:
                 search_term = self.ask_user("Search for what?", default=self.show_name)
 
-            print("searching...")
+            print("searching...")  # Let user know we're searching
             search_result = BatchDownloadManager.conduct_xdcc_search(self.search_engine, search_term)
-            print("Results:")
+            print("Results:")  # Let user know the search has completed
+
+            # Print the results to the console
             i = 0
+            # and store them in this dictionary, with the index numbers being the keys
+            # for the individual XDCCPack objects
             result_dict = {}
             for result in search_result:
-                result_dict[i] = result
-                print(str(i) + " " + result.to_string())
+                result_dict[i] = result  # Store to dictionary
+                print(str(i) + " " + result.to_string())  # Print together with the index number
                 i += 1
 
+            if download_selection_override is not None and download_selection_override == "":
+                # Stop the program, if no packs were specified in args mode.
+                # This means that the program was used in search mode, and the search has already concluded
+                sys.exit(0)
+
+            # Now the selection begins:
             selecting = True
-            while selecting:
+            while selecting:  # Continue the selection until the user has reached a decision
 
-                selection = self.ask_user("Enter a comma-delimited selection of packs to download, "
-                                          "or blank to conduct a new search:\n")
+                if download_selection_override is None:
+                    # Ask the user for their selection (Only if no override was used)
+                    selection = self.ask_user("Enter a comma-delimited selection of packs to download, "
+                                              "or blank to conduct a new search:\n")
 
-                if selection == "":
-                    break
+                    if selection == "":
+                        # If nothing was selected, conduct a new search
+                        break
+                else:
+                    selection = download_selection_override
 
-                selection_list = selection.split(",")
-                selected_packs = []
+                selection_list = selection.split(",")  # Split indexes from each other
+                selected_packs = []  # Create a list to store the selected packs
 
+                # Check the validity of the user input
                 try:
                     for selected in selection_list:
                         selected_packs.append(result_dict[int(selected)])
                 except ValueError:
+                    # If a non-integer value was entered
                     print("Invalid selection type, please only enter the index of the packs you want to select")
                     continue
                 except KeyError:
+                    # If a index was specified that was out of bounds
                     print("Invalid index selected")
                     continue
 
                 print("Selection:")
+                # Print the selection of packs to the console
                 for pack in selected_packs:
                     print(pack.to_string())
-                confirmation = self.ask_user("Do you want to download these packs? (y/n)")
-                if confirmation == "y":
-                    searching = False
-                    selecting = False
-                    self.selected_packs = selected_packs
-                else:
-                    if search_term_override is None:
+
+                if download_selection_override is None:
+                    # ask the user once more if he/she wants to download the packs
+                    confirmation = self.ask_user("Do you want to download these packs? (y/n)")
+                    if confirmation == "y":  # Confirmed by user,
+                        searching = False  # stopping the search and
+                        selecting = False  # select loop
+                        self.selected_packs = selected_packs  # and store the selection as class variable
+                    else:  # Not confirmed by user.
+                        # Now the user can either make a new search, or a new selection
                         re_search_prompt = self.ask_user("Do you want to re-search? (y/n)")
-                        if re_search_prompt == "y":
-                            selecting = False
+                        if re_search_prompt == "y":  # Conduct new search
+                            selecting = False  # We are now no longer selecting
+                else:
+                    self.selected_packs = selected_packs
 
-    def start_download(self):
+    def start_download(self) -> None:
         """
-        Starts the Download
-        :return: void
+        This method starts the download procedure using the previously determined variables
+
+        It uses the common methods from the BatchDownloadManager class to accomplish this and
+        also perfor basic checks if all entered data is valid
+
+        :return: None
         """
 
+        # Prepare the download:
+        # Makes calculations as well as sanity/validity checks
         preparation = BatchDownloadManager.prepare(self.directory,
                                                    self.show_name,
                                                    str(self.season),
@@ -239,48 +388,60 @@ class BatchDownloadManagerCli(GenericCli):
                                                    self.secondary_icon,
                                                    self.iconizer)
 
+        # If errors occur during the preparation, a 2-part tuple is returned with a description of the error
+        # Afterwards, the method returns without doing anything
         if len(preparation) != 6:
             print(preparation[0])
             print(preparation[1])
             return
 
-        print("Downloading...")
+        # If the preparation was successful, the download process will now start
+        print("Downloading...")  # Let the user know that we started downloading
 
-        downloader = "Twisted"
-        progress = ProgressStruct()
-        progress.total = len(self.selected_packs)
+        downloader = "Twisted"  # For command line, use the Twisted downloader per default
+        progress = ProgressStruct()  # Create a progress structure to keep track of download progress
+        progress.total = len(self.selected_packs)  # Define how many files are going to be downloaded
 
+        # Start downloading
         BatchDownloadManager.start_download_process(
             preparation, downloader, self.selected_packs, self.auto_rename, progress)
 
-        print("Download complete")
+        print("Download complete")  # Let the user know that the downloads have all completed
 
     @staticmethod
-    def check_show_directory(directory):
+    def check_show_directory(directory: str) -> Tuple[str, str, str]:
         """
-        method that calculates the default values for a show directory
-        :param directory: the directory to be checked
-        :return: the show name, the highest season, the amount of episodes
-        """
-        show_name = os.path.basename(directory)
-        highest_season = 0
-        episode_amount = 0
+        Method that calculates the default values for a show directory
 
-        if os.path.isdir(directory):
+        :param directory: the directory to be checked
+        :return: the show name, the highest season, the amount of episodes as a three-part tuple
+        """
+        show_name = os.path.basename(directory)  # Get the show name from a directory
+        highest_season = 1  # Set highest season to 1
+        episode_amount = 1  # Set amount of episodes to 1
+        # These are the default values if the directory does not exist
+
+        if os.path.isdir(directory):  # If the directory already exists, check its content
             highest_season = 1
+            # Check how many season subdirectories there are
             while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
                 highest_season += 1
+
+            # Now check how many episodes are inside the last season folder
             if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
                 children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
                 episode_amount = len(children) + 1
 
         return show_name, str(highest_season), str(episode_amount)
 
-    def restore_start_state(self):
+    def restore_start_state(self) -> None:
         """
-        Restores the state of the BatchDownloadManagerCli object to what it was at the beginning.
-        :return: void
+        Restores the state of the BatchDownloadManagerCli class variables to what they were at the beginning.
+
+        :return: None
         """
+
+        # Reset everything
         self.directory = ""
         self.show_name = ""
         self.season = ""

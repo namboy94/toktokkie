@@ -27,6 +27,7 @@ LICENSE
 # imports
 import requests
 from bs4 import BeautifulSoup
+from typing import List
 
 try:
     from plugins.batchdownloadmanager.searchengines.GenericGetter import GenericGetter
@@ -41,7 +42,7 @@ class NIBLGetter(GenericGetter):
     Class that searches the xdcc pack lists from nibl.co.uk
     """
 
-    def search(self):
+    def search(self) -> List[XDCCPack]:
         """
         Method that conducts the xdcc pack search
 
