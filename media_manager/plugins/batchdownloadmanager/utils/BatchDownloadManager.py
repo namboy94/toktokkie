@@ -27,6 +27,7 @@ LICENSE
 # imports
 import os
 from subprocess import Popen
+from typing import Tuple
 
 try:
     from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
@@ -204,3 +205,40 @@ class BatchDownloadManager(object):
                                           preparation["season"]).download_loop()
             else:
                 TwistedDownloader(packs, progress_struct, preparation["new_directory"]).download_loop()
+
+    @staticmethod
+    def analyse_show_directory(directory: str) -> Tuple[str, str, str, str, str]:
+        """
+        Method that calculates the default values for a show directory
+
+        :param directory: the directory to be checked
+        :return: the show name, the highest season, the amount of episodes, the main icon path and the
+                    secondary icon path as a five-part tuple
+        """
+        show_name = os.path.basename(directory)  # Get the show name from a directory
+
+        # These are the default values if the directory does not exist
+        highest_season = 1  # Set highest season to 1
+        episode_amount = 1  # Set amount of episodes to 1
+        main_icon = ""  # Set main icon location to ""
+        second_icon = ""  # Set secondary icon location to ""
+
+        if os.path.isdir(directory):  # If the directory already exists, check its content
+            highest_season = 1
+            # Check how many season subdirectories there are
+            while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
+                highest_season += 1
+
+            # Now check how many episodes are inside the last season folder
+            if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
+                children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
+                episode_amount = len(children) + 1
+
+            # Check for icons:
+
+        if os.path.isfile(os.path.join(directory, ".icons", "main.png")):
+            main_icon = os.path.join(directory, ".icons", "main.png")
+        if os.path.isfile(os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")):
+            secondary_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
+
+        return show_name, str(highest_season), str(episode_amount), main_icon, second_icon

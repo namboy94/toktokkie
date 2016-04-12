@@ -47,29 +47,33 @@ class FileSizeCalculator(object):
         :param size_string: The size string to be converted to bytes
         :return: the amount of bytes represented by the size_string
         """
-        # Convert using int(float(str)) to avoid any casting errors
         try:
-            # First we check if the size is given in Bytes directly
-            byte_size = int(float(size_string))
-        except ValueError:
+            # Convert using int(float(str)) to avoid any casting errors
             try:
-                # Now we check if the notation 'k', 'm', or 'g' was used
-                byte_size = int(float(size_string[:-1]))
-                unit = size_string[-1:].lower()
+                # First we check if the size is given in Bytes directly
+                byte_size = int(float(size_string))
             except ValueError:
-                # Now we check if the notation 'kb', 'mb', or 'gb' was used
-                byte_size = int(float(size_string[:-2]))
-                unit = size_string[-2:].lower()
+                try:
+                    # Now we check if the notation 'k', 'm', or 'g' was used
+                    byte_size = int(float(size_string[:-1]))
+                    unit = size_string[-1:].lower()
+                except ValueError:
+                    # Now we check if the notation 'kb', 'mb', or 'gb' was used
+                    byte_size = int(float(size_string[:-2]))
+                    unit = size_string[-2:].lower()
 
-            # Now that we know which parts of the string is the unit and which part is the
-            # actual size marker, we can calculate the size in bytes
-            multiplier = 1
-            if unit in ["k", "kb"]:
-                multiplier = math.pow(2, 10)
-            elif unit in ["m", "mb"]:
-                multiplier = math.pow(2, 20)
-            elif unit in ["g", "gb"]:
-                multiplier = math.pow(2, 30)
-            byte_size *= multiplier
+                # Now that we know which parts of the string is the unit and which part is the
+                # actual size marker, we can calculate the size in bytes
+                multiplier = 1
+                if unit in ["k", "kb"]:
+                    multiplier = math.pow(2, 10)
+                elif unit in ["m", "mb"]:
+                    multiplier = math.pow(2, 20)
+                elif unit in ["g", "gb"]:
+                    multiplier = math.pow(2, 30)
+                byte_size *= multiplier
+        except ValueError:
+            # If something unexpected (like '<1k') is to be parsed, we just return 1
+            byte_size = 1
 
         return byte_size

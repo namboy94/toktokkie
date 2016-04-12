@@ -27,7 +27,6 @@ LICENSE
 # imports
 import os
 import sys
-from typing import Tuple
 
 try:
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
@@ -174,8 +173,10 @@ class BatchDownloadManagerCli(GenericCli):
             return
 
         # calculate show name, season number and first episode number from the given directory
+        # Also calculates the main and secondary icon locations
         # These are subject to be changed by the user
-        show_name, season, starting_episode_number = self.check_show_directory(self.directory)
+        show_name, season, starting_episode_number, main_icon, secondary_icon = \
+            BatchDownloadManager.analyse_show_directory(self.directory)
 
         # This is used in interactive mode
         if directory is None:
@@ -407,32 +408,6 @@ class BatchDownloadManagerCli(GenericCli):
             preparation, downloader, self.selected_packs, self.auto_rename, progress)
 
         print("Download complete")  # Let the user know that the downloads have all completed
-
-    @staticmethod
-    def check_show_directory(directory: str) -> Tuple[str, str, str]:
-        """
-        Method that calculates the default values for a show directory
-
-        :param directory: the directory to be checked
-        :return: the show name, the highest season, the amount of episodes as a three-part tuple
-        """
-        show_name = os.path.basename(directory)  # Get the show name from a directory
-        highest_season = 1  # Set highest season to 1
-        episode_amount = 1  # Set amount of episodes to 1
-        # These are the default values if the directory does not exist
-
-        if os.path.isdir(directory):  # If the directory already exists, check its content
-            highest_season = 1
-            # Check how many season subdirectories there are
-            while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
-                highest_season += 1
-
-            # Now check how many episodes are inside the last season folder
-            if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
-                children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
-                episode_amount = len(children) + 1
-
-        return show_name, str(highest_season), str(episode_amount)
 
     def restore_start_state(self) -> None:
         """

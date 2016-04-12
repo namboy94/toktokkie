@@ -297,7 +297,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
     A list of search results from an XDCC search
     """
 
-    def __init__(self, parent: Globals.selected_grid_gui_framework):
+    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
         """
         Constructor for the BatchDownloadManagerGui class
 
@@ -311,11 +311,10 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
 
     def lay_out(self):
         """
-        Sets up all interface elements of the GUI
-        :return: void
-        """
+        Sets up all interface elements of the GUI and positions them in a Grid Layout
 
-        # Show Information
+        :return: None
+        """
         self.configure_label = self.generate_label("Options")
         self.position_absolute(self.configure_label, 0, 0, 40, 5)
 
@@ -423,41 +422,61 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         self.position_absolute(self.time_left, 128, 65, 19, 5)
         self.position_absolute(self.time_left_label, 110, 65, 15, 5)
 
-    def search_xdcc(self, widget):
+    def search_xdcc(self, widget: object) -> None:
         """
-        Searches for xdcc packs using the currently selected search engine, using a seperate thread
-        If a search is already running, it won't start a new search
+        Searches for xdcc packs using the currently selected search engine and search term, using a separate thread.
+        If a search is already running, it won't start a new search.
+
         :param widget: the search button
-        :return: void
+        :return: None
         """
-        if widget is None or self.searching or self.search_thread is not None:
+        # Widget is not None syntax used to shut up the IDE
+        # Do not start a search if a search is already in progress or a download is currently running
+        if widget is None or self.searching or self.search_thread is not None or self.dl_progress is not None:
             return
 
-        def search():
+        def search() -> None:
             """
-            Searches using the speciifed search engine
+            Conducts the actual search using the selected search engine
+
+            :return: None
             """
+            # Sets the searching flag to True, letting other parts of the program know about it
             self.searching = True
+            # Set the text of the search button to "Searching..." in a threads safe way
             self.run_thread_safe(self.set_button_string, (self.search_button, "Searching..."))
 
+            # Get the selected search engine from the search engine combo box
             search_engine = self.get_string_from_current_selected_combo_box_option(self.search_engine_combo_box)
+            # Get the search term from the search term text entry
             search_term = self.get_string_from_text_entry(self.search_field)
+            # Conduct the search and save the list of results to the search_result variable
             self.search_result = BatchDownloadManager.conduct_xdcc_search(search_engine, search_term)
 
-        def search_xdcc_thread():
+        def search_xdcc_thread() -> None:
             """
-            To be run as an individual thread so that the GUI doesn't freeze while searching
+            Updates the GUI elements with the search results. This requires this to be handled in a way that
+            doesn't threaten the GUI's integrity, which means that this method must be run as a sensitive thread
+            using gfworks' threading capabilities
+
+            :return: None
             """
-            self.clear_primitive_multi_list_box(self.search_results)
+            self.clear_primitive_multi_list_box(self.search_results)  # Clear the search results listbox
+
+            # Add the search results to the listbox
             i = 0
             for result in self.search_result:
                 choice = (i,) + result.to_tuple()
                 self.add_primitive_multi_list_box_element(self.search_results, choice)
                 i += 1
-            self.run_thread_safe(self.set_button_string, (self.search_button, "Start Search"))
-            self.searching = False
-            self.search_thread = None
 
+            # Reset the Search Button to display "Start Search"
+            self.run_thread_safe(self.set_button_string, (self.search_button, "Start Search"))
+            self.searching = False  # Reset the searching flag
+            self.search_thread = None  # Clear the search_thread variable to enable a new search
+
+        # Run the two defined methods in a thread-safe manner.
+        # The insensitive target is executed before the sensitive target
         self.search_thread = self.run_sensitive_thread_in_parallel(target=search_xdcc_thread, insensitive_target=search)
 
     def start_download(self, widget):
@@ -467,34 +486,46 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         :return: void
         """
 
-        if widget is None or self.dl_progress is not None:
+        # Widget is not None syntax used to shut up the IDE
+        # Do not start a download if a search is currently in progress or a download is currently running
+        if widget is None or self.searching or self.search_thread is not None or self.dl_progress is not None:
             return
 
-        def update_progress_thread(progress_struct):
+        # Define local method that handles progress updating
+        def update_progress_thread(progress_struct: ProgressStruct) -> None:
             """
             Updates the progress UI elements
+
             :param progress_struct: the progress structure to be displayed
-            :return: void
+            :return: None
             """
-            def complete_dl():
+            def complete_dl() -> None:
                 """
-                Run when the download has completed
+                Run when the download has completed, rests all progress UI elements to their default state
+
+                :return: None
                 """
-                self.set_button_string(self.download_button, "Download")
-                self.reset_percentage_progress_bar(self.single_progress_bar)
-                self.reset_percentage_progress_bar(self.total_progress_bar)
-                self.set_label_string(self.download_speed, "-")
+                self.set_button_string(self.download_button, "Download")  # Reset Download button text
+                self.reset_percentage_progress_bar(self.single_progress_bar)  # Set progress bar to 0.0
+                self.reset_percentage_progress_bar(self.total_progress_bar)  # Set progress bar to 0.0
+                self.set_label_string(self.download_speed, "-")  # Sets the download speed label to '-'
+                # Clear all progress labels
                 self.clear_label_text(self.total_progress_current)
                 self.clear_label_text(self.total_progress_total)
                 self.clear_label_text(self.single_progress_current)
                 self.clear_label_text(self.single_progress_total)
+
+                # Force a directory content update for the new directory content to be displayed by the
+                # Directory Content List Box
                 self.on_directory_changed(1)
 
-            def update():
+            def update() -> None:
                 """
                 Updates the widgets with new values
+
+                :return: None
                 """
-                # calculate
+                # calculate the progress values
                 try:
                     single_progress = float(progress_struct.single_progress) / float(progress_struct.single_size)
                 except ZeroDivisionError:
@@ -502,7 +533,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
                 total_progress = float(progress_struct.total_progress) / float(progress_struct.total)
                 total_progress_percentage = total_progress + (single_progress / progress_struct.total)
 
-                # update
+                # update the UI elements
                 self.set_progress_bar_float_percentage(self.total_progress_bar, total_progress_percentage)
                 self.set_progress_bar_float_percentage(self.single_progress_bar, single_progress)
                 self.set_label_string(self.total_progress_current, str(progress_struct.total_progress))
@@ -510,34 +541,54 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
                 self.set_label_string(self.single_progress_current, str(progress_struct.single_progress))
                 self.set_label_string(self.single_progress_total, str(progress_struct.single_size))
 
-            last_single_progress_size = 0.0
-            speed_time_counter = 0
-            total_time_counter = 0
+            # Set local variables to store information gathered over multiple loops
+            last_single_progress_size = 0.0  # Stores the last recorded size of the downloaded file
+            speed_time_counter = 0  # Seconds since last download size change
+            total_time_counter = 0  # Seconds since download start
+            finished_download_amount = 0.0  # Total downloaded so far
 
             while True:
 
+                # Update the progress UI elements
                 self.run_thread_safe(update)
 
+                # Calculate download speeds if the progress has changed
                 if float(progress_struct.single_progress) != last_single_progress_size:
+
+                    # Once we get to the new file, add previous file size to finished_download_amount
+                    if last_single_progress_size > float(progress_struct.single_progress):
+                        finished_download_amount += last_single_progress_size
+
+                    # calculate the current-ish speed using the current size and the previous size
                     speed = (float(progress_struct.single_progress) - last_single_progress_size) / speed_time_counter
+                    # Reset the speed time counter
                     speed_time_counter = 0
+                    # Store the current downloaded size as variable
                     last_single_progress_size = float(progress_struct.single_progress)
 
-                    average_speed = int(float(progress_struct.single_progress) / total_time_counter)
+                    # Calculate average speed
+                    total_down = (float(progress_struct.single_progress) + finished_download_amount)
+                    average_speed = int(total_down / total_time_counter)
                     time_left = int(progress_struct.single_size / average_speed)
 
+                    # Update Speed Labels
                     self.run_thread_safe(self.set_label_string, (self.download_speed, str(int(speed)) + " Byte/s"))
                     self.run_thread_safe(self.set_label_string, (self.average_dl_speed, str(average_speed) + " Byte/s"))
                     self.run_thread_safe(self.set_label_string, (self.time_left, str(time_left) + "s"))
 
+                # If all downloads complete, stop updating progress, reset progress UI elements,
+                # Allow new downloads
                 if progress_struct.total == progress_struct.total_progress:
-                    self.run_thread_safe(complete_dl)
-                    self.dl_progress = None
-                    break
+                    self.run_thread_safe(complete_dl)  # Resets all progress-related UI elements
+                    self.dl_progress = None  # Clear dl_progress variable to enable new download processes
+                    break  # Break out of the endless loop
+
+                # Increment time counters, then pause for 1 second
                 speed_time_counter += 1
                 total_time_counter += 1
                 time.sleep(1)
 
+        # Prepare the download, also performs validity checks
         preparation = BatchDownloadManager.prepare(self.get_string_from_text_entry(self.destination),
                                                    self.get_string_from_text_entry(self.show),
                                                    self.get_string_from_text_entry(self.season),
@@ -547,67 +598,86 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
                                                    self.get_string_from_current_selected_combo_box_option(
                                                        self.method_combo_box))
 
-        if len(preparation) != 6:
+        # If errors occur while preparing the download, stop the download process and notify the user of the
+        # exact cause.
+        if len(preparation) != 6:  # Preparation returns 2-part tuple if unsuccessful, otherwise 6-part tuple
             self.show_message_dialog(preparation[0], preparation[1])
-            return
+            return  # Stop download process
 
+        # Get selected packs from the search result List Box
         selected_packs = self.get_list_of_selected_elements_from_multi_list_box(self.search_results)
-        packs = []
+        packs = []  # Store XDCCPack objects in list
         for selection in selected_packs:
             packs.append(self.search_result[selection[0]])
         if len(packs) == 0:
-            return
+            return  # If no packs are selected abort the download process
 
+        # Set the button text of the Download button to display "Downloading..." to let the user know that
+        # a download is currently running
         self.set_button_string(self.download_button, "Downloading...")
 
+        # Get selected downloader type from Combo Box
         downloader = self.get_string_from_current_selected_combo_box_option(self.download_engine_combo_box)
+
+        # Set up progress structure
         progress = ProgressStruct()
         progress.total = len(packs)
 
+        # Start the update thread
         self.run_thread_in_parallel(target=update_progress_thread, args=(progress,))
 
+        # Start the download thread
         self.run_thread_in_parallel(target=BatchDownloadManager.start_download_process,
                                     args=(preparation, downloader, packs,
                                           self.get_boolean_from_check_box(self.rename_check), progress))
+
+        # Set the class variable dl_progress to point to the progress structure to disable
+        # additional concurrent downloads
         self.dl_progress = progress
 
-    def on_directory_changed(self, widget):
+    def on_directory_changed(self, widget: object) -> None:
         """
-        method run when the directory changes
-        :param widget: the changed widget
-        :return: void
+        Method run when the directory Entry text changes
+
+        It automatically browses through the specified directory in search of relevant information, like
+        show name, season number, first episode number, directory content etc.
+
+        :param widget: the changed text entry
+        :return: None
         """
+        # Should not happen, just used to shut up IDE warnings about unused variables
         if widget is None:
             return
+
+        # Get the currently entered directory
         directory = self.get_string_from_text_entry(self.destination)
-        show_name = os.path.basename(directory)
+
+        show_name, season, episode, main_icon, secondary_icon = BatchDownloadManager.analyse_show_directory(directory)
+
+        # Set the GUI elements to the calculated values
         self.set_text_entry_string(self.show, show_name)
         self.set_text_entry_string(self.search_field, show_name)
+        self.set_text_entry_string(self.episode, episode)
+        self.set_text_entry_string(self.season, season)
+        self.set_text_entry_string(self.main_icon_location, main_icon)
+        self.set_text_entry_string(self.secondary_icon_location, secondary_icon)
 
+        # Clear the directory content list box
         self.clear_primitive_multi_list_box(self.directory_content)
-        if os.path.isdir(directory):
-            highest_season = 1
-            while os.path.isdir(os.path.join(directory, "Season " + str(highest_season + 1))):
-                highest_season += 1
-            if os.path.isdir(os.path.join(directory, "Season " + str(highest_season))):
-                children = os.listdir(os.path.join(directory, "Season " + str(highest_season)))
-                for child in children:
-                    self.add_primitive_multi_list_box_element(self.directory_content, (child,))
-                self.set_text_entry_string(self.episode, str(len(children) + 1))
-                self.set_text_entry_string(self.season, str(highest_season))
-                main_icon = os.path.join(directory, ".icons", "main.png")
-                if os.path.isfile(main_icon):
-                    self.set_text_entry_string(self.main_icon_location, main_icon)
-                secondary_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
-                if os.path.isfile(secondary_icon):
-                    self.set_text_entry_string(self.secondary_icon_location, secondary_icon)
 
-    def browse_for_destination(self, widget):
+        # Fill the directory content list box
+        season_directory_content = os.listdir(os.path.join(directory, "Season " + season))
+        for element in season_directory_content:
+            self.add_primitive_multi_list_box_element(self.directory_content, (element,))
+
+    def browse_for_destination(self, widget: object) -> None:
         """
         Opens a file browser dialog to select a directory to the show's root directory
+
         :param widget: the button that caused this method call
-        :return: void
+        :return: None
         """
+        # used to trick IDE warnings
         if widget is not None:
-            directory = self.show_directory_chooser_dialog()
-            self.set_text_entry_string(self.destination, directory)
+            directory = self.show_directory_chooser_dialog()  # Show a directory chooser dialog
+            self.set_text_entry_string(self.destination, directory)  # and then set the entry text to the result
