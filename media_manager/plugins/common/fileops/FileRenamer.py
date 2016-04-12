@@ -45,5 +45,6 @@ class FileRenamer(object):
         original_file_name = os.path.basename(file)  # Get the original file name (for calc'ing the extension)
         extension = os.path.splitext(original_file_name)[1]  # Get the file extension
         new_file = os.path.join(os.path.dirname(file), new_name + extension)  # Calculate the new file path
+        print("renaming file " + file + " to " + new_name)  # Print to console what is happening
         shutil.move(file, new_file)  # Rename the file
         return new_file  # Return the new path to the file

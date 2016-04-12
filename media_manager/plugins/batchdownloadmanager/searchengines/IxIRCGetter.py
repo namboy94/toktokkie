@@ -121,48 +121,70 @@ class IxIRCGetter(GenericGetter):
         pack_number = 0
         size = ""
 
-        line_count = 0
-        ago_count = 0
-        aborted = False
-        next_element = False
+        column_count = 0  # Keeps track of which column the parser is currently working on
+        ago_count = 0  # Counts how often the word "ago" was used
+        aborted = False  # Flag that sets the 'aborted' state
+        next_element = False  # Flag that lets other parts of the loop know that we are moving on to the next element
 
-        # Holy fuck what the fuck is this fucking shit?
-        # TODO make sense of this, comment everything
-        for line in packs:
-            if next_element and line.text == "":
+        # line_part is a x,y section of the rows and columns of the website. we go through it in the order
+        # Left->Right, Top->Bottom
+        for line_part in packs:
+            if next_element and line_part.text == "":
+                # Jumps to the next not-empty element if we are currently jumping to the next pack
                 continue
-            if next_element and not line.text == "":
+            elif next_element and not line_part.text == "":
+                # We reached a new pack, commencing operations (Which means we start parsing the pack again)
                 next_element = False
-            if not next_element and line.text == "":
+            elif not next_element and line_part.text == "":
+                # Invalid pack element if a string == "" in the middle of the pack,
+                # abort the pack and jump to next element
                 aborted = True
-            if "ago" in line.text:
+            elif "ago" in line_part.text and column_count > 6:
+                # Counts the number of times 'ago' is seen by the parser.
+                # The last two elements of a pack both end with 'ago', which makes it ideal to use as a marker
+                # For when a single pack element ends
+                # This only starts counting once we got all relevant information from the pack itself
+                # to avoid conflicts when the substring 'ago' is contained inside the file name
                 ago_count += 1
+
+            # This gets the information from the pack and stores them into variables
+            # This gets skipped if it has been established that the pack is invalid
             if not aborted:
-                if line_count == 0:
-                    file_name = line.text
-                elif line_count == 1:
-                    server = line.text
-                elif line_count == 2:
-                    channel = line.text
-                elif line_count == 3:
-                    bot = line.text
-                elif line_count == 4:
-                    pack_number = int(line.text)
-                elif line_count == 6:
-                    size = line.text
+                if column_count == 0:
+                    file_name = line_part.text
+                elif column_count == 1:
+                    server = line_part.text
+                elif column_count == 2:
+                    channel = line_part.text
+                elif column_count == 3:
+                    bot = line_part.text
+                elif column_count == 4:
+                    pack_number = int(line_part.text)
+                elif column_count == 5:
+                    pass  # This is the 'gets' section, we don't need that
+                elif column_count == 6:
+                    size = line_part.text
+
+            # This is called once we have reached the end of a pack
             if not aborted and ago_count == 2:
-                ago_count = 0
-                line_count = 0
-                next_element = True
+                ago_count = 0  # Reset 'ago' counter
+                column_count = 0  # Reset column counter
+                next_element = True  # Sets flag to communicate that a next element was found
+
+                # Generate XDCCPack and append it to the list
                 result = XDCCPack(file_name, "irc." + server + ".net", channel, bot, pack_number, size)
                 results.append(result)
-            if aborted and ago_count == 2:
-                aborted = False
-                ago_count = 0
-                line_count = 0
-                next_element = True
+
+            # If an invalid pack is found, this is called
+            elif aborted and ago_count == 2:
+                aborted = False  # Reset aborted flag
+                ago_count = 0  # Reset ago count
+                column_count = 0  # Reset column count
+                next_element = True  # Set next_element to true to tell the loop to move on to the next pack
+
             if not next_element:
-                line_count += 1
+                # Only increment column_count in the middle of a pack, not when we jump to the next pack element
+                column_count += 1
 
     def get_server(self, bot: str) -> str:
         """

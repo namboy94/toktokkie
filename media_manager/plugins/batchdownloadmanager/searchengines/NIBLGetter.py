@@ -47,6 +47,7 @@ class NIBLGetter(GenericGetter):
 
         :return: the search results as a list of XDCCPack objects
         """
+        # Prepare the search term, nibl.co.uk uses + symbols as spaces.
         split_search_term = self.search_term.split(" ")
         prepared_search_term = split_search_term[0]
         i = 1
@@ -54,26 +55,29 @@ class NIBLGetter(GenericGetter):
             prepared_search_term += "+" + split_search_term[i]
             i += 1
 
-        url = "http://nibl.co.uk/bots.php?search=" + prepared_search_term
-        content = BeautifulSoup(requests.get(url).text, "html.parser")
-        file_names = content.select(".filename")
-        pack_numbers = content.select(".packnumber")
-        bot_names = content.select(".botname")
-        file_sizes = content.select(".filesize")
+        # Get the data from the website
+        url = "http://nibl.co.uk/bots.php?search=" + prepared_search_term  # Define the URL
+        content = BeautifulSoup(requests.get(url).text, "html.parser")  # Parse the HTML
+        file_names = content.select(".filename")  # Get all '.filename' elements
+        pack_numbers = content.select(".packnumber")  # Get all '.packnumber' elements
+        bot_names = content.select(".botname")  # Get all '.botname' elements
+        file_sizes = content.select(".filesize")  # Get all '.filesize' elements
 
-        results = []
+        results = []  # Empty array for the search results
 
-        i = 0
+        i = 0  # We need a counter variable since we have four lists of data
         while i < len(file_names):
+            # The filename has two links after it, which need to be cut out
             filename = file_names[i].text.rsplit(" \n", 1)[0]
+            # The bot name has a link after it, which needs to be cut out
             bot = bot_names[i].text.rsplit(" ", 1)[0]
-            server = self.get_server(bot)
-            channel = self.get_channel(bot)
-            packnumber = int(pack_numbers[i].text)
-            size = file_sizes[i].text
-            result = XDCCPack(filename, server, channel, bot, packnumber, size)
-            results.append(result)
-            i += 1
+            server = self.get_server(bot)  # Gets server name for the bot
+            channel = self.get_channel(bot)  # Gets channel name for the bot
+            packnumber = int(pack_numbers[i].text)  # packnumber is straight-forward
+            size = file_sizes[i].text  # size is also straight-forward
+            result = XDCCPack(filename, server, channel, bot, packnumber, size)  # Generate the XDCCPack
+            results.append(result)  # add to list
+            i += 1  # Loop to next element
 
         return results
 
@@ -85,6 +89,7 @@ class NIBLGetter(GenericGetter):
         :return: the server name
         """
 
+        # Should be self-explanatory
         if bot == "HelloKitty" or "CR-" in bot:
             return "#horriblesubs"
         elif bot == "E-D|Mashiro":
