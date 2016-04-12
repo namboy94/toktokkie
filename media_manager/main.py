@@ -34,15 +34,10 @@ from os.path import expanduser
 # This import construct enables the program to be run when installed via
 # setuptools as well as portable
 try:
-    from startup.Installer import Installer
     from metadata import Globals
-    from mainuserinterfaces.MainCli import MainCli
-    from mainuserinterfaces.MainArgsParser import MainArgsParser
 except ImportError:
-    from media_manager.startup.Installer import Installer
     from media_manager.metadata import Globals
-    from media_manager.mainuserinterfaces.MainCli import MainCli
-    from media_manager.mainuserinterfaces.MainArgsParser import MainArgsParser
+
 
 
 def main(ui_override: str = "") -> None:
@@ -88,9 +83,15 @@ def main(ui_override: str = "") -> None:
     try:
         from plugins.PluginManager import PluginManager
         from mainuserinterfaces.MainGUI import MainGUI
+        from mainuserinterfaces.MainCli import MainCli
+        from mainuserinterfaces.MainArgsParser import MainArgsParser
+        from startup.Installer import Installer
     except ImportError:
         from media_manager.plugins.PluginManager import PluginManager
         from media_manager.mainuserinterfaces.MainGUI import MainGUI
+        from media_manager.mainuserinterfaces.MainCli import MainCli
+        from media_manager.mainuserinterfaces.MainArgsParser import MainArgsParser
+        from media_manager.startup.Installer import Installer
 
     # This checks if the program is already correctly installed in the user's
     # home directory, if this is not the case the program will be installed now.

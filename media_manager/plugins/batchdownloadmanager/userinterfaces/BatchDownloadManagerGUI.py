@@ -24,6 +24,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 import time
 
@@ -44,65 +45,268 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
     GUI for the BatchDownloadManager plugin
     """
 
-    def __init__(self, parent):
+    # Threading Variables
+    search_thread = None
+    """
+    A thread that runs in parallel to the GUI's main thread. It conducts XDCC searches without freezing the GUI
+    """
+
+    searching = False
+    """
+    Indicator if an XDCC search is currently in progress
+    """
+
+    dl_progress = None
+    """
+    The download progress structure used to communicate with the actual downloader
+    """
+
+    # GUI Elements
+    configure_label = None
+    """
+    A text Label that displays "Options" above the various configuration options
+    """
+
+    destination_label = None
+    """
+    A Text Label used as an indicator that the Text Entry beside it is used to determine the
+    destination directory of the download
+    """
+
+    destination = None
+    """
+    The Text Entry that determines the destination directory for the download
+    """
+
+    destination_browser = None
+    """
+    A Button that enables browsing for a target download directory
+    """
+
+    show_label = None
+    """
+    A Text Label that indicates that the Text Entry beside it is used as a means of storing the
+    Show Name of the files to download
+    """
+
+    show = None
+    """
+    The Text Entry that stores the show name of the packs to be downloaded
+    This Entry is updated whenever the 'destination' Entry is changed
+    """
+
+    season_label = None
+    """
+    A text label that indicates that the Entry beside it is used to store the season number of the show to be
+    downloaded.
+    """
+
+    season = None
+    """
+    The Text Entry storing the season number of the show to be downloaded, it is automatically updated whenever the
+    'destination' Entry is changed
+    """
+
+    episode_label = None
+    """
+    A text label that indicates that the Entry beside it is used to store the first episode number of the show to be
+    downloaded.
+    """
+
+    episode = None
+    """
+    The Text Entry storing the first episode number of the show to be downloaded, it is automatically updated whenever
+    the 'destination' Entry is changed
+    """
+
+    search_label = None
+    """
+    A text Label that indicates that the Entry beside it is used to store the search term used when conducting the
+    XDCC search
+    """
+
+    search_field = None
+    """
+    Text Entry that stores the search term used when conducting the XDCC search. It is automatically updated to be the
+    same as the 'show' Entry whenever the 'destination' Entry is modified
+    """
+
+    search_engine_label = None
+    """
+    Text Label that indicates that the Combo Box beside it is used to select which search engine to use
+    """
+
+    search_engine_combo_box = None
+    """
+    Combo Box using string values to identify which search engine should be used to conduct the XDCC search
+    """
+
+    search_button = None
+    """
+    Button that starts the XDCC search process with the currently entered information
+    """
+
+    download_engine_label = None
+    """
+    Text Label that indicates that the Combo Box beside it is used to select which downloader to use
+    """
+
+    download_engine_combo_box = None
+    """
+    Combo Box using string values to identify which downloader should be used when downloading XDCC packs
+    """
+
+    download_button = None
+    """
+    The button that starts the download process of the currently selected XDCC packs
+    """
+
+    rename_check = None
+    """
+    A Checkbutton used to select if the downloaded files should be automatically renamed once they have
+    completed downloading.
+    """
+
+    main_icon_label = None
+    """
+    A Text Label indicating that the Text Entry beside it is used to store the main icon label's path
+    """
+
+    main_icon_location = None
+    """
+    A Text Entry used to store the main icon label's path
+    """
+
+    secondary_icon_label = None
+    """
+    A Text Label indicating that the Text Entry beside it is used to store the secondary icon label's path
+    """
+
+    secondary_icon_location = None
+    """
+    A Text Entry used to store the secondary icon label's path
+    """
+
+    method_label = None
+    """
+    A Text Label indicating that the Combo Box beside it is used to select the iconizing method to be used
+    with the selected icons
+    """
+
+    method_combo_box = None
+    """
+    A Combobox with string options used to select the iconizing method to be used with the selected icons
+    """
+
+    search_results = None
+    """
+    A List Box with multiple columns allowing multiple selections that displays the results of an XDCC search
+    """
+
+    search_results_label = None
+    """
+    A Text Label displayed above the search results displaying "Search Results"
+    """
+
+    directory_content = None
+    """
+    A List Box with multiple columns allowing multiple selections that displays the content of the currently selected
+    directory's highest season's content
+    """
+
+    directory_content_label = None
+    """
+    A Text Label displayed above the directory content displaying "Episodes"
+    """
+
+    total_progress_bar = None
+    """
+    A Progress bar displaying the total progress of the downloading process
+    """
+
+    total_progress_label = None
+    """
+    A Label indicating that the total progress is displayed beside it
+    """
+
+    total_progress_current = None
+    """
+    A Text Label that shows the current total progress in amount of files
+    """
+
+    total_progress_total = None
+    """
+    A Text Label that shows the total amount of files to be downloaded
+    """
+
+    single_progress_bar = None
+    """
+    A Progress bar displaying the download progress of the current file
+    """
+
+    single_progress_label = None
+    """
+    A Text Label that indicates that the single progress is displayed beside it
+    """
+
+    single_progress_current = None
+    """
+    A Text label that shows how many bytes of the current were already downloaded by the downloader
+    """
+
+    single_progress_total = None
+    """
+    A Text label that shows how many bytes the size of the current file is
+    """
+
+    download_speed = None
+    """
+    A Text Label displaying the current download speed
+    """
+
+    download_speed_label = None
+    """
+    A Text Label indicating that the current download speed is displayed beside it
+    """
+
+    average_dl_speed = None
+    """
+    A Text Label showing the average download speed over the course of the entire download
+    """
+
+    average_dl_speed_label = None
+    """
+    A Text Label indicating that beside it is a Text Label showing the average download speed over
+    the course of the entire download
+    """
+
+    time_left = None
+    """
+    A Text Label showing an approximation on how much time will pass until the download is completed
+    """
+
+    time_left_label = None
+    """
+    A Text Label indicating that beside it is a Text Label showing an approximation on how much time will pass
+    until the download is completed
+    """
+
+    # Other
+    search_result = []
+    """
+    A list of search results from an XDCC search
+    """
+
+    def __init__(self, parent: Globals.selected_grid_gui_framework):
         """
-        Constructor
+        Constructor for the BatchDownloadManagerGUI class
+
+        It initializes a gfworks Window with the title "Batch Download Manager" and
+        hides the parent window.
+
         :param parent: the parent gui
-        :return: void
+        :return: None
         """
-        # Threads
-        self.search_thread = None
-        self.searching = False
-        self.dl_progress = None
-
-        # GUI Elements
-        self.search_result = []
-        self.configure_label = None
-        self.destination_label = None
-        self.destination = None
-        self.destination_browser = None
-        self.show_label = None
-        self.show = None
-        self.season_label = None
-        self.season = None
-        self.episode_label = None
-        self.episode = None
-        self.search_label = None
-        self.search_field = None
-        self.search_engine_label = None
-        self.search_engine_combo_box = None
-        self.search_button = None
-        self.download_engine_label = None
-        self.download_engine_combo_box = None
-        self.download_button = None
-        self.options_label = None
-        self.rename_check = None
-        self.main_icon_label = None
-        self.main_icon_location = None
-        self.secondary_icon_label = None
-        self.secondary_icon_location = None
-        self.method_label = None
-        self.method_combo_box = None
-        self.search_results = None
-        self.search_results_label = None
-        self.directory_content = None
-        self.directory_content_label = None
-        self.total_progress_bar = None
-        self.total_progress_label = None
-        self.total_progress_current = None
-        self.total_progress_total = None
-        self.single_progress_bar = None
-        self.single_progress_label = None
-        self.single_progress_current = None
-        self.single_progress_total = None
-        self.download_speed = None
-        self.download_speed_label = None
-        self.average_dl_speed = None
-        self.average_dl_speed_label = None
-        self.time_left = None
-        self.time_left_label = None
-
-        # Initialization
         super().__init__("Batch Download Manager", parent, True)
 
     def lay_out(self):
@@ -179,10 +383,8 @@ class BatchDownloadManagerGUI(Globals.selected_grid_gui_framework):
         self.position_absolute(self.directory_content, 120, 5, 30, 40)
 
         # Download Section
-        self.options_label = self.generate_label("Automatic Rename")
-        self.rename_check = self.generate_check_box("", True)
-        self.position_absolute(self.options_label, 80, 45, 15, 12)
-        self.position_absolute(self.rename_check, 95, 45, 15, 12)
+        self.rename_check = self.generate_check_box("Automatic Rename", True)
+        self.position_absolute(self.rename_check, 80, 45, 30, 12)
 
         self.download_engine_label = self.generate_label("Download Engine")
         self.download_engine_combo_box = self.generate_string_combo_box(["Twisted", "Hexchat Plugin"])

@@ -196,6 +196,7 @@ class TwistedDownloader(object):
         else:
             return file_path  # Return the file path
 
+    # noinspection PyUnresolvedReferences
     @staticmethod
     def check_python3_compatibility() -> None:
         """
@@ -212,16 +213,11 @@ class TwistedDownloader(object):
         try:
             # These packages have to be implemented by twisted
             from twisted.words.protocols import irc
+
             from twisted.internet import reactor, protocol
             from twisted.python import log as twistedlog
             twisted_irc_implemented_in_python3 = True
         except ImportError:
-            # THis is just to shut up the IDE warnings
-            irc, reactor, protocol, twistedlog = None
-            str(irc)
-            str(reactor)
-            str(protocol)
-            str(twistedlog)
             twisted_irc_implemented_in_python3 = False
 
         if twisted_irc_implemented_in_python3:
