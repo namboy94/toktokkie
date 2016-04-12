@@ -27,19 +27,22 @@ LICENSE
 # imports
 import os
 from subprocess import Popen
-from typing import Tuple
+from typing import Tuple, List, Dict
 
 try:
     from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
     from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
     from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
+
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.common.fileops.FileMover import FileMover
 except ImportError:
     from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
     from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
     from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
@@ -49,17 +52,20 @@ except ImportError:
 
 class BatchDownloadManager(object):
     """
-    A class containing the functionality of te Batch Download Manager Plugin.
+    A class containing the functionality of the Batch Download Manager Plugin. From both a CLI
+    and GUI environment.
     """
 
     @staticmethod
-    def conduct_xdcc_search(search_engine, search_term):
+    def conduct_xdcc_search(search_engine: str, search_term: str) -> List[XDCCPack]:
         """
-        Conducts the XDCC search
+        Conducts the XDCC search using the selected search engine and search term
+
         :param search_engine: the search engine to be used
         :param search_term: the search term
-        :return: the search result
+        :return: the search results as a list of XDCCPack objects
         """
+        # Use the selected search engine
         if search_engine == "NIBL.co.uk":
             search_result = NIBLGetter(search_term).search()
         elif search_engine == "intel.haruhichan.com":
@@ -67,6 +73,8 @@ class BatchDownloadManager(object):
         elif search_engine == "ixIRC.com":
             search_result = IxIRCGetter(search_term).search()
         else:
+            # If an unsupported search engine was selected, raise this Error
+            # This should not happen
             raise NotImplementedError("The selected search engine is not implemented")
         return search_result
 
@@ -74,11 +82,15 @@ class BatchDownloadManager(object):
     def get_icon(path, folder_icon_directory, icon_file):
         """
         Gets the icons specified by the user with either wget or cp
+        THIS ONLY WORKS ON LINUX OPERATING SYSTEMS!!!
+
         :param path: the path to the icon file
         :param folder_icon_directory: the folder icon directory
         :param icon_file: the icon file to which the icon will be saved to
-        :return void
+        :return: None
         """
+        # TODO find a cross-platform way to do this
+        # I won't comment this before this is cross-platform
         if os.path.isfile(path):
             if not path == folder_icon_directory + icon_file:
                 if os.path.isfile(folder_icon_directory + icon_file):
@@ -96,22 +108,29 @@ class BatchDownloadManager(object):
             Popen(["mv", new_file, folder_icon_directory + icon_file]).wait()
 
     @staticmethod
-    def prepare(directory, show, season_string, first_episode_string, main_icon, secondary_icon, iconizer_method):
+    def prepare(directory: str, show: str, season_string: str, first_episode_string: str,
+                main_icon: str, secondary_icon: str, iconizer_method: str) \
+            -> Dict[str, type]:  # or Tuple[str, str]
         """
-        Prepares the download
-        :param iconizer_method: the iconizer method to be used
-        :param secondary_icon: the secondary icon
-        :param main_icon: the main icon
-        :param first_episode_string: the first episode as string
-        :param season_string: the season number/name as string
-        :param show: the show name
+        Creates a preparation tuple for the downloader, parsing important information
+        and checking for errors
+
         :param directory: the directory of the show
+        :param show: the show name
+        :param season_string: the season number/name as string
+        :param first_episode_string: the first episode as string
+        :param main_icon: the main icon
+        :param secondary_icon: the secondary icon
+        :param iconizer_method: the iconizer method to be used
+
         :return: {directory: the original directory,
                   show: the show name,
                   season: the season number,
                   first_episode: the first episode number,
                   special: if it's special,
                   new_directory: and the new directory}
+                  OR
+                  two-part-tuple containing an error message
         """
         if os.path.isdir(directory):
             update = True
