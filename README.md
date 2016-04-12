@@ -72,6 +72,8 @@ Disclaimer:
 
 The developer(s) of this software is/are not liable for any unlawful use of the provided software.
 
-[Git Statistics](http://krumreyh.com/git_stats_pages/media-manager/general.html)
+[Git Statistics](http://gitlab.namibsun.net/namboy94/media-manager/wikis/git_stats/general.html)
+
+[Git Statistics (Remote)](http://krumreyh.com/git_stats_pages/media-manager/general.html)
 
 [Documentation](http://gitlab.namibsun.net/namboy94/media-manager/wikis/html/index.html)
