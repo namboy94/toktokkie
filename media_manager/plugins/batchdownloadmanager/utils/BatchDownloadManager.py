@@ -29,7 +29,6 @@ import os
 import shutil
 import urllib.request
 import urllib.error
-from subprocess import Popen
 from typing import Tuple, List, Dict
 
 try:
@@ -123,64 +122,73 @@ class BatchDownloadManager(object):
                   OR
                   dictionary with two elements containing an error message
         """
-        if os.path.isdir(directory):
-            update = True
-        else:
-            update = False
+        # Checks if the show directory already exists
+        update = os.path.isdir(directory)
 
+        # Checks that a show name as well as a season/episode number were specified,
+        # return error dictionary if they were not.
         if not show:
             return {"error_title": "No show name specified", "error_text": ""}
 
         if not season_string:
             return {"error_title": "No Season number specified", "error_text": ""}
 
+        if not first_episode_string:
+            return {"error_title": "No Episode number specified", "error_text": ""}
+
+        # Check the season number
+        # If the season number is a string, the special flag will be activated
         try:
             season = int(season_string)
             special = False
-        except ValueError:
+        except ValueError:  # If season is not an integer value
             season = season_string
             special = True
 
-        if special:
-            target_directory = os.path.join(directory, str(season))
-        else:
-            target_directory = os.path.join(directory, "Season " + str(season))
+        # Check the episode number, if an invalid episode is specified, return an error dictionary
+        try:
+            first_episode = int(first_episode_string)
+        except ValueError:  # if episode is not an integer value
+            return {"error_title": "Not a valid episode number", "error_text": ""}
 
+        # Calculate the target download directory for the files
+        if special:
+            target_directory = os.path.join(directory, str(season))  # Special seasons
+        else:
+            target_directory = os.path.join(directory, "Season " + str(season))  # Normal seasons
+
+        # If the directory does not exist yet, create it and generate the folder structure
         if not update:
-            os.makedirs(directory)
-            if not os.path.isdir(directory):
+            os.makedirs(directory)  # Create the directory
+            if not os.path.isdir(directory):  # Error Handling
                 return {"error_title": "Error creating directory",
                         "error_text": "Was a valid directory string entered?"}
-            os.makedirs(os.path.join(directory, ".icons"))
+            os.makedirs(os.path.join(directory, ".icons"))  # Create the icons folder
 
-        season_update = False
-        if update and os.path.isdir(target_directory):
-            season_update = True
-
-        if not season_update:
+        # Check if the season folder already exists, if it does not, create it
+        if not os.path.isdir(target_directory):
             os.makedirs(target_directory)
 
-        episodes = os.listdir(target_directory)
-        first_episode = len(episodes) + 1
+        # Get icon files over http or the local file system into the icon folders
+        # Fill a list with argument tuples for th get_icon method
+        icons_to_process = [(main_icon, os.path.join(directory, ".icons"), "main.png"),  # main icon
 
-        if main_icon:
-            if BatchDownloadManager.get_icon(main_icon, os.path.join(directory, ".icons"), "main.png")\
-                    == "error":
-                return {"error_title": "Error retrieving image from source", "error_text": ""}
-        if secondary_icon:
-            if BatchDownloadManager.get_icon(secondary_icon, os.path.join(directory, ".icons"),
-                                             os.path.dirname(target_directory) + ".png") == "error":
-                return {"error_title": "Error retrieving image from source", "error_text": ""}
+                            (secondary_icon, os.path.join(directory, ".icons"),  # secondary icon
+                             os.path.dirname(target_directory) + ".png")
+                            ]
 
+        for element in icons_to_process:  # Iterate through list
+            if element[0]:  # Check if specified
+                # get icon, check for errors
+                if BatchDownloadManager.get_icon(element[0], element[1], element[2]) == "error":
+                    # Return an error dictionary if the get_icon fails
+                    return {"error_title": "Error retrieving image from source", "error_text": ""}
+
+        # If an icon was specified, iconize the directory
         if main_icon or secondary_icon:
             DeepIconizer(directory, iconizer_method).iconize()
 
-        if first_episode_string:
-            try:
-                first_episode = int(first_episode_string)
-            except ValueError:
-                return {"error_title": "Not a valid episode number", "error_text": ""}
-
+        # Return the preparation dictionary
         return {"directory": directory, "show": show, "season": season, "first_episode": first_episode,
                 "special": special, "target_directory": target_directory}
 
@@ -242,7 +250,6 @@ class BatchDownloadManager(object):
                 episode_amount = len(children) + 1
 
             # Check for icons:
-
         if os.path.isfile(os.path.join(directory, ".icons", "main.png")):
             main_icon = os.path.join(directory, ".icons", "main.png")
         if os.path.isfile(os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")):
