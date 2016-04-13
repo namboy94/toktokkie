@@ -27,6 +27,8 @@ LICENSE
 # imports
 import os
 import shutil
+import urllib.request
+import urllib.error
 from subprocess import Popen
 from typing import Tuple, List, Dict
 
@@ -86,20 +88,15 @@ class BatchDownloadManager(object):
                 # Copy the icon file to the folder icon directory
                 shutil.copyfile(path, os.path.join(folder_icon_directory, icon_file))
         else:
-            # TODO find a cross-platform way to do this
-            # TODO Error handling and returning?
-            # I won't comment this before this is cross-platform
-            before = os.listdir(os.getcwd())
-            Popen(["wget", path]).wait()
-            after = os.listdir(os.getcwd())
-            new_file = ""
-            for file in after:
-                if file not in before:
-                    new_file = file
-                    break
-            Popen(["mv", new_file, folder_icon_directory + icon_file]).wait()
+            # Download file via http url
+            try:
+                urllib.request.urlretrieve(path, os.path.join(folder_icon_directory, icon_file))
+            except urllib.error.HTTPError:
+                # If file could not be downloaded, return error string
+                return "error"
 
-        return "OK"
+        # If all went well, return "ok" to let the caller know that everything went OK.
+        return "ok"
 
     @staticmethod
     def prepare(directory: str, show: str, season_string: str, first_episode_string: str,
