@@ -102,6 +102,7 @@ class GenericPlugin(object):
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
         Starts the CLI of the plugin in interactive mode
+
         :param parent_cli: the parent cli to which the plugin can return to
         :return: None
         """
@@ -110,6 +111,7 @@ class GenericPlugin(object):
     def start_gui(self, parent_gui: GenericWindow) -> None:
         """
         Starts the GUI of the plugin
+
         :param parent_gui: the gui's parent to which the plugin can return to
         :return: None
         """
