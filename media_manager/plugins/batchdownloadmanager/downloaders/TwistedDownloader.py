@@ -221,7 +221,7 @@ class TwistedDownloader(object):
             twisted_irc_implemented_in_python3 = False
 
         if twisted_irc_implemented_in_python3:
-            # This is supposed to help me get a faster response by annoying users. Mwahaha
+            # This is supposed to help me get a faster response by annoying users.
             print("IRC/XDCC HAS BEEN IMPLEMENTED BY THE TWISTED LIBRARY FOR PYTHON 3! "
                   "CONTACT THE DEV IMMEDIATELY AT hermann@krumreyh.com or open an issue"
                   "at http://gitlab.namibsun.net/media-manager")
