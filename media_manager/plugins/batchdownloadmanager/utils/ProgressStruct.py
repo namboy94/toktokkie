@@ -27,10 +27,33 @@ LICENSE
 
 class ProgressStruct(object):
     """
-    A class that provides a structure for keeping track of progress.
+    A class that provides a structure for keeping track of download progress.
+    """
+
+    total = 0
+    """
+    The total amount of files to download
+    """
+
+    total_progress = 0
+    """
+    The amount of files already downloaded
+    """
+
+    single_size = 0
+    """
+    The size of the currently downloading file
+    """
+
+    single_progress = 0
+    """
+    The amount already downloaded of the currently downloading file
     """
 
     def __init__(self):
+        """
+        Creates a new ProgressStruct with initial values == 0
+        """
         self.total = 0
         self.total_progress = 0
         self.single_size = 0
