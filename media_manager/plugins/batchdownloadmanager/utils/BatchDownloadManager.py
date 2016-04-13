@@ -26,26 +26,20 @@ LICENSE
 
 # imports
 import os
+import shutil
 from subprocess import Popen
 from typing import Tuple, List, Dict
 
 try:
-    from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
-    from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
+    from plugins.batchdownloadmanager.downloaders.DownloaderManager import DownloaderManager
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
-    from plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
-    from plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
-    from plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
-
     from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from plugins.common.fileops.FileMover import FileMover
 except ImportError:
-    from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
-    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
+    from media_manager.plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
+    from media_manager.plugins.batchdownloadmanager.downloaders.DownloaderManager import DownloaderManager
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
-    from media_manager.plugins.batchdownloadmanager.searchengines.IntelGetter import IntelGetter
-    from media_manager.plugins.batchdownloadmanager.searchengines.IxIRCGetter import IxIRCGetter
-    from media_manager.plugins.batchdownloadmanager.searchengines.NIBLGetter import NIBLGetter
     from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.plugins.common.fileops.FileMover import FileMover
 
@@ -65,38 +59,36 @@ class BatchDownloadManager(object):
         :param search_term: the search term
         :return: the search results as a list of XDCCPack objects
         """
-        # Use the selected search engine
-        if search_engine == "NIBL.co.uk":
-            search_result = NIBLGetter(search_term).search()
-        elif search_engine == "intel.haruhichan.com":
-            search_result = IntelGetter(search_term).search()
-        elif search_engine == "ixIRC.com":
-            search_result = IxIRCGetter(search_term).search()
-        else:
-            # If an unsupported search engine was selected, raise this Error
-            # This should not happen
-            raise NotImplementedError("The selected search engine is not implemented")
-        return search_result
+        # Get the selected search engine
+        selected_search_engine = SearchEngineManager.get_search_engine_from_string(search_engine)
+        # and conduct a search
+        # noinspection PyCallingNonCallable
+        return selected_search_engine(search_term).search()
 
     @staticmethod
-    def get_icon(path, folder_icon_directory, icon_file):
+    def get_icon(path: str, folder_icon_directory: str, icon_file: str) -> str:
         """
-        Gets the icons specified by the user with either wget or cp
-        THIS ONLY WORKS ON LINUX OPERATING SYSTEMS!!!
+        Gets the icons specified by the user with either wget or the local file system
+        DOWNLOADING VIA WGET CURRENTLY ONLY WORKS ON LINUX OPERATING SYSTEMS!!!
 
-        :param path: the path to the icon file
+        :param path: the path to the icon file - either a URL or a local file path
         :param folder_icon_directory: the folder icon directory
         :param icon_file: the icon file to which the icon will be saved to
-        :return: None
+        :return: A status message
         """
-        # TODO find a cross-platform way to do this
-        # I won't comment this before this is cross-platform
+        # If the specified path is a file, not a URL
         if os.path.isfile(path):
-            if not path == folder_icon_directory + icon_file:
-                if os.path.isfile(folder_icon_directory + icon_file):
-                    Popen(["rm", folder_icon_directory + icon_file]).wait()
-                Popen(["cp", path, folder_icon_directory + icon_file]).wait()
+            # if the file is not already the one in the folder icon directory
+            if not path == os.path.join(folder_icon_directory, icon_file):
+                # Remove previous icon file if it exists
+                if os.path.isfile(os.path.join(folder_icon_directory, icon_file)):
+                    os.remove(os.path.join(folder_icon_directory, icon_file))
+                # Copy the icon file to the folder icon directory
+                shutil.copyfile(path, os.path.join(folder_icon_directory, icon_file))
         else:
+            # TODO find a cross-platform way to do this
+            # TODO Error handling and returning?
+            # I won't comment this before this is cross-platform
             before = os.listdir(os.getcwd())
             Popen(["wget", path]).wait()
             after = os.listdir(os.getcwd())
@@ -107,10 +99,12 @@ class BatchDownloadManager(object):
                     break
             Popen(["mv", new_file, folder_icon_directory + icon_file]).wait()
 
+        return "OK"
+
     @staticmethod
     def prepare(directory: str, show: str, season_string: str, first_episode_string: str,
                 main_icon: str, secondary_icon: str, iconizer_method: str) \
-            -> Dict[str, type]:  # or Tuple[str, str]
+            -> Dict[str, type]:
         """
         Creates a preparation tuple for the downloader, parsing important information
         and checking for errors
@@ -128,9 +122,9 @@ class BatchDownloadManager(object):
                   season: the season number,
                   first_episode: the first episode number,
                   special: if it's special,
-                  new_directory: and the new directory}
+                  target_directory: and the target directory}
                   OR
-                  two-part-tuple containing an error message
+                  dictionary with two elements containing an error message
         """
         if os.path.isdir(directory):
             update = True
@@ -138,10 +132,10 @@ class BatchDownloadManager(object):
             update = False
 
         if not show:
-            return "No show name specified", ""
+            return {"error_title": "No show name specified", "error_text": ""}
 
         if not season_string:
-            return "No Season number specified", ""
+            return {"error_title": "No Season number specified", "error_text": ""}
 
         try:
             season = int(season_string)
@@ -151,34 +145,35 @@ class BatchDownloadManager(object):
             special = True
 
         if special:
-            new_directory = os.path.join(directory, str(season))
+            target_directory = os.path.join(directory, str(season))
         else:
-            new_directory = os.path.join(directory, "Season " + str(season))
+            target_directory = os.path.join(directory, "Season " + str(season))
 
         if not update:
             os.makedirs(directory)
             if not os.path.isdir(directory):
-                return "Error creating directory", "Was a valid directory string entered?"
+                return {"error_title": "Error creating directory",
+                        "error_text": "Was a valid directory string entered?"}
             os.makedirs(os.path.join(directory, ".icons"))
 
         season_update = False
-        if update and os.path.isdir(new_directory):
+        if update and os.path.isdir(target_directory):
             season_update = True
 
         if not season_update:
-            os.makedirs(new_directory)
+            os.makedirs(target_directory)
 
-        episodes = os.listdir(new_directory)
+        episodes = os.listdir(target_directory)
         first_episode = len(episodes) + 1
 
         if main_icon:
-            if BatchDownloadManager.get_icon(main_icon, os.path.join(directory, ".icons"), "media_manager.png")\
+            if BatchDownloadManager.get_icon(main_icon, os.path.join(directory, ".icons"), "main.png")\
                     == "error":
-                return "Error retrieving image from source", ""
+                return {"error_title": "Error retrieving image from source", "error_text": ""}
         if secondary_icon:
             if BatchDownloadManager.get_icon(secondary_icon, os.path.join(directory, ".icons"),
-                                             os.path.dirname(new_directory) + ".png") == "error":
-                return "Error retrieving image from source", ""
+                                             os.path.dirname(target_directory) + ".png") == "error":
+                return {"error_title": "Error retrieving image from source", "error_text": ""}
 
         if main_icon or secondary_icon:
             DeepIconizer(directory, iconizer_method).iconize()
@@ -187,10 +182,10 @@ class BatchDownloadManager(object):
             try:
                 first_episode = int(first_episode_string)
             except ValueError:
-                return "Not a valid episode number", ""
+                return {"error_title": "Not a valid episode number", "error_text": ""}
 
         return {"directory": directory, "show": show, "season": season, "first_episode": first_episode,
-                "special": special, "new_directory": new_directory}
+                "special": special, "target_directory": target_directory}
 
     @staticmethod
     def start_download_process(preparation, downloader, packs, auto_rename, progress_struct):
@@ -203,27 +198,23 @@ class BatchDownloadManager(object):
         :param progress_struct: A ProgressStruct object to keep track of the download progress
         :return: void
         """
-        files = []
-        if downloader == "Hexchat Plugin":
-            if auto_rename and not preparation["special"]:
-                HexChatPluginDownloader(packs,
-                                                progress_struct,
-                                                preparation["show"],
-                                                preparation["first_episode"],
-                                                preparation["season"]).download_loop()
-            else:
-                HexChatPluginDownloader(packs, progress_struct).download_loop()
+        # Get the downloader implementation selected by the user
+        downloader_implementation = DownloaderManager.get_downloader_from_string(downloader)
 
-        elif downloader == "Twisted":
-            if auto_rename and not preparation["special"]:
-                TwistedDownloader(packs,
-                                          progress_struct,
-                                          preparation["new_directory"],
-                                          preparation["show"],
-                                          preparation["first_episode"],
-                                          preparation["season"]).download_loop()
-            else:
-                TwistedDownloader(packs, progress_struct, preparation["new_directory"]).download_loop()
+        # User different arguments depending on if auto-renaming is desired
+        if auto_rename and not preparation["special"]:
+            # Use the full constructor
+            # noinspection PyCallingNonCallable
+            downloader_implementation(packs,
+                                      progress_struct,
+                                      preparation["target_directory"],
+                                      preparation["show"],
+                                      preparation["first_episode"],
+                                      preparation["season"]).download_loop()
+        else:
+            # only use the necessary constructor arguments
+            # noinspection PyCallingNonCallable
+            downloader_implementation(packs, progress_struct, preparation["target_directory"]).download_loop()
 
     @staticmethod
     def analyse_show_directory(directory: str) -> Tuple[str, str, str, str, str]:
@@ -258,6 +249,6 @@ class BatchDownloadManager(object):
         if os.path.isfile(os.path.join(directory, ".icons", "main.png")):
             main_icon = os.path.join(directory, ".icons", "main.png")
         if os.path.isfile(os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")):
-            secondary_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
+            second_icon = os.path.join(directory, ".icons", "Season " + str(highest_season) + ".png")
 
         return show_name, str(highest_season), str(episode_amount), main_icon, second_icon

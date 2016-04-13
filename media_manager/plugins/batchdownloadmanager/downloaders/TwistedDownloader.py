@@ -35,14 +35,16 @@ try:
     from plugins.renamer.objects.Episode import Episode
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+    from plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
 except ImportError:
     from media_manager.external.__init__ import get_location
     from media_manager.plugins.renamer.objects.Episode import Episode
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
+    from media_manager.plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
 
 
-class TwistedDownloader(object):
+class TwistedDownloader(GenericDownloader):
     """
     Wrapper for Gregory Eric Sanderson Turcot Temlett MacDonnell Forbes's XDCC Downloader
     The plan is to replace his script with one of my own once twisted supports python 3.
@@ -94,7 +96,11 @@ class TwistedDownloader(object):
         """
         Constructor of the TwistedDownloader class
 
-        It stores given parameter values locally and establishes if it should auto rename or not.
+        It stores given parameter values locally and establishes if it should auto rename or not
+        using the GenericDownloader's Constructor.
+
+        This method also checks if the twisted library has implemented IRC/XDCC support for python 3
+        and notifies the user in a rather verbose manner when this is the case.
 
         :param packs: the packs to be downloaded
         :param progress_struct: Structure that keeps track of download progress
@@ -102,23 +108,13 @@ class TwistedDownloader(object):
         :param show_name: the show name for auto renaming
         :param episode_number: the (starting) episode number for auto renaming
         :param season_number: the season number for auto renaming
-        :return: void
+        :return: None
         """
+        # Store variables
+        super().__init__(packs, progress_struct, target_directory, show_name, episode_number, season_number)
+
         # Check for python 3 twisted compatibility
         self.check_python3_compatibility()
-
-        # Store variables locally
-        self.packs = packs
-        self.progress_struct = progress_struct
-        self.target_directory = target_directory
-
-        # Establish if the downloader should auto rename the files
-        # Only auto rename if show name, season and episode are specified
-        if show_name and episode_number > 0 and season_number > 0:
-            self.show_name = show_name
-            self.episode_number = episode_number
-            self.season_number = season_number
-            self.auto_rename = True
 
     def download_loop(self) -> List[str]:
         """
@@ -130,11 +126,11 @@ class TwistedDownloader(object):
         """
         files = []  # The downloaded file paths
         for pack in self.packs:  # Download each pack
-            files.append(self.download(pack))  # Download pack and append file path to files list
+            files.append(self.download_single(pack))  # Download pack and append file path to files list
             self.progress_struct.total_progress += 1  # Increment progress structure
         return files
 
-    def download(self, pack: XDCCPack) -> str:
+    def download_single(self, pack: XDCCPack) -> str:
         """
         Downloads a single pack with the help of the twisted downloader script
         and also auto-renames the resulting file if auto-rename is enabled
@@ -225,3 +221,13 @@ class TwistedDownloader(object):
             print("IRC/XDCC HAS BEEN IMPLEMENTED BY THE TWISTED LIBRARY FOR PYTHON 3! "
                   "CONTACT THE DEV IMMEDIATELY AT hermann@krumreyh.com or open an issue"
                   "at http://gitlab.namibsun.net/media-manager")
+
+    @staticmethod
+    def get_string_identifier() -> str:
+        """
+        Returns a unique string identifier with which the Downloader can be addressed by
+        the DownloaderManager
+
+        :return: the string identifier of the Downloader
+        """
+        return "Twisted Downloader"

@@ -29,15 +29,19 @@ import os
 import sys
 
 try:
-    from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
+    from plugins.batchdownloadmanager.downloaders.DownloaderManager import DownloaderManager
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from cli.exceptions.ReturnException import ReturnException
     from cli.GenericCli import GenericCli
 except ImportError:
-    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from media_manager.plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
+    from media_manager.plugins.batchdownloadmanager.downloaders.DownloaderManager import DownloaderManager
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.cli.exceptions.ReturnException import ReturnException
     from media_manager.cli.GenericCli import GenericCli
 
@@ -270,26 +274,39 @@ class BatchDownloadManagerCli(GenericCli):
                 search_engine_selected = False
             # But if not specified, ask the user until he gives a satisfactory answer
             while not search_engine_selected:
+
                 # These are the search engines that are available
+                search_engine_options = SearchEngineManager.get_search_engine_strings()
+
                 print("Search Engine Options:\n")
-                print("1: NIBL.co.uk")
-                print("2: ixIRC.com")
-                print("3: intel.haruhichan.com")
+
+                # List all search engine options:
+                i = 1  # Index starts y one
+                for search_engine in search_engine_options:
+                    print(str(i) + ": " + search_engine)
+                    i += 1  # increase index
+
                 try:
-                    # ask the user
+                    # ask the user for the search engine index
                     search_engine = int(self.ask_user("Which search engine would you like to use?", default="1"))
 
-                    # Determine the search engine type
-                    if search_engine == 1:
-                        self.search_engine = "NIBL.co.uk"
-                    elif search_engine == 2:
-                        self.search_engine = "ixIRC.com"
-                    elif search_engine == 3:
-                        self.search_engine = "intel.haruhichan.com"
-                    else:
+                    i = 1  # Start index at 1 again
+                    valid_selection = False  # Flag that gets set when a valid search engine index was selected
+                    for search_engine_option in search_engine_options:  # Checks all search_engine options
+                        if search_engine == i:  # If the index fits
+                            valid_selection = True  # Set the flag
+                            self.search_engine = search_engine_option  # and set the search engine
+                            break  # We know that the loop is no longer needed, so we break out of it
+                        i += 1  # Increment the index to check
+
+                    # If the given index is out of bounds, let the user know, ask him again
+                    if not valid_selection:
                         print("Invalid index")
                         continue
-                    search_engine_selected = True
+                    # Otherwise leave the search engine loop
+                    else:
+                        search_engine_selected = True
+
                 except ValueError:
                     # If user didn't enter a int value
                     print("Not a valid integer")
@@ -392,14 +409,15 @@ class BatchDownloadManagerCli(GenericCli):
         # If errors occur during the preparation, a 2-part tuple is returned with a description of the error
         # Afterwards, the method returns without doing anything
         if len(preparation) != 6:
-            print(preparation[0])
-            print(preparation[1])
+            print(preparation["error_title"])
+            print(preparation["error_text"])
             return
 
         # If the preparation was successful, the download process will now start
         print("Downloading...")  # Let the user know that we started downloading
 
-        downloader = "Twisted"  # For command line, use the Twisted downloader per default
+        # For command line, use a CLI downloader per default
+        downloader = DownloaderManager.get_downloader_strings("cli")[0]
         progress = ProgressStruct()  # Create a progress structure to keep track of download progress
         progress.total = len(self.selected_packs)  # Define how many files are going to be downloaded
 

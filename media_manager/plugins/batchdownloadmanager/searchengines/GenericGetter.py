@@ -79,3 +79,12 @@ class GenericGetter(object):
         :return: the channel name
         """
         raise NotImplementedError()
+
+    @staticmethod
+    def get_string_identifier() -> str:
+        """
+        Returns a unique string identifier for this XDCC Search Engine
+
+        :return: the unique string identifier for this Search Engine
+        """
+        raise NotImplementedError()

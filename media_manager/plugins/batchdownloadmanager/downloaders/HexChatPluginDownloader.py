@@ -33,18 +33,20 @@ from threading import Thread
 from typing import List
 
 try:
-    from plugins.renamer.objects.Episode import Episode
+    from plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from plugins.common.fileops.FileMover import FileMover
+    from plugins.renamer.objects.Episode import Episode
 except ImportError:
-    from media_manager.plugins.renamer.objects.Episode import Episode
+    from media_manager.plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from media_manager.plugins.common.fileops.FileMover import FileMover
+    from media_manager.plugins.renamer.objects.Episode import Episode
 
 
-class HexChatPluginDownloader(object):
+class HexChatPluginDownloader(GenericDownloader):
     """
     XDCC Downloader that makes use of Hexchat's python scripting interface
 
@@ -125,8 +127,9 @@ class HexChatPluginDownloader(object):
         """
         Constructor for the HexChatPluginDownloader
 
-        It takes information on the files to download as parameters and then calculates various
-        file system paths etc as well as ensure that the Hexchat configuration is correct
+        It takes information on the files to download as parameters, stores them locally using the
+        GenericDownloader's Constructor and then calculates various file system paths etc. as well
+        as ensure that the Hexchat configuration is correct
 
         :param packs: a list of the packs to be downloaded
         :param progress_struct: Structure to keep track of download progress
@@ -136,6 +139,7 @@ class HexChatPluginDownloader(object):
         :param season_number: the season number for use with auto_rename
         :return: None
         """
+        super().__init__(packs, progress_struct, target_directory, show_name, episode_number, season_number)
 
         # Platform check: Different paths for different systems
         if platform.system() == "Linux":
@@ -148,9 +152,6 @@ class HexChatPluginDownloader(object):
                                                         "AppData", "Roaming", "HexChat", "hexchat.conf")
 
         # Store parameters
-        self.packs = packs
-        self.progress_struct = progress_struct
-        self.target_directory = target_directory
         self.download_dir = target_directory
         self.script = open(self.script_location, 'w')  # Opens the script file for writing
 
@@ -187,13 +188,6 @@ class HexChatPluginDownloader(object):
             hexchat_config.close()  # Close the config file
         elif platform.system() == "Windows":
             self.download_dir = current_dl_dir  # Reset the download directory to the one stored in the original config
-
-        if show_name and episode_number > 0 and season_number > 0:  # Only if a show name
-                                                                    # and episode/season number are defined
-            self.auto_rename = True
-            self.show_name = show_name
-            self.episode_number = int(episode_number)
-            self.season_number = int(season_number)
 
     def __write_start__(self) -> None:
         """
@@ -373,3 +367,13 @@ class HexChatPluginDownloader(object):
         # Reset the progress values once the download has completed
         self.progress_struct.single_progress = 0
         self.progress_struct.single_size = 0
+
+    @staticmethod
+    def get_string_identifier() -> str:
+        """
+        Returns a unique string identifier with which the Downloader can be addressed by
+        the DownloaderManager
+
+        :return: the string identifier of the Downloader
+        """
+        return "Hexchat Downloader"

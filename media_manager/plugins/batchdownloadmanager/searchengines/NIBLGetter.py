@@ -89,14 +89,7 @@ class NIBLGetter(GenericGetter):
         :param bot: the bot to check the server name for
         :return: the server name
         """
-
-        # Should be self-explanatory
-        if bot == "HelloKitty" or "CR-" in bot:
-            return "#horriblesubs"
-        elif bot == "E-D|Mashiro":
-            return "#exiled-destiny"
-        else:
-            return "#intel"
+        return "irc.rizon.net"
 
     def get_channel(self, bot: str) -> str:
         """
@@ -105,4 +98,20 @@ class NIBLGetter(GenericGetter):
         :param bot: the bot to check the channel name for
         :return: the channel name
         """
-        return "irc.rizon.net"
+        # Should be self-explanatory
+        if bot == "HelloKitty" or "CR-" in bot:
+            return "#horriblesubs"
+        elif bot == "E-D|Mashiro":
+            return "#exiled-destiny"
+        else:
+            return "#intel"
+
+
+    @staticmethod
+    def get_string_identifier() -> str:
+        """
+        Returns a unique string identifier for this XDCC Search Engine
+
+        :return: the unique string identifier for this Search Engine
+        """
+        return "NIBL.co.uk"

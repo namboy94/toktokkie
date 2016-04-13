@@ -110,7 +110,7 @@ class IntelGetter(GenericGetter):
         :param bot: the bot to check the server name for
         :return: the server name
         """
-        return "#intel"
+        return "irc.rizon.net"
 
     def get_channel(self, bot: str) -> str:
         """
@@ -119,4 +119,13 @@ class IntelGetter(GenericGetter):
         :param bot: the bot to check the channel name for
         :return: the channel name
         """
-        return "irc.rizon.net"
+        return "#intel"
+
+    @staticmethod
+    def get_string_identifier() -> str:
+        """
+        Returns a unique string identifier for this XDCC Search Engine
+
+        :return: the unique string identifier for this Search Engine
+        """
+        return "intel.haruhichan.com"

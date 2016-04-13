@@ -20,6 +20,8 @@ The program depends on the following python packages:
 
 - tvdb_api
 - beautifulsoup4
+- gfworks
+- twisted (for python2)
 
 
 # Installation Instructions

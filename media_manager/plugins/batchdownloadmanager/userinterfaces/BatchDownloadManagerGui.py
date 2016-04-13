@@ -29,14 +29,19 @@ import os
 import time
 
 try:
-    from plugins.iconizer.utils.DeepIconizer import DeepIconizer
+    from plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
     from plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from plugins.batchdownloadmanager.downloaders.DownloaderManager import DownloaderManager
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from metadata import Globals
 except ImportError:
-    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
+
+    from media_manager.plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
     from media_manager.plugins.batchdownloadmanager.utils.BatchDownloadManager import BatchDownloadManager
+    from media_manager.plugins.batchdownloadmanager.downloaders.DownloaderManager import DownloaderManager
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
+    from media_manager.plugins.iconizer.utils.DeepIconizer import DeepIconizer
     from media_manager.metadata import Globals
 
 
@@ -346,8 +351,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         self.position_absolute(self.search_field, 20, 30, 20, 5)
 
         self.search_engine_label = self.generate_label("Search Engine")
-        self.search_engine_combo_box = self.generate_string_combo_box(
-            ["NIBL.co.uk", "ixIRC.com", "intel.haruhichan.com"])
+        self.search_engine_combo_box = self.generate_string_combo_box(SearchEngineManager.get_search_engine_strings())
         self.position_absolute(self.search_engine_label, 0, 35, 20, 5)
         self.position_absolute(self.search_engine_combo_box, 20, 35, 20, 5)
 
@@ -386,7 +390,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         self.position_absolute(self.rename_check, 80, 45, 30, 12)
 
         self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_string_combo_box(["Twisted", "Hexchat Plugin"])
+        self.download_engine_combo_box = self.generate_string_combo_box(DownloaderManager.get_downloader_strings("all"))
         self.position_absolute(self.download_engine_label, 80, 57, 15, 13)
         self.position_absolute(self.download_engine_combo_box, 95, 57, 15, 13)
 
@@ -514,6 +518,8 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
                 self.clear_label_text(self.total_progress_total)
                 self.clear_label_text(self.single_progress_current)
                 self.clear_label_text(self.single_progress_total)
+                self.clear_label_text(self.average_dl_speed)
+                self.clear_label_text(self.time_left)
 
                 # Force a directory content update for the new directory content to be displayed by the
                 # Directory Content List Box
@@ -601,7 +607,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         # If errors occur while preparing the download, stop the download process and notify the user of the
         # exact cause.
         if len(preparation) != 6:  # Preparation returns 2-part tuple if unsuccessful, otherwise 6-part tuple
-            self.show_message_dialog(preparation[0], preparation[1])
+            self.show_message_dialog(preparation["error_title"], preparation["error_text"])
             return  # Stop download process
 
         # Get selected packs from the search result List Box
