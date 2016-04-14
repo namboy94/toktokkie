@@ -26,7 +26,7 @@ LICENSE
 
 # imports
 # noinspection PyUnresolvedReferences
-import readline
+import gnureadline
 import sys
 
 try:
