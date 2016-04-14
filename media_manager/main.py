@@ -39,7 +39,6 @@ except ImportError:
     from media_manager.metadata import Globals
 
 
-
 def main(ui_override: str = "") -> None:
     """
     Main method that runs the program.
@@ -65,10 +64,10 @@ def main(ui_override: str = "") -> None:
 
     # Basic parsing of the arguments, which helps establish in which mode the program
     # should be started
-    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk":
+    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk" and Globals.gtk3_gui_template is not None:
         # This will select the GTK GUI as the selected framework
         Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
-    elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk":
+    elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk" and Globals.tk_gui_template is not None:
         # This will select the Tkinter GUI as the selected framework
         Globals.selected_grid_gui_framework = Globals.tk_gui_template
     elif len(sys.argv) > 1:

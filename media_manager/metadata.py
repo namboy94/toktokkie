@@ -25,8 +25,17 @@ LICENSE
 """
 
 # imports
-from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
-from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
+
+# This checks for each user interface if they are installed
+try:
+    from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
+except ImportError:
+    Gtk3GridTemplate = None
+
+try:
+    from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
+except ImportError:
+    TkGridTemplate = None
 
 
 class Globals(object):
@@ -36,11 +45,12 @@ class Globals(object):
     obsolete, but as of right now it is required
     """
 
-    selected_grid_gui_framework = TkGridTemplate
+    selected_grid_gui_framework = None
     """
-    This stores the selected GUI framework, it is initialized as TkGridTemplate to avoid NoneType
-    errors. The variable will be correctly set at some point in the main module's main method as
-    either Gtk3GridTemplate or TkGridTemplate.
+    This stores the selected GUI framework, it is initialized as None.
+
+    The variable will be correctly set at some point in the main module's main method as either
+    Gtk3GridTemplate or TkGridTemplate.
     """
 
     gtk3_gui_template = Gtk3GridTemplate
@@ -69,7 +79,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.3.1"
+version_number = "0.9.3.2"
 """
 The current version of the program.
 """
