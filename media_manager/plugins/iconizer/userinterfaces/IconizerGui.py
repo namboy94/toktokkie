@@ -24,6 +24,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 
 try:
@@ -36,24 +37,44 @@ except ImportError:
 
 class IconizerGui(Globals.selected_grid_gui_framework):
     """
-    GUI for the Iconizer plugin
+    GUI for the Iconizer plugin, that allows the election of a directory and subsequently iconizes
+    that directory.
     """
 
-    def __init__(self, parent):
+    directory_entry = None
+    """
+    A Text Entry in which the directory path of the directory to be iconized is stored in
+    """
+
+    director_browser = None
+    """
+    A button that lets the user browse for a directory, which will then be inserted into the directory_entry widget
+    """
+
+    start_button = None
+    """
+    A button that starts the iconizing process for the entered directory
+    """
+
+    iconizer_method_combo_box = None
+    """
+    A Combo box from which the user can select which iconizer method he wants to use
+    """
+
+    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
         """
-        Constructor
-        :return: void
+        Constructor of the IconizerGui class. It calls the constructor of the active gfworks framework
+        with the title "Iconizer" and hides the parent Window
+
+        :return: None
         """
-        self.directory_entry = None
-        self.director_browser = None
-        self.start_button = None
-        self.iconizer_method_combo_box = None
         super().__init__("Iconizer", parent, True)
 
-    def lay_out(self):
+    def lay_out(self) -> None:
         """
-        Sets up all interface elements of the GUI
-        :return: void
+        Sets up all interface elements of the GUI and positions them in a Grid layout manager
+
+        :return: None
         """
 
         self.directory_entry = self.generate_text_entry("Enter Directory here", self.iconize_start)
@@ -68,59 +89,40 @@ class IconizerGui(Globals.selected_grid_gui_framework):
         self.iconizer_method_combo_box = self.generate_string_combo_box(DeepIconizer.get_iconizer_options())
         self.position_absolute(self.iconizer_method_combo_box, 3, 1, 1, 1)
 
-    def iconize_start(self, widget):
+    def iconize_start(self, widget: object) -> None:
         """
         Starts the iconizing process
         :param widget: the widget that started this method
         :return void
         """
+        # Used to suppress IDE warnings about unused variables
         if widget is None:
             return
 
+        # Read the directory from the text entry and validate that it is an existing directory
         directory = self.get_string_from_text_entry(self.directory_entry)
         if not os.path.isdir(directory):
+            # If it is not a valid directory, let the user know with the help of a message dialog
             self.show_message_dialog("Not a directory!", "")
             return
-        children = os.listdir(directory)
-        multiple = True
-        for child in children:
-            if child == ".icons":
-                multiple = False
-                break
 
-        if multiple:
-            for child in children:
-                self.iconize_dir(os.path.join(directory, child))
-        else:
-            self.iconize_dir(directory)
+        # Get the selected Iconizer method
+        method = self.get_string_from_current_selected_combo_box_option(self.iconizer_method_combo_box)
 
-    def browse_directory(self, widget):
+        # Iconize the directory
+        DeepIconizer(method).iconize(directory)
+
+        # Let the user know that the iconizing has completed
+        self.show_message_dialog("Not a directory!", "")
+
+    def browse_directory(self, widget: object) -> None:
         """
         Shows a directory chooser dialog and sets the entry to the result of the browse
+
         :param widget: the button that called this method
-        :return: void
+        :return: None
         """
-        if widget is not None:
-            selected_directory = self.show_directory_chooser_dialog()
-            if selected_directory:
+        if widget is not None:  # Suppress IDE warnings
+            selected_directory = self.show_directory_chooser_dialog()  # Open directory chooser dialog
+            if selected_directory:  # If a directory was selected set the text entry to that directory path
                 self.set_text_entry_string(self.directory_entry, selected_directory)
-
-    def iconize_dir(self, directory):
-        """
-        Iconizes a single folder
-        :param directory: the directory to be iconized
-        :return: void
-        """
-        if not os.path.isdir(directory):
-            return
-        method = self.get_string_from_current_selected_combo_box_option(self.iconizer_method_combo_box)
-        has_icons = False
-        for sub_directory in os.listdir(directory):
-            if sub_directory == ".icons":
-                has_icons = True
-                break
-        if not has_icons:
-            print("Error, " + directory + " has no subdirectory \".icons\"")
-            return
-
-        DeepIconizer(directory, method).iconize()

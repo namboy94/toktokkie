@@ -47,8 +47,10 @@ except ImportError:
 
 class BatchDownloadManager(object):
     """
-    A class containing the functionality of the Batch Download Manager Plugin. From both a CLI
+    A class containing the functionality of the Batch Download Manager Plugin. Usable from both a CLI
     and GUI environment.
+
+    This class is a means to avoid code reuse by modularizing common functionality
     """
 
     @staticmethod
@@ -186,7 +188,7 @@ class BatchDownloadManager(object):
 
         # If an icon was specified, iconize the directory
         if main_icon or secondary_icon:
-            DeepIconizer(directory, iconizer_method).iconize()
+            DeepIconizer(iconizer_method).iconize(directory)
 
         # Return the preparation dictionary
         return {"directory": directory, "show": show, "season": season, "first_episode": first_episode,

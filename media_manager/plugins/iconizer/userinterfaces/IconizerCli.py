@@ -24,6 +24,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 
 try:
@@ -38,90 +39,81 @@ except ImportError:
 
 class IconizerCli(GenericCli):
     """
-    GCLI for the Iconizer plugin
+    CLI for the Iconizer plugin
+
+    It offers an interactive mode as well as an argument-driven mode
     """
 
-    def __init__(self, parent, selected_iconizer=None):
+    def __init__(self, parent: GenericCli):
         """
-        Constructor
-        :return: void
+        Constructor of the IconizerCli class
+
+        It calls the Constructor of the GenericCli class wit the parent argument and stores the
+        parameter 'selected_iconizer' as a local class variable.
+
+        :param parent: the parent CLI instance, to which the program returns to once this CLI has finished
+        :return: None
         """
-        self.selected_iconizer = selected_iconizer
         super().__init__(parent)
 
-    def start(self, title=None):
+    def start(self, title: str = None) -> None:
         """
-        Starts the plugin main loop
-        :return void
+        Starts the plugin's main loop, calling the mainloop() method indefinitely
+
+        Before doing so, it prints "ICONIZER PLUGIN" to the console
+
+        :param title: Used as a dummy parameter to preserve the method signature from the super class
+        :return: None
         """
         super().start("ICONIZER PLUGIN\n")
 
-    def mainloop(self, directory=None):
+    def mainloop(self, directory: str = None, selected_iconizer: str = None) -> None:
         """
         Starts the iconizing process
-        :return void
+
+        :param directory: Overrides the directory to iconize, skipping the manual entry of the directory by the user
+        :param selected_iconizer: Overrides the selected iconizer, making it possible to define an iconizer method
+                            without manually asking the user
+        :return None
         """
 
+        # Ask the user for a directory path if none was defined by the method arguments
         if directory is None:
             directory = self.ask_user("Enter the directory to iconize:\n")
 
+        # Then check if the directory is a valid directory and also exists
         if not os.path.isdir(directory):
+            # If not, start a new loop
             print("No valid directory entered")
             return
 
-        if directory is None:
-
+        # Ask the user for an iconizer method if none was defined by the method arguments
+        if selected_iconizer is None:
             print("Which iconizing method would you like to use?\n")
-            i = 1
-            iconizer_dict = {}
-            for option in DeepIconizer.get_iconizer_options():
-                print(str(i) + ":" + option)
-                iconizer_dict[i] = option
-                i += 1
 
+            # list all Iconizer Options
+            i = 1  # The index starts at 1 for a better user experience
+            iconizer_dict = {}  # And also map them to indices using a dictionary
+            for option in DeepIconizer.get_iconizer_options():
+                print(str(i) + ":" + option)  # print
+                iconizer_dict[i] = option  # and store
+                i += 1  # Increment index
+
+            # Now ask the user for his/her preferred iconizer method
+            # Keep asking until the user gives a valid answer
             iconizer_selected = False
             while not iconizer_selected:
-                user_iconizer = self.ask_user()
+                user_iconizer = self.ask_user()  # ask the user
                 try:
-                    self.selected_iconizer = iconizer_dict[int(user_iconizer)]
-                    iconizer_selected = True
+                    selected_iconizer = iconizer_dict[int(user_iconizer)]  # Try the user input as key in the dictionary
+                    iconizer_selected = True  # If successful, break out of the loop
                 except (ValueError, KeyError):
+                    # ValueError when the user enters something that can't be parsed as an integer,
+                    # KeyError when the integer value is out of bound for the dictionary
+                    # Let's the user know he f***ed up. (Input an incorrect value)
                     print("Invalid selection. Please enter the index of the preferred iconizer method\n")
 
-        children = os.listdir(directory)
-        multiple = True
-        for child in children:
-            if child == ".icons":
-                multiple = False
-                break
-
+        # Iconizes the selected directory
         print("Iconizing Start")
-
-        if multiple:
-            for child in children:
-                self.iconize_dir(os.path.join(directory, child))
-        else:
-            self.iconize_dir(directory)
+        DeepIconizer(selected_iconizer).iconize(directory)
         print("Iconizing End")
-
-    def iconize_dir(self, directory):
-        """
-        Iconizes a single folder
-        :param directory: the directory to be iconized
-        :return: void
-        """
-        if not os.path.isdir(directory):
-            return
-
-        print("Iconizing " + directory)
-        method = self.selected_iconizer
-        has_icons = False
-        for sub_directory in os.listdir(directory):
-            if sub_directory == ".icons":
-                has_icons = True
-                break
-        if not has_icons:
-            print("Error, " + directory + " has no subdirectory \".icons\"")
-            return
-
-        DeepIconizer(directory, method).iconize()

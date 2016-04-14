@@ -24,20 +24,23 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 from subprocess import Popen
 
 
 class NautilusNemoIconizer(object):
     """
-    Class that iconizes folders for the Nemo and/or Nautilus file browsers
+    Class that iconizes folders for the Nemo and/or Nautilus file browsers using gvfs-set-attribute
     """
 
     @staticmethod
-    def iconize(directory, icon):
+    def iconize(directory: str, icon: str) -> None:
         """
-        Iconizes the folder
-        :param icon: the icon to be used
+        Iconizes the given directory using the icon provided
+
         :param directory: the directory to be iconized
-        :return: void
+        :param icon: the icon to be used
+        :return: None
         """
+        # call gvfs-set-attribute to iconize the directory
         Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon + ".png"])
