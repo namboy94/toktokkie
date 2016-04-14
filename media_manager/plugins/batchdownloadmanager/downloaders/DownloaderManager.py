@@ -33,7 +33,7 @@ try:
     from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
 except ImportError:
     from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
-    from plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
+    from media_manager.plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
     from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
 
 

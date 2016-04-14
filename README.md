@@ -30,7 +30,7 @@ The program depends on the following python packages:
 
 install the following packages with your package manager, if you have not done so already:
 
-- python
+- python3
 - tk (for Tk)
 - python-gobject (for GTK)
 - hexchat (optional)
