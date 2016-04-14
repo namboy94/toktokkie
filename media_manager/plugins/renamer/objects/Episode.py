@@ -24,6 +24,7 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
 import os
 
 try:
@@ -36,69 +37,124 @@ except ImportError:
 
 class Episode(object):
     """
-    Episode Object, containing important episode info used for renaming and stuff
+    Episode Object, containing important episode info used for renaming an episode file
     """
 
-    def __init__(self, episode_file, episode_number, season_number, show_name):
+    episode_file = ""
+    """
+    Path to the actual file of the episode
+    """
+
+    episode_number = -1
+    """
+    The episode number of the episode
+    """
+
+    season_number = -1
+    """
+    The season number of the episode
+    """
+
+    show_name = ""
+    """
+    The show name of the show of which this episode is a part of
+    """
+
+    old_name = ""
+    """
+    The old/current file name of the episode
+    """
+
+    tvdb_name = ""
+    """
+    The episode name of this episode according to thetvdb.com
+    """
+
+    new_name = ""
+    """
+    The new, generated file name for this episode
+    Has the form: 'Show Name - SXXEXX - tvdb_name'
+    """
+
+    def __init__(self, episode_file: str, episode_number: int, season_number: int, show_name: str) -> None:
         """
-        Constructor
+        Constructor for the Episode class, getting information about the Episode
+        via the method parameters and calculating the TVDB name of the episode
+
         :param episode_file: the current episode file path
         :param episode_number: the episode number
         :param season_number: the season number
         :param show_name: the show name
-        :return: void
+        :return: None
         """
+
+        # Store data about the episode in class variables
         self.episode_file = episode_file
-
-        self.episode_number = int(episode_number)
-        self.season_number = int(season_number)
+        self.episode_number = episode_number
+        self.season_number = season_number
         self.show_name = show_name
-
-        self.tvdb_getter = TVDBGetter(self.show_name, self.season_number, self.episode_number)
-
         self.old_name = os.path.basename(episode_file)
-        self.tvdb_name = ""
-        self.new_name = ""
-        self.__generate_tvdb_name__()
-        self.__generate_new_name__()
 
-    def rename(self):
+        # Generate new and tvdb names
+        self.__generate_tvdb_name()
+        self.__generate_new_name()
+
+    def rename(self) -> None:
         """
-        Renames the original file
-        :return void
+        Renames the original file to the new name generated with help of thetvdb.com
+
+        :return: None
         """
         try:
+            # Rename the old file to have the new file name
             self.episode_file = FileRenamer.rename_file(self.episode_file, self.new_name)
         except FileNotFoundError:
+            # If the file does not exist, try replacing spaces with underscores and try again
             self.episode_file = FileRenamer.rename_file(self.episode_file.replace(' ', '_'), self.new_name)
         
-    def print(self):
+    def print(self) -> None:
         """
-        Prints the episode object
-        :return void
+        Prints an episode object in a readable format
+
+        The format is:  episode file path, old name, tvdb name, episode number, season number, show name
+
+        :return: None
         """
         print("{" + self.episode_file + "," + self.old_name + "," + self.tvdb_name + "," + 
               str(self.episode_number) + "," + str(self.season_number) + "," + self.show_name + "}")
 
-    def __generate_tvdb_name__(self):
+    def __generate_tvdb_name(self) -> None:
         """
-        Generates the episode name from the tv database
-        :return void
+        Generates the episode name from thetvdb.com using the tvdb_api module
+
+        :return: None
         """
-        self.tvdb_name = self.tvdb_getter.find_episode_name()
+        # Generate a TVDBGetter using the available metadata
+        tvdb_getter = TVDBGetter(self.show_name, self.season_number, self.episode_number)
+
+        # get the episode name from theTVDB.com
+        self.tvdb_name = tvdb_getter.find_episode_name()
+
+        # Strip away all characters illegal under the NTFS file system.
         illegal_characters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
         for illegal_character in illegal_characters:
             self.tvdb_name = self.tvdb_name.replace(illegal_character, "")
             
-    def __generate_new_name__(self):
+    def __generate_new_name(self) -> None:
         """
-        Generates the new name of an episode in Plex-conform format.
-        :return void
+        Generates the new name of an episode in the format 'Show Name - SXXEXX - tvdb_name'
+
+        :return: None
         """
+        # Turn episode and season into strings
         episode_string = str(self.episode_number)
         season_string = str(self.season_number)
+
+        # Prepend leading zeroes if the numbers are smaller than 10 (less than 2 characters long)
         if len(episode_string) < 2:
             episode_string = "0" + episode_string
         if len(season_string) < 2:
             season_string = "0" + season_string
+
+        # Generate the new name
         self.new_name = self.show_name + " - S" + season_string + "E" + episode_string + " - " + self.tvdb_name

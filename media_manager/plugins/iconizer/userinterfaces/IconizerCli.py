@@ -44,7 +44,7 @@ class IconizerCli(GenericCli):
     It offers an interactive mode as well as an argument-driven mode
     """
 
-    def __init__(self, parent: GenericCli):
+    def __init__(self, parent: GenericCli) -> None:
         """
         Constructor of the IconizerCli class
 

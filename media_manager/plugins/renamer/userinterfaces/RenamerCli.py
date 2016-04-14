@@ -24,6 +24,8 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
+
 try:
     from plugins.renamer.utils.Renamer import Renamer
     from cli.exceptions.ReturnException import ReturnException
@@ -36,29 +38,39 @@ except ImportError:
 
 class RenamerCli(GenericCli):
     """
-    CLI for the Renamer plugin
+    CLI for the Renamer plugin, that lets the user choose a directory to use the renamer on.
+    The directory's content is evaluated and the proposed changes are then printed to the console,
+    where the user can then either approve or cancel the renaming process.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent: GenericCli) -> None:
         """
-        Constructor
-        :param parent: the parent cli
-        :return: void
+        Constructor of the RenamerCli, which only calls the GenericCli's constructor
+        with the CLI's parent as argument.
+
+        :param parent: the parent cli of the RenamerCli
+        :return: None
         """
         super().__init__(parent)
 
-    def start(self, title=None):
+    def start(self, title: str = None) -> None:
         """
-        Starts the plugin main loop
-        :return: void
+        Starts the plugin main loop by indefinitely looping the mainloop() method using the
+        start() method of the GenericCli class with the title 'RENAMER PLUGIN'
+
+        :param title: Just a dummy argument to maintain the same method signature as the GenericCli class
+        :return: None
         """
         super().start("RENAMER PLUGIN\n")
 
-    def mainloop(self, directory=None):
+    def mainloop(self, directory: str = None) -> None:
         """
-        Starts the renaming process
-        :return: void
+        Starts the renaming process. It can be run in both an interactive and an argument-driven mode
+        not requiring user interaction.
+
+        :return: None
         """
+        # If interactive mode is running, ask the user for a directory path
         if directory is None:
             directory = self.ask_user("Enter the show/series directory path:\n")
 

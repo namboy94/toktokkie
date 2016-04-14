@@ -117,6 +117,7 @@ class BatchDownloadManagerCli(GenericCli):
         """
         Starts the main program loop with the title 'BATCH DOWNLOAD MANAGER PLUGIN'
 
+        :param title: Just a dummy argument to maintain the same method signature as the GenericCli class
         :return: None
         """
         super().start("BATCH DOWNLOAD MANAGER PLUGIN\n")
