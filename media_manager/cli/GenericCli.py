@@ -25,9 +25,13 @@ LICENSE
 """
 
 # imports
-# noinspection PyUnresolvedReferences
-import gnureadline
 import sys
+
+# Try to import readline, this makes using the CLI much nicer, it is not supported on Windows however
+try:
+    import readline
+except ImportError:
+    readline = None
 
 try:
     from cli.exceptions.ReturnException import ReturnException
