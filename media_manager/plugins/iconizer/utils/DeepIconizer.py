@@ -111,9 +111,15 @@ class DeepIconizer(object):
         :param folder_icon_directory:  The path to the folder icon directory
         :return:
         """
+        # Check if we have permission to list the directory content
+        try:
+            children = os.listdir(directory)
+        except PermissionError:
+            # If not, skip this directory
+            return
 
         # Iterate over all subdirectories
-        for child in os.listdir(directory):
+        for child in children:
             child_path = os.path.join(directory, child)  # The file system path to the child directory
 
             # If the child is either the .icons directory or not a directory at all, skip it

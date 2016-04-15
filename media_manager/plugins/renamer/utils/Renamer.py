@@ -74,7 +74,11 @@ class Renamer(object):
             raise NotADirectoryError("Not a directory")  # if not, raise an error
 
         # List the directories subdirectories
-        children = os.listdir(directory)
+        try:
+            children = os.listdir(directory)
+        except PermissionError:
+            # If we don't have read permissions for this directory, skip this directory
+            return
 
         # Check if one of the subdirectories is .icons
         if ".icons" in children:
