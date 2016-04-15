@@ -30,16 +30,20 @@ import os
 import sys
 import configparser
 from os.path import expanduser
+from typing import List
 
 # This import construct enables the program to be run when installed via
 # setuptools as well as portable
 try:
     from metadata import Globals
+    from eastereggs.EasterEggManager import EasterEggManager
 except ImportError:
     from media_manager.metadata import Globals
+    from media_manager.eastereggs.EasterEggManager import EasterEggManager
 
 
-def main(ui_override: str = "") -> None:
+# noinspection PyTypeChecker
+def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     """
     Main method that runs the program.
 
@@ -55,8 +59,12 @@ def main(ui_override: str = "") -> None:
     --help flag.
 
     :param ui_override: Can override the program mode programmatically
+    :param easter_egg_override: Can give a second kind of sys.argv for use in easter eggs
     :return: None
     """
+
+    # Activate Easter Eggs
+    EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
 
     # First, the used mode of the program is determined using sys.argv
     cli_mode = False

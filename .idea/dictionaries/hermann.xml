@@ -4,6 +4,7 @@
       <w>addons</w>
       <w>addr</w>
       <w>argparser</w>
+      <w>barebones</w>
       <w>bdlm</w>
       <w>beautifulsoup</w>
       <w>botname</w>
@@ -33,6 +34,8 @@
       <w>iconizing</w>
       <w>ixirc</w>
       <w>krumrey</w>
+      <w>leet</w>
+      <w>leetspeak</w>
       <w>mainconfig</w>
       <w>mediamanager</w>
       <w>mediamanagergui</w>
@@ -48,6 +51,8 @@
       <w>pixbuf</w>
       <w>privmsg</w>
       <w>proc</w>
+      <w>prog</w>
+      <w>programmatically</w>
       <w>progresswindow</w>
       <w>readline</w>
       <w>renamer</w>
@@ -58,6 +63,7 @@
       <w>stderr</w>
       <w>stdout</w>
       <w>struct</w>
+      <w>sysargs</w>
       <w>temlett</w>
       <w>turcot</w>
       <w>uncheck</w>

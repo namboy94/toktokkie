@@ -148,7 +148,8 @@ class GenericCli(object):
             prompt_message += "[" + default + "]"
 
         # Asks the user for input
-        user_response = input(prompt_message)
+        print(prompt_message, end="")
+        user_response = input()
 
         # Does rudimentary checks of the user input
         if user_response.lower() in ["quit", "return", "exit"]:
