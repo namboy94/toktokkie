@@ -25,6 +25,8 @@ LICENSE
 """
 
 # imports
+import os
+from typing import List, Dict
 
 try:
     from plugins.renamer.utils.Renamer import Renamer
@@ -63,43 +65,57 @@ class RenamerCli(GenericCli):
         """
         super().start("RENAMER PLUGIN\n")
 
-    def mainloop(self, directory: str = None) -> None:
+    def mainloop(self, directory: str = None, noconfirm: bool = None) -> None:
         """
         Starts the renaming process. It can be run in both an interactive and an argument-driven mode
         not requiring user interaction.
 
+        :param directory: Can be set to override the directory and bypassing user input
+        :param noconfirm: If this is True, the renaming skips the confirming part
         :return: None
         """
         # If interactive mode is running, ask the user for a directory path
         if directory is None:
             directory = self.ask_user("Enter the show/series directory path:\n")
 
-        try:
-            renamer = Renamer(directory)
-            confirmation = renamer.request_confirmation()
-            if self.confirmer(confirmation):
-                print("Renaming...")
-                renamer.confirm(confirmation)
-                renamer.start_rename()
-                print("Renaming successful.")
+        # If the directory is not a valid directory, exit immediately
+        if not os.path.isdir(directory):
+            print("Not a valid directory path")
+            return
+
+        # Now that the directory is known, try to rename the contents
+        renamer = Renamer(directory)  # Create a new Renamer object
+
+        if not noconfirm:  # We need a manual confirmation by the user
+            confirmation = renamer.request_confirmation()  # Request a confirmation
+            if self.confirmer(confirmation):  # ask the user for confirmation, if successful start renaming
+                print("Renaming...")  # Let the user know we started renaming
+                renamer.confirm(confirmation)  # Confirm the renaming process with the Renamer object
+                renamer.start_rename()  # Start renaming
+                print("Renaming successful.")  # Let the user know we have successfully renamed the files
             else:
-                print("Renaming cancelled.")
-        except Exception as e:
-            if str(e) == "Not a directory":
-                print("Entered directory is not valid\n")
+                print("Renaming cancelled.")  # Message shown when the user cancels the process
+        else:
+            renamer.start_rename(True)  # Rename without confirmation, potentially dangerous
 
     @staticmethod
-    def confirmer(confirmation):
+    def confirmer(confirmation: List[Dict[str, str]]) -> bool:
         """
-        Asks the user for confirmation before continuing the rename
+        Asks the user for confirmation before continuing the renaming process
+
+        This is done by listing all changes to be made and asking the user a simple
+        (y/n) question
+
         :param confirmation: the confirmation
         :return: False if the user did not confirm the rename, True otherwise.
         """
-        i = 0
-        while i < len(confirmation[0]):
-            print("OLD: " + confirmation[0][i])
-            print("NEW: " + confirmation[1][i] + "\n")
-            i += 1
+        # iterate over the confirmation list
+        for element in confirmation:
+            print("OLD: " + element["old"])  # This is the old name of the file
+            print("NEW: " + element["new"] + "\n")  # This is the new name of the file
+
+        # Ask for confirmation
         response = input("Proceed with renaming? This can not be undone. (y/n)")
 
+        # If the answer was a lower-case y, return True, False otherwise
         return response == "y"

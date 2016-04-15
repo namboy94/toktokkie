@@ -24,6 +24,10 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
+import os
+from typing import List, Dict
+
 try:
     from plugins.renamer.utils.Renamer import Renamer
     from metadata import Globals
@@ -34,81 +38,110 @@ except ImportError:
 
 class RenamerGui(Globals.selected_grid_gui_framework):
     """
-    GUI for the Renamer plugin
+    GUI for the Renamer plugin that allows the user to select a directory to rename the contents of
     """
 
-    def __init__(self, parent):
+    button = None
+    """
+    A button that starts the renaming of the currently entered directory
+    """
+
+    entry = None
+    """
+    A Text Entry that contains the path to the directory to be renamed
+    """
+
+    browse = None
+    """
+    A button that lets the user browse for a directory using a directory chooser dialog
+    """
+
+    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
         """
-        Constructor
+        Constructor of the RenamerGui class. It calls the selected gfworks framework's constructor and
+        hides the parent window
+
         :param parent: the parent gui window
-        :return: void
+        :return: None
         """
-        self.button = None
-        self.entry = None
-        self.browse = None
         super().__init__("Renamer", parent, True)
 
-    def lay_out(self):
+    def lay_out(self) -> None:
         """
-        Sets up all interface elements of the GUI
-        :return: void
+        Sets up all interface elements of the GUI and positions them in a grid layout
+
+        :return: None
         """
+        # Generate the button
         self.button = self.generate_button("Start", self.start_rename)
         self.position_absolute(self.button, 4, 0, 1, 1)
 
+        # Generate the browse button
         self.browse = self.generate_button("Browse", self.browse_directory)
         self.position_absolute(self.browse, 0, 0, 1, 1)
 
+        # Generate the Text Entry
         self.entry = self.generate_text_entry("", self.start_rename)
         self.position_absolute(self.entry, 1, 0, 2, 1)
 
-    def start_rename(self, widget):
+    def start_rename(self, widget: object) -> None:
         """
-        Starts the renaming process
+        Starts the renaming process.
+
+        During this time, the user is asked to confirm his selection
+
         :param widget: the button that started this method
-        :return: void
+        :return: None
         """
+        # DO this to avoid IDE warnings about unused variables
         if widget is None:
             return
-        try:
-            abs_dir = self.get_string_from_text_entry(self.entry)
-            renamer = Renamer(abs_dir)
-            confirmation = renamer.request_confirmation()
-            if self.confirmer(confirmation):
-                renamer.confirm(confirmation)
-                renamer.start_rename()
-        except Exception as e:
-            if str(e) == "Not a directory":
-                self.show_message_dialog("Error, ", str(e))
-            else:
-                raise e
 
-    def browse_directory(self, widget):
+        # Get the currently entered directory path
+        abs_dir = self.get_string_from_text_entry(self.entry)
+
+        # Check if the path is a valid directory
+        if not os.path.isdir(abs_dir):
+            self.show_message_dialog("Error, ", "Not a valid directory")
+            return
+
+        renamer = Renamer(abs_dir)  # Create a new Renamer object
+        confirmation = renamer.request_confirmation()  # Request the confirmation dictionary from the Renamer
+        if self.confirmer(confirmation):  # Ask the user for confirmation, and only continue if the answer is positive
+            renamer.confirm(confirmation)  # Confirm the confirmation with the Renamer
+            renamer.start_rename()  # Start renaming
+
+    def browse_directory(self, widget: object) -> None:
         """
         Shows a directory chooser dialog and sets the entry to the result of the browse
-        :param widget: the button that called this method
-        :return: void
-        """
-        if widget is not None:
-            selected_directory = self.show_directory_chooser_dialog()
-            if selected_directory:
-                self.set_text_entry_string(self.entry, selected_directory)
 
-    def confirmer(self, confirmation):
+        :param widget: the button that called this method
+        :return: None
         """
-        Asks the user for confirmation before continuing the rename
-        :param confirmation: the confirmation
+        if widget is not None:  # Suppress IDE warnings
+            selected_directory = self.show_directory_chooser_dialog()  # Open directory chooser dialog
+            if selected_directory:  # If a directory was selected set the text entry to that directory path
+                self.set_text_entry_string(self.directory_entry, selected_directory)
+
+    def confirmer(self, confirmation: List[Dict[str, str]]) -> bool:
+        """
+        Asks the user for confirmation before continuing the renaming process
+
+        This is done by the user clicking the 'Yes' Button on every Yes/No Dialog shown,
+        each representing one renaming operation to be commited
+
+        :param confirmation: the confirmation dictionary
         :return: False if the user did not confirm the rename, True otherwise.
         """
-        i = 0
-        while i < len(confirmation[0]):
+
+        for element in confirmation:  # Iterate over every element in the dictionary
+            # Generate the message String
             message = "Rename\n"
-            message += confirmation[0][i]
+            message += element["old"]  # Include the old name
             message += "\nto\n"
-            message += confirmation[1][i]
+            message += element["new"]  # Include the new name
             message += "\n?"
-            response = self.show_yes_no_dialog("Confirmation", message)
+            response = self.show_yes_no_dialog("Confirmation", message)  # Show a yes/no dialog
             if not response:
-                return False
-            i += 1
-        return True
+                return False  # as soon as the user disapproves one operation, halt the renaming process
+        return True  # If that doesn't happen, return True

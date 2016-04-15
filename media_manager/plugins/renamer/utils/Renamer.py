@@ -77,10 +77,9 @@ class Renamer(object):
         Request for user confirmation
         :return the confirmation prompt as double list thingy
         """
-        confirmation = [[], []]
+        confirmation = []
         for episode in self.episodes:
-            confirmation[0].append(episode.old_name)
-            confirmation[1].append(episode.new_name)
+            confirmation.append({"old": episode.old_name, "new": episode.new_name})
         return confirmation
 
     def confirm(self, confirmation):
@@ -96,11 +95,11 @@ class Renamer(object):
             i += 1
         self.confirmed = True
 
-    def start_rename(self):
+    def start_rename(self, noconfirm: bool = False):
         """
         Starts the renaming process
         """
-        if not self.confirmed:
+        if not self.confirmed and not noconfirm:
             raise Exception("Rename not confirmed")
         for episode in self.episodes:
             episode.rename()
