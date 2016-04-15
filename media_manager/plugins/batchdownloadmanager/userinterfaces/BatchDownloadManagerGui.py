@@ -671,10 +671,12 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         # Clear the directory content list box
         self.clear_primitive_multi_list_box(self.directory_content)
 
-        # Fill the directory content list box
-        season_directory_content = os.listdir(os.path.join(directory, "Season " + season))
-        for element in season_directory_content:
-            self.add_primitive_multi_list_box_element(self.directory_content, (element,))
+        # Fill the directory content list box, if the directory has a season subdirectory
+        season_directory = os.path.join(directory, "Season " + season)
+        if os.path.isdir(season_directory):
+            season_directory_content = os.listdir(season_directory)
+            for element in season_directory_content:
+                self.add_primitive_multi_list_box_element(self.directory_content, (element,))
 
     def browse_for_destination(self, widget: object) -> None:
         """
