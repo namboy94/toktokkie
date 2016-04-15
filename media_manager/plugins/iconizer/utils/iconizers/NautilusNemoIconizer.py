@@ -25,6 +25,7 @@ LICENSE
 """
 
 # imports
+import os
 from subprocess import Popen
 
 
@@ -42,5 +43,6 @@ class NautilusNemoIconizer(object):
         :param icon: the icon to be used
         :return: None
         """
-        # call gvfs-set-attribute to iconize the directory
-        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon + ".png"])
+        # call gvfs-set-attribute to iconize the directory, but only if the icon file exists
+        if os.path.isfile(icon + ".png"):
+            Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon + ".png"])

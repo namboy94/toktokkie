@@ -44,6 +44,10 @@ class WindowsIconizer(object):
         :param icon: the icon to be used
         :return: None
         """
+        # Don't iconize if icon file does not exist
+        if not os.path.isfile(icon + ".ico"):
+            return
+
         # this is the path of the desktop.ini file
         desktop_ini_file = os.path.join(directory, "desktop.ini")
         # calculate the relative path of the icon file to the directory
