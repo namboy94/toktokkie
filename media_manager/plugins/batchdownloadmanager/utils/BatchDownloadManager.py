@@ -53,6 +53,7 @@ class BatchDownloadManager(object):
     This class is a means to avoid code reuse by modularizing common functionality
     """
 
+    # noinspection PyTypeChecker
     @staticmethod
     def conduct_xdcc_search(search_engine: str, search_term: str) -> List[XDCCPack]:
         """

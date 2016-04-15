@@ -91,6 +91,7 @@ class TwistedDownloader(GenericDownloader):
     but otherwise it defaults to False
     """
 
+    # noinspection PyTypeChecker
     def __init__(self, packs: List[XDCCPack], progress_struct: ProgressStruct, target_directory: str,
                  show_name: str = "", episode_number: int = 0, season_number: int = 0) -> None:
         """
@@ -116,6 +117,7 @@ class TwistedDownloader(GenericDownloader):
         # Check for python 3 twisted compatibility
         self.check_python3_compatibility()
 
+    # noinspection PyTypeChecker
     def download_loop(self) -> List[str]:
         """
         Starts the Download loop, which downloads all packs given via parameter in the Constructor

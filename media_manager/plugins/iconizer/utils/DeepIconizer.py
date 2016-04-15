@@ -127,6 +127,7 @@ class DeepIconizer(object):
             # Repeat for all children of the child as well
             self.__iconize_children(child_path, folder_icon_directory)
 
+    # noinspection PyTypeChecker
     @staticmethod
     def get_iconizer_options() -> List[str]:
         """

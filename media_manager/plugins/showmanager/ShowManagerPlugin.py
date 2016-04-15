@@ -24,21 +24,28 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
+from argparse import Namespace
+from typing import Tuple, List, Dict
+from gfworks.interfaces.GenericWindow import GenericWindow
+
 try:
+    from cli.GenericCli import GenericCli
     from plugins.common.GenericPlugin import GenericPlugin
     from plugins.showmanager.userinterfaces.ShowManagerGui import ShowManagerGui
     from plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
-    from metadata import Globals
 except ImportError:
+    from media_manager.cli.GenericCli import GenericCli
     from media_manager.plugins.common.GenericPlugin import GenericPlugin
     from media_manager.plugins.showmanager.userinterfaces.ShowManagerGui import ShowManagerGui
     from media_manager.plugins.showmanager.userinterfaces.ShowManagerCli import ShowManagerCli
-    from media_manager.metadata import Globals
 
 
 class ShowManagerPlugin(GenericPlugin):
     """
-    Class that handles the calls to the Show Manager
+    Class that handles the calls to the Show Manager Plugin.
+
+    It offers methods to start the plugin in CLI-args, CLI-interactive and GUI mode
     """
 
     def get_name(self) -> str:
@@ -51,27 +58,50 @@ class ShowManagerPlugin(GenericPlugin):
 
     def get_config_tag(self) -> str:
         """
-        :return: "batch-download"
+        This method returns the tag used to enable or disable this plugin
+        in the config file of media-manager.
+
+        :return: the config tag of this plugin
         """
         return "show-manager"
 
     def get_command_name(self) -> str:
         """
-        :return: "batch download"
+        This method return the command name used by the argument parser
+        when using the argument-driven CLI
+
+        :return: the command that starts this plugin
         """
         return "show-manager"
 
-    def get_parser_arguments(self):
+    def get_parser_arguments(self) -> Tuple[List[Dict[str, str]]]:
         """
-        :return: tuple of two list of dictionaries, consisting of argument tags and descriptions.
-                    the first tuple element contains boolean values, the others store string values
+        This returns all command line arguments to be added to the Argument Parser for this
+        plugin. There are two types of arguments: The ones that ask for strings and the others
+        that ask for boolean values.
+
+        To separate these, a tuple structure is used. The tuple's first element contains the
+        arguments that ask for boolean values, whereas the second element asks for string values
+
+        The tuple elements are lists of dictionaries. The dictionaries contain the actual
+        arguments to be used.
+
+        Every dictionary in the list has a 'tag' key that points to the argument used in the
+        --argument fashion from the command line as well as a 'desc' key that points to a
+        short description of the parameter.
+
+        :return: the tuple of lists of dictionaries described above
         """
         return ([],
                 [])
 
-    def start_args_parse(self, args):
+    def start_args_parse(self, args: Namespace) -> None:
         """
         Runs the plugin in arg parse mode
+        The arguments must have been parsed beforehand by the MainArgsParser class
+
+        :param args: The parsed argument Namespace
+        :return: None
         """
         valid = False
 
@@ -83,18 +113,20 @@ class ShowManagerPlugin(GenericPlugin):
         else:
             print("Invalid argument combination passed")
 
-    def start_cli(self, parent_cli):
+    def start_cli(self, parent_cli: GenericCli) -> None:
         """
-        Starts the CLI of the plugin
-        :param parent_cli: the parent cli
-        :return: void
+        Starts the CLI of the plugin in interactive mode
+
+        :param parent_cli: the parent cli to which the plugin can return to
+        :return: None
         """
         ShowManagerCli(parent_cli).start()
 
-    def start_gui(self, parent_gui: Globals.selected_grid_gui_framework):
+    def start_gui(self, parent_gui: GenericWindow) -> None:
         """
-        Starts the GUI, while hiding the parent until finished
-        :param parent_gui: the parent gui window
-        :return: void
+        Starts the GUI of the plugin
+
+        :param parent_gui: the gui's parent to which the plugin can return to
+        :return: None
         """
         ShowManagerGui(parent_gui).start()

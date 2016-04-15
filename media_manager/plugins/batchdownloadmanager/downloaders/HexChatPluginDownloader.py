@@ -122,6 +122,7 @@ class HexChatPluginDownloader(GenericDownloader):
     but otherwise it defaults to False
     """
 
+    # noinspection PyTypeChecker
     def __init__(self, packs: List[XDCCPack], progress_struct: ProgressStruct, target_directory: str,
                  show_name: str = "", episode_number: int = 0, season_number: int = 0) -> None:
         """
@@ -282,6 +283,7 @@ class HexChatPluginDownloader(GenericDownloader):
         self.__write_end__()  # Write the end of the script
         self.script.close()  # Close the script file
 
+    # noinspection PyTypeChecker
     def download_loop(self) -> List[str]:
         """
         Starts the download loop.

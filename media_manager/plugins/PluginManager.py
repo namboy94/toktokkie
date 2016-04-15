@@ -82,6 +82,7 @@ class PluginManager(object):
                 # If yes, add to active plugins list
                 self.active_plugins.append(plugin)
 
+    # noinspection PyTypeChecker
     def get_plugins(self) -> List[GenericPlugin]:
         """
         Returns a list of plugins of active plugins, which can then be used

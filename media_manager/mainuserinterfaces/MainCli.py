@@ -62,6 +62,7 @@ class MainCli(GenericCli):
     They are sorted via their indices in ascending order
     """
 
+    # noinspection PyTypeChecker
     def __init__(self, active_plugins: List[GenericPlugin]) -> None:
         """
         Constructor of the Main CLI

@@ -42,6 +42,7 @@ class NIBLGetter(GenericGetter):
     Class that searches the xdcc pack lists from nibl.co.uk
     """
 
+    # noinspection PyTypeChecker,PyTypeChecker
     def search(self) -> List[XDCCPack]:
         """
         Method that conducts the xdcc pack search
@@ -105,7 +106,6 @@ class NIBLGetter(GenericGetter):
             return "#exiled-destiny"
         else:
             return "#intel"
-
 
     @staticmethod
     def get_string_identifier() -> str:

@@ -42,6 +42,7 @@ class IxIRCGetter(GenericGetter):
     Class that searches the xdcc pack lists from ixirc.com
     """
 
+    # noinspection PyTypeChecker
     def search(self) -> List[XDCCPack]:
         """
         Method that conducts the xdcc pack search. This also automatically finds out the bot and channel
@@ -100,6 +101,7 @@ class IxIRCGetter(GenericGetter):
 
         return results
 
+    # noinspection PyTypeChecker
     @staticmethod
     def __get_page_results__(url: str, results: List[XDCCPack]) -> None:
         """

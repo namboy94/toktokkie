@@ -52,6 +52,7 @@ class DownloaderManager(object):
     all_downloaders = [TwistedDownloader,
                        HexChatPluginDownloader]
 
+    # noinspection PyTypeChecker
     @staticmethod
     def get_downloader_strings(mode: str = "all") -> List[str]:
         """

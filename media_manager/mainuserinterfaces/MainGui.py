@@ -53,6 +53,7 @@ class MainGui(Globals.selected_grid_gui_framework):
     should be able to switch to.
     """
 
+    # noinspection PyTypeChecker
     def __init__(self, active_plugins: List[GenericPlugin]) -> None:
         """
         Constructor for the Main GUI

@@ -41,7 +41,8 @@ class IntelGetter(GenericGetter):
     """
     Class that searches the xdcc pack lists from intel.haruhichan.com
     """
-    
+
+    # noinspection PyTypeChecker
     def search(self) -> List[XDCCPack]:
         """
         Method that conducts the xdcc pack search

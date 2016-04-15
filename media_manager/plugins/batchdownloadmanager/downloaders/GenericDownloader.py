@@ -78,6 +78,7 @@ class GenericDownloader(object):
     but otherwise it defaults to False
     """
 
+    # noinspection PyTypeChecker
     def __init__(self, packs: List[XDCCPack], progress_struct: ProgressStruct, target_directory: str,
                  show_name: str = "", episode_number: int = 0, season_number: int = 0) -> None:
 
@@ -129,6 +130,7 @@ class GenericDownloader(object):
         """
         raise NotImplementedError()
 
+    # noinspection PyTypeChecker
     def download_loop(self) -> List[str]:
         """
         Downloads all files stored by the Constructor and return a list of file paths to the

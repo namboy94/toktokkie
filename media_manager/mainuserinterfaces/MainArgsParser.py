@@ -49,6 +49,7 @@ class MainArgsParser(object):
     A list of the active plugins, established via the constructor
     """
 
+    # noinspection PyTypeChecker
     def __init__(self, active_plugins: List[GenericPlugin]) -> None:
         """
         Constructor of the MainArgsParser
@@ -110,6 +111,7 @@ class MainArgsParser(object):
             if getattr(args, plugin.get_command_name().replace("-", "_")):
                 if len(sys.argv) == 2:
                     # This just starts the CLI of that plugin in interactive mode
+                    # noinspection PyTypeChecker
                     plugin.start_cli(None)
                 else:
                     # This runs the plugin in true argument-passing mode

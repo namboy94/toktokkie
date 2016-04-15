@@ -54,6 +54,7 @@ class GenericGetter(object):
         """
         self.search_term = search_term
 
+    # noinspection PyTypeChecker
     def search(self) -> List[XDCCPack]:
         """
         Conducts the actual search and turns the reslts into XDCCPack objects

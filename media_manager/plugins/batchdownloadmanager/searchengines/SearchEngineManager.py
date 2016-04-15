@@ -51,6 +51,7 @@ class SearchEngineManager(object):
                       IxIRCGetter,
                       IntelGetter]
 
+    # noinspection PyTypeChecker
     @staticmethod
     def get_search_engine_strings() -> List[str]:
         """
