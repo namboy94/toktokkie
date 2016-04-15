@@ -95,7 +95,7 @@ class DeepIconizer(object):
         :return: None
         """
         # Get the folder icon directory
-        folder_icon_directory = os.path.join(directory, "icons")
+        folder_icon_directory = os.path.join(directory, ".icons")
 
         # Iconize the main directory
         self.concrete_iconizer.iconize(directory, os.path.join(folder_icon_directory, "main"))
@@ -117,7 +117,7 @@ class DeepIconizer(object):
             child_path = os.path.join(directory, child)  # The file system path to the child directory
 
             # If the child is either the .icons directory or not a directory at all, skip it
-            if not os.path.isfile(child_path) or child == ".icons":
+            if not os.path.isdir(child_path) or child == ".icons":
                 continue
 
             # Otherwise, iconize the child

@@ -48,6 +48,8 @@ class WindowsIconizer(object):
         if not os.path.isfile(icon + ".ico"):
             return
 
+        print("Iconizing Directory " + directory)
+
         # this is the path of the desktop.ini file
         desktop_ini_file = os.path.join(directory, "desktop.ini")
         # calculate the relative path of the icon file to the directory

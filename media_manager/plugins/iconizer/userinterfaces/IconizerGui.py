@@ -113,7 +113,7 @@ class IconizerGui(Globals.selected_grid_gui_framework):
         DeepIconizer(method).iconize(directory)
 
         # Let the user know that the iconizing has completed
-        self.show_message_dialog("Not a directory!", "")
+        self.show_message_dialog("Iconizing Complete!", "")
 
     def browse_directory(self, widget: object) -> None:
         """

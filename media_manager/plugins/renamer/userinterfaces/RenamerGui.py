@@ -111,6 +111,8 @@ class RenamerGui(Globals.selected_grid_gui_framework):
             renamer.confirm(confirmation)  # Confirm the confirmation with the Renamer
             renamer.start_rename()  # Start renaming
 
+        self.show_message_dialog("Renaming Complete!", "")
+
     def browse_directory(self, widget: object) -> None:
         """
         Shows a directory chooser dialog and sets the entry to the result of the browse
@@ -121,7 +123,7 @@ class RenamerGui(Globals.selected_grid_gui_framework):
         if widget is not None:  # Suppress IDE warnings
             selected_directory = self.show_directory_chooser_dialog()  # Open directory chooser dialog
             if selected_directory:  # If a directory was selected set the text entry to that directory path
-                self.set_text_entry_string(self.directory_entry, selected_directory)
+                self.set_text_entry_string(self.entry, selected_directory)
 
     def confirmer(self, confirmation: List[Dict[str, str]]) -> bool:
         """

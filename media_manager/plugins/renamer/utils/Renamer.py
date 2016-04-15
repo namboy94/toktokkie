@@ -84,7 +84,8 @@ class Renamer(object):
             # Else parse every subdirectory like the original directory
             for child in children:
                 child_path = os.path.join(directory, child)
-                self.__parse_directory(child_path)
+                if os.path.isdir(child_path):  # Check if this is a directory
+                    self.__parse_directory(child_path)  # Recurse
 
     def __add_directory_content(self, directory: str) -> None:
         """

@@ -166,7 +166,10 @@ class BatchDownloadManager(object):
             if not os.path.isdir(directory):  # Error Handling
                 return {"error_title": "Error creating directory",
                         "error_text": "Was a valid directory string entered?"}
-            os.makedirs(os.path.join(directory, ".icons"))  # Create the icons folder
+
+        # Check if the .icons folder exists, if not, create it
+        if not os.path.isdir(os.path.join(directory, ".icons")):
+            os.makedirs(os.path.join(directory, ".icons"))
 
         # Check if the season folder already exists, if it does not, create it
         if not os.path.isdir(target_directory):

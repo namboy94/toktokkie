@@ -45,4 +45,5 @@ class NautilusNemoIconizer(object):
         """
         # call gvfs-set-attribute to iconize the directory, but only if the icon file exists
         if os.path.isfile(icon + ".png"):
+            print("Iconizing Directory " + directory)
             Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon + ".png"])
