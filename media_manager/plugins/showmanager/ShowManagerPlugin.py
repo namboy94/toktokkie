@@ -43,7 +43,9 @@ class ShowManagerPlugin(GenericPlugin):
 
     def get_name(self) -> str:
         """
-        :return: "Batch Download Manager"
+        This method returns the name of the Plugin for display purposes
+
+        :return: the name of this plugin
         """
         return "Show Manager"
 
