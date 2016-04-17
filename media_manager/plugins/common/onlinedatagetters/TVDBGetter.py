@@ -27,6 +27,7 @@ LICENSE
 # imports
 import tvdb_api
 from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
+from requests.exceptions import ConnectionError
 
 try:
     from plugins.common.fileops.FileRenamer import FileRenamer
@@ -90,6 +91,6 @@ class TVDBGetter(object):
             episode_info = tvdb[self.tv_show][self.season][self.episode]
             episode_name = episode_info['episodename']
             return episode_name
-        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound):
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError):
             # If not found, just return generic name
             return "Episode " + str(self.episode)

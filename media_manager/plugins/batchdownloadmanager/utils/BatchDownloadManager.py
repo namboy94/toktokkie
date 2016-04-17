@@ -30,6 +30,7 @@ import shutil
 import urllib.request
 import urllib.error
 from typing import Tuple, List, Dict
+from requests.exceptions import ConnectionError
 
 try:
     from plugins.batchdownloadmanager.searchengines.SearchEngineManager import SearchEngineManager
@@ -59,15 +60,21 @@ class BatchDownloadManager(object):
         """
         Conducts the XDCC search using the selected search engine and search term
 
+        Prints to the console that a Connection Error occurs when there's no Conncetion
+
         :param search_engine: the search engine to be used
         :param search_term: the search term
         :return: the search results as a list of XDCCPack objects
         """
-        # Get the selected search engine
-        selected_search_engine = SearchEngineManager.get_search_engine_from_string(search_engine)
-        # and conduct a search
-        # noinspection PyCallingNonCallable
-        return selected_search_engine(search_term).search()
+        try:
+            # Get the selected search engine
+            selected_search_engine = SearchEngineManager.get_search_engine_from_string(search_engine)
+            # and conduct a search
+            # noinspection PyCallingNonCallable
+            return selected_search_engine(search_term).search()
+        except ConnectionError:
+            print("Connection Error")
+            return []
 
     @staticmethod
     def get_icon(path: str, folder_icon_directory: str, icon_file: str) -> str:
