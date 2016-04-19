@@ -37,7 +37,7 @@ def readme():
 setup(name=metadata.project_name,
       version=metadata.version_number,
       description=metadata.project_description,
-      long_description=readme(),
+      # long_description=readme(),
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: End Users/Desktop',
                    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
