@@ -1,3 +1,5 @@
+v 0.9.5.3
+  - Converts Markdown to .rst for the pypi site
 v 0.9.5.2
   - Added Changelog to readme file
 v 0.9.5.1

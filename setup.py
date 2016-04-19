@@ -21,6 +21,8 @@ This file is part of media-manager.
 """
 
 # imports
+# noinspection PyPackageRequirements
+import pypandoc
 from setuptools import setup, find_packages
 import media_manager.metadata as metadata
 
@@ -31,13 +33,16 @@ def readme():
     :return: the readme file as a string
     """
     with open('README.md') as f:
-        return f.read()
+        # Convert markdown file to rst
+        markdown = f.read()
+        rst = pypandoc.convert(markdown, 'rst', format='md')
+        return rst
 
 
 setup(name=metadata.project_name,
       version=metadata.version_number,
       description=metadata.project_description,
-      # long_description=readme(),
+      long_description=readme(),
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: End Users/Desktop',
                    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
