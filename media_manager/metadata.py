@@ -78,7 +78,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.5"
+version_number = "0.9.5.1"
 """
 The current version of the program.
 """
@@ -87,6 +87,11 @@ project_url = "http://namibsun.net/namboy94/media-manager"
 """
 A URL linking to the home page of the project, in this case a
 self-hosted Gitlab page
+"""
+
+download_url = "http://gitlab.namibsun.net/namboy94/media-manager/repository/archive.zip?ref=master"
+"""
+A URL linking to the current source zip file.
 """
 
 author_name = "Hermann Krumrey"

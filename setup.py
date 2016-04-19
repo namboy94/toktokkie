@@ -47,6 +47,7 @@ setup(name=metadata.project_name,
                    'Operating System :: POSIX :: Linux'
                    ],
       url=metadata.project_url,
+      download_url=metadata.download_url,
       author=metadata.author_name,
       author_email=metadata.author_email,
       license=metadata.license_type,
