@@ -165,8 +165,10 @@ class BatchDownloadManagerCli(GenericCli):
 
         # If an invalid option was found, notify the user and end the program
         if not valid:
-            print("Invalid combination of arguments. This should not be happening, please contact the"
-                  "developer at hermann@krumreyh.com to make him fix the issue.")
+            # The string has to be stored in a variable to mitigate syntax errors in python2
+            string_out = "Invalid combination of arguments. This should not be happening, please contact the "
+            string_out += "developer at hermann@krumreyh.com to make him fix the issue."
+            print(string_out)
             sys.exit(1)
 
         # Finds out target directory

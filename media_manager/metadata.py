@@ -30,12 +30,12 @@ LICENSE
 try:
     from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
 except ImportError:
-    Gtk3GridTemplate = None
+    Gtk3GridTemplate = object
 
 try:
     from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
 except ImportError:
-    TkGridTemplate = None
+    TkGridTemplate = object
 
 
 class Globals(object):
@@ -45,9 +45,9 @@ class Globals(object):
     obsolete, but as of right now it is required
     """
 
-    selected_grid_gui_framework = TkGridTemplate
+    selected_grid_gui_framework = object
     """
-    This stores the selected GUI framework, it is initialized as TkGridTemplate to avoid NoneType
+    This stores the selected GUI framework, it is initialized as generic object to avoid Import
     errors. The variable will be correctly set at some point in the main module's main method as
     either Gtk3GridTemplate or TkGridTemplate.
     """

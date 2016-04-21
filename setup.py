@@ -21,22 +21,28 @@ This file is part of media-manager.
 """
 
 # imports
-# noinspection PyPackageRequirements
-import pypandoc
 from setuptools import setup, find_packages
 import media_manager.metadata as metadata
 
 
-def readme():
+def readme() -> str:
     """
     Reads the readme file.
+
     :return: the readme file as a string
     """
-    with open('README.md') as f:
-        # Convert markdown file to rst
-        markdown = f.read()
-        rst = pypandoc.convert(markdown, 'rst', format='md')
-        return rst
+    try:
+        # noinspection PyPackageRequirements
+        import pypandoc
+        with open('README.md') as f:
+            # Convert markdown file to rst
+            markdown = f.read()
+            rst = pypandoc.convert(markdown, 'rst', format='md')
+            return rst
+    except (OSError, ImportError):
+        # If pandoc is not installed, just return the raw markdown text
+        with open('README.md') as f:
+            return f.read()
 
 
 setup(name=metadata.project_name,

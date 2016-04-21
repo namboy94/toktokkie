@@ -1,13 +1,13 @@
 # Media Manager
 
-(Name subject to chang until I come up with a better one)
+(Name subject to change until I come up with a better one)
 
 This is a program which allows convenient managing of various Media collections, mostly Videos. It is a python program
 written using features only available in python 3, meaning this program will not run using python 2.
 
 [Changelog](http://gitlab.namibsun.net/namboy94/media-manager/raw/master/CHANGELOG)
 
-## Main features:
+## Main features:h
 
 **Renaming Episodes**
 

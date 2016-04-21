@@ -56,11 +56,12 @@ class EasterEggManager(object):
         else:
             prog_args = []
 
-        # Activate leet speak if the version number contains the phrase 1337 or if the user gave the
-        # arguments --1337 or --leet or 'leet'/'1337' programmatically
-        if "1337" in metadata.version_number\
-                or "--1337" in sysargs \
-                or "--leet" in sysargs\
-                or "1337" in prog_args\
-                or "leet" in prog_args:
-            LeetPrint.activate_leet(True)
+        if LeetPrint is not None:
+            # Activate leet speak if the version number contains the phrase 1337 or if the user gave the
+            # arguments --1337 or --leet or 'leet'/'1337' programmatically
+            if "1337" in metadata.version_number\
+                    or "--1337" in sysargs \
+                    or "--leet" in sysargs\
+                    or "1337" in prog_args\
+                    or "leet" in prog_args:
+                LeetPrint.activate_leet(True)

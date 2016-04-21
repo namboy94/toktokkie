@@ -169,9 +169,12 @@ class TwistedDownloader(GenericDownloader):
                 self.progress_struct.single_progress = int(line.split("PROGRESS:")[1])
                 single_progress = float(self.progress_struct.single_progress) / float(self.progress_struct.single_size)
                 single_progress *= 100.00
+
+                # Format the string to print
                 single_progress_formatted_string = "%.2f" % single_progress
-                print(line.split("INFO:root:")[1] + " / " + str(self.progress_struct.single_size) +
-                      " (" + single_progress_formatted_string + "%)", end="\r")
+                out_string_begin = line.split("INFO:root:")[1] + " / " + str(self.progress_struct.single_size) + " ("
+
+                print(out_string_begin + single_progress_formatted_string + "%)", end="\r")
 
             # Download has completed, ends the loop
             elif "DLCOMPLETE:" in line:
@@ -220,9 +223,11 @@ class TwistedDownloader(GenericDownloader):
 
         if twisted_irc_implemented_in_python3:
             # This is supposed to help me get a faster response by annoying users.
-            print("IRC/XDCC HAS BEEN IMPLEMENTED BY THE TWISTED LIBRARY FOR PYTHON 3! "
-                  "CONTACT THE DEV IMMEDIATELY AT hermann@krumreyh.com or open an issue"
-                  "at http://gitlab.namibsun.net/media-manager")
+            # Has to be stored in a separate variable for python2 compatibility
+            twisted_in_python3_warning = "IRC/XDCC HAS BEEN IMPLEMENTED BY THE TWISTED LIBRARY FOR PYTHON 3! "
+            twisted_in_python3_warning += "CONTACT THE DEV IMMEDIATELY AT hermann@krumreyh.com or open an issue "
+            twisted_in_python3_warning += "at http://gitlab.namibsun.net/media-manager"
+            print(twisted_in_python3_warning)
 
     @staticmethod
     def get_string_identifier() -> str:

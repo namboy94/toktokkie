@@ -111,17 +111,6 @@ class Episode(object):
         except FileNotFoundError:
             # If the file does not exist, try replacing spaces with underscores and try again
             self.episode_file = FileRenamer.rename_file(self.episode_file.replace(' ', '_'), self.new_name)
-        
-    def print(self) -> None:
-        """
-        Prints an episode object in a readable format
-
-        The format is:  episode file path, old name, tvdb name, episode number, season number, show name
-
-        :return: None
-        """
-        print("{" + self.episode_file + "," + self.old_name + "," + self.tvdb_name + "," + 
-              str(self.episode_number) + "," + str(self.season_number) + "," + self.show_name + "}")
 
     def __generate_tvdb_name(self) -> None:
         """

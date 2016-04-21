@@ -91,5 +91,5 @@ class LeetPrint(object):
             return generated_method
 
         if simple:
-            # Replace the builtin print method
+            # Replace the builtin print method if using python 3
             builtins.print = leetspeak_generator(LeetPrint.simple_leet)
