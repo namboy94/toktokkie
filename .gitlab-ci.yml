@@ -62,7 +62,13 @@ upload_to_pypi:
     - cd
     - cd media-manager
     - python setup.py register sdist upload
-    - cd ../media-manager-2
+  allow_failure: true
+
+upload_to_pypi2:
+  stage: upload
+  script:
+    - cd
+    - cd media-manager-2
     - python setup.py register sdist upload
   allow_failure: true
 

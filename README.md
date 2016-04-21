@@ -188,9 +188,9 @@ Note: Those Links need a manual refresh to load the CSS, I have no idea why.
 
 Check out this project's python package index site:
 
-[python 2](https://pypi.python.org/pypi/media-manager-py2)!
+[python 2](https://pypi.python.org/pypi/media-manager-2)
 
-[python 3](https://pypi.python.org/pypi/media-manager)!
+[python 3](https://pypi.python.org/pypi/media-manager)
 
 
 

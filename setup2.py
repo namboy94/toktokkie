@@ -45,7 +45,7 @@ def readme() -> str:
             return f.read()
 
 
-setup(name=metadata.project_name + "-py2",
+setup(name=metadata.project_name + "-2",
       version=metadata.version_number,
       description=metadata.project_description,
       long_description=readme(),

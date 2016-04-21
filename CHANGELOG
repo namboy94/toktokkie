@@ -1,3 +1,7 @@
+V 0.9.5.5
+  - Improved python 2 support
+v 0.9.5.4
+  - Added python 2 support
 v 0.9.5.3
   - Converts Markdown to .rst for the pypi site
 v 0.9.5.2
