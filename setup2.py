@@ -45,14 +45,14 @@ def readme() -> str:
             return f.read()
 
 
-setup(name=metadata.project_name,
+setup(name=metadata.project_name + "-py2",
       version=metadata.version_number,
       description=metadata.project_description,
       long_description=readme(),
       classifiers=[metadata.development_status,
                    'Intended Audience :: End Users/Desktop',
                    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-                   'Programming Language :: Python :: 3',
+                   'Programming Language :: Python :: 2',
                    'Topic :: Utilities',
                    'Natural Language :: English',
                    'Operating System :: POSIX :: Linux'

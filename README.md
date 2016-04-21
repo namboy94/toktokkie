@@ -2,12 +2,13 @@
 
 (Name subject to change until I come up with a better one)
 
-This is a program which allows convenient managing of various Media collections, mostly Videos. It is a python program
-written using features only available in python 3, meaning this program will not run using python 2.
+This is a program which allows convenient managing of various Media collections, mostly Videos. The program is written
+in python 3 and won't normally run on python 2. However, a version converted using 3to2 is available on the python
+package index (Link below).
 
 [Changelog](http://gitlab.namibsun.net/namboy94/media-manager/raw/master/CHANGELOG)
 
-## Main features:h
+## Main features
 
 **Renaming Episodes**
 
@@ -185,7 +186,11 @@ variable 'python2' to direct to the python 2 installation.
 
 Note: Those Links need a manual refresh to load the CSS, I have no idea why.
 
-Check out this project's [python package index site](https://pypi.python.org/pypi/media-manager)!
+Check out this project's python package index site:
+
+[python 2](https://pypi.python.org/pypi/media-manager-py2)!
+
+[python 3](https://pypi.python.org/pypi/media-manager)!
 
 
 

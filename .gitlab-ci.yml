@@ -11,6 +11,7 @@ clone:
     - cd
     - git clone http://gitlab.namibsun.net/namboy94/media-manager.git
     - git clone git@gitlab.namibsun.net:namboy94/media-manager.wiki.git
+    - cp -r media-manager media-manager-2
 
 uninstall:
   stage: setup
@@ -47,13 +48,22 @@ generate_documentation:
     - rm -rf html
     - cp -r ../media-manager/doc/build/html .
 
+generate_python2_version:
+  stage: test
+  script:
+    - cd
+    - 3to2 --write media-manager-2
+    - rm media-manager-2/setup.py
+    - mv media-manager-2/setup2.py media-manager-2/setup.py
+
 upload_to_pypi:
   stage: upload
   script:
     - cd
     - cd media-manager
     - python setup.py register sdist upload
-    - sleep 60
+    - cd ../media-manager-2
+    - python setup.py register sdist upload
   allow_failure: true
 
 upload_documentation_and_statistics:
@@ -72,6 +82,7 @@ delete_clone:
     - cd
     - rm -rf media-manager
     - rm -rf media-manager.wiki
+    - rm -rf media-manager-2
 
 upgrade_from_pypi:
   stage: upgrade
