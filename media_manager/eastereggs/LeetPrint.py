@@ -109,6 +109,8 @@ class LeetPrint(object):
             return
 
         # Try to execute, but pass if a SyntaxError occurs (this will happen when using python 2)
+        # The reason exec is used here is to be able to catch potential SyntaxErrors, as
+        # python parses the entire file for SyntaxErrors without acknowledging try/except constructs
         try:
             exec("import builtins")  # First, import the builtins module
             exec("builtins.print = override_method")  # Then override the print method

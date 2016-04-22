@@ -78,7 +78,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.5.6"
+version_number = "0.9.5.7"
 """
 The current version of the program.
 """

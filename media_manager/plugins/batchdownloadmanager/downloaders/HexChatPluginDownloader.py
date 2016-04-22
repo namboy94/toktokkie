@@ -154,7 +154,6 @@ class HexChatPluginDownloader(GenericDownloader):
 
         # Store parameters
         self.download_dir = target_directory
-        self.script = open(self.script_location, 'w')  # Opens the script file for writing
 
         current_dl_dir = ""  # Temporary variable to hold the download directory specified by the config file
 
@@ -200,47 +199,47 @@ class HexChatPluginDownloader(GenericDownloader):
 
         :return: None
         """
-        script_start = [    # This is metadata required by the Hexchat scripting engine
-                            "__module_name__ = \"xdcc_executer\"",
-                            "__module_version__ = \"1.0\"",
-                            "__module_description__ = \"Python XDCC Executer\"\n",
+        script_start = [  # This is metadata required by the Hexchat scripting engine
+            "__module_name__ = \"xdcc_executer\"",
+            "__module_version__ = \"1.0\"",
+            "__module_description__ = \"Python XDCC Executer\"\n",
 
-                            # imports
-                            "import hexchat",
-                            "import sys\n",
+            # imports
+            "import hexchat",
+            "import sys\n",
 
-                            # starts a download
-                            "def download(word, word_eol, userdata):",
-                            "\thexchat.command(packs[0])",  # send download message
-                            "\treturn hexchat.EAT_HEXCHAT\n",  # Eat stdout
+            # starts a download
+            "def download(word, word_eol, userdata):",
+            "\thexchat.command(packs[0])",  # send download message
+            "\treturn hexchat.EAT_HEXCHAT\n",  # Eat stdout
 
-                            # method run when a download completes successfully
-                            "def downloadComplete(word, word_eol, userdata):",
-                            "\thexchat.command('quit')",  # Quits the current channel
-                            "\tchannels.pop(0)",  # Removes the channel from which the pack was downloaded
-                            "\tpacks.pop(0)",  # Removes the downloaded pack
-                            "\tif len(channels) == 0:",  # If all downloads complete
-                            "\t\tsys.exit(0)",  # Exit the program
-                            "\telse:",  # Else download the next file
-                            "\t\thexchat.command(channels[0])",  # Join next channel
-                            "\treturn hexchat.EAT_HEXCHAT\n",  # Eat stdout
+            # method run when a download completes successfully
+            "def downloadComplete(word, word_eol, userdata):",
+            "\thexchat.command('quit')",  # Quits the current channel
+            "\tchannels.pop(0)",  # Removes the channel from which the pack was downloaded
+            "\tpacks.pop(0)",  # Removes the downloaded pack
+            "\tif len(channels) == 0:",  # If all downloads complete
+            "\t\tsys.exit(0)",  # Exit the program
+            "\telse:",  # Else download the next file
+            "\t\thexchat.command(channels[0])",  # Join next channel
+            "\treturn hexchat.EAT_HEXCHAT\n",  # Eat stdout
 
-                            # method run when a download fails
-                            "def downloadFailed(word, word_eol, userdata):",
-                            "\tfailed.append(packs[0])",  # append to failed packs
-                            "\thexchat.command('quit')",  # Quit the current channel
-                            "\tchannels.pop(0)",  # Remove the last used channel
-                            "\tpacks.pop(0)",  # Remove the last used pack
-                            "\tif len(channels) == 0:",  # If done,
-                            "\t\tsys.exit(1)",  # quit the program
-                            "\telse:",  # continue otherwise
-                            "\t\thexchat.command(channels[0])",  # join next channel
-                            "\treturn hexchat.EAT_HEXCHAT\n",  # eat stdout
+            # method run when a download fails
+            "def downloadFailed(word, word_eol, userdata):",
+            "\tfailed.append(packs[0])",  # append to failed packs
+            "\thexchat.command('quit')",  # Quit the current channel
+            "\tchannels.pop(0)",  # Remove the last used channel
+            "\tpacks.pop(0)",  # Remove the last used pack
+            "\tif len(channels) == 0:",  # If done,
+            "\t\tsys.exit(1)",  # quit the program
+            "\telse:",  # continue otherwise
+            "\t\thexchat.command(channels[0])",  # join next channel
+            "\treturn hexchat.EAT_HEXCHAT\n",  # eat stdout
 
-                            # Variables
-                            "failed = []",  # List of failed packs
-                            "channels = []",  # List of channels
-                            "packs = []\n"]  # List of packs to download
+            # Variables
+            "failed = []",  # List of failed packs
+            "channels = []",  # List of channels
+            "packs = []\n"]  # List of packs to download
 
         for line in script_start:  # Write to file
             self.script.write(line + "\n")
@@ -276,6 +275,7 @@ class HexChatPluginDownloader(GenericDownloader):
 
         :return: None
         """
+        self.script = open(self.script_location, 'w')  # Opens the script file for writing
         self.__write_start__()  # Write the start of the file
         # Write middle section of the file, specifying the pack and channel to be downloaded from
         self.script.write("channels.append(\"newserver irc://" + pack.server + "/" + pack.channel + "\")\n")
@@ -294,20 +294,17 @@ class HexChatPluginDownloader(GenericDownloader):
         """
         downloaded = []  # List of paths to downloaded files
 
-        for pack in self.packs:  # Downloads every pack
-            self.download_single(pack)  # Downloads a single pack
-
         self.packs.sort(key=lambda x: x.filename)  # Sorts the packs by file name
 
-        if self.auto_rename:  # Automatically renames the files if specified
-            for pack in self.packs:
+        for pack in self.packs:  # Downloads every pack
+            self.download_single(pack)  # Downloads a single pack
+            if self.auto_rename:  # Automatically renames the files if specified
                 episode = Episode(os.path.join(self.download_dir, pack.filename),  # Creates Episode object
                                   self.episode_number, self.season_number, self.show_name)
                 episode.rename()  # Auto-tvdb-renames the file
                 downloaded.append(episode.episode_file)  # Appends file path to list of downloaded files
                 self.episode_number += 1  # Increment episode number for next episode
-        else:  # If not auto rename, just add all pack file paths to the list of downloaded files
-            for pack in self.packs:
+            else:  # If not auto rename, just add all pack file paths to the list of downloaded files
                 downloaded.append(os.path.join(self.download_dir, pack.filename))
 
         downloaded_at_target = []

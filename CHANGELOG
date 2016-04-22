@@ -1,3 +1,6 @@
+V 0.9.5.7
+  - Fixed Hexchat downloading of multiple files
+  - Fixed issue #18
 V 0.9.5.6
   - Fixed syntax errors in python 2
 V 0.9.5.5
