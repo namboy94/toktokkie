@@ -37,8 +37,10 @@ from typing import List
 # setuptools as well as portable
 try:
     from metadata import Globals
+    from eastereggs.EasterEggManager import EasterEggManager
 except ImportError:
     from media_manager.metadata import Globals
+    from media_manager.eastereggs.EasterEggManager import EasterEggManager
 
 
 # noinspection PyTypeChecker
@@ -62,15 +64,8 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     :return: None
     """
 
-    # Activate Easter Eggs, but only if no Syntax Errors occur (may happen with python 2)
-    try:
-        from eastereggs.EasterEggManager import EasterEggManager
-        EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
-    except ImportError:
-        from media_manager.eastereggs.EasterEggManager import EasterEggManager
-        EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
-    except SyntaxError:
-        pass
+    # Activate Easter Eggs
+    EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
 
     # First, the used mode of the program is determined using sys.argv
     cli_mode = False

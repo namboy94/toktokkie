@@ -26,7 +26,6 @@ LICENSE
 
 # imports
 import sys
-import builtins
 from typing import Dict
 
 
@@ -90,6 +89,28 @@ class LeetPrint(object):
             # Return the generated method
             return generated_method
 
+        command = None
         if simple:
             # Replace the builtin print method if using python 3
-            builtins.print = leetspeak_generator(LeetPrint.simple_leet)
+            command = leetspeak_generator(LeetPrint.simple_leet)
+
+        # noinspection PyTypeChecker
+        LeetPrint.override_builtin_print(command)
+
+    @staticmethod
+    def override_builtin_print(override_method: callable = None) -> None:
+        """
+        Replaces the builtin print method with a different method
+
+        :param override_method: The method to be used instead of print
+        :return: None
+        """
+        if override_method is None:
+            return
+
+        # Try to execute, but pass if a SyntaxError occurs (this will happen when using python 2)
+        try:
+            exec("import builtins")  # First, import the builtins module
+            exec("builtins.print = override_method")  # Then override the print method
+        except SyntaxError:
+            pass
