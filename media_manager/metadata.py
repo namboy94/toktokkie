@@ -78,7 +78,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.6"
+version_number = "0.9.6.1"
 """
 The current version of the program.
 """
@@ -112,4 +112,19 @@ The email address(es) of the project author(s)
 license_type = "GNU GPL3"
 """
 The project's license type
+"""
+
+python3_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'twisted', 'typing', 'irc']
+"""
+Python 3 Python Packaging Index requirements
+"""
+
+python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'twisted', 'typing', 'irc']
+"""
+Python 2 Python Packaging Index requirements
+"""
+
+scripts = ['bin/mediamanager', 'bin/mediamanager-gtk', 'bin/mediamanager-tk']
+"""
+List of script files to be installed during installation
 """

@@ -97,7 +97,6 @@ class Episode(object):
 
         # Generate new and tvdb names
         self.__generate_tvdb_name()
-        self.__generate_new_name()
 
     def rename(self) -> None:
         """
@@ -109,8 +108,16 @@ class Episode(object):
             # Rename the old file to have the new file name
             self.episode_file = FileRenamer.rename_file(self.episode_file, self.new_name)
         except FileNotFoundError:
-            # If the file does not exist, try replacing spaces with underscores and try again
-            self.episode_file = FileRenamer.rename_file(self.episode_file.replace(' ', '_'), self.new_name)
+            try:
+                # If the file does not exist, try replacing spaces with underscores and try again
+                underscored_episode_file = os.path.basename(self.episode_file).replace(' ', '_')
+                underscored_episode_file_path = os.path.join(os.path.dirname(self.episode_file),
+                                                             underscored_episode_file)
+                self.episode_file = FileRenamer.rename_file(underscored_episode_file, self.new_name)
+            except FileNotFoundError:
+                # If it fails again, just give up
+                print("Skipping renaming file " + self.episode_file + " to " + self.new_name)
+                print("Please contact the developer and explain the exact circumstances leading to this.")
 
     def __generate_tvdb_name(self) -> None:
         """
@@ -123,27 +130,4 @@ class Episode(object):
 
         # get the episode name from theTVDB.com
         self.tvdb_name = tvdb_getter.find_episode_name()
-
-        # Strip away all characters illegal under the NTFS file system.
-        illegal_characters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
-        for illegal_character in illegal_characters:
-            self.tvdb_name = self.tvdb_name.replace(illegal_character, "")
-            
-    def __generate_new_name(self) -> None:
-        """
-        Generates the new name of an episode in the format 'Show Name - SXXEXX - tvdb_name'
-
-        :return: None
-        """
-        # Turn episode and season into strings
-        episode_string = str(self.episode_number)
-        season_string = str(self.season_number)
-
-        # Prepend leading zeroes if the numbers are smaller than 10 (less than 2 characters long)
-        if len(episode_string) < 2:
-            episode_string = "0" + episode_string
-        if len(season_string) < 2:
-            season_string = "0" + season_string
-
-        # Generate the new name
-        self.new_name = self.show_name + " - S" + season_string + "E" + episode_string + " - " + self.tvdb_name
+        self.new_name = tvdb_getter.get_formatted_episode_name()

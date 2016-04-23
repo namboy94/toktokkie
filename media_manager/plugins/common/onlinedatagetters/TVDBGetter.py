@@ -76,21 +76,51 @@ class TVDBGetter(object):
     def find_episode_name(self) -> str:
         """
         Finds the episode name and returns it as string
+
         :return: the episode name
         """
         return self.__get_episode_name__()
 
-    def __get_episode_name__(self):
+    def get_formatted_episode_name(self) -> str:
+        """
+        Finds the episode name and returns it as formatted string
+
+        The format is: Show Name - SXXEXX - Episode Name
+
+        :return: formatted the episode name
+        """
+        episode_name = self.__get_episode_name__()
+        episode_string = str(self.episode)
+        season_string = str(self.season)
+
+        # Prepend leading zeroes if the numbers are smaller than 10 (less than 2 characters long)
+        if len(str(episode_string)) < 2:
+            episode_string = "0" + str(episode_string)
+        if len(str(season_string)) < 2:
+            season_string = "0" + str(season_string)
+
+        formatted_episode = self.tv_show + " - S" + season_string + "E" + episode_string + " - " + episode_name
+
+        return formatted_episode
+
+    def __get_episode_name__(self) -> str:
         """
         Searches for the episode name with help of the TV Database
-        :return: the episode name, or "Episode X" if an exception occured
+
+        :return: the episode name, or "Episode X" if an exception occurred
         """
         try:
             # Get the episode name from tvdb
             tvdb = tvdb_api.Tvdb()
             episode_info = tvdb[self.tv_show][self.season][self.episode]
             episode_name = episode_info['episodename']
-            return episode_name
         except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError):
             # If not found, just return generic name
-            return "Episode " + str(self.episode)
+            episode_name = "Episode " + str(self.episode)
+
+        # Strip away illegal characters
+        illegal_characters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
+        for illegal_character in illegal_characters:
+            episode_name = episode_name.replace(illegal_character, "")
+
+        return episode_name

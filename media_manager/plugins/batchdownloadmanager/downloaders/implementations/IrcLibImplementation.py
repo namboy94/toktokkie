@@ -97,7 +97,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     """
 
     def __init__(self, server: str, channel: str, bot: str, pack: int, destination_directory: str,
-                 progress_struct: ProgressStruct) -> None:
+                 progress_struct: ProgressStruct, file_name_override: str = None) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
@@ -108,7 +108,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param pack: The pack number of the file to download
         :param destination_directory: The destination directory of the downloaded file
         :param progress_struct: The progress struct to keep track of the download progress between threads
-
+        :param file_name_override: Can be set to pre-determine the file name of the downloaded file
         :return: None
         """
         # Initialize base class
@@ -121,6 +121,10 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         self.pack = pack
         self.destination_directory = destination_directory
         self.progress_struct = progress_struct
+
+        # If a file name is pre-defined, set the file name to be that name.
+        if file_name_override is not None:
+            self.filename = os.path.join(destination_directory, file_name_override)
 
     def connect(self) -> None:
         """
@@ -206,7 +210,10 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
         print("Receiving file:")
         self.progress_struct.single_size = int(size)  # Store the file size in the progress struct
-        self.filename = os.path.join(self.destination_directory, os.path.basename(filename))
+
+        # Set the file name, but only if it was not set previously
+        if not self.filename:
+            self.filename = os.path.join(self.destination_directory, os.path.basename(filename))
 
         # TODO figure out how to enable file resuming
         # Check if the file already exists. If it does, delete it beforehand

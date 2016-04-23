@@ -63,11 +63,11 @@ setup(name=metadata.project_name + "-2",
       author_email=metadata.author_email,
       license=metadata.license_type,
       packages=find_packages(),
-      install_requires=['tvdb_api', 'beautifulsoup4', 'gfworks', 'twisted', 'typing', 'irc'],
-      dependency_links=['https://git.gnome.org/browse/pygobject'],
+      install_requires=metadata.python2_requirements,
+      dependency_links=[],
       test_suite='nose.collector',
       tests_require=['nose'],
-      scripts=['bin/mediamanager', 'bin/mediamanager-gtk', 'bin/mediamanager-tk'],
+      scripts=metadata.scripts,
       zip_safe=False)
 
 # How to upload to pypi:

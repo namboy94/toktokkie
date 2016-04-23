@@ -28,13 +28,13 @@ LICENSE
 from typing import List
 
 try:
-    from plugins.renamer.objects.Episode import Episode
+    from plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
     from plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
     from plugins.batchdownloadmanager.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 except ImportError:
-    from media_manager.plugins.renamer.objects.Episode import Episode
+    from media_manager.plugins.common.onlinedatagetters.TVDBGetter import TVDBGetter
     from media_manager.plugins.batchdownloadmanager.utils.ProgressStruct import ProgressStruct
     from media_manager.plugins.batchdownloadmanager.searchengines.objects.XDCCPack import XDCCPack
     from media_manager.plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
@@ -117,23 +117,21 @@ class IrcLibDownloader(GenericDownloader):
         # Print informational string, which file is being downloaded
         print("Downloading pack: " + pack.to_string())
 
+        if self.auto_rename:
+            # Get the auto-renamed file name
+            file_name = TVDBGetter(self.show_name, self.season_number, self.episode_number).get_formatted_episode_name()
+            self.episode_number += 1
+        else:
+            file_name = None
+
         downloader = IrcLibImplementation(pack.server,
                                           pack.channel,
                                           pack.bot,
                                           pack.packnumber,
                                           self.target_directory,
-                                          self.progress_struct)
-        file_path = downloader.start()
-
-        # auto rename process:
-        if self.auto_rename:
-            # Create Episode object
-            episode = Episode(file_path, self.episode_number, self.season_number, self.show_name)
-            episode.rename()  # Rename file with help of TVDB
-            self.episode_number += 1
-            return episode.episode_file  # Return the new file path
-        else:
-            return file_path  # Return the file path
+                                          self.progress_struct,
+                                          file_name_override=file_name)
+        return downloader.start()
 
     @staticmethod
     def get_string_identifier() -> str:
