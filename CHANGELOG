@@ -1,5 +1,6 @@
 V 0.9.6
   - Implemented a native XDCC downloader, completely independent from Hexchat or an external python2 call.
+  - Fixed renamer crashing when encountering special seasons
 V 0.9.5.7
   - Fixed Hexchat downloading of multiple files
   - Fixed issue #18

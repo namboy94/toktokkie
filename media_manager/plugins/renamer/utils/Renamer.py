@@ -123,11 +123,11 @@ class Renamer(object):
             # to the list of special seasons
             if not season.lower().startswith("season"):
                 specials.append(season_path)
-
-            # Calculate the season number
-            season_number = int(season.lower().split("season ")[1])
-            # Add Episode objects to the Episode list
-            self.__add_season_to_episodes(season_path, season_number, show_name)
+            else:
+                # Calculate the season number
+                season_number = int(season.lower().split("season ")[1])
+                # Add Episode objects to the Episode list
+                self.__add_season_to_episodes(season_path, season_number, show_name)
 
         # Add the special episodes to the Episode list
         self.__add_specials_to_episodes(specials, show_name)
