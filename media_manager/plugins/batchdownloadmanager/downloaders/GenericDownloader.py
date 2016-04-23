@@ -138,4 +138,15 @@ class GenericDownloader(object):
 
         :return: the list of file paths of the downloaded files
         """
-        raise NotImplementedError()
+        files = []  # The downloaded file paths
+        self.packs.sort(key=lambda x: x.filename)  # Sorts the packs by file name
+
+        for pack in self.packs:  # Download each pack
+            files.append(self.download_single(pack))  # Download pack and append file path to files list
+
+            # Reset the progress of the single file to 0
+            self.progress_struct.single_progress = 0
+            self.progress_struct.single_size = 0
+
+            self.progress_struct.total_progress += 1  # Increment progress structure
+        return files

@@ -283,48 +283,17 @@ class HexChatPluginDownloader(GenericDownloader):
         self.__write_end__()  # Write the end of the script
         self.script.close()  # Close the script file
 
-    # noinspection PyTypeChecker
-    def download_loop(self) -> List[str]:
-        """
-        Starts the download loop.
-
-        This downloads all packs given via the constructor sequentially
-
-        :return: a list of file paths leading to the downloaded files
-        """
-        downloaded = []  # List of paths to downloaded files
-
-        self.packs.sort(key=lambda x: x.filename)  # Sorts the packs by file name
-
-        for pack in self.packs:  # Downloads every pack
-            self.download_single(pack)  # Downloads a single pack
-            if self.auto_rename:  # Automatically renames the files if specified
-                episode = Episode(os.path.join(self.download_dir, pack.filename),  # Creates Episode object
-                                  self.episode_number, self.season_number, self.show_name)
-                episode.rename()  # Auto-tvdb-renames the file
-                downloaded.append(episode.episode_file)  # Appends file path to list of downloaded files
-                self.episode_number += 1  # Increment episode number for next episode
-            else:  # If not auto rename, just add all pack file paths to the list of downloaded files
-                downloaded.append(os.path.join(self.download_dir, pack.filename))
-
-        downloaded_at_target = []
-        if self.download_dir != self.target_directory:  # If target dir is not download dir, move files to target dir
-            for downloaded_file in downloaded:
-                # Moves file and appends new file path to downloaded_at_target
-                downloaded_at_target.append(FileMover.move_file(downloaded_file, self.target_directory))
-            downloaded = downloaded_at_target  # replace old file paths with new ones
-
-        return downloaded
-
-    def download_single(self, pack: XDCCPack) -> None:
+    def download_single(self, pack: XDCCPack) -> str:
         """
         Downloads a single pack using the Hexchat Downloader Script
 
         This does not work if no working Hexchat installation (including the Hexchat python scripting plugin)
         is present on the user's system.
 
+        The downloaded files are also renamed and moved if this is specified.
+
         :param pack: The pack to be downloaded
-        :return: None
+        :return: The path to the downloaded file
         """
         # Create new thread that updates the Progress Struct
         progress_thread = Thread(target=self.update_progress, args=(pack,))
@@ -342,8 +311,23 @@ class HexChatPluginDownloader(GenericDownloader):
         # Download Complete
 
         self.downloading = False  # Let other thread know we're done
-        self.progress_struct.total_progress += 1  # Increment the total progress
         os.remove(self.script_location)  # Deletes script file
+
+        # Process file further:
+
+        file_path = os.path.join(self.download_dir, pack.filename)
+        if self.auto_rename:  # Automatically renames the file if specified
+            # Creates Episode object
+            episode = Episode(file_path, self.episode_number, self.season_number, self.show_name)
+            episode.rename()  # Auto-tvdb-renames the file
+            file_path = episode.episode_file  # Changes file path variable to reflect the new path to the renamed file
+            self.episode_number += 1  # Increment episode number for next episode
+        # else the file path just stays the same
+
+        if self.download_dir != self.target_directory:  # If target dir is not download dir, move files to target dir
+            file_path = FileMover.move_file(file_path, self.target_directory)  # Move file to target directory
+
+        return file_path
 
     def update_progress(self, pack: XDCCPack) -> None:
         """
@@ -362,10 +346,6 @@ class HexChatPluginDownloader(GenericDownloader):
                 # If the file does not exist yet, set the progress to 0
                 self.progress_struct.single_progress = 0
             time.sleep(1)  # Always sleep a second between updates
-
-        # Reset the progress values once the download has completed
-        self.progress_struct.single_progress = 0
-        self.progress_struct.single_size = 0
 
     @staticmethod
     def get_string_identifier() -> str:

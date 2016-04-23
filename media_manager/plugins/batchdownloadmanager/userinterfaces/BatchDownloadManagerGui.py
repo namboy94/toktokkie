@@ -566,7 +566,11 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
                         finished_download_amount += last_single_progress_size
 
                     # calculate the current-ish speed using the current size and the previous size
+                    # If it's a negative number, reset it to 0.
                     speed = (float(progress_struct.single_progress) - last_single_progress_size) / speed_time_counter
+                    if speed < 0:
+                        speed = 0
+
                     # Reset the speed time counter
                     speed_time_counter = 0
                     # Store the current downloaded size as variable

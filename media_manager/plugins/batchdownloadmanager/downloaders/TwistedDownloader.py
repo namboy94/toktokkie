@@ -117,21 +117,6 @@ class TwistedDownloader(GenericDownloader):
         # Check for python 3 twisted compatibility
         self.check_python3_compatibility()
 
-    # noinspection PyTypeChecker
-    def download_loop(self) -> List[str]:
-        """
-        Starts the Download loop, which downloads all packs given via parameter in the Constructor
-
-        It also incrementally updates the progress structure's total progress attribute.
-
-        :return: None
-        """
-        files = []  # The downloaded file paths
-        for pack in self.packs:  # Download each pack
-            files.append(self.download_single(pack))  # Download pack and append file path to files list
-            self.progress_struct.total_progress += 1  # Increment progress structure
-        return files
-
     def download_single(self, pack: XDCCPack) -> str:
         """
         Downloads a single pack with the help of the twisted downloader script
