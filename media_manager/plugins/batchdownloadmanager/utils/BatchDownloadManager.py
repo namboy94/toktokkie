@@ -80,7 +80,6 @@ class BatchDownloadManager(object):
     def get_icon(path: str, folder_icon_directory: str, icon_file: str) -> str:
         """
         Gets the icons specified by the user with either wget or the local file system
-        DOWNLOADING VIA WGET CURRENTLY ONLY WORKS ON LINUX OPERATING SYSTEMS!!!
 
         :param path: the path to the icon file - either a URL or a local file path
         :param folder_icon_directory: the folder icon directory
@@ -183,7 +182,7 @@ class BatchDownloadManager(object):
             os.makedirs(target_directory)
 
         # Get icon files over http or the local file system into the icon folders
-        # Fill a list with argument tuples for th get_icon method
+        # Fill a list with argument tuples for the get_icon method
         icons_to_process = [(main_icon, os.path.join(directory, ".icons"), "main.png"),  # main icon
 
                             (secondary_icon, os.path.join(directory, ".icons"),  # secondary icon

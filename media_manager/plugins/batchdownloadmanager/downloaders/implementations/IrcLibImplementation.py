@@ -215,7 +215,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if not self.filename:
             self.filename = os.path.join(self.destination_directory, os.path.basename(filename))
 
-        # TODO figure out how to enable file resuming
         # Check if the file already exists. If it does, delete it beforehand
         if os.path.exists(self.filename):
             os.remove(self.filename)
