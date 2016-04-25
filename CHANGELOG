@@ -1,5 +1,7 @@
+V 0.9.6.2
+  - File/Directory paths are now accepted even if they are wrapped in quotation marks
 V 0.9.6.1
-  - The irclib downloader now automatically saves the downloaded file with the corect file name from the beginning
+  - The irclib downloader now automatically saves the downloaded file with the correct file name from the beginning
 V 0.9.6
   - Implemented a native XDCC downloader, completely independent from Hexchat or an external python2 call.
   - Fixed renamer crashing when encountering special seasons

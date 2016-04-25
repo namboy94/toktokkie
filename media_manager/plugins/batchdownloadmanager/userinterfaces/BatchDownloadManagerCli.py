@@ -179,6 +179,11 @@ class BatchDownloadManagerCli(GenericCli):
             print("Invalid directory")
             return
 
+        # Strip surrounding quotation marks
+        if self.directory.startswith("'") and self.directory.endswith("'")\
+                or self.directory.startswith("\"") and self.directory.endswith("\""):
+            self.directory = self.directory[1:-1]
+
         # calculate show name, season number and first episode number from the given directory
         # Also calculates the main and secondary icon locations
         # These are subject to be changed by the user

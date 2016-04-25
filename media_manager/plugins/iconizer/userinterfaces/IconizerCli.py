@@ -81,6 +81,11 @@ class IconizerCli(GenericCli):
         if directory is None:
             directory = self.ask_user("Enter the directory to iconize:\n")
 
+        # Strip surrounding quotation marks
+        if directory.startswith("'") and directory.endswith("'") \
+                or directory.startswith("\"") and directory.endswith("\""):
+            directory = directory[1:-1]
+
         # Then check if the directory is a valid directory and also exists
         if not os.path.isdir(directory):
             # If not, start a new loop

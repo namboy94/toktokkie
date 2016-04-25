@@ -78,6 +78,11 @@ class RenamerCli(GenericCli):
         if directory is None:
             directory = self.ask_user("Enter the show/series directory path:\n")
 
+        # Strip surrounding quotation marks
+        if directory.startswith("'") and directory.endswith("'") \
+                or directory.startswith("\"") and directory.endswith("\""):
+            directory = directory[1:-1]
+
         # If the directory is not a valid directory, exit immediately
         if not os.path.isdir(directory):
             print("Not a valid directory path")
