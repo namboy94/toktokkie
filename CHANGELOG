@@ -1,3 +1,5 @@
+V 0.9.6.4
+  - Fixed a stupid error introduced in V 0.9.6.3
 V 0.9.6.3
   - Fixed file extensions going missing when using the auto-rename functionality with the irclib downloader
 V 0.9.6.2
