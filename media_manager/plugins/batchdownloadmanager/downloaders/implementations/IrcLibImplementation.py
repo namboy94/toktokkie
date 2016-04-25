@@ -214,6 +214,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Set the file name, but only if it was not set previously
         if not self.filename:
             self.filename = os.path.join(self.destination_directory, os.path.basename(filename))
+        else:
+            # Add file extension to override-name
+            self.filename += filename.rstrip(".", 1)[1]
 
         # Check if the file already exists. If it does, delete it beforehand
         if os.path.exists(self.filename):

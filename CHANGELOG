@@ -1,3 +1,5 @@
+V 0.9.6.3
+  - Fixed file extensions going missing when using the auto-rename functionality with the irclib downloader
 V 0.9.6.2
   - File/Directory paths are now accepted even if they are wrapped in quotation marks
 V 0.9.6.1
