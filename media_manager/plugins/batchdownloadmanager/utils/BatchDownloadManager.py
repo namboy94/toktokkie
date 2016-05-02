@@ -186,7 +186,7 @@ class BatchDownloadManager(object):
         icons_to_process = [(main_icon, os.path.join(directory, ".icons"), "main.png"),  # main icon
 
                             (secondary_icon, os.path.join(directory, ".icons"),  # secondary icon
-                             os.path.dirname(target_directory) + ".png")
+                             os.path.basename(target_directory) + ".png")
                             ]
 
         for element in icons_to_process:  # Iterate through list

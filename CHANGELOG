@@ -1,3 +1,6 @@
+V 0.9.6.5
+  - Fixed issues with the batch download manager creating a file <showname>.png if an icon for a season was
+  - contained within the .icons directory
 V 0.9.6.4
   - Fixed a stupid error introduced in V 0.9.6.3
 V 0.9.6.3
@@ -27,3 +30,5 @@ v 0.9.5.1
   - Added download url to project
 v 0.9.5
   - Added Changelog
+v 0-.0.9.4
+  - See the commits, changelog was not being maintained back then
