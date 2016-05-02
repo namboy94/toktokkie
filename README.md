@@ -179,6 +179,12 @@ variable 'python2' to direct to the python 2 installation.
 
 ## Links:
 
+This project is mirrored to:
+
+* [github.com](https://github.com/namboy94/media-manager)
+* [gitlab.com](https://gitlab.com/namboy94/media-manager)
+* [bitbucket.org](https://bitbucket.org/namboy94/media-manager)
+
 
 [Git Statistics](http://gitlab.namibsun.net/namboy94/media-manager/wikis/git_stats/general.html)
 

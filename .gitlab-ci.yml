@@ -12,6 +12,10 @@ clone:
     - git clone http://gitlab.namibsun.net/namboy94/media-manager.git
     - git clone git@gitlab.namibsun.net:namboy94/media-manager.wiki.git
     - cp -r media-manager media-manager-2
+    - cd media-manager
+    - git push -u git@gitlab.com:namboy94/media-manager.git master
+    - git push -u git@github.com:namboy94/media-manager.git master
+    - git push -u git@bitbucket.org:namboy94/media-manager.git master
 
 uninstall:
   stage: setup
