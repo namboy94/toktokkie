@@ -21,6 +21,7 @@ This file is part of media-manager.
 """
 
 # imports
+import os
 from setuptools import setup, find_packages
 import media_manager.metadata as metadata
 
@@ -45,17 +46,31 @@ def readme() -> str:
             return f.read()
 
 
+def find_scripts() -> "list of scripts":
+    """
+    Returns a list of scripts in the bin directory
+
+    :return: the list of scripts
+    """
+    scripts = []
+    for file_name in os.listdir("bin"):
+        if not file_name == "__init__.py":
+            scripts.append("bin/" + file_name)
+    return scripts
+
+
 setup(name=metadata.project_name,
       version=metadata.version_number,
       description=metadata.project_description,
       long_description=readme(),
       classifiers=[metadata.development_status,
-                   'Intended Audience :: End Users/Desktop',
-                   'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-                   'Programming Language :: Python :: 3',
-                   'Topic :: Utilities',
-                   'Natural Language :: English',
-                   'Operating System :: POSIX :: Linux'
+                   metadata.audience,
+                   metadata.license_identifier,
+                   metadata.programming_language,
+                   metadata.topic,
+                   metadata.language,
+                   metadata.compatible_os,
+                   metadata.environment
                    ],
       url=metadata.project_url,
       download_url=metadata.download_url,
@@ -67,7 +82,7 @@ setup(name=metadata.project_name,
       dependency_links=[],
       test_suite='nose.collector',
       tests_require=['nose'],
-      scripts=metadata.scripts,
+      scripts=find_scripts(),
       zip_safe=False)
 
 # How to upload to pypi:

@@ -124,7 +124,37 @@ python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'twisted', 't
 Python 2 Python Packaging Index requirements
 """
 
-scripts = ['bin/mediamanager', 'bin/mediamanager-gtk', 'bin/mediamanager-tk']
+audience = "Intended Audience :: End Users/Desktop"
 """
-List of script files to be installed during installation
+The intended audience of this software
+"""
+
+environment = "Environment :: Other Environment"
+"""
+The intended environment in which the program will be used
+"""
+
+programming_language = 'Programming Language :: Python :: 3'
+"""
+The programming language used in this project
+"""
+
+topic = "Topic :: Utilities"
+"""
+The broad subject/topic of the project
+"""
+
+language = "Natural Language :: English"
+"""
+The (default) language of this project
+"""
+
+compatible_os = "Operating System :: OS Independent"
+"""
+The Operating Systems on which the program can run
+"""
+
+license_identifier = "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
+"""
+The license used for this project
 """
