@@ -5,8 +5,10 @@ stages:
   - cleanup
   - upgrade
 
-clone:
+clone_master:
   stage: setup
+  only:
+    - master
   script:
     - cd
     - git clone http://gitlab.namibsun.net/namboy94/media-manager.git
@@ -19,11 +21,15 @@ clone:
 
 uninstall:
   stage: setup
+  only:
+    - master
   script:
     - sudo pip3.5 uninstall -y media_manager
 
 run_unit_tests:
   stage: test
+  only:
+    - master
   script:
     - cd
     - cd media-manager
@@ -31,6 +37,8 @@ run_unit_tests:
 
 generate_statistics:
   stage: test
+  only:
+    - master
   script:
     - cd
     - cd media-manager
@@ -41,6 +49,8 @@ generate_statistics:
 
 generate_documentation:
   stage: test
+  only:
+    - master
   script:
     - cd
     - cd media-manager/doc
@@ -54,6 +64,8 @@ generate_documentation:
 
 generate_python2_version:
   stage: test
+  only:
+    - master
   script:
     - cd
     - 3to2 --write media-manager-2
@@ -62,6 +74,8 @@ generate_python2_version:
 
 upload_to_pypi:
   stage: upload
+  only:
+    - master
   script:
     - cd
     - cd media-manager
@@ -70,6 +84,8 @@ upload_to_pypi:
 
 upload_to_pypi2:
   stage: upload
+  only:
+    - master
   script:
     - cd
     - cd media-manager-2
@@ -78,6 +94,8 @@ upload_to_pypi2:
 
 upload_documentation_and_statistics:
   stage: upload
+  only:
+    - master
   script:
     - cd
     - cd media-manager.wiki
@@ -85,9 +103,11 @@ upload_documentation_and_statistics:
     - git commit -m "Updated documentation and statistics"
     - git push -u origin master
 
-delete_clone:
+delete_clone_master:
   stage: cleanup
   when: always
+  only:
+    - master
   script:
     - cd
     - rm -rf media-manager
@@ -97,6 +117,8 @@ delete_clone:
 upgrade_from_pypi:
   stage: upgrade
   when: always
+  only:
+    - master
   script:
     - sudo pip3.5 install media_manager --upgrade
     - sleep 5
