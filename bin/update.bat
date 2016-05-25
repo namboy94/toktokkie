@@ -1,1 +1,0 @@
-pip install media_manager --upgrade

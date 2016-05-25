@@ -24,6 +24,9 @@ This file is part of media-manager.
 import os
 from setuptools import setup, find_packages
 import media_manager.metadata as metadata
+# noinspection PyPackageRequirements
+import py2exe
+str(py2exe)
 
 
 def readme() -> str:
@@ -59,7 +62,10 @@ def find_scripts() -> "list of scripts":
     return scripts
 
 
-setup(name=metadata.project_name + "-2",
+setup(console=["bin/mediamanager"],
+      windows=["bin/mediamanager-tk"],
+      zipfile=None,
+      name=metadata.project_name,
       version=metadata.version_number,
       description=metadata.project_description,
       long_description=readme(),
@@ -78,7 +84,7 @@ setup(name=metadata.project_name + "-2",
       author_email=metadata.author_email,
       license=metadata.license_type,
       packages=find_packages(),
-      install_requires=metadata.python2_requirements,
+      install_requires=metadata.python3_requirements,
       dependency_links=[],
       test_suite='nose.collector',
       tests_require=['nose'],
