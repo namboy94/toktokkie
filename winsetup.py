@@ -62,8 +62,8 @@ def find_scripts() -> "list of scripts":
     return scripts
 
 
-setup(console=["mediamanager"],
-      windows=["mediamanager-tk"],
+setup(console=["bin/mediamanager"],
+      windows=["bin/mediamanager-tk"],
       zipfile=None,
       name=metadata.project_name,
       version=metadata.version_number,

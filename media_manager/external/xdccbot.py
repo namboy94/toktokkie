@@ -30,7 +30,8 @@ import sys
 import os
 import logging as log
 
-from twisted.words.protocols import irc
+irc = None
+exec("from twisted.words.protocols import irc")
 from twisted.internet import reactor, protocol
 from twisted.python import log as twistedlog
 
