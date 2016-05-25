@@ -1,3 +1,5 @@
+V 0.9.7
+  - Created workflow for creating windows builds
 V 0.9.6.5
   - Fixed issues with the batch download manager creating a file <showname>.png if an icon for a season was
   - contained within the .icons directory
