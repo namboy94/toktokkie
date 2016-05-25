@@ -37,7 +37,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#MyAppPath}dist\mediamanager-tk.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyAppPath}dist\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppPath}dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
