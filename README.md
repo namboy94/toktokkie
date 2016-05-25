@@ -106,19 +106,17 @@ It is possible to select more than one file to download (hence the 'batch')
 This will be able to manage your existing media in some way. It's not implemented yet.
 
 
-
-
 ## Installation Instructions
 
 **General Installation**
 
 To install the program, either download the source and run
 
-    python setup.py install
+    # python setup.py install
     
 or install using pip:
 
-    pip install media_manager
+    # pip install media_manager
     
 
 You can also run the main.py file directly with the python interpreter if that is how you want to do it. This will only
@@ -132,7 +130,9 @@ The program depends on the following python packages:
 - typing (for python versions lower than 3.5)
 - twisted (for python2)
 
-Also needed for GUI functionality is the GUI framework Tkinter or also Python-Gobject
+Also needed for GUI functionality is the GUI framework Tkinter or Python-Gobject
+
+Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/media-manager/wikis/windows-builds)
 
 **Configuring Downloaders**
 
