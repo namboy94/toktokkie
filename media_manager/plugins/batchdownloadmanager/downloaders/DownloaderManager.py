@@ -30,12 +30,10 @@ from typing import List
 try:
     from plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
-    from plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from plugins.batchdownloadmanager.downloaders.IrcLibDownloader import IrcLibDownloader
 except ImportError:
     from media_manager.plugins.batchdownloadmanager.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
     from media_manager.plugins.batchdownloadmanager.downloaders.GenericDownloader import GenericDownloader
-    from media_manager.plugins.batchdownloadmanager.downloaders.TwistedDownloader import TwistedDownloader
     from media_manager.plugins.batchdownloadmanager.downloaders.IrcLibDownloader import IrcLibDownloader
 
 
@@ -47,12 +45,11 @@ class DownloaderManager(object):
     on which Downloaders are available (for different use cases as well, for example CLI or GUI mode)
     """
 
-    cli_downloaders = [IrcLibDownloader, TwistedDownloader]
+    cli_downloaders = [IrcLibDownloader]
 
     gui_downloaders = [HexChatPluginDownloader]
 
     all_downloaders = [IrcLibDownloader,
-                       TwistedDownloader,
                        HexChatPluginDownloader]
 
     # noinspection PyTypeChecker

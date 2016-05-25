@@ -160,9 +160,6 @@ the [official website](https://www.python.org/downloads/windows/).
 
 Once you have installed this, you should be able to install the program using pip or the setup.py file directly.
 
-To update the program, either use pip or make use of
-[this .bat file](http://gitlab.namibsun.net/namboy94/media-manager/raw/master/bin/update.bat).
-
 To be able to use the Hexchat Downloader, you will have to install the 64-bit version of Hexchat for Windows from
 the [official website](https://hexchat.github.io/downloads.html).
 
