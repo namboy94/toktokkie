@@ -25,9 +25,6 @@ LICENSE
 """
 
 # imports
-from argparse import Namespace
-from typing import Tuple, List, Dict
-
 from gfworks.interfaces.GenericWindow import GenericWindow
 from tok_tokkie.cli.GenericCli import GenericCli
 from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
@@ -67,49 +64,6 @@ class RenamerPlugin(GenericPlugin):
         :return: the command that starts this plugin
         """
         return "renamer"
-
-    def get_parser_arguments(self) -> Tuple[List[Dict[str, str]]]:
-        """
-        This returns all command line arguments to be added to the Argument Parser for this
-        plugin. There are two types of arguments: The ones that ask for strings and the others
-        that ask for boolean values.
-
-        To separate these, a tuple structure is used. The tuple's first element contains the
-        arguments that ask for boolean values, whereas the second element asks for string values
-
-        The tuple elements are lists of dictionaries. The dictionaries contain the actual
-        arguments to be used.
-
-        Every dictionary in the list has a 'tag' key that points to the argument used in the
-        --argument fashion from the command line as well as a 'desc' key that points to a
-        short description of the parameter.
-
-        :return: the tuple of lists of dictionaries described above
-        """
-        return ([],
-                [{"tag": "renamer-directory", "desc": "The directory whose content should be renamed"}])
-
-    def start_args_parse(self, args: Namespace) -> None:
-        """
-        Runs the plugin in arg parse mode
-        The arguments must have been parsed beforehand by the MainArgsParser class
-
-        :param args: The parsed argument Namespace
-        :return: None
-        """
-        valid = False
-
-        # Check validity
-        if getattr(args, "renamer-directory"):
-            valid = True
-
-        # If valid, start CLI in argument mode
-        if valid:
-            # noinspection PyTypeChecker
-            RenamerCli(None).mainloop(getattr(args, "renamer-directory"))
-        # Else let the user know that it was an invalid combination
-        else:
-            print("Invalid argument combination passed")
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """

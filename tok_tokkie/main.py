@@ -65,7 +65,6 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
 
     # First, the used mode of the program is determined using sys.argv
     cli_mode = False
-    cli_arg_mode = False
 
     # Basic parsing of the arguments, which helps establish in which mode the program
     # should be started
@@ -75,27 +74,16 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk" and Globals.tk_gui_template is not None:
         # This will select the Tkinter GUI as the selected framework
         Globals.selected_grid_gui_framework = Globals.tk_gui_template
-    elif len(sys.argv) > 1:
-        # This will be the mode for non-interactive CLI use
-        cli_arg_mode = True
     else:
         # If this is selected, the program will start in interactive CLI use
         cli_mode = True
 
     # This import has to happen at this point, since the graphical frameworks from
     # gfworks have not been defined correctly in the Globals class before this.
-    try:
-        from modules.PluginManager import PluginManager
-        from mainuserinterfaces.MainGui import MainGui
-        from mainuserinterfaces.MainCli import MainCli
-        from mainuserinterfaces.MainArgsParser import MainArgsParser
-        from startup.Installer import Installer
-    except ImportError:
-        from tok_tokkie.modules.PluginManager import PluginManager
-        from tok_tokkie.mainuserinterfaces.MainGui import MainGui
-        from tok_tokkie.mainuserinterfaces.MainCli import MainCli
-        from tok_tokkie.mainuserinterfaces.MainArgsParser import MainArgsParser
-        from tok_tokkie.startup.Installer import Installer
+    from tok_tokkie.modules.PluginManager import PluginManager
+    from tok_tokkie.mainuserinterfaces.MainGui import MainGui
+    from tok_tokkie.mainuserinterfaces.MainCli import MainCli
+    from tok_tokkie.startup.Installer import Installer
 
     # This checks if the program is already correctly installed in the user's
     # home directory, if this is not the case the program will be installed now.
@@ -112,8 +100,6 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     # The program starts here, using the selected mode
     if cli_mode:
         MainCli(active_plugins).start()
-    elif cli_arg_mode:
-        MainArgsParser(active_plugins).run()
     else:
         gui = MainGui(active_plugins)
         gui.start()

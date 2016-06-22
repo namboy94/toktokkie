@@ -25,8 +25,6 @@ LICENSE
 """
 
 # imports
-from argparse import Namespace
-from typing import Dict, Tuple, List
 from gfworks.interfaces.GenericWindow import GenericWindow
 from tok_tokkie.cli.GenericCli import GenericCli
 
@@ -62,36 +60,6 @@ class GenericPlugin(object):
         in the config file of media-manager.
 
         :return: the config tag of this plugin
-        """
-        raise NotImplementedError()
-
-    def get_parser_arguments(self) -> Tuple[List[Dict[str, str]]]:
-        """
-        This returns all command line arguments to be added to the Argument Parser for this
-        plugin. There are two types of arguments: The ones that ask for strings and the others
-        that ask for boolean values.
-
-        To separate these, a tuple structure is used. The tuple's first element contains the
-        arguments that ask for boolean values, whereas the second element asks for string values
-
-        The tuple elements are lists of dictionaries. The dictionaries contain the actual
-        arguments to be used.
-
-        Every dictionary in the list has a 'tag' key that points to the argument used in the
-        --argument fashion from the command line as well as a 'desc' key that points to a
-        short description of the parameter.
-
-        :return: the tuple of lists of dictionaries described above
-        """
-        raise NotImplementedError()
-
-    def start_args_parse(self, args: Namespace) -> None:
-        """
-        Runs the plugin in arg parse mode
-        The arguments must have been parsed beforehand by the MainArgsParser class
-
-        :param args: The parsed argument Namespace
-        :return: None
         """
         raise NotImplementedError()
 

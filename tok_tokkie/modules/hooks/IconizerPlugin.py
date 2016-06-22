@@ -25,9 +25,6 @@ LICENSE
 """
 
 # imports
-from argparse import Namespace
-from typing import Tuple, List, Dict
-
 from gfworks.interfaces.GenericWindow import GenericWindow
 from tok_tokkie.cli.GenericCli import GenericCli
 from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
@@ -67,59 +64,6 @@ class IconizerPlugin(GenericPlugin):
         :return: the command that starts this plugin
         """
         return "iconizer"
-
-    def get_parser_arguments(self) -> Tuple[List[Dict[str, str]], List[Dict[str, str]]]:
-        """
-        This returns all command line arguments to be added to the Argument Parser for this
-        plugin. There are two types of arguments: The ones that ask for strings and the others
-        that ask for boolean values.
-
-        To separate these, a tuple structure is used. The tuple's first element contains the
-        arguments that ask for boolean values, whereas the second element asks for string values
-
-        The tuple elements are lists of dictionaries. The dictionaries contain the actual
-        arguments to be used.
-
-        Every dictionary in the list has a 'tag' key that points to the argument used in the
-        --argument fashion from the command line as well as a 'desc' key that points to a
-        short description of the parameter.
-
-        :return: the tuple of lists of dictionaries described above
-        """
-        return ([{"tag": "iconizer-use-nautilus", "desc": "Use the nautilus iconizer"},
-                 {"tag": "iconizer-use-nemo", "desc": "Use the nemo iconizer"}],
-
-                [{"tag": "iconizer-directory", "desc": "The Directory to be iconized by the iconizer"}])
-
-    def start_args_parse(self, args: Namespace) -> None:
-        """
-        Runs the plugin in arg parse mode
-        The arguments must have been parsed beforehand by the MainArgsParser class
-
-        :param args: The parsed argument Namespace
-        :return: None
-        """
-        # Check if the combination of arguments is valid
-        valid = False
-        if getattr(args, "iconizer-directory"):
-            if getattr(args, "iconizer_use_nautilus") ^ \
-                    getattr(args, "iconizer_use_nemo"):
-                valid = True
-
-        if valid:
-            # If they're valid, run the CLI in argument mode
-
-            directory = getattr(args, "iconizer-directory")
-
-            if getattr(args, "iconizer_use_nautilus"):
-                # noinspection PyTypeChecker
-                IconizerCli(None).mainloop(directory, "Nautilus")
-            elif getattr(args, "iconizer_use_nemo"):
-                # noinspection PyTypeChecker
-                IconizerCli(None).mainloop(directory, "Nemo")
-        else:
-            # Otherwise let the user know that the combination was wrong
-            print("Invalid argument combination passed")
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
