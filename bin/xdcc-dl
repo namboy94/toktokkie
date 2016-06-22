@@ -1,6 +1,7 @@
-"""
-LICENSE:
+#!/usr/bin/env python
+# coding=utf-8
 
+"""
 Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
@@ -20,37 +21,10 @@ This file is part of media-manager.
 
     You should have received a copy of the GNU General Public License
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
-
-LICENSE
 """
 
-# imports
-from tok_tokkie.modules.cli.GenericCli import GenericCli
+from tok_tokkie.scripts.single_xdcc import main
 
 
-class ShowManagerCli(GenericCli):
-    """
-    CLI for the Show Manager plugin
-    """
-
-    def __init__(self, parent: GenericCli) -> None:
-        """
-        Constructor
-        :param parent: the parent cli
-        :return: void
-        """
-        super().__init__(parent)
-
-    def start(self, title=None):
-        """
-        Starts the plugin main loop
-        :return: void
-        """
-        super().start("Show Manager Plugin")
-
-    def mainloop(self):
-        """
-        The plugin main loop
-        :return: void
-        """
-        self.ask_user("Not Implemented. Enter quit to return.")
+if __name__ == "__main__":
+    main()

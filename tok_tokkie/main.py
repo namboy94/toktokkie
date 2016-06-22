@@ -36,7 +36,7 @@ from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGener
 # This import construct enables the program to be run when installed via
 # setuptools as well as portable
 from tok_tokkie.metadata import Globals
-from modules.eastereggs.EasterEggManager import EasterEggManager
+from tok_tokkie.modules.eastereggs.EasterEggManager import EasterEggManager
 
 
 # noinspection PyTypeChecker
@@ -78,8 +78,8 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     # This import has to happen at this point, since the graphical frameworks from
     # gfworks have not been defined correctly in the Globals class before this.
     from tok_tokkie.modules.PluginManager import PluginManager
-    from modules.gui.MainGui import MainGui
-    from modules.cli.MainCli import MainCli
+    from tok_tokkie.modules.gui.MainGui import MainGui
+    from tok_tokkie.modules.cli.MainCli import MainCli
     from tok_tokkie.startup.Installer import Installer
 
     # This checks if the program is already correctly installed in the user's

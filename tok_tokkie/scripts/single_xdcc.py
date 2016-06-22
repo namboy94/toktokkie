@@ -96,6 +96,7 @@ def main() -> None:
     Usage: single-xdcc (")/msg botname xdcc send #pack(") destination
     :return: None
     """
+    print(sys.argv)
     if len(sys.argv) in range(6, 7) and sys.argv[1] == "/msg":
         bot = sys.argv[2]
         pack = sys.argv[5].split("#")[1]
