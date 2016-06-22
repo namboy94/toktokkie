@@ -37,9 +37,10 @@ from tok_tokkie.modules.utils.downloaders.implementations.IrcLibImplementation i
 
 def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
     """
-
-    :param xdcc_string:
-    :return:
+    Parses an XDCC message string of the form '/msg BOTNAME xdcc send #PACKNUMBER' for the
+    bot name and pack number
+    :param xdcc_string: the XDCC message string to parse
+    :return: the bot name, the pack number
     """
     bot = xdcc_string.split(" ")[1]
     pack = xdcc_string.split(" ")[4].split("# ")[1]
@@ -48,12 +49,13 @@ def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
 
 def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename_override: str) -> None:
     """
-
-    :param xdcc_bot:
-    :param xdcc_pack:
-    :param target_directory:
-    :param filename_override:
-    :return:
+    Downloads a single XDCC pack
+    :param xdcc_bot: the bot from which the pack will be downloaded from
+    :param xdcc_pack: the xdcc pack to download
+    :param target_directory: the target directory
+    :param filename_override: the filename, if it's an empty string, the filename will stay the
+            default filename.
+    :return: None
     """
     downloader = IrcLibImplementation(BotMapper.get_server(xdcc_bot),
                                       BotMapper.get_channel(xdcc_bot),
@@ -67,9 +69,9 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename
 
 def check_target_directory(args_maxlength: int) -> Tuple[str, str]:
     """
-
-    :param args_maxlength:
-    :return:
+    Checks the user's arguments for the target directory and file
+    :param args_maxlength: the maximum length of the arguments
+    :return: the directory, the filename
     """
     if len(sys.argv) == args_maxlength:
         path = sys.argv[args_maxlength - 1]
@@ -84,13 +86,15 @@ def check_target_directory(args_maxlength: int) -> Tuple[str, str]:
         return os.getcwd(), ""
 
 
-def main(script_name: str) -> None:
+def main() -> None:
     """
+    Starts the script and downloads an XDCC pack on valid input
+    Invalid input will display a usage message
 
-    Usage: single-xdcc /msg botname xdcc send #pack destination
+    The script supports entering the XDCC message string in parentheses and without
 
-    :param script_name:
-    :return:
+    Usage: single-xdcc (")/msg botname xdcc send #pack(") destination
+    :return: None
     """
     if len(sys.argv) in range(6, 7) and sys.argv[1] == "/msg":
         bot = sys.argv[2]
@@ -102,8 +106,8 @@ def main(script_name: str) -> None:
     else:
         print("Invalid parameters.")
         print("Usage:\n")
-        print(script_name + " /msg BOTNAME xdcc send #PACKNUMBER [destination_file]")
-        print(script_name + " \"/msg BOTNAME xdcc send #PACKNUMBER\" [destination_file]")
+        print(os.path.basename(sys.argv[0]) + " /msg BOTNAME xdcc send #PACKNUMBER [destination_file]")
+        print(os.path.basename(sys.argv[0]) + " \"/msg BOTNAME xdcc send #PACKNUMBER\" [destination_file]")
         sys.exit(1)
 
     download_pack(bot, int(pack), destination_dir, override_filename)

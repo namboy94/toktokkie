@@ -27,23 +27,33 @@ LICENSE
 
 class BotMapper(object):
     """
-
+    Class that offers methods to map an XDCC bot to an IRC server and/or IRC channel
     """
 
     @staticmethod
     def get_server(xdcc_bot: str) -> str:
         """
+        Determines the IRC Server for the bot
 
-        :param xdcc_bot:
-        :return:
+        :param xdcc_bot: the bot for which the server is wanted
+        :return: the server for the specified bot
         """
+        str(xdcc_bot)
         return "irc.rizon.net"
 
     @staticmethod
     def get_channel(xdcc_bot: str) -> str:
         """
+        Determines the IRC channel for the bot
 
-        :param xdcc_bot:
-        :return:
+        :param xdcc_bot: the bot for which the channel is wanted
+        :return: the channel for the specified bot
         """
-        return "#intel"
+        if xdcc_bot == "HelloKitty" or "CR-" in xdcc_bot:
+            return "#horriblesubs"
+        elif xdcc_bot == "E-D|Mashiro":
+            return "#exiled-destiny"
+        elif "doki" in xdcc_bot:
+            return "#doki"
+        else:
+            return "#intel"

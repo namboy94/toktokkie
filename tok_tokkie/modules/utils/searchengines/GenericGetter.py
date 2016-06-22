@@ -59,24 +59,6 @@ class GenericGetter(object):
         """
         raise NotImplementedError()
 
-    def get_server(self, bot: str) -> str:
-        """
-        Checks to which server a given xdcc-serving bot belongs to.
-
-        :param bot: the bot to check the server name for
-        :return: the server name
-        """
-        raise NotImplementedError()
-
-    def get_channel(self, bot: str) -> str:
-        """
-        Checks to which channel a given xdcc-serving bot belongs to
-
-        :param bot: the bot to check the channel name for
-        :return: the channel name
-        """
-        raise NotImplementedError()
-
     @staticmethod
     def get_string_identifier() -> str:
         """
