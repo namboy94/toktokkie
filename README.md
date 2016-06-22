@@ -172,7 +172,6 @@ Check out this project's python package index site:
 [python 3](https://pypi.python.org/pypi/tok-tokkie)
 
 
-
 ## Disclaimer:
 
 The developer(s) of this software is/are not liable for any unlawful use of the provided software.
