@@ -24,7 +24,7 @@ uninstall:
   only:
     - master
   script:
-    - sudo pip3.5 uninstall -y tok_tokkie
+    - sudo pip3.5 uninstall -y media_manager
 
 run_unit_tests:
   stage: test
@@ -120,5 +120,5 @@ upgrade_from_pypi:
   only:
     - master
   script:
-    - sudo pip3.5 install tok_tokkie --upgrade
+    - sudo pip3.5 install media_manager --upgrade
     - sleep 5

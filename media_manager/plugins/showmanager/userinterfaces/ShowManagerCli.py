@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-# coding=utf-8
-
 """
+LICENSE:
+
 Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
@@ -21,16 +20,39 @@ This file is part of media-manager.
 
     You should have received a copy of the GNU General Public License
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
+
+LICENSE
 """
 
-import sys
+try:
+    from cli.GenericCli import GenericCli
+except ImportError:
+    from media_manager.cli.GenericCli import GenericCli
 
-from media_manager.main import main
 
-if __name__ == '__main__':
+class ShowManagerCli(GenericCli):
+    """
+    CLI for the Show Manager plugin
+    """
 
-    try:
-        main("gtk")
-    except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
-        sys.exit(0)
+    def __init__(self, parent: GenericCli) -> None:
+        """
+        Constructor
+        :param parent: the parent cli
+        :return: void
+        """
+        super().__init__(parent)
+
+    def start(self, title=None):
+        """
+        Starts the plugin main loop
+        :return: void
+        """
+        super().start("Show Manager Plugin")
+
+    def mainloop(self):
+        """
+        The plugin main loop
+        :return: void
+        """
+        self.ask_user("Not Implemented. Enter quit to return.")

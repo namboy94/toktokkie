@@ -25,7 +25,7 @@ This file is part of media-manager.
 
 import sys
 
-from tok_tokkie.main import main
+from media_manager.main import main
 
 if __name__ == '__main__':
 
