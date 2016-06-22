@@ -30,12 +30,12 @@ from typing import List
 try:
     from cli.GenericCli import GenericCli
     from cli.exceptions.ReturnException import ReturnException
-    from plugins.common.GenericPlugin import GenericPlugin
+    from modules.hooks.GenericPlugin import GenericPlugin
     import metadata
 except ImportError:
     from tok_tokkie.cli.GenericCli import GenericCli
     from tok_tokkie.cli.exceptions.ReturnException import ReturnException
-    from tok_tokkie.plugins.common.GenericPlugin import GenericPlugin
+    from modules.hooks.GenericPlugin import GenericPlugin
     import tok_tokkie.metadata as metadata
 
 
@@ -44,7 +44,7 @@ class MainCli(GenericCli):
     Class that implements the Main CLI for the media manager program
 
     It prints the current version of the program to the console, then lists
-    all the available plugins, then prints an instructional string to the console
+    all the available modules, then prints an instructional string to the console
     and waits for user input.
 
     A plugin is selected by entering the index number displayed to the left of the
@@ -53,12 +53,12 @@ class MainCli(GenericCli):
 
     plugin_dict = {}
     """
-    A dictionary that maps index numbers to plugins
+    A dictionary that maps index numbers to modules
     """
 
     plugin_list_string = ""
     """
-    The plugins displayed together with their indices as a newline-separated string
+    The modules displayed together with their indices as a newline-separated string
     They are sorted via their indices in ascending order
     """
 
@@ -70,18 +70,18 @@ class MainCli(GenericCli):
         It invokes the GenericCli's init Constructor  without specifying
         a parent, as this is the top-level CLI of the program.
 
-        It also stores the list of active plugins given via parameter as a
+        It also stores the list of active modules given via parameter as a
         local variable.
 
-        These plugins are then parsed and added to the plugin_dict and plugin_list
+        These modules are then parsed and added to the plugin_dict and plugin_list
         accordingly.
 
-        :param active_plugins: The plugins to be displayed
+        :param active_plugins: The modules to be displayed
         :return: None
         """
         super().__init__()
 
-        # Parse the plugins
+        # Parse the modules
         i = 1  # index number counter
         for plugin in active_plugins:
             # This is the name of the plugin + the index number, prepended by a tab character and appended by newline
@@ -94,7 +94,7 @@ class MainCli(GenericCli):
         """
         Starts the CLI by invoking the GenericCli's start method with a title,
         which prints the name of the program and the current version number as well as
-        "Available Plugins:" and all active plugins (the strings from plugin_list)
+        "Available Plugins:" and all active modules (the strings from plugin_list)
 
         :return: None
         """
@@ -109,10 +109,10 @@ class MainCli(GenericCli):
     def mainloop(self) -> None:
         """
         The main looping method of the CLI. This will be repeated until the user
-        either quits the program or starts one of the plugins
+        either quits the program or starts one of the modules
 
         It asks the user for input and allows him/her to start a plugin,
-        quit the program or list all available plugins once more
+        quit the program or list all available modules once more
 
         :return: None
         """
@@ -122,11 +122,11 @@ class MainCli(GenericCli):
         # Asks the user for input
         user_input = self.ask_user("\nSelect plugin by entering the plugin index number."
                                    "\nTo exit, enter 'exit' or 'quit'"
-                                   "\nTo get the list of plugins again, enter 'list'\n")
+                                   "\nTo get the list of modules again, enter 'list'\n")
         try:
             print()  # empty line
             self.plugin_dict[int(user_input)].start_cli(self)  # Try to start the plugin
-            # This leads to KeyErrors if an invalid key is entered, say 100 if there are only 5 plugins
+            # This leads to KeyErrors if an invalid key is entered, say 100 if there are only 5 modules
             # ValueErrors can occur when the user doesn't enter a string that can be parsed as an integer
             return
         except (KeyError, ValueError):  # If starting the plugin fails, parse the user input further

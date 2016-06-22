@@ -30,18 +30,18 @@ from typing import List
 try:
     import metadata
     from metadata import Globals
-    from plugins.common.GenericPlugin import GenericPlugin
+    from modules.hooks.GenericPlugin import GenericPlugin
 except ImportError:
     import tok_tokkie.metadata as metadata
     from tok_tokkie.metadata import Globals
-    from tok_tokkie.plugins.common.GenericPlugin import GenericPlugin
+    from modules.hooks.GenericPlugin import GenericPlugin
 
 
 class MainGui(Globals.selected_grid_gui_framework):
     """
     Class that implements the Main GUI of the media manager program
 
-    It allows the user to select one of the active plugins to start.
+    It allows the user to select one of the active modules to start.
 
     Using the gfworks framework, the GUI can be used on different platforms,
     currently Tkinter and GTK 3.
@@ -49,7 +49,7 @@ class MainGui(Globals.selected_grid_gui_framework):
 
     plugins = []
     """
-    A list of plugins that are to be displayed on the GUI and to which the user
+    A list of modules that are to be displayed on the GUI and to which the user
     should be able to switch to.
     """
 
@@ -58,11 +58,11 @@ class MainGui(Globals.selected_grid_gui_framework):
         """
         Constructor for the Main GUI
 
-        It stores the active plugins as list and initializes the GUI with the
+        It stores the active modules as list and initializes the GUI with the
         Constructor of the selected GUI framework (Either GTK3 or Tkinter) with the
         Title "Media Manager Version" appended by the version number.
 
-        :param active_plugins: The plugins to be displayed by the GUI
+        :param active_plugins: The modules to be displayed by the GUI
         :return: None
         """
         self.plugins = active_plugins
@@ -70,7 +70,7 @@ class MainGui(Globals.selected_grid_gui_framework):
 
     def lay_out(self) -> None:
         """
-        Lays out the GUI by adding buttons for all plugins.
+        Lays out the GUI by adding buttons for all modules.
 
         The buttons are layed out in a way that all rows and columns are filled out equally,
         with a maximum of 3 buttons per row
@@ -84,7 +84,7 @@ class MainGui(Globals.selected_grid_gui_framework):
         while len(self.plugins) % modulo_var != 0:
             modulo_var -= 1
 
-        i = 0  # counts amount of plugins already processed
+        i = 0  # counts amount of modules already processed
         row = 0  # The current row
         column = -1  # The current column. Has to start at -1 since it gets +='ed for the first element
         # Loop that adds all plugin buttons to the GUI

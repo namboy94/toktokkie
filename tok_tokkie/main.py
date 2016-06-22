@@ -89,13 +89,13 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     # This import has to happen at this point, since the graphical frameworks from
     # gfworks have not been defined correctly in the Globals class before this.
     try:
-        from plugins.PluginManager import PluginManager
+        from modules.PluginManager import PluginManager
         from mainuserinterfaces.MainGui import MainGui
         from mainuserinterfaces.MainCli import MainCli
         from mainuserinterfaces.MainArgsParser import MainArgsParser
         from startup.Installer import Installer
     except ImportError:
-        from tok_tokkie.plugins.PluginManager import PluginManager
+        from tok_tokkie.modules.PluginManager import PluginManager
         from tok_tokkie.mainuserinterfaces.MainGui import MainGui
         from tok_tokkie.mainuserinterfaces.MainCli import MainCli
         from tok_tokkie.mainuserinterfaces.MainArgsParser import MainArgsParser
@@ -107,10 +107,10 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
         Installer.install()
 
     # This parses the config file located in the user's home directory to establish
-    # which plugins should be run.
+    # which modules should be run.
     config = configparser.ConfigParser()
     config.read(os.path.join(expanduser('~'), ".mediamanager", "configs", "mainconfig"))
-    plugin_config = dict(config.items("plugins"))
+    plugin_config = dict(config.items("modules"))
     active_plugins = PluginManager(plugin_config).get_plugins()
 
     # The program starts here, using the selected mode

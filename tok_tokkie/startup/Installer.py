@@ -31,9 +31,9 @@ from os.path import expanduser
 from typing import Dict
 
 try:
-    from plugins.PluginManager import PluginManager
+    from modules.PluginManager import PluginManager
 except ImportError:
-    from tok_tokkie.plugins.PluginManager import PluginManager
+    from tok_tokkie.modules.PluginManager import PluginManager
 
 main_dir = os.path.join(expanduser('~'), ".mediamanager")
 """
@@ -59,7 +59,7 @@ class Installer(object):
 
     The media-manager program uses a hidden config directory inside the
     user's home directory to store various files, like a file containing
-    the active plugins
+    the active modules
 
     It is currently very bare bones and not all that necessary, but it may help
     in expanding the project further should it become more complicated in the future
@@ -111,8 +111,8 @@ class Installer(object):
         :return: None
         """
         file = open(main_config, "w")
-        # The active plugins section
-        file.write("[plugins]\n")
+        # The active modules section
+        file.write("[modules]\n")
 
         if plugin_override is None:
             for plugin in PluginManager.all_plugins:
@@ -133,7 +133,7 @@ class Installer(object):
     def __ensure_config_file_integrity__(write_new: bool = False) -> bool:
         """
         Checks if the config file is correctly configured. If this is not the case,
-        missing plugins will be added to to the file with the values 'False'
+        missing modules will be added to to the file with the values 'False'
 
         :return: The state of the integrity of the config file
         """
@@ -141,7 +141,7 @@ class Installer(object):
         # Read the config like in the main method
         config = configparser.ConfigParser()
         config.read(main_config)
-        plugin_config = dict(config.items("plugins"))
+        plugin_config = dict(config.items("modules"))
 
         corrected_plugins = {}  # {name: bool}
         integrity = True

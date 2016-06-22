@@ -30,9 +30,9 @@ import sys
 from typing import List
 
 try:
-    from plugins.common.GenericPlugin import GenericPlugin
+    from modules.hooks.GenericPlugin import GenericPlugin
 except ImportError:
-    from tok_tokkie.plugins.common.GenericPlugin import GenericPlugin
+    from modules.hooks.GenericPlugin import GenericPlugin
 
 
 class MainArgsParser(object):
@@ -41,12 +41,12 @@ class MainArgsParser(object):
     of the media manager program
 
     It defines a Argument Parser that queries the different possible options
-    from the currently active plugins
+    from the currently active modules
     """
 
     active_plugins = []
     """
-    A list of the active plugins, established via the constructor
+    A list of the active modules, established via the constructor
     """
 
     # noinspection PyTypeChecker
@@ -54,9 +54,9 @@ class MainArgsParser(object):
         """
         Constructor of the MainArgsParser
 
-        It stores the active plugins as a local lost variable
+        It stores the active modules as a local lost variable
 
-        :param active_plugins: The plugins to be enabled
+        :param active_plugins: The modules to be enabled
         :return: None
         """
         self.plugins = active_plugins
@@ -66,7 +66,7 @@ class MainArgsParser(object):
         Runs the argument parser.
 
         It sets up the argument parser first, getting the arguments from the active
-        plugins, then parses them and acts according to the user's input in
+        modules, then parses them and acts according to the user's input in
         conclusion.
 
         :return: None
@@ -74,7 +74,7 @@ class MainArgsParser(object):
         # Creates a new ArgumentParser object
         parser = argparse.ArgumentParser()
 
-        # Gets command line options from all active plugins
+        # Gets command line options from all active modules
         for plugin in self.plugins:
             # This adds the option to specify which plugin will be used
             parser.add_argument("--" + plugin.get_command_name(),
