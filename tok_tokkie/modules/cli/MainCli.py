@@ -92,9 +92,9 @@ class MainCli(GenericCli):
         :return: None
         """
         # Generates the Greeting/Title Message
-        greeting_message = "MEDIA MANAGER VERSION " +\
+        greeting_message = "TOK TOKKIE MEDIA MANAGER VERSION " +\
                            metadata.version_number +\
-                           "\n\n" + "Available Plugins:\n" +\
+                           "\n\n" + "Available Modules:\n" +\
                            self.plugin_list_string
 
         super().start(greeting_message)

@@ -26,9 +26,9 @@ LICENSE
 
 # imports
 from typing import List
-from tok_tokkie.modules.utils.downloaders import HexChatPluginDownloader
-from tok_tokkie.modules.utils.downloaders import GenericDownloader
-from tok_tokkie.modules.utils.downloaders import IrcLibDownloader
+from tok_tokkie.modules.utils.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
+from tok_tokkie.modules.utils.downloaders.GenericDownloader import GenericDownloader
+from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 
 
 class DownloaderManager(object):

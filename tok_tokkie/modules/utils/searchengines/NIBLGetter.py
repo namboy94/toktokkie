@@ -29,7 +29,7 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-from tok_tokkie.modules.utils.searchengines import GenericGetter
+from tok_tokkie.modules.utils.searchengines.GenericGetter import GenericGetter
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
 

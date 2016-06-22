@@ -1,6 +1,4 @@
-# Media Manager
-
-(Name subject to change until I come up with a better one)
+# Tok Tokkie Media Manager
 
 This is a program which allows convenient managing of various Media collections, mostly Videos. The program is written
 in python 3 and won't normally run on python 2. However, a version converted using 3to2 is available on the python

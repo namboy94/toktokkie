@@ -31,11 +31,12 @@ import os
 import sys
 from os.path import expanduser
 from typing import List
+from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
 
 # This import construct enables the program to be run when installed via
 # setuptools as well as portable
 from tok_tokkie.metadata import Globals
-from modules.eastereggs import EasterEggManager
+from modules.eastereggs.EasterEggManager import EasterEggManager
 
 
 # noinspection PyTypeChecker
@@ -65,16 +66,13 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     # First, the used mode of the program is determined using sys.argv
     cli_mode = False
 
-    # Basic parsing of the arguments, which helps establish in which mode the program
-    # should be started
-    if (len(sys.argv) > 1 and sys.argv[1] == "--gtk") or ui_override == "gtk" and Globals.gtk3_gui_template is not None:
-        # This will select the GTK GUI as the selected framework
-        Globals.selected_grid_gui_framework = Globals.gtk3_gui_template
-    elif (len(sys.argv) > 1 and sys.argv[1] == "--tk") or ui_override == "tk" and Globals.tk_gui_template is not None:
-        # This will select the Tkinter GUI as the selected framework
-        Globals.selected_grid_gui_framework = Globals.tk_gui_template
-    else:
-        # If this is selected, the program will start in interactive CLI use
+    # Try to set a GUI framework, if it fails use the CLI instead
+    try:
+        selected_gui = ui_override
+        if not selected_gui:
+            selected_gui = sys.argv[1]
+        Globals.selected_grid_gui_framework = GridTemplateGenerator.get_grid_templates()[selected_gui]
+    except (KeyError, IndexError):
         cli_mode = True
 
     # This import has to happen at this point, since the graphical frameworks from
