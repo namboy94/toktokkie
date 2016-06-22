@@ -27,22 +27,12 @@ LICENSE
 # imports
 import os
 import time
-
-try:
-    from modules.utils.searchengines import SearchEngineManager
-    from modules.utils.BatchDownloadManager import BatchDownloadManager
-    from modules.utils.downloaders.DownloaderManager import DownloaderManager
-    from modules.utils.ProgressStruct import ProgressStruct
-    from modules.utils.DeepIconizer import DeepIconizer
-    from metadata import Globals
-except ImportError:
-
-    from modules.utils.searchengines import SearchEngineManager
-    from modules.utils.BatchDownloadManager import BatchDownloadManager
-    from modules.utils.downloaders.DownloaderManager import DownloaderManager
-    from modules.utils.ProgressStruct import ProgressStruct
-    from modules.utils.DeepIconizer import DeepIconizer
-    from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.utils.searchengines import SearchEngineManager
+from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
+from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
+from tok_tokkie.metadata import Globals
 
 
 class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):

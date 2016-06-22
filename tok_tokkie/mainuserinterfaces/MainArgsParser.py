@@ -28,11 +28,7 @@ LICENSE
 import argparse
 import sys
 from typing import List
-
-try:
-    from modules.hooks.GenericPlugin import GenericPlugin
-except ImportError:
-    from modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
 
 
 class MainArgsParser(object):

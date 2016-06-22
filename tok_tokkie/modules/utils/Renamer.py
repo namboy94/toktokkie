@@ -26,11 +26,7 @@ LICENSE
 
 import os
 from typing import List, Dict
-
-try:
-    from modules.objects.Episode import Episode
-except ImportError:
-    from modules.objects.Episode import Episode
+from tok_tokkie.modules.objects.Episode import Episode
 
 
 class Renamer(object):

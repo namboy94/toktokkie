@@ -24,10 +24,8 @@ This file is part of media-manager.
 LICENSE
 """
 
-try:
-    from metadata import Globals
-except ImportError:
-    from tok_tokkie.metadata import Globals
+# imports
+from tok_tokkie.metadata import Globals
 
 
 class ShowManagerGui(Globals.selected_grid_gui_framework):

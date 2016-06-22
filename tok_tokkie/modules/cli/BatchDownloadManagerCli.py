@@ -27,23 +27,11 @@ LICENSE
 # imports
 import os
 import sys
-
-try:
-    from modules.utils.searchengines import SearchEngineManager
-    from modules.utils.downloaders.DownloaderManager import DownloaderManager
-    from modules.utils.BatchDownloadManager import BatchDownloadManager
-    from modules.utils.ProgressStruct import ProgressStruct
-    from modules.utils.DeepIconizer import DeepIconizer
-    from cli.exceptions.ReturnException import ReturnException
-    from cli.GenericCli import GenericCli
-except ImportError:
-    from modules.utils.searchengines import SearchEngineManager
-    from modules.utils.downloaders.DownloaderManager import DownloaderManager
-    from modules.utils.BatchDownloadManager import BatchDownloadManager
-    from modules.utils.ProgressStruct import ProgressStruct
-    from modules.utils.DeepIconizer import DeepIconizer
-    from tok_tokkie.cli.exceptions.ReturnException import ReturnException
-    from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.modules.utils.searchengines import SearchEngineManager
+from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
+from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.cli.GenericCli import GenericCli
 
 
 class BatchDownloadManagerCli(GenericCli):

@@ -26,11 +26,7 @@ LICENSE
 
 # imports
 from typing import List
-
-try:
-    from modules.objects.XDCCPack import XDCCPack
-except ImportError:
-    from modules.objects.XDCCPack import XDCCPack
+from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
 
 class GenericGetter(object):

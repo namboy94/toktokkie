@@ -28,13 +28,8 @@ LICENSE
 import os
 import platform
 from typing import List
-
-try:
-    from modules.utils.iconizers import NautilusNemoIconizer
-    from modules.utils.iconizers import WindowsIconizer
-except ImportError:
-    from modules.utils.iconizers import NautilusNemoIconizer
-    from modules.utils.iconizers import WindowsIconizer
+from tok_tokkie.modules.utils.iconizers import NautilusNemoIconizer
+from tok_tokkie.modules.utils.iconizers import WindowsIconizer
 
 
 class DeepIconizer(object):

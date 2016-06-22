@@ -29,13 +29,8 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-
-try:
-    from modules.utils.searchengines import GenericGetter
-    from modules.objects.XDCCPack import XDCCPack
-except ImportError:
-    from modules.utils.searchengines import GenericGetter
-    from modules.objects.XDCCPack import XDCCPack
+from tok_tokkie.modules.utils.searchengines import GenericGetter
+from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
 
 class IxIRCGetter(GenericGetter):

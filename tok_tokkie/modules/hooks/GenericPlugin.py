@@ -28,11 +28,7 @@ LICENSE
 from argparse import Namespace
 from typing import Dict, Tuple, List
 from gfworks.interfaces.GenericWindow import GenericWindow
-
-try:
-    from cli.GenericCli import GenericCli
-except ImportError:
-    from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.cli.GenericCli import GenericCli
 
 
 class GenericPlugin(object):

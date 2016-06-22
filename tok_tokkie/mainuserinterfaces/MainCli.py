@@ -26,17 +26,9 @@ LICENSE
 
 # imports
 from typing import List
-
-try:
-    from cli.GenericCli import GenericCli
-    from cli.exceptions.ReturnException import ReturnException
-    from modules.hooks.GenericPlugin import GenericPlugin
-    import metadata
-except ImportError:
-    from tok_tokkie.cli.GenericCli import GenericCli
-    from tok_tokkie.cli.exceptions.ReturnException import ReturnException
-    from modules.hooks.GenericPlugin import GenericPlugin
-    import tok_tokkie.metadata as metadata
+from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+import tok_tokkie.metadata as metadata
 
 
 class MainCli(GenericCli):

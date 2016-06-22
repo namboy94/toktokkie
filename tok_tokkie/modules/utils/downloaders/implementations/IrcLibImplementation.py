@@ -33,11 +33,7 @@ import sys
 import time
 
 import irc.client
-
-try:
-    from modules.utils.ProgressStruct import ProgressStruct
-except ImportError:
-    from modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 
 
 class IrcLibImplementation(irc.client.SimpleIRCClient):

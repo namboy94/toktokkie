@@ -26,13 +26,8 @@ LICENSE
 
 # imports
 from typing import List
-
-try:
-    import metadata
-    from eastereggs.LeetPrint import LeetPrint
-except ImportError:
-    import tok_tokkie.metadata as metadata
-    from tok_tokkie.eastereggs.LeetPrint import LeetPrint
+from tok_tokkie.eastereggs.LeetPrint import LeetPrint
+import tok_tokkie.metadata as metadata
 
 
 class EasterEggManager(object):

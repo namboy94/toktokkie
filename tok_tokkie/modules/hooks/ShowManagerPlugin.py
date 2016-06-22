@@ -29,17 +29,10 @@ from argparse import Namespace
 from typing import Tuple, List, Dict
 
 from gfworks.interfaces.GenericWindow import GenericWindow
-
-try:
-    from cli.GenericCli import GenericCli
-    from modules.hooks.GenericPlugin import GenericPlugin
-    from modules.gui.ShowManagerGui import ShowManagerGui
-    from modules.cli.ShowManagerCli import ShowManagerCli
-except ImportError:
-    from tok_tokkie.cli.GenericCli import GenericCli
-    from modules.hooks.GenericPlugin import GenericPlugin
-    from modules.gui.ShowManagerGui import ShowManagerGui
-    from modules.cli.ShowManagerCli import ShowManagerCli
+from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.gui.ShowManagerGui import ShowManagerGui
+from tok_tokkie.modules.cli.ShowManagerCli import ShowManagerCli
 
 
 class ShowManagerPlugin(GenericPlugin):

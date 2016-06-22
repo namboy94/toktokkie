@@ -26,13 +26,8 @@ LICENSE
 
 # imports
 from typing import List
-
-try:
-    from modules.objects.XDCCPack import XDCCPack
-    from modules.utils.ProgressStruct import ProgressStruct
-except ImportError:
-    from modules.objects.XDCCPack import XDCCPack
-    from modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.objects.XDCCPack import XDCCPack
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 
 
 class GenericDownloader(object):

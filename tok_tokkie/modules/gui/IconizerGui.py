@@ -26,13 +26,8 @@ LICENSE
 
 # imports
 import os
-
-try:
-    from metadata import Globals
-    from modules.utils.DeepIconizer import DeepIconizer
-except ImportError:
-    from tok_tokkie.metadata import Globals
-    from modules.utils.DeepIconizer import DeepIconizer
+from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 
 
 class IconizerGui(Globals.selected_grid_gui_framework):

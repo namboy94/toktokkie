@@ -26,17 +26,10 @@ LICENSE
 
 # imports
 from typing import List
-
-try:
-    from modules.utils.searchengines import GenericGetter
-    from modules.utils.searchengines.NIBLGetter import NIBLGetter
-    from modules.utils.searchengines.IntelGetter import IntelGetter
-    from modules.utils.searchengines.IxIRCGetter import IxIRCGetter
-except ImportError:
-    from modules.utils.searchengines import GenericGetter
-    from modules.utils.searchengines.NIBLGetter import NIBLGetter
-    from modules.utils.searchengines.IntelGetter import IntelGetter
-    from modules.utils.searchengines.IxIRCGetter import IxIRCGetter
+from tok_tokkie.modules.utils.searchengines import GenericGetter
+from tok_tokkie.modules.utils.searchengines.NIBLGetter import NIBLGetter
+from tok_tokkie.modules.utils.searchengines.IntelGetter import IntelGetter
+from tok_tokkie.modules.utils.searchengines.IxIRCGetter import IxIRCGetter
 
 
 class SearchEngineManager(object):

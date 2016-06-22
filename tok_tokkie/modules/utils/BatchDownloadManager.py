@@ -32,19 +32,10 @@ import urllib.request
 from typing import Tuple, List, Dict
 
 from requests.exceptions import ConnectionError
-
-try:
-    from modules.utils.searchengines import SearchEngineManager
-    from modules.utils.downloaders.DownloaderManager import DownloaderManager
-    from modules.objects.XDCCPack import XDCCPack
-    from modules.utils.DeepIconizer import DeepIconizer
-    from modules.common.fileops.FileMover import FileMover
-except ImportError:
-    from modules.utils.searchengines import SearchEngineManager
-    from modules.utils.downloaders.DownloaderManager import DownloaderManager
-    from modules.objects.XDCCPack import XDCCPack
-    from modules.utils.DeepIconizer import DeepIconizer
-    from tok_tokkie.modules.common.fileops.FileMover import FileMover
+from tok_tokkie.modules.utils.searchengines import SearchEngineManager
+from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
+from tok_tokkie.modules.objects.XDCCPack import XDCCPack
+from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 
 
 class BatchDownloadManager(object):

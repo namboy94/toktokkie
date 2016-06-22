@@ -31,19 +31,11 @@ import time
 from subprocess import Popen
 from threading import Thread
 from typing import List
-
-try:
-    from modules.utils.downloaders import GenericDownloader
-    from modules.objects.XDCCPack import XDCCPack
-    from modules.utils.ProgressStruct import ProgressStruct
-    from modules.common.fileops.FileMover import FileMover
-    from modules.objects.Episode import Episode
-except ImportError:
-    from modules.utils.downloaders import GenericDownloader
-    from modules.objects.XDCCPack import XDCCPack
-    from modules.utils.ProgressStruct import ProgressStruct
-    from tok_tokkie.modules.common.fileops.FileMover import FileMover
-    from modules.objects.Episode import Episode
+from tok_tokkie.modules.utils.downloaders import GenericDownloader
+from tok_tokkie.modules.objects.XDCCPack import XDCCPack
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.common.fileops.FileMover import FileMover
+from tok_tokkie.modules.objects.Episode import Episode
 
 
 class HexChatPluginDownloader(GenericDownloader):

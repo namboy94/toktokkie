@@ -26,15 +26,8 @@ LICENSE
 
 # imports
 import os
-
-try:
-    from cli.GenericCli import GenericCli
-    from cli.exceptions.ReturnException import ReturnException
-    from modules.utils.DeepIconizer import DeepIconizer
-except ImportError:
-    from tok_tokkie.cli.GenericCli import GenericCli
-    from tok_tokkie.cli.exceptions.ReturnException import ReturnException
-    from modules.utils.DeepIconizer import DeepIconizer
+from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 
 
 class IconizerCli(GenericCli):

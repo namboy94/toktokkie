@@ -27,15 +27,8 @@ LICENSE
 # imports
 import os
 from typing import List, Dict
-
-try:
-    from modules.utils.Renamer import Renamer
-    from cli.exceptions.ReturnException import ReturnException
-    from cli.GenericCli import GenericCli
-except ImportError:
-    from modules.utils.Renamer import Renamer
-    from tok_tokkie.cli.exceptions.ReturnException import ReturnException
-    from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.modules.utils.Renamer import Renamer
+from tok_tokkie.cli.GenericCli import GenericCli
 
 
 class RenamerCli(GenericCli):

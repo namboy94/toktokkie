@@ -26,19 +26,11 @@ LICENSE
 
 # imports
 from typing import Dict, List
-
-try:
-    from modules.hooks.RenamerPlugin import RenamerPlugin
-    from modules.hooks.IconizerPlugin import IconizerPlugin
-    from modules.hooks.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
-    from modules.hooks.ShowManagerPlugin import ShowManagerPlugin
-    from modules.hooks.GenericPlugin import GenericPlugin
-except ImportError:
-    from modules.hooks.RenamerPlugin import RenamerPlugin
-    from modules.hooks.IconizerPlugin import IconizerPlugin
-    from modules.hooks.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
-    from modules.hooks.ShowManagerPlugin import ShowManagerPlugin
-    from modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.hooks.RenamerPlugin import RenamerPlugin
+from tok_tokkie.modules.hooks.IconizerPlugin import IconizerPlugin
+from tok_tokkie.modules.hooks.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
+from tok_tokkie.modules.hooks.ShowManagerPlugin import ShowManagerPlugin
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
 
 
 class PluginManager(object):

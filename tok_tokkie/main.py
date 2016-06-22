@@ -35,12 +35,8 @@ from typing import List
 
 # This import construct enables the program to be run when installed via
 # setuptools as well as portable
-try:
-    from metadata import Globals
-    from eastereggs.EasterEggManager import EasterEggManager
-except ImportError:
-    from tok_tokkie.metadata import Globals
-    from tok_tokkie.eastereggs.EasterEggManager import EasterEggManager
+from tok_tokkie.metadata import Globals
+from tok_tokkie.eastereggs.EasterEggManager import EasterEggManager
 
 
 # noinspection PyTypeChecker

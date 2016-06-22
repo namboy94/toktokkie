@@ -26,11 +26,7 @@ LICENSE:
 
 # imports
 from typing import Tuple
-
-try:
-    from modules.common.calc.FileSizeCalculator import FileSizeCalculator
-except ImportError:
-    from tok_tokkie.modules.common.calc.FileSizeCalculator import FileSizeCalculator
+from tok_tokkie.modules.common.calc.FileSizeCalculator import FileSizeCalculator
 
 
 class XDCCPack(object):

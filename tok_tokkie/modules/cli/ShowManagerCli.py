@@ -24,10 +24,8 @@ This file is part of media-manager.
 LICENSE
 """
 
-try:
-    from cli.GenericCli import GenericCli
-except ImportError:
-    from tok_tokkie.cli.GenericCli import GenericCli
+# imports
+from tok_tokkie.cli.GenericCli import GenericCli
 
 
 class ShowManagerCli(GenericCli):

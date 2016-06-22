@@ -26,15 +26,9 @@ LICENSE
 
 # imports
 from typing import List
-
-try:
-    import metadata
-    from metadata import Globals
-    from modules.hooks.GenericPlugin import GenericPlugin
-except ImportError:
-    import tok_tokkie.metadata as metadata
-    from tok_tokkie.metadata import Globals
-    from modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+import tok_tokkie.metadata as metadata
 
 
 class MainGui(Globals.selected_grid_gui_framework):

@@ -29,11 +29,7 @@ import os
 import configparser
 from os.path import expanduser
 from typing import Dict
-
-try:
-    from modules.PluginManager import PluginManager
-except ImportError:
-    from tok_tokkie.modules.PluginManager import PluginManager
+from tok_tokkie.modules.PluginManager import PluginManager
 
 main_dir = os.path.join(expanduser('~'), ".mediamanager")
 """

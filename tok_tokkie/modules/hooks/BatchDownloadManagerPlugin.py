@@ -30,19 +30,10 @@ from argparse import Namespace
 from typing import Dict, Tuple, List
 
 from gfworks.interfaces.GenericWindow import GenericWindow
-
-try:
-    from cli.GenericCli import GenericCli
-    from modules.hooks.GenericPlugin import GenericPlugin
-    from modules.gui.BatchDownloadManagerGui import BatchDownloadManagerGui
-    from modules.cli.BatchDownloadManagerCli import BatchDownloadManagerCli
-except ImportError:
-    from tok_tokkie.cli.GenericCli import GenericCli
-    from modules.hooks.GenericPlugin import GenericPlugin
-    from modules.gui.BatchDownloadManagerGui \
-        import BatchDownloadManagerGui
-    from modules.cli.BatchDownloadManagerCli import \
-        BatchDownloadManagerCli
+from tok_tokkie.cli.GenericCli import GenericCli
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.gui.BatchDownloadManagerGui import BatchDownloadManagerGui
+from tok_tokkie.modules.cli.BatchDownloadManagerCli import BatchDownloadManagerCli
 
 
 class BatchDownloadManagerPlugin(GenericPlugin):

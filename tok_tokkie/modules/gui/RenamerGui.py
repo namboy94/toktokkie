@@ -27,13 +27,8 @@ LICENSE
 # imports
 import os
 from typing import List, Dict
-
-try:
-    from modules.utils.Renamer import Renamer
-    from metadata import Globals
-except ImportError:
-    from modules.utils.Renamer import Renamer
-    from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.utils.Renamer import Renamer
+from tok_tokkie.metadata import Globals
 
 
 class RenamerGui(Globals.selected_grid_gui_framework):
