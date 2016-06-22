@@ -4,13 +4,13 @@ This is a program which allows convenient managing of various Media collections,
 in python 3 and won't normally run on python 2. However, a version converted using 3to2 is available on the python
 package index (Link below).
 
-[Changelog](http://gitlab.namibsun.net/namboy94/media-manager/raw/master/CHANGELOG)
+[Changelog](http://gitlab.namibsun.net/namboy94/tok-tokkie/raw/master/CHANGELOG)
 
 ## Main features
 
 **Renaming Episodes**
 
-The Renaming feature of media manager allows the user to specify a directory. Every subdirectory of this directory
+The Renaming feature of Tok Tokkie Media Manager allows the user to specify a directory. Every subdirectory of this directory
 will be checked for a .icons subdirectory. If a .icons subdirectory is present, all of the sibling subdirectories'
 children files will be renamed using data from thetvdb.com in the format:
 
@@ -114,36 +114,16 @@ To install the program, either download the source and run
     
 or install using pip:
 
-    # pip install media_manager
-    
-
-You can also run the main.py file directly with the python interpreter if that is how you want to do it. This will only
-work when all dependencies are installed beforehand.
-
-The program depends on the following python packages:
-
-- tvdb_api
-- beautifulsoup4
-- gfworks
-- typing (for python versions lower than 3.5)
-- twisted (for python2)
-
-Also needed for GUI functionality is the GUI framework Tkinter or Python-Gobject
+    # pip install toktokkie
 
 Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/media-manager/wikis/windows-builds)
 
 **Configuring Downloaders**
 
 The Batch Download Manager currently has two different ways of downloading files via XDCC. One method, called
-the Hexchat Downloader, uses Hexchat's scripting interface to download the files, while the Twisted Downloader uses
-a python2 script to do this independently. Sadly, both of these methods are somewhat prone to system-specific
+the Hexchat Downloader, uses Hexchat's scripting interface to download the files, while the IRC Downloader uses
+irclib to do this natively. Sadly, the Hexchat Downloader is somewhat prone to system-specific
 errors, which is why we have a rough guide on how to get them working:
-
-
-*Twisted Downloader*
-
-For the twisted downloader to work, python 2 has to be installed alongside python 3 and needs to be callable with the
-command 'python2'. Additionally, the twisted package has to be installed for the python2 installation.
 
 *Hexchat Downloader*
 
@@ -176,22 +156,20 @@ variable 'python2' to direct to the python 2 installation.
 
 This project is mirrored to:
 
-* [github.com](https://github.com/namboy94/media-manager)
-* [gitlab.com](https://gitlab.com/namboy94/media-manager)
-* [bitbucket.org](https://bitbucket.org/namboy94/media-manager)
+* [github.com](https://github.com/namboy94/tok-tokkie)
 
 
-[Git Statistics](http://gitlab.namibsun.net/namboy94/media-manager/wikis/git_stats/general.html)
+[Git Statistics](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/git_stats/general.html)
 
-[Documentation](http://gitlab.namibsun.net/namboy94/media-manager/wikis/html/index.html)
+[Documentation](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/html/index.html)
 
 Note: Those Links need a manual refresh to load the CSS, I have no idea why.
 
 Check out this project's python package index site:
 
-[python 2](https://pypi.python.org/pypi/media-manager-2)
+[python 2](https://pypi.python.org/pypi/tok-tokkie-2)
 
-[python 3](https://pypi.python.org/pypi/media-manager)
+[python 3](https://pypi.python.org/pypi/tok-tokkie)
 
 
 

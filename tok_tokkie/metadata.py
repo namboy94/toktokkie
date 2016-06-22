@@ -25,17 +25,7 @@ LICENSE
 """
 
 # imports
-
-# This checks for each user interface if they are installed
-try:
-    from gfworks.templates.gtk3.Gtk3GridTemplate import Gtk3GridTemplate
-except ImportError:
-    Gtk3GridTemplate = object
-
-try:
-    from gfworks.templates.tk.TkGridTemplate import TkGridTemplate
-except ImportError:
-    TkGridTemplate = object
+from gfworks.templates.generic.GenericGridTemplate import GenericGridTemplate
 
 
 class Globals(object):
@@ -45,21 +35,11 @@ class Globals(object):
     obsolete, but as of right now it is required
     """
 
-    selected_grid_gui_framework = object
+    selected_grid_gui_framework = GenericGridTemplate
     """
     This stores the selected GUI framework, it is initialized as generic object to avoid Import
     errors. The variable will be correctly set at some point in the main module's main method as
     either Gtk3GridTemplate or TkGridTemplate.
-    """
-
-    gtk3_gui_template = Gtk3GridTemplate
-    """
-    A constant variable that stores the GTK 3 Grid Template class type
-    """
-
-    tk_gui_template = TkGridTemplate
-    """
-    A constant variable that stores the Tk Grid Template class type
     """
 
 
@@ -68,7 +48,7 @@ The metadata is stored here. It can be used by any other module in this project 
 notably by the setup.py file
 """
 
-project_name = "media-manager"
+project_name = "toktokkie"
 """
 The name of the project
 """
@@ -78,7 +58,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.7"
+version_number = "0.9.8"
 """
 The current version of the program.
 """
@@ -88,13 +68,13 @@ development_status = "Development Status :: 3 - Alpha"
 The current development status of the program
 """
 
-project_url = "http://namibsun.net/namboy94/media-manager"
+project_url = "http://namibsun.net/namboy94/tok-tokkie"
 """
 A URL linking to the home page of the project, in this case a
 self-hosted Gitlab page
 """
 
-download_url = "http://gitlab.namibsun.net/namboy94/media-manager/repository/archive.zip?ref=master"
+download_url = "http://gitlab.namibsun.net/namboy94/tok-tokkie/repository/archive.zip?ref=master"
 """
 A URL linking to the current source zip file.
 """
