@@ -25,13 +25,15 @@ This file is part of media-manager.
 LICENSE
 """
 
-# /msg [MW]-XDCC-MOV003 xdcc send #30
-
-
 # imports
 import os
 import sys
-from typing import Tuple, List
+from typing import Tuple
+
+from tok_tokkie.modules.utils.searchengines.BotMapper import BotMapper
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
+
 
 def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
     """
@@ -39,25 +41,70 @@ def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
     :param xdcc_string:
     :return:
     """
+    bot = xdcc_string.split(" ")[1]
+    pack = xdcc_string.split(" ")[4].split("# ")[1]
+    return bot, pack
 
-def download_pack(xdcc_bot: str, xdcc_pack: str, target: str) -> None:
+
+def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename_override: str) -> None:
     """
 
     :param xdcc_bot:
     :param xdcc_pack:
-    :param target:
+    :param target_directory:
+    :param filename_override:
     :return:
     """
+    bot_mapper = BotMapper(xdcc_bot)
+    downloader = IrcLibImplementation(bot_mapper.server,
+                                      bot_mapper.channel,
+                                      xdcc_bot,
+                                      xdcc_pack,
+                                      target_directory,
+                                      ProgressStruct(),
+                                      file_name_override=filename_override)
+    downloader.start()
 
-def main() -> None:
+
+def check_target_directory(args_maxlength: int) -> Tuple[str, str]:
+    """
+
+    :param args_maxlength:
+    :return:
+    """
+    if len(sys.argv) == args_maxlength:
+        path = sys.argv[args_maxlength - 1]
+        if os.path.isdir(path):
+            return path, ""
+        else:
+            directory = os.path.dirname(path)
+            if not os.path.isdir:
+                os.makedirs(directory)
+            return directory, os.path.basename(path)
+    else:
+        return os.getcwd(), ""
+
+
+def main(script_name: str) -> None:
     """
 
     Usage: single-xdcc /msg botname xdcc send #pack destination
 
+    :param script_name:
     :return:
     """
-    bot, pack, destination = ("", "", os.getcwd())
-    if len(sys.argv) == 7 and sys.argv[1] == "/msg":
+    if len(sys.argv) in range(6, 7) and sys.argv[1] == "/msg":
         bot = sys.argv[2]
         pack = sys.argv[5].split("#")[1]
-    elif len(sys.argv) == 2
+        destination_dir, override_filename = check_target_directory(7)
+    elif len(sys.argv) in range(1, 2) and sys.argv[1].startswith("/msg"):
+        bot, pack = parse_xdcc_string(sys.argv[1])
+        destination_dir, override_filename = check_target_directory(2)
+    else:
+        print("Invalid parameters.")
+        print("Usage:\n")
+        print(script_name + " /msg BOTNAME xdcc send #PACKNUMBER [destination_file]")
+        print(script_name + " \"/msg BOTNAME xdcc send #PACKNUMBER\" [destination_file]")
+        sys.exit(1)
+
+    download_pack(bot, int(pack), destination_dir, override_filename)
