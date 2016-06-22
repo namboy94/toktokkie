@@ -11,6 +11,7 @@ clone_master:
   script:
     #- git push -u git@gitlab.com:namboy94/media-manager.git master
     - git push -u git@github.com:namboy94/media-manager.git master
+    - git push -u git@github.com:namboy94/media-manager.git develop
     #- git push -u git@bitbucket.org:namboy94/media-manager.git master
 
 run_unit_tests:
