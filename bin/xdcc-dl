@@ -23,14 +23,8 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
+from tok_tokkie.scripts.single_xdcc import main
 
-from tok_tokkie.main import main
 
-if __name__ == '__main__':
-
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
-        sys.exit(0)
+if __name__ == "__main__":
+    main()

@@ -23,7 +23,7 @@ This file is part of media-manager.
 # imports
 import os
 from setuptools import setup, find_packages
-import media_manager.metadata as metadata
+import tok_tokkie.metadata as metadata
 
 
 def readme() -> str:
@@ -54,8 +54,8 @@ def find_scripts() -> "list of scripts":
     """
     scripts = []
     for file_name in os.listdir("bin"):
-        if not file_name == "__init__.py":
-            scripts.append("bin/" + file_name)
+        if not file_name == "__init__.py" and os.path.isfile(os.path.join("bin", file_name)):
+            scripts.append(os.path.join("bin", file_name))
     return scripts
 
 
