@@ -43,7 +43,8 @@ def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
     :return: the bot name, the pack number
     """
     bot = xdcc_string.split(" ")[1]
-    pack = xdcc_string.split(" ")[4].split("# ")[1]
+    print(xdcc_string.split(" ")[4])
+    pack = xdcc_string.split(" ")[4].split("#")[1]
     return bot, pack
 
 
@@ -57,6 +58,8 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename
             default filename.
     :return: None
     """
+    print(target_directory + "TARGET")
+    filename_override = None if not filename_override else filename_override  # Turn empty string into None object
     downloader = IrcLibImplementation(BotMapper.get_server(xdcc_bot),
                                       BotMapper.get_channel(xdcc_bot),
                                       xdcc_bot,
@@ -96,14 +99,13 @@ def main() -> None:
     Usage: single-xdcc (")/msg botname xdcc send #pack(") destination
     :return: None
     """
-    print(sys.argv)
-    if len(sys.argv) in range(6, 7) and sys.argv[1] == "/msg":
+    if len(sys.argv) in range(6, 8) and sys.argv[1] == "/msg":
         bot = sys.argv[2]
         pack = sys.argv[5].split("#")[1]
         destination_dir, override_filename = check_target_directory(7)
-    elif len(sys.argv) in range(1, 2) and sys.argv[1].startswith("/msg"):
+    elif len(sys.argv) in range(2, 4) and sys.argv[1].startswith("/msg"):
         bot, pack = parse_xdcc_string(sys.argv[1])
-        destination_dir, override_filename = check_target_directory(2)
+        destination_dir, override_filename = check_target_directory(3)
     else:
         print("Invalid parameters.")
         print("Usage:\n")
