@@ -24,33 +24,36 @@ This file is part of media-manager.
 LICENSE
 """
 
-# imports
-from tok_tokkie.modules.cli.GenericCli import GenericCli
 
-
-class ShowManagerCli(GenericCli):
+class BotMapper(object):
     """
-    CLI for the Show Manager plugin
+    Class that offers methods to map an XDCC bot to an IRC server and/or IRC channel
     """
 
-    def __init__(self, parent: GenericCli) -> None:
+    @staticmethod
+    def get_server(xdcc_bot: str) -> str:
         """
-        Constructor
-        :param parent: the parent cli
-        :return: void
-        """
-        super().__init__(parent)
+        Determines the IRC Server for the bot
 
-    def start(self, title=None):
+        :param xdcc_bot: the bot for which the server is wanted
+        :return: the server for the specified bot
         """
-        Starts the plugin main loop
-        :return: void
-        """
-        super().start("Show Manager Plugin")
+        str(xdcc_bot)
+        return "irc.rizon.net"
 
-    def mainloop(self):
+    @staticmethod
+    def get_channel(xdcc_bot: str) -> str:
         """
-        The plugin main loop
-        :return: void
+        Determines the IRC channel for the bot
+
+        :param xdcc_bot: the bot for which the channel is wanted
+        :return: the channel for the specified bot
         """
-        self.ask_user("Not Implemented. Enter quit to return.")
+        if xdcc_bot == "HelloKitty" or "CR-" in xdcc_bot:
+            return "#horriblesubs"
+        elif xdcc_bot == "E-D|Mashiro":
+            return "#exiled-destiny"
+        elif "doki" in xdcc_bot:
+            return "#doki"
+        else:
+            return "#intel"

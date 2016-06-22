@@ -54,8 +54,8 @@ def find_scripts() -> "list of scripts":
     """
     scripts = []
     for file_name in os.listdir("bin"):
-        if not file_name == "__init__.py":
-            scripts.append("bin/" + file_name)
+        if not file_name == "__init__.py" and os.path.isfile(os.path.join("bin", file_name)):
+            scripts.append(os.path.join("bin", file_name))
     return scripts
 
 

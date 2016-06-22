@@ -42,7 +42,7 @@ class IxIRCGetter(GenericGetter):
     def search(self) -> List[XDCCPack]:
         """
         Method that conducts the xdcc pack search. This also automatically finds out the bot and channel
-        via web parsing, so the two methods get_channel and get_server are not needed
+        via web parsing.
 
         :return: the search results as a list of XDCCPack objects
         """
@@ -184,26 +184,6 @@ class IxIRCGetter(GenericGetter):
             if not next_element:
                 # Only increment column_count in the middle of a pack, not when we jump to the next pack element
                 column_count += 1
-
-    def get_server(self, bot: str) -> str:
-        """
-        Checks to which server a given xdcc-serving bot belongs to.
-
-        :param bot: the bot to check the server name for
-        :return: the server name
-        """
-        # Unnecessary
-        return ""
-
-    def get_channel(self, bot: str) -> str:
-        """
-        Checks to which channel a given xdcc-serving bot belongs to
-
-        :param bot: the bot to check the channel name for
-        :return: the channel name
-        """
-        # Unnecessary
-        return ""
 
     @staticmethod
     def get_string_identifier() -> str:

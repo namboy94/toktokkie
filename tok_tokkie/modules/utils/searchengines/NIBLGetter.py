@@ -29,6 +29,7 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
+from tok_tokkie.modules.utils.searchengines.BotMapper import BotMapper
 from tok_tokkie.modules.utils.searchengines.GenericGetter import GenericGetter
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
@@ -69,8 +70,8 @@ class NIBLGetter(GenericGetter):
             filename = file_names[i].text.rsplit(" \n", 1)[0]
             # The bot name has a link after it, which needs to be cut out
             bot = bot_names[i].text.rsplit(" ", 1)[0]
-            server = self.get_server(bot)  # Gets server name for the bot
-            channel = self.get_channel(bot)  # Gets channel name for the bot
+            server = BotMapper.get_server(bot)  # Gets server name for the bot
+            channel = BotMapper.get_channel(bot)  # Gets channel name for the bot
             packnumber = int(pack_numbers[i].text)  # packnumber is straight-forward
             size = file_sizes[i].text  # size is also straight-forward
             result = XDCCPack(filename, server, channel, bot, packnumber, size)  # Generate the XDCCPack
@@ -78,30 +79,6 @@ class NIBLGetter(GenericGetter):
             i += 1  # Loop to next element
 
         return results
-
-    def get_server(self, bot: str) -> str:
-        """
-        Checks to which server a given xdcc-serving bot belongs to.
-
-        :param bot: the bot to check the server name for
-        :return: the server name
-        """
-        return "irc.rizon.net"
-
-    def get_channel(self, bot: str) -> str:
-        """
-        Checks to which channel a given xdcc-serving bot belongs to
-
-        :param bot: the bot to check the channel name for
-        :return: the channel name
-        """
-        # Should be self-explanatory
-        if bot == "HelloKitty" or "CR-" in bot:
-            return "#horriblesubs"
-        elif bot == "E-D|Mashiro":
-            return "#exiled-destiny"
-        else:
-            return "#intel"
 
     @staticmethod
     def get_string_identifier() -> str:

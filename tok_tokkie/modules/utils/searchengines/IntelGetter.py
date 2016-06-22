@@ -29,6 +29,7 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
+from tok_tokkie.modules.utils.searchengines.BotMapper import BotMapper
 from tok_tokkie.modules.utils.searchengines.GenericGetter import GenericGetter
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
@@ -92,31 +93,13 @@ class IntelGetter(GenericGetter):
                 size = line.text
             elif (i - 4) % 5 == 0:  # Fifth/Last Column (Generate XDCCPack)
                 filename = line.text
-                channel = self.get_channel(bot)
-                server = self.get_server(bot)
+                channel = BotMapper.get_channel(bot)
+                server = BotMapper.get_server(bot)
                 result = XDCCPack(filename, server, channel, bot, packnumber, size)
                 results.append(result)
             i += 1  # Move to next 'td element'
 
         return results
-
-    def get_server(self, bot: str) -> str:
-        """
-        Checks to which server a given xdcc-serving bot belongs to.
-
-        :param bot: the bot to check the server name for
-        :return: the server name
-        """
-        return "irc.rizon.net"
-
-    def get_channel(self, bot: str) -> str:
-        """
-        Checks to which channel a given xdcc-serving bot belongs to
-
-        :param bot: the bot to check the channel name for
-        :return: the channel name
-        """
-        return "#intel"
 
     @staticmethod
     def get_string_identifier() -> str:

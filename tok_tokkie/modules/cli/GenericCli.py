@@ -26,17 +26,13 @@ LICENSE
 
 # imports
 import sys
+from tok_tokkie.modules.cli.exceptions import ReturnException
 
 # Try to import readline, this makes using the CLI much nicer, it is not supported on Windows however
 try:
     import readline
 except ImportError:
     readline = None
-
-try:
-    from modules.cli.exceptions import ReturnException
-except ImportError:
-    from modules.cli.exceptions import ReturnException
 
 
 class GenericCli(object):

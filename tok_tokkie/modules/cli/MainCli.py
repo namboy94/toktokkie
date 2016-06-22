@@ -28,7 +28,7 @@ LICENSE
 from typing import List
 
 import tok_tokkie.metadata as metadata
-from modules.cli.GenericCli import GenericCli
+from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
 
 
