@@ -55,9 +55,8 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename
     :param filename_override:
     :return:
     """
-    bot_mapper = BotMapper(xdcc_bot)
-    downloader = IrcLibImplementation(bot_mapper.server,
-                                      bot_mapper.channel,
+    downloader = IrcLibImplementation(BotMapper.get_server(xdcc_bot),
+                                      BotMapper.get_channel(xdcc_bot),
                                       xdcc_bot,
                                       xdcc_pack,
                                       target_directory,
