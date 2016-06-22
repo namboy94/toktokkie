@@ -23,7 +23,7 @@ This file is part of media-manager.
 # imports
 import os
 from setuptools import setup, find_packages
-import tok_tokkie.metadata as metadata
+import media_manager.metadata as metadata
 # noinspection PyPackageRequirements
 import py2exe
 str(py2exe)
