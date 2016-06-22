@@ -68,6 +68,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     The directory to which the file should be downloaded to
     """
 
+    nickname = ""
+    """
+    A nickname for the bot
+    """
+
     progress_struct = None
     """
     A progress struct to share the download progress between threads
@@ -128,9 +133,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Connects to the server with a randomly generated username
         :return: None
         """
-        nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
-        print("Connecting to server " + self.server + " at port 6667 as user " + nickname)
-        super().connect(self.server, 6667, nickname)  # Connect to server
+        self.nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
+        print("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
+        super().connect(self.server, 6667, self.nickname)  # Connect to server
 
     def start(self) -> str:
         """
@@ -177,10 +182,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if connection is None or event is None:
             return
 
-        print("Joined channel")
-        print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
-        # Send a private message to the bot to request the pack file (xdcc send #packnumber)
-        self.connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
+        if event.source.startswith(self.nickname):
+            print("Joined channel")
+            print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
+            # Send a private message to the bot to request the pack file (xdcc send #packnumber)
+            self.connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
     def on_ctcp(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """

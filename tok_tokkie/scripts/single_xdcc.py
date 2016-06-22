@@ -43,7 +43,6 @@ def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
     :return: the bot name, the pack number
     """
     bot = xdcc_string.split(" ")[1]
-    print(xdcc_string.split(" ")[4])
     pack = xdcc_string.split(" ")[4].split("#")[1]
     return bot, pack
 
@@ -109,7 +108,7 @@ def main() -> None:
     else:
         print("Invalid parameters.")
         print("Usage:\n")
-        print(os.path.basename(sys.argv[0]) + " /msg BOTNAME xdcc send #PACKNUMBER [destination_file]")
+        print(os.path.basename(sys.argv[0]) + " /msg BOTNAME xdcc send \\#PACKNUMBER [destination_file]")
         print(os.path.basename(sys.argv[0]) + " \"/msg BOTNAME xdcc send #PACKNUMBER\" [destination_file]")
         sys.exit(1)
 
