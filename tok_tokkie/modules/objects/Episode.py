@@ -26,8 +26,9 @@ LICENSE
 
 # imports
 import os
-from tok_tokkie.modules.common.onlinedatagetters.TVDBGetter import TVDBGetter
-from tok_tokkie.modules.common.fileops.FileRenamer import FileRenamer
+
+from tok_tokkie.modules.utils.fileops.FileRenamer import FileRenamer
+from tok_tokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
 
 
 class Episode(object):
