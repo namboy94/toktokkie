@@ -27,8 +27,9 @@ LICENSE
 # imports
 import os
 from typing import List, Dict
+
+from modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.Renamer import Renamer
-from tok_tokkie.cli.GenericCli import GenericCli
 
 
 class RenamerCli(GenericCli):

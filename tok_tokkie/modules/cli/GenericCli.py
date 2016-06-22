@@ -34,9 +34,9 @@ except ImportError:
     readline = None
 
 try:
-    from cli.exceptions.ReturnException import ReturnException
+    from modules.cli.exceptions import ReturnException
 except ImportError:
-    from tok_tokkie.cli.exceptions.ReturnException import ReturnException
+    from modules.cli.exceptions import ReturnException
 
 
 class GenericCli(object):

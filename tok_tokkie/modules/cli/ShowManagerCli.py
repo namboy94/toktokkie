@@ -25,7 +25,7 @@ LICENSE
 """
 
 # imports
-from tok_tokkie.cli.GenericCli import GenericCli
+from modules.cli.GenericCli import GenericCli
 
 
 class ShowManagerCli(GenericCli):

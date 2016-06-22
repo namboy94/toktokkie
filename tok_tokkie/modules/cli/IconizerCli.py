@@ -26,7 +26,8 @@ LICENSE
 
 # imports
 import os
-from tok_tokkie.cli.GenericCli import GenericCli
+
+from modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 
 

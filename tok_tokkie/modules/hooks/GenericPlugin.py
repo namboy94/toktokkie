@@ -26,7 +26,8 @@ LICENSE
 
 # imports
 from gfworks.interfaces.GenericWindow import GenericWindow
-from tok_tokkie.cli.GenericCli import GenericCli
+
+from modules.cli.GenericCli import GenericCli
 
 
 class GenericPlugin(object):

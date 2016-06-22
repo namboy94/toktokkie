@@ -26,10 +26,11 @@ LICENSE
 
 # imports
 from gfworks.interfaces.GenericWindow import GenericWindow
-from tok_tokkie.cli.GenericCli import GenericCli
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
-from tok_tokkie.modules.gui.RenamerGui import RenamerGui
+
+from modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.cli.RenamerCli import RenamerCli
+from tok_tokkie.modules.gui.RenamerGui import RenamerGui
+from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
 
 
 class RenamerPlugin(GenericPlugin):

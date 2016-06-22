@@ -19,7 +19,7 @@ run_unit_tests:
     - master
     - develop
   script:
-    - python setup.py test
+    - python3 setup.py test
 
 
 #upload_python2_version:
@@ -30,7 +30,7 @@ run_unit_tests:
 #    - 3to2 --write .
 #    - rm setup.py
 #    - mv setup2.py setup.py
-#    - python setup.py register sdist upload
+#    - python2 setup.py register sdist upload
 #  allow_failure: true
 
 upload_to_pypi:
@@ -38,5 +38,5 @@ upload_to_pypi:
   only:
     - master
   script:
-    - python setup.py register sdist upload
+    - python3 setup.py register sdist upload
   allow_failure: true
