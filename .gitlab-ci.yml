@@ -57,7 +57,7 @@ upload_documentation_and_statistics:
     - cd ..
 
     - git clone git@gitlab.namibsun.net:namboy94/tok-tokkie.wiki.git
-    - cd tok_tokkie.wiki
+    - cd tok-tokkie.wiki
     - rm -rf git_stats html
     - mv ../git_stats .
     - mv ../doc/build/html .
