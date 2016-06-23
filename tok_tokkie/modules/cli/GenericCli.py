@@ -26,7 +26,7 @@ LICENSE
 
 # imports
 import sys
-from tok_tokkie.modules.cli.exceptions import ReturnException
+from tok_tokkie.modules.cli.exceptions.ReturnException import ReturnException
 
 # Try to import readline, this makes using the CLI much nicer, it is not supported on Windows however
 try:

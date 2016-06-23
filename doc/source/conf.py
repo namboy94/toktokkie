@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# media-manager documentation build configuration file, created by
+# toktokkie documentation build configuration file, created by
 # sphinx-quickstart on Sat Apr  9 01:18:26 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'media-manager'
+project = 'toktokkie'
 copyright = '2016, Hermann Krumrey'
 author = 'Hermann Krumrey'
 
@@ -209,7 +209,7 @@ html_static_path = ['.static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'media-managerdoc'
+htmlhelp_basename = 'toktokkiedoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -231,7 +231,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'media-manager.tex', 'media-manager Documentation',
+    (master_doc, 'toktokkie.tex', 'toktokkie Documentation',
      'Hermann Krumrey', 'manual'),
 ]
 
@@ -261,7 +261,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'media-manager', 'media-manager Documentation',
+    (master_doc, 'toktokkie', 'toktokkie Documentation',
      [author], 1)
 ]
 
@@ -275,8 +275,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'media-manager', 'media-manager Documentation',
-     author, 'media-manager', 'One line description of project.',
+    (master_doc, 'toktokkie', 'toktokkie Documentation',
+     author, 'toktokkie', 'One line description of project.',
      'Miscellaneous'),
 ]
 
