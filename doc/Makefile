@@ -217,7 +217,7 @@ pseudoxml:
 
 
 buildsource:
-	sphinx-apidoc -f ../media_manager -o source
+	sphinx-apidoc -f ../tok_tokkie -o source
 	@echo "Auto-generation of API documentation finished. " \
 		"The generated files are in 'source/'"
 # This may have o be changed to sphinx-apidoc -fMeET in the future, I'm not sure
