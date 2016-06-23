@@ -56,8 +56,11 @@ upload_documentation_and_statistics:
     - make html
     - cd ..
 
-    - git clone git@gitlab.namibsun.net:namboy94/messengerbot.wiki.git
-    - cd messengerbot.wiki
+    - git clone git@gitlab.namibsun.net:namboy94/tok-tokkie.wiki.git
+    - cd tok_tokkie.wiki
     - rm -rf git_stats html
     - mv ../git_stats .
     - mv ../doc/build/html .
+    - git add --all
+    - git commit -m "Updated Documentation and Statistics"
+    - git push -u origin master
