@@ -30,7 +30,7 @@ from tok_tokkie.main import main
 if __name__ == '__main__':
 
     try:
-        main("gtk")
+        main("gtk3")
     except KeyboardInterrupt:
         print("\nThanks for using media-manager!")
         sys.exit(0)
