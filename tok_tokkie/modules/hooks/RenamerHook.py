@@ -28,14 +28,14 @@ LICENSE
 from gfworks.interfaces.GenericWindow import GenericWindow
 
 from tok_tokkie.modules.cli.GenericCli import GenericCli
-from tok_tokkie.modules.cli.ShowManagerCli import ShowManagerCli
-from tok_tokkie.modules.gui.ShowManagerGui import ShowManagerGui
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.cli.RenamerCli import RenamerCli
+from tok_tokkie.modules.gui.RenamerGui import RenamerGui
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 
 
-class ShowManagerPlugin(GenericPlugin):
+class RenamerHook(GenericHook):
     """
-    Class that handles the calls to the Show Manager Plugin.
+    Class that handles the calls to the Renamer Plugin.
 
     It offers methods to start the plugin in CLI-args, CLI-interactive and GUI mode
     """
@@ -46,7 +46,7 @@ class ShowManagerPlugin(GenericPlugin):
 
         :return: the name of this plugin
         """
-        return "Show Manager"
+        return "Renamer"
 
     def get_config_tag(self) -> str:
         """
@@ -55,7 +55,7 @@ class ShowManagerPlugin(GenericPlugin):
 
         :return: the config tag of this plugin
         """
-        return "show-manager"
+        return "renamer"
 
     def get_command_name(self) -> str:
         """
@@ -64,7 +64,7 @@ class ShowManagerPlugin(GenericPlugin):
 
         :return: the command that starts this plugin
         """
-        return "show-manager"
+        return "renamer"
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
@@ -73,7 +73,7 @@ class ShowManagerPlugin(GenericPlugin):
         :param parent_cli: the parent cli to which the plugin can return to
         :return: None
         """
-        ShowManagerCli(parent_cli).start()
+        RenamerCli(parent_cli).start()
 
     def start_gui(self, parent_gui: GenericWindow) -> None:
         """
@@ -82,4 +82,4 @@ class ShowManagerPlugin(GenericPlugin):
         :param parent_gui: the gui's parent to which the plugin can return to
         :return: None
         """
-        ShowManagerGui(parent_gui).start()
+        RenamerGui(parent_gui).start()

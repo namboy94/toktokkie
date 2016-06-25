@@ -26,11 +26,11 @@ LICENSE
 
 # imports
 from typing import Dict, List
-from tok_tokkie.modules.hooks.RenamerPlugin import RenamerPlugin
-from tok_tokkie.modules.hooks.IconizerPlugin import IconizerPlugin
-from tok_tokkie.modules.hooks.BatchDownloadManagerPlugin import BatchDownloadManagerPlugin
-from tok_tokkie.modules.hooks.ShowManagerPlugin import ShowManagerPlugin
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.hooks.RenamerHook import RenamerHook
+from tok_tokkie.modules.hooks.IconizerHook import IconizerHook
+from tok_tokkie.modules.hooks.BatchDownloadManagerHook import BatchDownloadManagerHook
+from tok_tokkie.modules.hooks.ShowManagerHook import ShowManagerHook
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 
 
 class PluginManager(object):
@@ -39,10 +39,10 @@ class PluginManager(object):
     Files stored in the user's home directory
     """
 
-    all_plugins = [RenamerPlugin(),
-                   IconizerPlugin(),
-                   BatchDownloadManagerPlugin(),
-                   ShowManagerPlugin(),
+    all_plugins = [RenamerHook(),
+                   IconizerHook(),
+                   BatchDownloadManagerHook(),
+                   ShowManagerHook(),
                    # new modules here
                    ]
     """
@@ -75,7 +75,7 @@ class PluginManager(object):
                 self.active_plugins.append(plugin)
 
     # noinspection PyTypeChecker
-    def get_plugins(self) -> List[GenericPlugin]:
+    def get_plugins(self) -> List[GenericHook]:
         """
         Returns a list of modules of active modules, which can then be used
         by the user interfaces. (CLI or GUI)

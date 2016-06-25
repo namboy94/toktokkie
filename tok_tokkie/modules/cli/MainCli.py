@@ -29,7 +29,7 @@ from typing import List
 
 import tok_tokkie.metadata as metadata
 from tok_tokkie.modules.cli.GenericCli import GenericCli
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 
 
 class MainCli(GenericCli):
@@ -56,7 +56,7 @@ class MainCli(GenericCli):
     """
 
     # noinspection PyTypeChecker
-    def __init__(self, active_plugins: List[GenericPlugin]) -> None:
+    def __init__(self, active_plugins: List[GenericHook]) -> None:
         """
         Constructor of the Main CLI
 

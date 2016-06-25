@@ -1,3 +1,4 @@
+
 """
 LICENSE:
 
@@ -28,14 +29,14 @@ LICENSE
 from gfworks.interfaces.GenericWindow import GenericWindow
 
 from tok_tokkie.modules.cli.GenericCli import GenericCli
-from tok_tokkie.modules.cli.IconizerCli import IconizerCli
-from tok_tokkie.modules.gui.IconizerGui import IconizerGui
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.cli.BatchDownloadManagerCli import BatchDownloadManagerCli
+from tok_tokkie.modules.gui.BatchDownloadManagerGui import BatchDownloadManagerGui
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 
 
-class IconizerPlugin(GenericPlugin):
+class BatchDownloadManagerHook(GenericHook):
     """
-    Class that handles the calls to the Iconizer Plugin.
+    Class that handles the calls to the Batch Download Manager Plugin.
 
     It offers methods to start the plugin in CLI-args, CLI-interactive and GUI mode
     """
@@ -46,7 +47,7 @@ class IconizerPlugin(GenericPlugin):
 
         :return: the name of this plugin
         """
-        return "Iconizer"
+        return "Batch Download Manager"
 
     def get_config_tag(self) -> str:
         """
@@ -55,7 +56,7 @@ class IconizerPlugin(GenericPlugin):
 
         :return: the config tag of this plugin
         """
-        return "iconizer"
+        return "batch-download"
 
     def get_command_name(self) -> str:
         """
@@ -64,7 +65,7 @@ class IconizerPlugin(GenericPlugin):
 
         :return: the command that starts this plugin
         """
-        return "iconizer"
+        return "batch-download"
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
@@ -73,7 +74,7 @@ class IconizerPlugin(GenericPlugin):
         :param parent_cli: the parent cli to which the plugin can return to
         :return: None
         """
-        IconizerCli(parent_cli).start()
+        BatchDownloadManagerCli(parent_cli).start()
 
     def start_gui(self, parent_gui: GenericWindow) -> None:
         """
@@ -82,4 +83,5 @@ class IconizerPlugin(GenericPlugin):
         :param parent_gui: the gui's parent to which the plugin can return to
         :return: None
         """
-        IconizerGui(parent_gui).start()
+        # noinspection PyTypeChecker
+        BatchDownloadManagerGui(parent_gui).start()
