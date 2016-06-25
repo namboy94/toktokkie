@@ -27,7 +27,7 @@ LICENSE
 # imports
 from typing import List
 from tok_tokkie.metadata import Globals
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 import tok_tokkie.metadata as metadata
 
 
@@ -48,7 +48,7 @@ class MainGui(Globals.selected_grid_gui_framework):
     """
 
     # noinspection PyTypeChecker
-    def __init__(self, active_plugins: List[GenericPlugin]) -> None:
+    def __init__(self, active_plugins: List[GenericHook]) -> None:
         """
         Constructor for the Main GUI
 
@@ -97,7 +97,7 @@ class MainGui(Globals.selected_grid_gui_framework):
 
             # Define a local function for the button's functionality
             # I like this more than defining a lambda, deal with it.
-            def start_button_function(widget: object, plugin: GenericPlugin):
+            def start_button_function(widget: object, plugin: GenericHook):
                 """
                 The method run when pressed on the plugin button
 

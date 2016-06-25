@@ -1,4 +1,3 @@
-
 """
 LICENSE:
 
@@ -29,16 +28,14 @@ LICENSE
 from gfworks.interfaces.GenericWindow import GenericWindow
 
 from tok_tokkie.modules.cli.GenericCli import GenericCli
-from tok_tokkie.modules.cli.BatchDownloadManagerCli import BatchDownloadManagerCli
-from tok_tokkie.modules.gui.BatchDownloadManagerGui import BatchDownloadManagerGui
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
 
 
-class BatchDownloadManagerPlugin(GenericPlugin):
+class GenericHook(object):
     """
-    Class that handles the calls to the Batch Download Manager Plugin.
+    Generic Plugin that serves as a unified interface for the media manager modules.
 
-    It offers methods to start the plugin in CLI-args, CLI-interactive and GUI mode
+    It defines multiple methods that give information about the plugin, as well
+    as methods to start the GUI, interactive CLI or argument-driven CLI
     """
 
     def get_name(self) -> str:
@@ -47,16 +44,7 @@ class BatchDownloadManagerPlugin(GenericPlugin):
 
         :return: the name of this plugin
         """
-        return "Batch Download Manager"
-
-    def get_config_tag(self) -> str:
-        """
-        This method returns the tag used to enable or disable this plugin
-        in the config file of media-manager.
-
-        :return: the config tag of this plugin
-        """
-        return "batch-download"
+        raise NotImplementedError()
 
     def get_command_name(self) -> str:
         """
@@ -65,7 +53,16 @@ class BatchDownloadManagerPlugin(GenericPlugin):
 
         :return: the command that starts this plugin
         """
-        return "batch-download"
+        raise NotImplementedError()
+
+    def get_config_tag(self) -> str:
+        """
+        This method returns the tag used to enable or disable this plugin
+        in the config file of media-manager.
+
+        :return: the config tag of this plugin
+        """
+        raise NotImplementedError()
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
@@ -74,7 +71,7 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :param parent_cli: the parent cli to which the plugin can return to
         :return: None
         """
-        BatchDownloadManagerCli(parent_cli).start()
+        raise NotImplementedError()
 
     def start_gui(self, parent_gui: GenericWindow) -> None:
         """
@@ -83,5 +80,4 @@ class BatchDownloadManagerPlugin(GenericPlugin):
         :param parent_gui: the gui's parent to which the plugin can return to
         :return: None
         """
-        # noinspection PyTypeChecker
-        BatchDownloadManagerGui(parent_gui).start()
+        raise NotImplementedError()

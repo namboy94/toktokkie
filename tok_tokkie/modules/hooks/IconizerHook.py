@@ -28,14 +28,14 @@ LICENSE
 from gfworks.interfaces.GenericWindow import GenericWindow
 
 from tok_tokkie.modules.cli.GenericCli import GenericCli
-from tok_tokkie.modules.cli.RenamerCli import RenamerCli
-from tok_tokkie.modules.gui.RenamerGui import RenamerGui
-from tok_tokkie.modules.hooks.GenericPlugin import GenericPlugin
+from tok_tokkie.modules.cli.IconizerCli import IconizerCli
+from tok_tokkie.modules.gui.IconizerGui import IconizerGui
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 
 
-class RenamerPlugin(GenericPlugin):
+class IconizerHook(GenericHook):
     """
-    Class that handles the calls to the Renamer Plugin.
+    Class that handles the calls to the Iconizer Plugin.
 
     It offers methods to start the plugin in CLI-args, CLI-interactive and GUI mode
     """
@@ -46,7 +46,7 @@ class RenamerPlugin(GenericPlugin):
 
         :return: the name of this plugin
         """
-        return "Renamer"
+        return "Iconizer"
 
     def get_config_tag(self) -> str:
         """
@@ -55,7 +55,7 @@ class RenamerPlugin(GenericPlugin):
 
         :return: the config tag of this plugin
         """
-        return "renamer"
+        return "iconizer"
 
     def get_command_name(self) -> str:
         """
@@ -64,7 +64,7 @@ class RenamerPlugin(GenericPlugin):
 
         :return: the command that starts this plugin
         """
-        return "renamer"
+        return "iconizer"
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
@@ -73,7 +73,7 @@ class RenamerPlugin(GenericPlugin):
         :param parent_cli: the parent cli to which the plugin can return to
         :return: None
         """
-        RenamerCli(parent_cli).start()
+        IconizerCli(parent_cli).start()
 
     def start_gui(self, parent_gui: GenericWindow) -> None:
         """
@@ -82,4 +82,4 @@ class RenamerPlugin(GenericPlugin):
         :param parent_gui: the gui's parent to which the plugin can return to
         :return: None
         """
-        RenamerGui(parent_gui).start()
+        IconizerGui(parent_gui).start()

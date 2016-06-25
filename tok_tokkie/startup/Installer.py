@@ -31,10 +31,10 @@ from os.path import expanduser
 from typing import Dict
 from tok_tokkie.modules.PluginManager import PluginManager
 
-main_dir = os.path.join(expanduser('~'), ".mediamanager")
+main_dir = os.path.join(expanduser('~'), ".toktokkie")
 """
 The main directory path used for installation. It is located in the user's home directory
-in a subdirectory named .mediamanager, which will show as a hidden directory in Linux.
+in a subdirectory named .toktokkie, which will show as a hidden directory in Linux.
 """
 
 config_dir = os.path.join(main_dir, "configs")

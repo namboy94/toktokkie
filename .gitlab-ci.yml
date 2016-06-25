@@ -2,6 +2,7 @@ stages:
   - setup
   - test
   - deploy
+  - wiki
 
 clone_master:
   stage: setup
@@ -11,7 +12,7 @@ clone_master:
   script:
     #- git push -u git@gitlab.com:namboy94/media-manager.git master
     - git push -u git@github.com:namboy94/media-manager.git master
-    # - git push -u git@github.com:namboy94/media-manager.git develop
+    #- git push -u git@github.com:namboy94/media-manager.git develop
     #- git push -u git@bitbucket.org:namboy94/media-manager.git master
 
 run_unit_tests:
@@ -41,3 +42,25 @@ upload_to_pypi:
   script:
     - python3 setup.py register sdist upload
   allow_failure: true
+
+upload_documentation_and_statistics:
+  stage: wiki
+  only:
+    - master
+    - develop
+  script:
+    - gitstats . git_stats
+    - cd doc
+    - make clean
+    - make buildsource
+    - make html
+    - cd ..
+
+    - git clone git@gitlab.namibsun.net:namboy94/tok-tokkie.wiki.git
+    - cd tok-tokkie.wiki
+    - rm -rf git_stats html
+    - mv ../git_stats .
+    - mv ../doc/build/html .
+    - git add --all
+    - git commit -m "Updated Documentation and Statistics"
+    - git push -u origin master

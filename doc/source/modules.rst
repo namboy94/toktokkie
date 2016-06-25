@@ -1,7 +1,7 @@
-media_manager
-=============
+tok_tokkie
+==========
 
 .. toctree::
    :maxdepth: 4
 
-   media_manager
+   tok_tokkie

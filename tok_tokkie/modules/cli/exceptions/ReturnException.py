@@ -25,7 +25,7 @@ LICENSE
 """
 
 
-class ReturnException(Exception):
+class ReturnException(BaseException):
     """
     This class models an Exception that gets raised by the GenericCli when the user
     enters a command which will result in exiting the current CLI.

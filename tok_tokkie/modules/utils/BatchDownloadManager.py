@@ -32,7 +32,7 @@ import urllib.request
 from typing import Tuple, List, Dict
 
 from requests.exceptions import ConnectionError
-from tok_tokkie.modules.utils.searchengines import SearchEngineManager
+from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer

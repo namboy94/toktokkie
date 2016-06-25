@@ -28,14 +28,16 @@ LICENSE
 from gfworks.interfaces.GenericWindow import GenericWindow
 
 from tok_tokkie.modules.cli.GenericCli import GenericCli
+from tok_tokkie.modules.cli.ShowManagerCli import ShowManagerCli
+from tok_tokkie.modules.gui.ShowManagerGui import ShowManagerGui
+from tok_tokkie.modules.hooks.GenericHook import GenericHook
 
 
-class GenericPlugin(object):
+class ShowManagerHook(GenericHook):
     """
-    Generic Plugin that serves as a unified interface for the media manager modules.
+    Class that handles the calls to the Show Manager Plugin.
 
-    It defines multiple methods that give information about the plugin, as well
-    as methods to start the GUI, interactive CLI or argument-driven CLI
+    It offers methods to start the plugin in CLI-args, CLI-interactive and GUI mode
     """
 
     def get_name(self) -> str:
@@ -44,16 +46,7 @@ class GenericPlugin(object):
 
         :return: the name of this plugin
         """
-        raise NotImplementedError()
-
-    def get_command_name(self) -> str:
-        """
-        This method return the command name used by the argument parser
-        when using the argument-driven CLI
-
-        :return: the command that starts this plugin
-        """
-        raise NotImplementedError()
+        return "Show Manager"
 
     def get_config_tag(self) -> str:
         """
@@ -62,7 +55,16 @@ class GenericPlugin(object):
 
         :return: the config tag of this plugin
         """
-        raise NotImplementedError()
+        return "show-manager"
+
+    def get_command_name(self) -> str:
+        """
+        This method return the command name used by the argument parser
+        when using the argument-driven CLI
+
+        :return: the command that starts this plugin
+        """
+        return "show-manager"
 
     def start_cli(self, parent_cli: GenericCli) -> None:
         """
@@ -71,7 +73,7 @@ class GenericPlugin(object):
         :param parent_cli: the parent cli to which the plugin can return to
         :return: None
         """
-        raise NotImplementedError()
+        ShowManagerCli(parent_cli).start()
 
     def start_gui(self, parent_gui: GenericWindow) -> None:
         """
@@ -80,4 +82,4 @@ class GenericPlugin(object):
         :param parent_gui: the gui's parent to which the plugin can return to
         :return: None
         """
-        raise NotImplementedError()
+        ShowManagerGui(parent_gui).start()
