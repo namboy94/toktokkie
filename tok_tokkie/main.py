@@ -107,5 +107,5 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
+        print("\nThanks for using the tok tokkie media manager!")
         sys.exit(0)
