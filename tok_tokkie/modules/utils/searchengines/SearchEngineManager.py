@@ -30,6 +30,7 @@ from tok_tokkie.modules.utils.searchengines import GenericGetter
 from tok_tokkie.modules.utils.searchengines.NIBLGetter import NIBLGetter
 from tok_tokkie.modules.utils.searchengines.IntelGetter import IntelGetter
 from tok_tokkie.modules.utils.searchengines.IxIRCGetter import IxIRCGetter
+from tok_tokkie.modules.utils.searchengines.HorribleSubsGetter import HorribleSubsGetter
 
 
 class SearchEngineManager(object):
@@ -40,9 +41,13 @@ class SearchEngineManager(object):
     offers information on which Search engines are available
     """
 
-    search_engines = [NIBLGetter,
+    search_engines = [HorribleSubsGetter,
+                      NIBLGetter,
                       IxIRCGetter,
                       IntelGetter]
+    """
+    The supported search engines
+    """
 
     # noinspection PyTypeChecker
     @staticmethod
