@@ -30,11 +30,11 @@ from tok_tokkie.scripts.anime_updater import start
 
 
 config = [
-    {"target_directory": "/home/hermann/Downloads/Updater/Space Patrol Luluco2",
-     "horriblesubs_name": "Space Patrol Luluco",
-     "bot": "CR-HOLLAND|NEW",
-     "quality": "480p",
-     "season": "1"}
+    {"target_directory": "Target Directory",
+     "horriblesubs_name": "Show Name",
+     "bot": "Bot Name",
+     "quality": "Quality Setting",
+     "season": "Season Number"}
 ]
 
 
