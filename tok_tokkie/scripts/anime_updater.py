@@ -46,7 +46,7 @@ def update(config: Dict[str, Dict[str, str]]) -> None:
     for show in config:
 
         meta = os.path.join(show, ".icons")  # TODO Change to .meta
-        season = os.path.join(show, config[show]["season"])
+        season = os.path.join(show, "Season " + config[show]["season"])
         showname = os.path.basename(os.path.basename(meta))
 
         if not os.path.isdir(meta):
@@ -54,13 +54,14 @@ def update(config: Dict[str, Dict[str, str]]) -> None:
         if not os.path.isdir(season):
             os.makedirs(season)
 
-        current_episode = str(len(os.listdir(season)) + 1)
-        nextcheck = check_for_next(current_episode, config[show]["horriblesubs-name"], config[show]["quality"], config[show]["bot"])
-        while nextcheck:
-            download(current_episode, config[show]["horriblesubs-name"], config[show]["bot"], showname, season, nextcheck[1])
-            current_episode = str(len(os.listdir(season)) + 1)
-            nextcheck = check_for_next(current_episode, config[show]["horriblesubs-name"], config[show]["quality"],
-                                       config[show]["bot"])
+        while True:
+            current_episode = len(os.listdir(season)) + 1
+            current_episode = str(current_episode) if current_episode >= 10 else "0" + str(current_episode)
+            nextcheck = check_for_next(current_episode, config[show]["horriblesubs-name"], config[show]["quality"], config[show]["bot"])
+            if not nextcheck:
+                break
+            else:
+                download(current_episode, config[show]["horriblesubs-name"], config[show]["bot"], season, str(nextcheck[1]))
 
 
 def check_for_next(episode: str, horriblesubs_name: str, quality: str, bot: str) -> Tuple[bool, str] or bool:
@@ -72,8 +73,12 @@ def check_for_next(episode: str, horriblesubs_name: str, quality: str, bot: str)
             return True, result.packnumber
     return False
 
-def download(episode: str, horriblesubs_name: str, quality: str, bot: str, target_directory: str, packnumber: str) -> None:
+
+def download(episode: str, horriblesubs_name: str, bot: str, target_directory: str, packnumber: str) -> None:
+
     packstring = "/msg " + bot + " xdcc send #" + packnumber
-    sys.argv[1] = packstring
-    sys.argv[2] = target_directory
+    while len(sys.argv) > 1:
+        sys.argv.pop()
+    sys.argv.append(packstring)
+    sys.argv.append(target_directory)
     xdcc_dl()

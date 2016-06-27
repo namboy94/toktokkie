@@ -31,8 +31,8 @@ from tok_tokkie.scripts.anime_updater import update
 
 config = {
 
-    "/home/hermann/Downloads/Updater/One Punch Man":
-        {"horriblesubs-name": "One Punch Man", "quality": "1080p", "season": "1"}
+    "/home/hermann/Downloads/Updater/Flying Witch":
+        {"horriblesubs-name": "Flying Witch", "quality": "480p", "season": "1", "bot": "CR-HOLLAND|NEW"}
 
 }
 
