@@ -88,12 +88,14 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XD
 
     episode_string = str(episode) if episode >= 10 else "0" + str(episode)
     wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
+    alt_wanted_episode = horriblesubs_name + "_-_" + episode_string
 
     searcher = HorribleSubsGetter(horriblesubs_name + " " + episode_string + " " + quality)
     results = searcher.search()
 
     for result in results:
-        if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
+        if result.bot == bot and (result.filename.split("] ", 1)[1] == wanted_episode or
+                                  result.filename.split("]_", 1)[1].rsplit("_[", 1)[0] == alt_wanted_episode):
             return result
     return False
 
