@@ -143,13 +143,19 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: the path to the downloaded file
         """
         self.connect()  # Connect to server
-        try:
-            super().start()  # Start the download
-        except SystemExit:
-            pass  # If disconnect occurs, catch and ignore the system exit call
-        except irc.client.ServerConnectionError:
-            # If connecting to the server fails, let the user know
-            print("Failed to connect to server")
+        download_started = False
+        while not download_started:
+            download_started = True
+            try:
+                super().start()  # Start the download
+            except irc.client.ServerConnectionError:
+                # If connecting to the server fails, let the user know
+                print("Failed to connect to server")
+            except UnicodeDecodeError:
+                download_started = False
+                os.remove(self.filename)
+            except SystemExit:
+                pass  # If disconnect occurs, catch and ignore the system exit call
         return self.filename  # Return the file path
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:

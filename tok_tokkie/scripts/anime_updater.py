@@ -59,6 +59,8 @@ def update(config: List[Dict[str, str]]) -> None:
         meta_directory = os.path.join(show_directory, ".icons")
         showname = os.path.basename(os.path.dirname(meta_directory))
 
+        print("Processing " + showname)
+
         if not os.path.isdir(meta_directory):
             os.makedirs(meta_directory)
         if not os.path.isdir(target_directory):
@@ -90,13 +92,17 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XD
     wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
     alt_wanted_episode = horriblesubs_name + "_-_" + episode_string
 
-    searcher = HorribleSubsGetter(horriblesubs_name + " " + episode_string + " " + quality)
-    results = searcher.search()
+    results = HorribleSubsGetter(horriblesubs_name + " " + episode_string + " " + quality).search()
+    alt_results = HorribleSubsGetter(horriblesubs_name + " " + episode_string).search()
 
     for result in results:
-        if result.bot == bot and (result.filename.split("] ", 1)[1] == wanted_episode or
-                                  result.filename.split("]_", 1)[1].rsplit("_[", 1)[0] == alt_wanted_episode):
+        if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
             return result
+
+    for result in alt_results:
+        if result.bot == bot and result.filename.split("]_", 1)[1].rsplit("_[", 1)[0] == alt_wanted_episode:
+            return result
+
     return False
 
 
