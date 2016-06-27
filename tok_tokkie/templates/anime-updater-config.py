@@ -31,8 +31,8 @@ from tok_tokkie.scripts.anime_updater import update
 
 config = {
 
-    "/home/hermann/Downloads/Updater/Flying Witch":
-        {"horriblesubs-name": "Flying Witch", "quality": "480p", "season": "1", "bot": "CR-HOLLAND|NEW"}
+    "/home/hermann/Downloads/Updater/Space Patrol Luluco":
+        {"horriblesubs-name": "Space Patrol Luluco", "quality": "480p", "season": "1", "bot": "CR-HOLLAND|NEW"}
 
 }
 
