@@ -90,6 +90,7 @@ This is currently supported under Windows and Linux file managers that support g
 The Batch Download Manager (BDLM from now on) can be used to download files via the XDCC protocol normally used in conjunction with
 IRC networks. The BDLM also support searching for files on three different packlist search engines:
 
+* xdcc.horriblesubs.info
 * NIBL.co.uk
 * intel.haruhichan.com
 * ixIrc.com
@@ -103,6 +104,22 @@ It is possible to select more than one file to download (hence the 'batch')
 
 This will be able to manage your existing media in some way. It's not implemented yet.
 
+
+## Standalone Scripts
+
+The Program also offers a few standalone CLI tools:
+
+**xdcc-dl**
+This script can be used to instantly download a xdcc-get formatted pack string, like this:
+
+    /msg BOT xdcc send #PACK
+    
+**anime-updater**
+
+This is an automatic downloader for anime series. It downloads all currently available episodes for a
+specified show.
+
+To specify the setting of the shows to download, modify [this python file](tok_tokkie/templates/anime-updater-config.py) to your liking and run it.
 
 ## Installation Instructions
 
@@ -148,9 +165,6 @@ After the installation is completed, run hexchat and set it up to your liking. T
 1. Skip Network List on Startup
 2. Settings/Preferences/Network/File transfers/Auto Accept File Offers: Save without interaction
 3. Uncheck "Always show this dialog after connecting" on first connection to a server
-
-To be able to use the Twisted downloader, install python 2 and the twisted package for python 2. Also set the path
-variable 'python2' to direct to the python 2 installation.
 
 ## Links:
 

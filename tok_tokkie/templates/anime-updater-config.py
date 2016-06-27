@@ -1,7 +1,7 @@
-#!/usr/bin/env python
-# coding=utf-8
-
+#!/usr/bin/python3
 """
+LICENSE:
+
 Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
@@ -21,16 +21,24 @@ This file is part of media-manager.
 
     You should have received a copy of the GNU General Public License
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
+
+LICENSE
 """
 
-import sys
+# imports
+from tok_tokkie.scripts.anime_updater import start
 
-from tok_tokkie.main import main
+
+config = [
+    {"target_directory": "Target Directory",
+     "horriblesubs_name": "Show Name",
+     "bot": "Bot Name",
+     "quality": "Quality Setting",
+     "season": "Season Number"}
+]
+
 
 if __name__ == '__main__':
-
-    try:
-        main("gtk3")
-    except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
-        sys.exit(0)
+    start(config)
+    # start(config, continuous=True)
+    # start(config, continuous=True, looptime = 3600)

@@ -1,6 +1,9 @@
+V 0.9.8.2
+  - Created anime updater/auto downloader
+  - Integrated Horriblesubs XDCC packlist search engine
 V 0.9.8.1
   - Renamed executable files
-  - Minotr bugfixes resulting from the restructure
+  - Minor bugfixes resulting from the restructure
 V 0.9.8
   - Created standalone XDCC downloader script
   - Re-structured the project

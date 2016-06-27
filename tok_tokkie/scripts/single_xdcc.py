@@ -57,7 +57,6 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename
             default filename.
     :return: None
     """
-    print(target_directory + "TARGET")
     filename_override = None if not filename_override else filename_override  # Turn empty string into None object
     downloader = IrcLibImplementation(BotMapper.get_server(xdcc_bot),
                                       BotMapper.get_channel(xdcc_bot),

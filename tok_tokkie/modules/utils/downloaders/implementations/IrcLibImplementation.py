@@ -150,7 +150,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         except irc.client.ServerConnectionError:
             # If connecting to the server fails, let the user know
             print("Failed to connect to server")
-
         return self.filename  # Return the file path
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -273,13 +272,16 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         # Make Pycharm happy
         if connection is None or event is None:
-            return
+            pass
 
         self.file.close()  # Close the file
         # Print a summary of the file
         print("Received file %s (%d bytes)." % (self.filename,
                                                 self.progress_struct.single_progress))
         self.connection.quit()  # Close the IRC connection
+
+        if self.connection.connected:
+            self.on_disconnect(connection, event)
 
     # noinspection PyMethodMayBeStatic
     def on_disconnect(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -292,6 +294,5 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         # Make Pycharm happy
         if connection is None or event is None:
-            return
-
+            pass
         sys.exit(0)
