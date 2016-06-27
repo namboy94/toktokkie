@@ -31,54 +31,67 @@ LICENSE
 
 # imports
 import os
-import sys
-from typing import Dict, Tuple
-from tok_tokkie.scripts.single_xdcc import main as xdcc_dl
+from typing import Dict, List
+from tok_tokkie.modules.objects.XDCCPack import XDCCPack
+from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 from tok_tokkie.modules.utils.searchengines.HorribleSubsGetter import HorribleSubsGetter
 
 
-def update(config: Dict[str, Dict[str, str]]) -> None:
+def update(config: List[Dict[str, str]]) -> None:
     """
+    Updates all shows defined in the config.
 
-    :param config: show directory: (season, quality, horriblesubs-name, bot)
-    :return:
+    :param config: List of dictionaries with the following attributes:
+                        (target directory, season, quality, horriblesubs-name, bot)
+    :return: None
     """
     for show in config:
 
-        meta = os.path.join(show, ".icons")  # TODO Change to .meta
-        season = os.path.join(show, "Season " + config[show]["season"])
-        showname = os.path.basename(os.path.basename(meta))
+        horriblesubs_name = show["horriblesubs_name"]
+        quality = show["quality"]
+        season = int(show["season"])
+        bot = show["bot"]
 
-        if not os.path.isdir(meta):
-            os.makedirs(meta)
-        if not os.path.isdir(season):
-            os.makedirs(season)
+        show_directory = show["target_directory"]
+        target_directory = os.path.join(show, "Season " + str(season))
+        meta_directory = os.path.join(show_directory, ".icons")
+        showname = os.path.basename(os.path.dirname(meta_directory))
 
-        while True:
-            current_episode = len(os.listdir(season)) + 1
-            current_episode = str(current_episode) if current_episode >= 10 else "0" + str(current_episode)
-            nextcheck = check_for_next(current_episode, config[show]["horriblesubs-name"], config[show]["quality"], config[show]["bot"])
-            if not nextcheck:
-                break
+        if not os.path.isdir(meta_directory):
+            os.makedirs(meta_directory)
+        if not os.path.isdir(target_directory):
+            os.makedirs(target_directory)
+
+        while True:  # == Do While Loop
+            current_episode = len(os.listdir(target_directory)) + 1
+            next_pack = get_next(horriblesubs_name, bot, quality, current_episode)
+            if next_pack:
+                prog = ProgressStruct()
+                downloader = IrcLibDownloader([next_pack], prog, target_directory, showname, current_episode, season)
+                downloader.download_loop()
             else:
-                download(current_episode, config[show]["horriblesubs-name"], config[show]["bot"], season, str(nextcheck[1]))
+                break
 
 
-def check_for_next(episode: str, horriblesubs_name: str, quality: str, bot: str) -> Tuple[bool, str] or bool:
-    searcher = HorribleSubsGetter(horriblesubs_name + " " + episode + " " + quality)
+def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XDCCPack or None:
+    """
+    Gets the next XDCC Pack of a show, if there is one
+
+    :param horriblesubs_name: the horriblesubs name of the show
+    :param bot: the bot from which the show should be downloaded
+    :param quality: the quality the show is supposed to be in
+    :param episode: the episode to download
+    :return: The XDCC Pack to download or None if no pack was found
+    """
+
+    episode_string = str(episode) if episode >= 10 else "0" + str(episode)
+    wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
+
+    searcher = HorribleSubsGetter(horriblesubs_name + " " + episode_string + " " + quality)
     results = searcher.search()
-    wanted_episode = horriblesubs_name + " - " + episode + " [" + quality + "].mkv"
+
     for result in results:
         if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
-            return True, result.packnumber
+            return result
     return False
-
-
-def download(episode: str, horriblesubs_name: str, bot: str, target_directory: str, packnumber: str) -> None:
-
-    packstring = "/msg " + bot + " xdcc send #" + packnumber
-    while len(sys.argv) > 1:
-        sys.argv.pop()
-    sys.argv.append(packstring)
-    sys.argv.append(target_directory)
-    xdcc_dl()
