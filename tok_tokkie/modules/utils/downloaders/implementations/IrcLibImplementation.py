@@ -148,12 +148,10 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             download_started = True
             try:
                 super().start()  # Start the download
-            except irc.client.ServerConnectionError:
-                # If connecting to the server fails, let the user know
-                print("Failed to connect to server")
-            except UnicodeDecodeError:
+            except (UnicodeDecodeError, irc.client.ServerConnectionError):
                 download_started = False
                 os.remove(self.filename)
+                print("Download failed, retrying...")
             except SystemExit:
                 pass  # If disconnect occurs, catch and ignore the system exit call
         return self.filename  # Return the file path
