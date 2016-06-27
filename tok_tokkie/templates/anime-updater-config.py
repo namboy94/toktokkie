@@ -26,16 +26,19 @@ LICENSE
 """
 
 # imports
-from tok_tokkie.scripts.anime_updater import update
+from tok_tokkie.scripts.anime_updater import start
 
 
-config = {
-
-    "/home/hermann/Downloads/Updater/Space Patrol Luluco":
-        {"horriblesubs-name": "Space Patrol Luluco", "quality": "480p", "season": "1", "bot": "CR-HOLLAND|NEW"}
-
-}
+config = [
+    {"target_directory": "/home/hermann/Downloads/Updater/Space Patrol Luluco2",
+     "horriblesubs_name": "Space Patrol Luluco",
+     "bot": "CR-HOLLAND|NEW",
+     "quality": "480p",
+     "season": "1"}
+]
 
 
 if __name__ == '__main__':
-    update(config)
+    start(config)
+    # start(config, continuous=True)
+    # start(config, continuous=True, looptime = 3600)

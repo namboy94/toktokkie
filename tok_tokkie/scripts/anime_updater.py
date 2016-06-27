@@ -31,6 +31,7 @@ LICENSE
 
 # imports
 import os
+import time
 from typing import Dict, List
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
@@ -54,7 +55,7 @@ def update(config: List[Dict[str, str]]) -> None:
         bot = show["bot"]
 
         show_directory = show["target_directory"]
-        target_directory = os.path.join(show, "Season " + str(season))
+        target_directory = os.path.join(show_directory, "Season " + str(season))
         meta_directory = os.path.join(show_directory, ".icons")
         showname = os.path.basename(os.path.dirname(meta_directory))
 
@@ -95,3 +96,20 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XD
         if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
             return result
     return False
+
+
+def start(config: List[Dict[str, str]], continuous: bool = False, looptime: int = 3600) -> None:
+    """
+    Starts the updater either once or in a continuous mode
+    :param config: the config to be used to determine which shows to update
+    :param continuous: flag to set continuous mode
+    :param looptime: Can be set to determine the intervals between updates
+    :return: None
+    """
+
+    if continuous:
+        while True:
+            update(config)
+            time.sleep(looptime)
+    else:
+        update(config)
