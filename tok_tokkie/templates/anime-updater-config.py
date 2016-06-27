@@ -26,33 +26,16 @@ LICENSE
 """
 
 # imports
-import os
-from typing import Dict, Tuple
+from tok_tokkie.scripts.anime_updater import update
 
 
-def update(config: Dict[str, Dict[str, str]]) -> None:
-    """
+config = {
 
-    :param config: show directory: (season, quality, horriblesubs-name)
-    :return:
-    """
-    for show in config:
+    "/home/hermann/Downloads/Updater/One Punch Man":
+        {"horriblesubs-name": "One Punch Man", "quality": "1080p", "season": "1"}
 
-        meta = os.path.join(show, ".icons")  # TODO Change to .meta
-        season = os.path.join(show, config[show]["season"])
-        showname = os.path.basename(os.path.basename(meta))
+}
 
-        if not os.path.isdir(meta):
-            os.makedirs(meta)
-        if not os.path.isdir(season):
-            os.makedirs(season)
 
-        current_episode = len(os.listdir(season))
-        while check_for_next(current_episode, config[show]["horriblesubs-name"]):
-            download(current_episode, config[show]["horriblesubs-name"], showname, season)
-
-def check_for_next() -> bool:
-    pass
-
-def download() -> None:
-    pass
+if __name__ == '__main__':
+    update(config)
