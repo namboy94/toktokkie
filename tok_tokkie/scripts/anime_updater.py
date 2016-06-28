@@ -36,7 +36,7 @@ from typing import Dict, List
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
-from tok_tokkie.modules.utils.searchengines.HorribleSubsGetter import HorribleSubsGetter
+from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
 def update(config: List[Dict[str, str]]) -> None:
@@ -88,22 +88,33 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XD
     :return: The XDCC Pack to download or None if no pack was found
     """
 
-    episode_string = str(episode) if episode >= 10 else "0" + str(episode)
-    wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
-    alt_wanted_episode = horriblesubs_name + "_-_" + episode_string
+    # [Coalgirls]_Nisekoi_Second_Season_06_(1920x1080_Blu-ray_FLAC)_[E4EF67F1].mkv
 
-    results = HorribleSubsGetter(horriblesubs_name + " " + episode_string + " " + quality).search()
-    alt_results = HorribleSubsGetter(horriblesubs_name + " " + episode_string).search()
+    searchers = SearchEngineManager.get_search_engine_strings()
 
-    for result in results:
-        if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
-            return result
+    for searcher in searchers:
 
-    for result in alt_results:
-        if result.bot == bot and result.filename.split("]_", 1)[1].rsplit("_[", 1)[0] == alt_wanted_episode:
-            return result
+        if not searcher == "Horriblesubs" and not "NIBL.co.uk":
+            continue
 
-    return False
+        search_engine = SearchEngineManager.get_search_engine_from_string(searcher)
+
+        episode_string = str(episode) if episode >= 10 else "0" + str(episode)
+        wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
+        alt_wanted_episode = horriblesubs_name + "_-_" + episode_string
+
+        results = search_engine(horriblesubs_name + " " + episode_string + " " + quality).search()
+        alt_results = search_engine(horriblesubs_name + " " + episode_string).search()
+
+        for result in results:
+            if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
+                return result
+
+        for result in alt_results:
+            if result.bot == bot and result.filename.split("]_", 1)[1].rsplit("_[", 1)[0] == alt_wanted_episode:
+                return result
+
+    return None
 
 
 def start(config: List[Dict[str, str]], continuous: bool = False, looptime: int = 3600) -> None:
