@@ -43,6 +43,6 @@ config = [
 ]
 
 if __name__ == '__main__':
-    start(config)
+    start(config, search_engines)
     # start(config, continuous=True)
     # start(config, continuous=True, looptime = 3600)

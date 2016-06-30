@@ -45,6 +45,7 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
 
     :param config: List of dictionaries with the following attributes:
                         (target directory, season, quality, horriblesubs-name, bot)
+    :param search_engines: List of search engines to be used
     :return: None
     """
     for show in config:
@@ -114,10 +115,12 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, searc
     return None
 
 
-def start(config: List[Dict[str, str]], continuous: bool = False, looptime: int = 3600) -> None:
+def start(config: List[Dict[str, str]], search_engines: List[str], continuous: bool = False, looptime: int = 3600)\
+        -> None:
     """
     Starts the updater either once or in a continuous mode
     :param config: the config to be used to determine which shows to update
+    :param search_engines: The search engines to be used
     :param continuous: flag to set continuous mode
     :param looptime: Can be set to determine the intervals between updates
     :return: None
@@ -125,7 +128,7 @@ def start(config: List[Dict[str, str]], continuous: bool = False, looptime: int 
 
     if continuous:
         while True:
-            update(config)
+            update(config, search_engines)
             time.sleep(looptime)
     else:
-        update(config)
+        update(config, search_engines)
