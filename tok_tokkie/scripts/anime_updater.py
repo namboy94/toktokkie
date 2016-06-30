@@ -39,7 +39,7 @@ from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownload
 from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
-def update(config: List[Dict[str, str]]) -> None:
+def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
     """
     Updates all shows defined in the config.
 
@@ -68,7 +68,7 @@ def update(config: List[Dict[str, str]]) -> None:
 
         while True:  # == Do While Loop
             current_episode = len(os.listdir(target_directory)) + 1
-            next_pack = get_next(horriblesubs_name, bot, quality, current_episode)
+            next_pack = get_next(horriblesubs_name, bot, quality, current_episode, search_engines)
             if next_pack:
                 prog = ProgressStruct()
                 downloader = IrcLibDownloader([next_pack], prog, target_directory, showname, current_episode, season)
@@ -77,7 +77,7 @@ def update(config: List[Dict[str, str]]) -> None:
                 break
 
 
-def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XDCCPack or None:
+def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, search_engines: List[str]) -> XDCCPack:
     """
     Gets the next XDCC Pack of a show, if there is one
 
@@ -85,17 +85,14 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XD
     :param bot: the bot from which the show should be downloaded
     :param quality: the quality the show is supposed to be in
     :param episode: the episode to download
+    :param search_engines: The search engines to use
     :return: The XDCC Pack to download or None if no pack was found
     """
 
+    # TODO
     # [Coalgirls]_Nisekoi_Second_Season_06_(1920x1080_Blu-ray_FLAC)_[E4EF67F1].mkv
 
-    searchers = SearchEngineManager.get_search_engine_strings()
-
-    for searcher in searchers:
-
-        if not searcher == "Horriblesubs" and not "NIBL.co.uk":
-            continue
+    for searcher in search_engines:
 
         search_engine = SearchEngineManager.get_search_engine_from_string(searcher)
 

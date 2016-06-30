@@ -28,6 +28,11 @@ LICENSE
 # imports
 from tok_tokkie.scripts.anime_updater import start
 
+search_engines = ["Horriblesubs",
+                  "NIBL.co.uk",
+                  "ixIRC.com",
+                  "intel.haruhichan.com"]
+
 
 config = [
     {"target_directory": "Target Directory",
@@ -36,7 +41,6 @@ config = [
      "quality": "Quality Setting",
      "season": "Season Number"}
 ]
-
 
 if __name__ == '__main__':
     start(config)
