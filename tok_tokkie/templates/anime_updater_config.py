@@ -44,5 +44,5 @@ config = [
 
 if __name__ == '__main__':
     start(config, search_engines)
-    # start(config, continuous=True)
-    # start(config, continuous=True, looptime = 3600)
+    # start(config, search_engines, continuous=True)
+    # start(config, search_engines, continuous=True, looptime = 3600)
