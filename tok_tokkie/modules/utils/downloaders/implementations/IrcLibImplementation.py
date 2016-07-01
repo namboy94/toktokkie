@@ -187,7 +187,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
         if event.source.startswith(self.nickname):
             # print("Joined channel")
-            print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
+            # print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
             self.connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
@@ -214,7 +214,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if command != "SEND":  # Only react on SENDs
             return
 
-        print("Receiving file:")
+        #  print("Receiving file:")
         self.progress_struct.single_size = int(size)  # Store the file size in the progress struct
 
         # Set the file name, but only if it was not set previously
