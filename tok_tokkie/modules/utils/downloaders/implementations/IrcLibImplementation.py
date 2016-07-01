@@ -134,7 +134,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         self.nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
-        print("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
+        # print("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
         super().connect(self.server, 6667, self.nickname)  # Connect to server
 
     def start(self) -> str:
@@ -169,8 +169,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if event is None:
             return
 
-        print("Connected to server")
-        print("Joining channel " + self.channel)
+        # print("Connected to server")
+        # print("Joining channel " + self.channel)
         connection.join(self.channel)  # Join the channel
 
     def on_join(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -186,7 +186,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             return
 
         if event.source.startswith(self.nickname):
-            print("Joined channel")
+            # print("Joined channel")
             print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
             self.connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
@@ -250,7 +250,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         self.progress_struct.single_progress += len(data)  # Increase the progress struct's value
 
         # Print message to the console once every second
-        # print()
         if self.time_counter < int(time.time()):  # Check the time
             self.time_counter = int(time.time())  # Update the time counter
 
