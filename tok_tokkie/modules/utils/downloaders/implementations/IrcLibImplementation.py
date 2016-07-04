@@ -265,6 +265,15 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Communicate with the server
         self.dcc.send_bytes(struct.pack("!I", self.progress_struct.single_progress))
 
+    def on_privmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+
+        :param connection:
+        :param event:
+        :return:
+        """
+        print(event.arguments[0])
+
     def on_dcc_disconnect(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
         Whenever the download completes, print a summary to the console and disconnect from the IRC network
