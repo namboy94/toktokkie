@@ -265,14 +265,19 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Communicate with the server
         self.dcc.send_bytes(struct.pack("!I", self.progress_struct.single_progress))
 
-    def on_privmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+    # noinspection PyMethodMayBeStatic
+    def on_privnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
+        Checks if the xdcc bot notifies us that we are not in a known channel and acts accordingly
 
-        :param connection:
-        :param event:
-        :return:
+        :param connection: the IRC connection
+        :param event: the private notice
+        :return: None
         """
-        print(event.arguments[0])
+        if connection is None:
+            pass
+        if "XDCC SEND denied, you must be on a known channel to request a pack" in event.arguments[0]:
+            raise ConnectionRefusedError("Not in the correct IRC channel")
 
     def on_dcc_disconnect(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
