@@ -24,11 +24,20 @@ This file is part of media-manager.
 LICENSE
 """
 
+# imports
+from typing import Tuple
+
 
 class BotMapper(object):
     """
     Class that offers methods to map an XDCC bot to an IRC server and/or IRC channel
     """
+
+    mapping = {"HelloKitty": ("irc.rizon.net", "#horriblesubs"),
+               "CR-*": ("irc.rizon.net", "#horriblesubs"),
+               "E-D|*": ("irc.rizon.net", "#exiled-destiny"),
+               "Doki|*": ("irc.rizon.net", "#doki"),
+               "default": ("irc.rizon.net", "#intel")}
 
     @staticmethod
     def get_server(xdcc_bot: str) -> str:
@@ -38,8 +47,7 @@ class BotMapper(object):
         :param xdcc_bot: the bot for which the server is wanted
         :return: the server for the specified bot
         """
-        str(xdcc_bot)
-        return "irc.rizon.net"
+        return BotMapper.get_match(xdcc_bot)[0]
 
     @staticmethod
     def get_channel(xdcc_bot: str) -> str:
@@ -49,11 +57,23 @@ class BotMapper(object):
         :param xdcc_bot: the bot for which the channel is wanted
         :return: the channel for the specified bot
         """
-        if xdcc_bot == "HelloKitty" or "CR-" in xdcc_bot:
-            return "#horriblesubs"
-        elif xdcc_bot == "E-D|Mashiro":
-            return "#exiled-destiny"
-        elif "doki" in xdcc_bot:
-            return "#doki"
-        else:
-            return "#intel"
+        return BotMapper.get_match(xdcc_bot)[1]
+
+    @staticmethod
+    def get_match(botname: str) -> Tuple[str, str]:
+        """
+        Matches a botname with a server and channel
+
+        :param botname: the bot to check
+        :return: a tuple of the server, the channel
+        """
+        for bot in BotMapper.mapping:
+            if bot.endswith("*"):
+                if botname.startswith(bot.rsplit("*", 1)[0]):
+                    return BotMapper.mapping[bot]
+            elif bot.startswith("*"):
+                if botname.endswith(bot.split("*", 1)[1]):
+                    return BotMapper.mapping[bot]
+            elif bot == botname:
+                return BotMapper.mapping[bot]
+        return BotMapper.mapping["default"]
