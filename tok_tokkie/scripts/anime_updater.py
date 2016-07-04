@@ -49,7 +49,7 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
     :param search_engines: List of search engines to be used
     :return: None
     """
-    logfile = open("au.log", 'a')
+    logfile = open("anime_updater.log", 'a')
 
     for show in config:
 
@@ -80,6 +80,7 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
                 logfile.write(showname + " episode " + str(current_episode) + "\n")
             else:
                 break
+    logfile.close()
 
 
 def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, search_engines: List[str]) -> XDCCPack:
@@ -94,16 +95,13 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, searc
     :return: The XDCC Pack to download or None if no pack was found
     """
 
-    # TODO
-    # [Coalgirls]_Nisekoi_Second_Season_06_(1920x1080_Blu-ray_FLAC)_[E4EF67F1].mkv
-
     for searcher in search_engines:
 
         search_engine = SearchEngineManager.get_search_engine_from_string(searcher)
 
         episode_string = str(episode) if episode >= 10 else "0" + str(episode)
 
-        episode_patterns = [horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv$",
+        episode_patterns = [horriblesubs_name + " - " + episode_string + " \[" + quality + "\].mkv",
                             horriblesubs_name + "_-_" + episode_string]
 
         results = search_engine(horriblesubs_name + " " + episode_string).search()
