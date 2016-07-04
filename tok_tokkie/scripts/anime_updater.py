@@ -31,6 +31,7 @@ LICENSE
 
 # imports
 import os
+import re
 import time
 from typing import Dict, List
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
@@ -48,6 +49,8 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
     :param search_engines: List of search engines to be used
     :return: None
     """
+    logfile = open("au.log", 'a')
+
     for show in config:
 
         horriblesubs_name = show["horriblesubs_name"]
@@ -74,6 +77,7 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
                 prog = ProgressStruct()
                 downloader = IrcLibDownloader([next_pack], prog, target_directory, showname, current_episode, season)
                 downloader.download_loop()
+                logfile.write(showname + " episode " + str(current_episode) + "\n")
             else:
                 break
 
@@ -98,20 +102,16 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, searc
         search_engine = SearchEngineManager.get_search_engine_from_string(searcher)
 
         episode_string = str(episode) if episode >= 10 else "0" + str(episode)
-        wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
-        alt_wanted_episode = horriblesubs_name + "_-_" + episode_string
 
-        results = search_engine(horriblesubs_name + " " + episode_string + " " + quality).search()
-        alt_results = search_engine(horriblesubs_name + " " + episode_string).search()
+        episode_patterns = [horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv$",
+                            horriblesubs_name + "_-_" + episode_string]
+
+        results = search_engine(horriblesubs_name + " " + episode_string).search()
 
         for result in results:
-            if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
-                return result
-
-        for result in alt_results:
-            if result.bot == bot and result.filename.split("]_", 1)[1].rsplit("_[", 1)[0] == alt_wanted_episode:
-                return result
-
+            for pattern in episode_patterns:
+                if result.bot == bot and re.search(re.compile(pattern), result.filename):
+                    return result
     return None
 
 
