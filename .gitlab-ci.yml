@@ -10,10 +10,8 @@ clone_master:
     - master
     - develop
   script:
-    #- git push -u git@gitlab.com:namboy94/media-manager.git master
-    - git push -u git@github.com:namboy94/media-manager.git master
-    #- git push -u git@github.com:namboy94/media-manager.git develop
-    #- git push -u git@bitbucket.org:namboy94/media-manager.git master
+    - git push -u git@github.com:namboy94/media-manager.git master --force
+    - git push -u git@github.com:namboy94/media-manager.git develop --force
 
 run_unit_tests:
   stage: test
@@ -22,7 +20,6 @@ run_unit_tests:
     - develop
   script:
     - python3 setup.py test
-
 
 #upload_python2_version:
 #  stage: deploy
@@ -64,3 +61,6 @@ upload_documentation_and_statistics:
     - git add --all
     - git commit -m "Updated Documentation and Statistics"
     - git push -u origin master
+  artifacts:
+    - tok-tokkie.wiki/git_stats
+    - tok-tokkie-wiki/html
