@@ -34,6 +34,8 @@ from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 
+print(GlobalGuiFramework.selected_grid_gui_framework)
+
 
 class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """

@@ -27,14 +27,11 @@ LICENSE
 
 # imports
 import sys
-
-from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
 from typing import List
 
-from eastereggs import EasterEggManager
-from tok_tokkie.modules.cli.MainCli import MainCli
+from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
+from tok_tokkie.eastereggs.EasterEggManager import EasterEggManager
 from tok_tokkie.modules.gui.framework import GlobalGuiFramework
-from tok_tokkie.modules.hooks.hooklist import hooks
 
 
 # noinspection PyTypeChecker
@@ -71,11 +68,11 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
 
     # The program starts here, using the selected mode
     if cli_mode:
-        MainCli(hooks).start()
+        from tok_tokkie.modules.cli.MainCli import MainCli
+        MainCli().start()
     else:
         from tok_tokkie.modules.gui.MainGui import MainGui
-        gui = MainGui(hooks)
-        gui.start()
+        MainGui().start()
 
 # This executes the main method
 if __name__ == '__main__':
