@@ -10,8 +10,8 @@ clone_master:
     - master
     - develop
   script:
-    - git push -u git@github.com:namboy94/media-manager.git master --force
-    - git push -u git@github.com:namboy94/media-manager.git develop --force
+    - git push -u git@github.com:namboy94/media-manager.git HEAD:master --force
+    - git push -u git@github.com:namboy94/media-manager.git HEAD:develop --force
 
 run_unit_tests:
   stage: test
