@@ -25,28 +25,30 @@ This file is part of media-manager.
 LICENSE
 """
 
-# /msg CR-HOLLAND|NEW xdcc send #5024
-# [HorribleSubs] Flying Witch - 04 [480p].mkv
-# [SUBGROUP] SHOWNAME - EPISODE [QUALITY].mkv
-
 # imports
 import os
+import re
 import time
+
 from typing import Dict, List
+
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
-from tok_tokkie.modules.utils.searchengines.HorribleSubsGetter import HorribleSubsGetter
+from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
-def update(config: List[Dict[str, str]]) -> None:
+def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
     """
     Updates all shows defined in the config.
 
     :param config: List of dictionaries with the following attributes:
                         (target directory, season, quality, horriblesubs-name, bot)
+    :param search_engines: List of search engines to be used
     :return: None
     """
+    logfile = open("anime_updater.log", 'a')
+
     for show in config:
 
         horriblesubs_name = show["horriblesubs_name"]
@@ -59,6 +61,8 @@ def update(config: List[Dict[str, str]]) -> None:
         meta_directory = os.path.join(show_directory, ".icons")
         showname = os.path.basename(os.path.dirname(meta_directory))
 
+        print("Processing " + showname)
+
         if not os.path.isdir(meta_directory):
             os.makedirs(meta_directory)
         if not os.path.isdir(target_directory):
@@ -66,16 +70,18 @@ def update(config: List[Dict[str, str]]) -> None:
 
         while True:  # == Do While Loop
             current_episode = len(os.listdir(target_directory)) + 1
-            next_pack = get_next(horriblesubs_name, bot, quality, current_episode)
+            next_pack = get_next(horriblesubs_name, bot, quality, current_episode, search_engines)
             if next_pack:
                 prog = ProgressStruct()
                 downloader = IrcLibDownloader([next_pack], prog, target_directory, showname, current_episode, season)
                 downloader.download_loop()
+                logfile.write(showname + " episode " + str(current_episode) + "\n")
             else:
                 break
+    logfile.close()
 
 
-def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XDCCPack or None:
+def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, search_engines: List[str]) -> XDCCPack:
     """
     Gets the next XDCC Pack of a show, if there is one
 
@@ -83,25 +89,34 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int) -> XD
     :param bot: the bot from which the show should be downloaded
     :param quality: the quality the show is supposed to be in
     :param episode: the episode to download
+    :param search_engines: The search engines to use
     :return: The XDCC Pack to download or None if no pack was found
     """
 
-    episode_string = str(episode) if episode >= 10 else "0" + str(episode)
-    wanted_episode = horriblesubs_name + " - " + episode_string + " [" + quality + "].mkv"
+    for searcher in search_engines:
 
-    searcher = HorribleSubsGetter(horriblesubs_name + " " + episode_string + " " + quality)
-    results = searcher.search()
+        search_engine = SearchEngineManager.get_search_engine_from_string(searcher)
 
-    for result in results:
-        if result.bot == bot and result.filename.split("] ", 1)[1] == wanted_episode:
-            return result
-    return False
+        episode_string = str(episode) if episode >= 10 else "0" + str(episode)
+
+        episode_patterns = [horriblesubs_name + " - " + episode_string + " \[" + quality + "\].mkv",
+                            horriblesubs_name + "_-_" + episode_string]
+
+        results = search_engine(horriblesubs_name + " " + episode_string).search()
+
+        for result in results:
+            for pattern in episode_patterns:
+                if result.bot == bot and re.search(re.compile(pattern), result.filename):
+                    return result
+    return None
 
 
-def start(config: List[Dict[str, str]], continuous: bool = False, looptime: int = 3600) -> None:
+def start(config: List[Dict[str, str]], search_engines: List[str], continuous: bool = False, looptime: int = 3600)\
+        -> None:
     """
     Starts the updater either once or in a continuous mode
     :param config: the config to be used to determine which shows to update
+    :param search_engines: The search engines to be used
     :param continuous: flag to set continuous mode
     :param looptime: Can be set to determine the intervals between updates
     :return: None
@@ -109,7 +124,7 @@ def start(config: List[Dict[str, str]], continuous: bool = False, looptime: int 
 
     if continuous:
         while True:
-            update(config)
+            update(config, search_engines)
             time.sleep(looptime)
     else:
-        update(config)
+        update(config, search_engines)

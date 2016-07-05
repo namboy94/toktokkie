@@ -25,15 +25,15 @@ LICENSE
 """
 
 # imports
-from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 
 
-class ShowManagerGui(Globals.selected_grid_gui_framework):
+class ShowManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
     GUI for the Show Manager plugin
     """
 
-    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
+    def __init__(self, parent: GlobalGuiFramework.selected_grid_gui_framework) -> None:
         """
         Constructor
         :param parent: the parent gui

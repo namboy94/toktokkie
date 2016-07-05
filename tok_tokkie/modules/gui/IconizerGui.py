@@ -26,11 +26,11 @@ LICENSE
 
 # imports
 import os
-from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 
 
-class IconizerGui(Globals.selected_grid_gui_framework):
+class IconizerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
     GUI for the Iconizer plugin, that allows the election of a directory and subsequently iconizes
     that directory.
@@ -56,7 +56,7 @@ class IconizerGui(Globals.selected_grid_gui_framework):
     A Combo box from which the user can select which iconizer method he wants to use
     """
 
-    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
+    def __init__(self, parent: GlobalGuiFramework.selected_grid_gui_framework) -> None:
         """
         Constructor of the IconizerGui class. It calls the constructor of the active gfworks framework
         with the title "Iconizer" and hides the parent Window

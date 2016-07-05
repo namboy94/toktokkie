@@ -24,25 +24,6 @@ This file is part of media-manager.
 LICENSE
 """
 
-# imports
-from gfworks.templates.generic.GenericGridTemplate import GenericGridTemplate
-
-
-class Globals(object):
-    """
-    A class that stores the currently selected GUI framework to enable cross-platform use using
-    gfworks. Future plans of gfworks may be able to make this admittedly ugly construct
-    obsolete, but as of right now it is required
-    """
-
-    selected_grid_gui_framework = GenericGridTemplate
-    """
-    This stores the selected GUI framework, it is initialized as generic object to avoid Import
-    errors. The variable will be correctly set at some point in the main module's main method as
-    either Gtk3GridTemplate or TkGridTemplate.
-    """
-
-
 """
 The metadata is stored here. It can be used by any other module in this project this way, most
 notably by the setup.py file
@@ -58,12 +39,12 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.8.2"
+version_number = "0.9.9"
 """
 The current version of the program.
 """
 
-development_status = "Development Status :: 3 - Alpha"
+development_status = "Development Status :: 4 - Beta"
 """
 The current development status of the program
 """
@@ -94,12 +75,12 @@ license_type = "GNU GPL3"
 The project's license type
 """
 
-python3_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc']
+python3_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter']
 """
 Python 3 Python Packaging Index requirements
 """
 
-python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'typing', 'irc']
+python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'typing', 'irc', 'puffotter_2']
 """
 Python 2 Python Packaging Index requirements
 """

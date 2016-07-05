@@ -31,9 +31,8 @@ import shlex
 import struct
 import sys
 import time
-
 import irc.client
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 
 
 class IrcLibImplementation(irc.client.SimpleIRCClient):
@@ -46,11 +45,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     server = ""
     """
     The server address of the server the downloader has to connect to.
-    """
-
-    channel = ""
-    """
-    The channel name of the channel the downloader has to join.
     """
 
     bot = ""
@@ -98,14 +92,28 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Keeps track of the time to control how often status updates about the download are printed to the console
     """
 
-    def __init__(self, server: str, channel: str, bot: str, pack: int, destination_directory: str,
-                 progress_struct: ProgressStruct, file_name_override: str = None) -> None:
+    common_servers = ["irc.rizon.net", "irc.criten.net", "irc.scenep2p.net", "irc.freenode.net", "irc.abjects.net"]
+    """
+    A list of common servers to try in case a bot does not exist on a server
+    """
+
+    server_retry_counter = 0
+    """
+    Counter for server retries
+    """
+
+    verbose = False
+    """
+    Variable to determine the verbosity of the input
+    """
+
+    def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
+                 file_name_override: str = None, verbose: bool = False) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
 
         :param server: The server to which the Downloader needs to connect to
-        :param channel: The channel the downloader needs to join
         :param bot: The bot serving the file to download
         :param pack: The pack number of the file to download
         :param destination_directory: The destination directory of the downloaded file
@@ -118,15 +126,31 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
         # Store values
         self.server = server
-        self.channel = channel
         self.bot = bot
         self.pack = pack
         self.destination_directory = destination_directory
         self.progress_struct = progress_struct
+        self.verbose = verbose
+
+        # Remove the server from common server list if it is included there
+        try:
+            self.common_servers.remove(server)
+        except ValueError:
+            pass
 
         # If a file name is pre-defined, set the file name to be that name.
         if file_name_override is not None:
             self.filename = os.path.join(destination_directory, file_name_override)
+
+    def log(self, string: str) -> None:
+        """
+        Prints a string, if the verbose option is set
+
+        :param string: the string to print
+        :return: None
+        """
+        if self.verbose:
+            print(string)
 
     def connect(self) -> None:
         """
@@ -134,7 +158,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         self.nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
-        print("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
+        self.log("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
         super().connect(self.server, 6667, self.nickname)  # Connect to server
 
     def start(self) -> str:
@@ -142,20 +166,37 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Starts the download process and returns the file path of the downloaded file once the download completes
         :return: the path to the downloaded file
         """
-        self.connect()  # Connect to server
-        try:
-            super().start()  # Start the download
-        except SystemExit:
-            pass  # If disconnect occurs, catch and ignore the system exit call
-        except irc.client.ServerConnectionError:
-            # If connecting to the server fails, let the user know
-            print("Failed to connect to server")
+        self.log("Starting Download")
+        download_started = False
+        while not download_started:
+            download_started = True
+            try:
+                self.connect()  # Connect to server
+                super().start()  # Start the download
+
+            except (UnicodeDecodeError, irc.client.ServerConnectionError):
+                download_started = False
+                os.remove(self.filename)
+                self.log("Download failed, retrying...")
+
+            except ConnectionAbortedError:
+                try:
+                    self.server = self.common_servers[self.server_retry_counter]
+                    self.server_retry_counter += 1
+                    download_started = False
+                    self.log("Trying different server...")
+                except IndexError:
+                    raise ConnectionError("Failed to find the bot on any known server")
+
+            except (SystemExit, ConnectionError):
+                pass  # If disconnect occurs, catch and ignore the system exit call
+
         return self.filename  # Return the file path
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
-        Method run when the IRCClient successfully connects to a server. It joins the specified channel
-        at this stage.
+        Method run when the IRCClient successfully connects to a server. It sends a whois request
+        to find out which channel to join
 
         :param connection: The IRC connection
         :param event: The event that caused this method to be run
@@ -164,10 +205,36 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Make Pycharm happy
         if event is None:
             return
+        self.log("Connection to server " + self.server + " established. Sending WHOIS command for " + self.bot)
+        connection.whois(self.bot)
 
-        print("Connected to server")
-        print("Joining channel " + self.channel)
-        connection.join(self.channel)  # Join the channel
+    def on_nosuchnick(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Checks if there exists a bot with the specified name on the server
+
+        :param connection: the IRC connection
+        :param event: the nosuchnick event
+        :return: None
+        """
+        self.log("NOSUCHNICK")
+        if connection is None:
+            pass
+        if event.arguments[0] == self.bot:
+            connection.disconnect("Bot does not exist on server")
+
+    # noinspection PyMethodMayBeStatic
+    def on_whoischannels(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Checks the channels the bot is connected to.
+
+        :param connection: the IRC connection
+        :param event: the whois channel event
+        :return: None
+        """
+        self.log("Got WHOIS information. Bot resides in: " + event.arguments[1])
+        channel_to_join = event.arguments[1].split("%")[1].split(" ")[0]
+        self.log("Joining channel " + channel_to_join)
+        connection.join(channel_to_join)  # Join the channel
 
     def on_join(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -177,15 +244,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
-        # Make Pycharm happy
-        if connection is None or event is None:
-            return
-
         if event.source.startswith(self.nickname):
-            print("Joined channel")
-            print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
+            self.log("Successfully joined channel")
+            self.log("Sending XDCC SEND request to " + self.bot)
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
-            self.connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
+            connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
     def on_ctcp(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -210,7 +273,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if command != "SEND":  # Only react on SENDs
             return
 
-        print("Receiving file:")
+        #  print("Receiving file:")
         self.progress_struct.single_size = int(size)  # Store the file size in the progress struct
 
         # Set the file name, but only if it was not set previously
@@ -228,6 +291,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         peer_address = irc.client.ip_numstr_to_quad(peer_address)  # Calculate the bot's address
         peer_port = int(peer_port)  # Cast peer port to an integer value
         self.dcc = self.dcc_connect(peer_address, peer_port, "raw")  # Establish the DCC connection to the bot
+        self.log("Established DCC connection")
 
     def on_dccmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -246,7 +310,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         self.progress_struct.single_progress += len(data)  # Increase the progress struct's value
 
         # Print message to the console once every second
-        # print()
         if self.time_counter < int(time.time()):  # Check the time
             self.time_counter = int(time.time())  # Update the time counter
 
@@ -292,7 +355,55 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
+        self.log("Disconnected")
         # Make Pycharm happy
-        if connection is None or event is None:
+        if connection is None:
             pass
-        sys.exit(0)
+        if event.arguments[0] == "Bot does not exist on server":
+            raise ConnectionAbortedError("Bot does not exist on server")
+        else:
+            sys.exit(0)
+
+    def on_privmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a private message
+        :param connection: the IRC connection
+        :param event: the message event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PRIVATE MESSAGE: " + str(event.arguments))
+
+    def on_privnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a private notice
+        :param connection: the IRC connection
+        :param event: the notice event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PRIVATE NOTICE: " + str(event.arguments))
+
+    def on_pubmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a public message
+        :param connection: the IRC connection
+        :param event: the message event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PUBLIC MESSAGE: " + str(event.arguments))
+
+    def on_pubnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a public notice
+        :param connection: the IRC connection
+        :param event: the notice event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PUBLIC NOTICE: " + str(event.arguments))

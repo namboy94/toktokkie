@@ -28,10 +28,10 @@ LICENSE
 import os
 from typing import List, Dict
 from tok_tokkie.modules.utils.Renamer import Renamer
-from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 
 
-class RenamerGui(Globals.selected_grid_gui_framework):
+class RenamerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
     GUI for the Renamer plugin that allows the user to select a directory to rename the contents of
     """
@@ -51,7 +51,7 @@ class RenamerGui(Globals.selected_grid_gui_framework):
     A button that lets the user browse for a directory using a directory chooser dialog
     """
 
-    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
+    def __init__(self, parent: GlobalGuiFramework.selected_grid_gui_framework) -> None:
         """
         Constructor of the RenamerGui class. It calls the selected gfworks framework's constructor and
         hides the parent window

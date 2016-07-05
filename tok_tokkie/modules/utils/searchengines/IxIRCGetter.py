@@ -171,7 +171,6 @@ class IxIRCGetter(GenericGetter):
 
                 # Generate XDCCPack and append it to the list
                 result = XDCCPack(file_name, "irc." + server + ".net", channel, bot, pack_number, size)
-                print(channel)
                 results.append(result)
 
             # If an invalid pack is found, this is called

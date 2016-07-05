@@ -45,12 +45,8 @@ class HorribleSubsGetter(GenericGetter):
         :return: the search results as a list of XDCCPack objects
         """
         # Prepare the search term, nibl.co.uk uses + symbols as spaces.
-        split_search_term = self.search_term.split(" ")
-        prepared_search_term = split_search_term[0]
-        i = 1
-        while i < len(split_search_term):
-            prepared_search_term += "%20" + split_search_term[i]
-            i += 1
+        prepared_search_term = self.search_term.replace(" ", "%20")
+        prepared_search_term = prepared_search_term.replace("!", "%21")
 
         # Get the data from the website
         url = "http://xdcc.horriblesubs.info/search.php?t=" + prepared_search_term  # Define the URL

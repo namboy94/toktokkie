@@ -28,10 +28,9 @@ LICENSE
 import os
 import sys
 
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
-from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
 from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
@@ -413,14 +412,12 @@ class BatchDownloadManagerCli(GenericCli):
         # If the preparation was successful, the download process will now start
         print("Downloading...")  # Let the user know that we started downloading
 
-        # For command line, use a CLI downloader per default
-        downloader = DownloaderManager.get_downloader_strings("cli")[0]
         progress = ProgressStruct()  # Create a progress structure to keep track of download progress
         progress.total = len(self.selected_packs)  # Define how many files are going to be downloaded
 
         # Start downloading
         BatchDownloadManager.start_download_process(
-            preparation, downloader, self.selected_packs, self.auto_rename, progress)
+            preparation, self.selected_packs, self.auto_rename, progress)
 
         print("Download complete")  # Let the user know that the downloads have all completed
 
