@@ -117,7 +117,6 @@ class IrcLibDownloader(GenericDownloader):
             file_name = None
 
         downloader = IrcLibImplementation(pack.server,
-                                          pack.channel,
                                           pack.bot,
                                           pack.packnumber,
                                           self.target_directory,

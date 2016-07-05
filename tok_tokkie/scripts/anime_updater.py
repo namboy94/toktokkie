@@ -25,10 +25,6 @@ This file is part of media-manager.
 LICENSE
 """
 
-# /msg CR-HOLLAND|NEW xdcc send #5024
-# [HorribleSubs] Flying Witch - 04 [480p].mkv
-# [SUBGROUP] SHOWNAME - EPISODE [QUALITY].mkv
-
 # imports
 import os
 import re
