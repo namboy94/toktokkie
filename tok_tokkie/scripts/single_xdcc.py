@@ -28,8 +28,10 @@ LICENSE
 # imports
 import os
 import sys
+
 from typing import Tuple
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 
 

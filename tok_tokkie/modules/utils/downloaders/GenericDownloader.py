@@ -26,8 +26,8 @@ LICENSE
 
 # imports
 from typing import List
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 
 
 class GenericDownloader(object):

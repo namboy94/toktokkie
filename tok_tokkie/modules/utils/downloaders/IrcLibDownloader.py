@@ -26,12 +26,11 @@ LICENSE
 
 # Imports
 from typing import List
-
-from tok_tokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.downloaders.GenericDownloader import GenericDownloader
 from tok_tokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
+from tok_tokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
 
 
 class IrcLibDownloader(GenericDownloader):

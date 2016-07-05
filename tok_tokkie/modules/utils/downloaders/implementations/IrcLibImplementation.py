@@ -26,13 +26,13 @@ LICENSE
 
 # imports
 import os
-import sys
-import time
+import random
 import shlex
 import struct
-import random
+import sys
+import time
 import irc.client
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 
 
 class IrcLibImplementation(irc.client.SimpleIRCClient):

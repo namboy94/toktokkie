@@ -27,12 +27,13 @@ LICENSE
 # imports
 import os
 import time
-from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
-from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
-from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
-from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
+
+from modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.gui.framework import GlobalGuiFramework
+from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
+from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
+from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
+from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 print(GlobalGuiFramework.selected_grid_gui_framework)
 
