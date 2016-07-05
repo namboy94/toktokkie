@@ -388,7 +388,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.time_left_label = self.generate_label("Time Left")
         self.position_absolute(self.total_progress_bar, 98, 45, 19, 5)
         self.position_absolute(self.total_progress_label, 80, 45, 15, 5)
-        self.position_absolute(self.total_progress_current, 98, 45, 3, 5)
+        self.position_absolute(self.total_progress_current, 95, 45, 3, 5)
         self.position_absolute(self.total_progress_total, 117, 45, 3, 5)
         self.position_absolute(self.single_progress_bar, 98, 50, 19, 5)
         self.position_absolute(self.single_progress_label, 80, 50, 15, 5)
