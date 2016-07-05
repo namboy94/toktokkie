@@ -363,3 +363,47 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             raise ConnectionAbortedError("Bot does not exist on server")
         else:
             sys.exit(0)
+
+    def on_privmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a private message
+        :param connection: the IRC connection
+        :param event: the message event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PRIVATE MESSAGE: " + str(event.arguments))
+
+    def on_privnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a private notice
+        :param connection: the IRC connection
+        :param event: the notice event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PRIVATE NOTICE: " + str(event.arguments))
+
+    def on_pubmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a public message
+        :param connection: the IRC connection
+        :param event: the message event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PUBLIC MESSAGE: " + str(event.arguments))
+
+    def on_pubnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Logs a public notice
+        :param connection: the IRC connection
+        :param event: the notice event
+        :return: None
+        """
+        if connection is None:
+            pass
+        self.log("PUBLIC NOTICE: " + str(event.arguments))
