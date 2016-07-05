@@ -28,12 +28,11 @@ LICENSE
 from typing import List
 from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
-from tok_tokkie.modules.utils.downloaders.GenericDownloader import GenericDownloader
 from tok_tokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 from tok_tokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
 
 
-class IrcLibDownloader(GenericDownloader):
+class IrcLibDownloader(object):
     """
     XDCC Downloader that makes use of irclib to connect to IRC servers and request XDCC file
     transfers
@@ -95,7 +94,17 @@ class IrcLibDownloader(GenericDownloader):
         :return: None
         """
         # Store variables
-        super().__init__(packs, progress_struct, target_directory, show_name, episode_number, season_number)
+        self.packs = packs
+        self.progress_struct = progress_struct
+        self.target_directory = target_directory
+
+        # Establish if the downloader should auto rename the files
+        # Only auto rename if show name, season and episode are specified
+        if show_name and episode_number > 0 and season_number > 0:
+            self.show_name = show_name
+            self.episode_number = episode_number
+            self.season_number = season_number
+            self.auto_rename = True
 
     def download_single(self, pack: XDCCPack) -> str:
         """
@@ -123,12 +132,23 @@ class IrcLibDownloader(GenericDownloader):
                                           file_name_override=file_name)
         return downloader.start()
 
-    @staticmethod
-    def get_string_identifier() -> str:
+    # noinspection PyTypeChecker
+    def download_loop(self) -> List[str]:
         """
-        Returns a unique string identifier with which the Downloader can be addressed by
-        the DownloaderManager
+        Downloads all files stored by the Constructor and return a list of file paths to the
+        downloaded files
 
-        :return: the string identifier of the Downloader
+        :return: the list of file paths of the downloaded files
         """
-        return "IRC Downloader"
+        files = []  # The downloaded file paths
+        self.packs.sort(key=lambda x: x.filename)  # Sorts the packs by file name
+
+        for pack in self.packs:  # Download each pack
+            files.append(self.download_single(pack))  # Download pack and append file path to files list
+
+            # Reset the progress of the single file to 0
+            self.progress_struct.single_progress = 0
+            self.progress_struct.single_size = 0
+
+            self.progress_struct.total_progress += 1  # Increment progress structure
+        return files

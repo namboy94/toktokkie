@@ -29,10 +29,9 @@ import os
 import time
 
 from modules.objects.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
-from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
-from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
 from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 print(GlobalGuiFramework.selected_grid_gui_framework)
@@ -383,7 +382,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_absolute(self.rename_check, 80, 45, 30, 12)
 
         self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_string_combo_box(DownloaderManager.get_downloader_strings("all"))
+        self.download_engine_combo_box = self.generate_string_combo_box([])
         self.position_absolute(self.download_engine_label, 80, 57, 15, 13)
         self.position_absolute(self.download_engine_combo_box, 95, 57, 15, 13)
 
@@ -619,9 +618,6 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         # a download is currently running
         self.set_button_string(self.download_button, "Downloading...")
 
-        # Get selected downloader type from Combo Box
-        downloader = self.get_string_from_current_selected_combo_box_option(self.download_engine_combo_box)
-
         # Set up progress structure
         progress = ProgressStruct()
         progress.total = len(packs)
@@ -631,7 +627,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
 
         # Start the download thread
         self.run_thread_in_parallel(target=BatchDownloadManager.start_download_process,
-                                    args=(preparation, downloader, packs,
+                                    args=(preparation, packs,
                                           self.get_boolean_from_check_box(self.rename_check), progress))
 
         # Set the class variable dl_progress to point to the progress structure to disable
