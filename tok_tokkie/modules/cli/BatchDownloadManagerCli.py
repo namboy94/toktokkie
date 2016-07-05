@@ -28,7 +28,7 @@ LICENSE
 import os
 import sys
 
-from modules.objects.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
 from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager

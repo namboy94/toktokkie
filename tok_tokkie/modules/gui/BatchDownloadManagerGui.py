@@ -28,7 +28,7 @@ LICENSE
 import os
 import time
 
-from modules.objects.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
 from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
@@ -386,20 +386,20 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.average_dl_speed_label = self.generate_label("Average Speed")
         self.time_left = self.generate_label("-")
         self.time_left_label = self.generate_label("Time Left")
-        self.position_absolute(self.total_progress_bar, 128, 45, 19, 5)
-        self.position_absolute(self.total_progress_label, 110, 45, 15, 5)
-        self.position_absolute(self.total_progress_current, 125, 45, 3, 5)
-        self.position_absolute(self.total_progress_total, 147, 45, 3, 5)
-        self.position_absolute(self.single_progress_bar, 128, 50, 19, 5)
-        self.position_absolute(self.single_progress_label, 110, 50, 15, 5)
-        self.position_absolute(self.single_progress_current, 125, 50, 3, 5)
-        self.position_absolute(self.single_progress_total, 147, 50, 3, 5)
-        self.position_absolute(self.download_speed, 128, 55, 19, 5)
-        self.position_absolute(self.download_speed_label, 110, 55, 15, 5)
-        self.position_absolute(self.average_dl_speed, 128, 60, 19, 5)
-        self.position_absolute(self.average_dl_speed_label, 110, 60, 15, 5)
-        self.position_absolute(self.time_left, 128, 65, 19, 5)
-        self.position_absolute(self.time_left_label, 110, 65, 15, 5)
+        self.position_absolute(self.total_progress_bar, 98, 45, 19, 5)
+        self.position_absolute(self.total_progress_label, 80, 45, 15, 5)
+        self.position_absolute(self.total_progress_current, 98, 45, 3, 5)
+        self.position_absolute(self.total_progress_total, 117, 45, 3, 5)
+        self.position_absolute(self.single_progress_bar, 98, 50, 19, 5)
+        self.position_absolute(self.single_progress_label, 80, 50, 15, 5)
+        self.position_absolute(self.single_progress_current, 95, 50, 3, 5)
+        self.position_absolute(self.single_progress_total, 117, 50, 3, 5)
+        self.position_absolute(self.download_speed, 98, 55, 19, 5)
+        self.position_absolute(self.download_speed_label, 80, 55, 15, 5)
+        self.position_absolute(self.average_dl_speed, 98, 60, 19, 5)
+        self.position_absolute(self.average_dl_speed_label, 80, 60, 15, 5)
+        self.position_absolute(self.time_left, 98, 65, 19, 5)
+        self.position_absolute(self.time_left_label, 80, 65, 15, 5)
 
     def search_xdcc(self, widget: object) -> None:
         """
