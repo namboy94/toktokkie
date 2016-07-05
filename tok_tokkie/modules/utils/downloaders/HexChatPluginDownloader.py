@@ -26,13 +26,12 @@ LICENSE
 
 # imports
 import os
-import platform
 import time
+import platform
+from typing import List
 from subprocess import Popen
 from threading import Thread
-from typing import List
-
-from tok_tokkie.modules.utils.fileops.FileMover import FileMover
+from puffotter.fileops import move_file
 from tok_tokkie.modules.objects.Episode import Episode
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
@@ -318,7 +317,7 @@ class HexChatPluginDownloader(GenericDownloader):
         # else the file path just stays the same
 
         if self.download_dir != self.target_directory:  # If target dir is not download dir, move files to target dir
-            file_path = FileMover.move_file(file_path, self.target_directory)  # Move file to target directory
+            file_path = move_file(file_path, self.target_directory)  # Move file to target directory
 
         return file_path
 

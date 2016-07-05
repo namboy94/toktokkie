@@ -27,7 +27,7 @@ LICENSE:
 # imports
 from typing import Tuple
 
-from tok_tokkie.modules.utils.calc.FileSizeCalculator import FileSizeCalculator
+from puffotter.calc import get_byte_size_from_string
 
 
 class XDCCPack(object):
@@ -90,7 +90,7 @@ class XDCCPack(object):
         self.channel = channel
         self.bot = bot
         self.packnumber = packnumber
-        self.size = FileSizeCalculator.get_byte_size_from_string(size)
+        self.size = get_byte_size_from_string(size)
         self.pretty_size = size
 
     def to_string(self) -> str:

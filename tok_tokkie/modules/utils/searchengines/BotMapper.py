@@ -37,6 +37,7 @@ class BotMapper(object):
                "CR-*": ("irc.rizon.net", "#horriblesubs"),
                "E-D|*": ("irc.rizon.net", "#exiled-destiny"),
                "Doki|*": ("irc.rizon.net", "#doki"),
+               "Cerebrate": ("irc.rizon.net", "#doremi"),
                "default": ("irc.rizon.net", "#intel")}
 
     @staticmethod

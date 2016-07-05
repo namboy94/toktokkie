@@ -28,7 +28,7 @@ LICENSE
 from typing import List
 
 import tok_tokkie.metadata as metadata
-from eastereggs import LeetPrint
+from eastereggs.LeetPrint import LeetPrint
 
 
 class EasterEggManager(object):
