@@ -133,7 +133,7 @@ or install using pip:
 
     # pip install toktokkie
 
-Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/media-manager/wikis/windows-builds)
+Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/windows-builds)
 
 **Configuring Downloaders**
 
@@ -170,7 +170,7 @@ After the installation is completed, run hexchat and set it up to your liking. T
 
 This project is mirrored to:
 
-* [github.com](https://github.com/namboy94/tok-tokkie)
+* [github.com](https://github.com/namboy94/toktokkie)
 
 
 [Git Statistics](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/git_stats/general.html)
@@ -181,9 +181,9 @@ Note: Those Links need a manual refresh to load the CSS, I have no idea why.
 
 Check out this project's python package index site:
 
-[python 2](https://pypi.python.org/pypi/tok-tokkie-2)
+[python 2 (Currently not available)](https://pypi.python.org/pypi/toktokkie-2)
 
-[python 3](https://pypi.python.org/pypi/tok-tokkie)
+[python 3](https://pypi.python.org/pypi/toktokkie)
 
 
 ## Disclaimer:

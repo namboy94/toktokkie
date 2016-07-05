@@ -28,21 +28,33 @@ LICENSE
 # imports
 from tok_tokkie.scripts.anime_updater import start
 
+# Remove unwanted search engines to speed up the script
 search_engines = ["Horriblesubs",
                   "NIBL.co.uk",
                   "ixIRC.com",
                   "intel.haruhichan.com"]
 
-
+# Add as many shows as you want.
+# Don't forget to seperate the dictionaries (parts enclosed in curly brackets {}) with commas
 config = [
-    {"target_directory": "Target Directory",
-     "horriblesubs_name": "Show Name",
-     "bot": "Bot Name",
-     "quality": "Quality Setting",
-     "season": "Season Number"}
+
+    {"target_directory": "Target Directory 1",
+     "horriblesubs_name": "Show Name 1",
+     "bot": "Bot Name 1",
+     "quality": "1080p",
+     "season": "Season Number 1"},
+
+    {"target_directory": "Target Directory 2",
+     "horriblesubs_name": "Show Name 2",
+     "bot": "Bot Name 2",
+     "quality": "720p",
+     "season": "Season Number 2"}
+
 ]
 
 if __name__ == '__main__':
+    # Uncomment just the configuration you want, leave all others commented
+
     start(config, search_engines)
     # start(config, search_engines, continuous=True)
     # start(config, search_engines, continuous=True, looptime = 3600)
