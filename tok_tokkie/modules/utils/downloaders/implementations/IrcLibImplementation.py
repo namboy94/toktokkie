@@ -93,6 +93,16 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Keeps track of the time to control how often status updates about the download are printed to the console
     """
 
+    common_servers = ["irc.rizon.net", "irc.abjects.net", "irc.criten.net", "irc.scenep2p.net", "irc.freenode.net"]
+    """
+    A list of common servers to try in case a bot does not exist on a server
+    """
+
+    server_retry_counter = 0
+    """
+    Counter for server retries
+    """
+
     def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
                  file_name_override: str = None) -> None:
         """
@@ -117,6 +127,12 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         self.destination_directory = destination_directory
         self.progress_struct = progress_struct
 
+        # Remove the server from common server list if it is included there
+        try:
+            self.common_servers.remove(server)
+        except ValueError:
+            pass
+
         # If a file name is pre-defined, set the file name to be that name.
         if file_name_override is not None:
             self.filename = os.path.join(destination_directory, file_name_override)
@@ -138,14 +154,27 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         download_started = False
         while not download_started:
             download_started = True
+
             try:
                 super().start()  # Start the download
+
             except (UnicodeDecodeError, irc.client.ServerConnectionError):
                 download_started = False
                 os.remove(self.filename)
                 print("Download failed, retrying...")
+
+            except ConnectionAbortedError:
+                try:
+                    self.server = self.common_servers[self.server_retry_counter]
+                    self.server_retry_counter += 1
+                    download_started = False
+                    print("Trying different server...")
+                except IndexError:
+                    raise ConnectionError("Failed to find the bot on any known server")
+
             except SystemExit:
                 pass  # If disconnect occurs, catch and ignore the system exit call
+
         return self.filename  # Return the file path
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -161,6 +190,19 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if event is None:
             return
         connection.whois(self.bot)
+
+    def on_nosuchnick(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Checks if there exists a bot with the specified name on the server
+
+        :param connection: the IRC connection
+        :param event: the nosuchnick event
+        :return: None
+        """
+        if connection is None:
+            pass
+        if event.arguments[0] == self.bot:
+            raise ConnectionAbortedError("Bot does not exist on server")
 
     # noinspection PyMethodMayBeStatic
     def on_whoischannels(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -259,20 +301,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
         # Communicate with the server
         self.dcc.send_bytes(struct.pack("!I", self.progress_struct.single_progress))
-
-    # noinspection PyMethodMayBeStatic
-    def on_privnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
-        """
-        Checks if the xdcc bot notifies us that we are not in a known channel and acts accordingly
-
-        :param connection: the IRC connection
-        :param event: the private notice
-        :return: None
-        """
-        if connection is None:
-            pass
-        if "XDCC SEND denied, you must be on a known channel to request a pack" in event.arguments[0]:
-            raise ConnectionRefusedError("Not in the correct IRC channel")
 
     def on_dcc_disconnect(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
