@@ -244,10 +244,10 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
-        self.log("Successfully joined channel")
         if event.source.startswith(self.nickname):
-            # Send a private message to the bot to request the pack file (xdcc send #packnumber)
+            self.log("Successfully joined channel")
             self.log("Sending XDCC SEND request to " + self.bot)
+            # Send a private message to the bot to request the pack file (xdcc send #packnumber)
             connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
     def on_ctcp(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
