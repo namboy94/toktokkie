@@ -29,7 +29,6 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-from tok_tokkie.modules.utils.searchengines.BotMapper import BotMapper
 from tok_tokkie.modules.utils.searchengines.GenericGetter import GenericGetter
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
@@ -93,8 +92,8 @@ class IntelGetter(GenericGetter):
                 size = line.text
             elif (i - 4) % 5 == 0:  # Fifth/Last Column (Generate XDCCPack)
                 filename = line.text
-                channel = BotMapper.get_channel(bot)
-                server = BotMapper.get_server(bot)
+                channel = ""
+                server = "irc.rizon.net"
                 result = XDCCPack(filename, server, channel, bot, packnumber, size)
                 results.append(result)
             i += 1  # Move to next 'td element'

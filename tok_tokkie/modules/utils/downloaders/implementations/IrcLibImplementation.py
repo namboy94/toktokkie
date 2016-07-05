@@ -26,12 +26,11 @@ LICENSE
 
 # imports
 import os
-import random
-import shlex
-import struct
 import sys
 import time
-
+import shlex
+import struct
+import random
 import irc.client
 from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 
@@ -93,7 +92,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Keeps track of the time to control how often status updates about the download are printed to the console
     """
 
-    common_servers = ["irc.rizon.net", "irc.abjects.net", "irc.criten.net", "irc.scenep2p.net", "irc.freenode.net"]
+    common_servers = ["irc.rizon.net", "irc.criten.net", "irc.scenep2p.net", "irc.freenode.net", "irc.abjects.net"]
     """
     A list of common servers to try in case a bot does not exist on a server
     """
@@ -103,8 +102,13 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Counter for server retries
     """
 
+    verbose = False
+    """
+    Variable to determine the verbosity of the input
+    """
+
     def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
-                 file_name_override: str = None) -> None:
+                 file_name_override: str = None, verbose: bool = True) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
@@ -126,6 +130,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         self.pack = pack
         self.destination_directory = destination_directory
         self.progress_struct = progress_struct
+        self.verbose = verbose
 
         # Remove the server from common server list if it is included there
         try:
@@ -137,12 +142,23 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if file_name_override is not None:
             self.filename = os.path.join(destination_directory, file_name_override)
 
+    def log(self, string: str) -> None:
+        """
+        Prints a string, if the verbose option is set
+
+        :param string: the string to print
+        :return: None
+        """
+        if self.verbose:
+            print(string)
+
     def connect(self) -> None:
         """
         Connects to the server with a randomly generated username
         :return: None
         """
         self.nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
+        self.log("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
         super().connect(self.server, 6667, self.nickname)  # Connect to server
 
     def start(self) -> str:
@@ -150,12 +166,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Starts the download process and returns the file path of the downloaded file once the download completes
         :return: the path to the downloaded file
         """
-        self.connect()  # Connect to server
         download_started = False
         while not download_started:
             download_started = True
-
             try:
+                self.connect()  # Connect to server
                 super().start()  # Start the download
 
             except (UnicodeDecodeError, irc.client.ServerConnectionError):
@@ -172,7 +187,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 except IndexError:
                     raise ConnectionError("Failed to find the bot on any known server")
 
-            except SystemExit:
+            except (SystemExit, ConnectionError):
                 pass  # If disconnect occurs, catch and ignore the system exit call
 
         return self.filename  # Return the file path
@@ -202,7 +217,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if connection is None:
             pass
         if event.arguments[0] == self.bot:
-            raise ConnectionAbortedError("Bot does not exist on server")
+            connection.disconnect("Bot does not exist on server")
 
     # noinspection PyMethodMayBeStatic
     def on_whoischannels(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -333,6 +348,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         # Make Pycharm happy
-        if connection is None or event is None:
+        if connection is None:
             pass
-        sys.exit(0)
+        if event.arguments[0] == "Bot does not exist on server":
+            raise ConnectionAbortedError("Bot does not exist on server")
+        else:
+            sys.exit(0)

@@ -24,9 +24,10 @@ This file is part of media-manager.
 LICENSE
 """
 
+# TODO Get rid of this unnecessary structure
+
 # imports
 from typing import List
-from tok_tokkie.modules.utils.downloaders.HexChatPluginDownloader import HexChatPluginDownloader
 from tok_tokkie.modules.utils.downloaders.GenericDownloader import GenericDownloader
 from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 
@@ -40,11 +41,8 @@ class DownloaderManager(object):
     """
 
     cli_downloaders = [IrcLibDownloader]
-
-    gui_downloaders = [HexChatPluginDownloader]
-
-    all_downloaders = [IrcLibDownloader,
-                       HexChatPluginDownloader]
+    gui_downloaders = []
+    all_downloaders = [IrcLibDownloader]
 
     # noinspection PyTypeChecker
     @staticmethod
