@@ -1,3 +1,8 @@
+V 0.9.9
+  - Removed Hexchat Downloader
+  - Made IRCLib Downloader only IRC/XDCC Downloader
+  - IRCLib Downloader is now very robust, finds active channels of bots independently and tries different servers
+  - Removed unnecessary functions and replaced them with puffotter methods
 V 0.9.8.2
   - Created anime updater/auto downloader
   - Integrated Horriblesubs XDCC packlist search engine

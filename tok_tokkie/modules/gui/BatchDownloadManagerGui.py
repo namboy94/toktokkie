@@ -34,8 +34,6 @@ from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
 from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
-print(GlobalGuiFramework.selected_grid_gui_framework)
-
 
 class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
@@ -141,16 +139,6 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     search_button = None
     """
     Button that starts the XDCC search process with the currently entered information
-    """
-
-    download_engine_label = None
-    """
-    Text Label that indicates that the Combo Box beside it is used to select which downloader to use
-    """
-
-    download_engine_combo_box = None
-    """
-    Combo Box using string values to identify which downloader should be used when downloading XDCC packs
     """
 
     download_button = None
@@ -378,16 +366,11 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_absolute(self.directory_content, 120, 5, 30, 40)
 
         # Download Section
-        self.rename_check = self.generate_check_box("Automatic Rename", True)
-        self.position_absolute(self.rename_check, 80, 45, 30, 12)
-
-        self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_string_combo_box([])
-        self.position_absolute(self.download_engine_label, 80, 57, 15, 13)
-        self.position_absolute(self.download_engine_combo_box, 95, 57, 15, 13)
-
         self.download_button = self.generate_button("Start Download", self.start_download)
-        self.position_absolute(self.download_button, 50, 45, 30, 25)
+        self.position_absolute(self.download_button, 50, 45, 30, 15)
+
+        self.rename_check = self.generate_check_box("Automatic Rename", True)
+        self.position_absolute(self.rename_check, 50, 60, 30, 10)
 
         self.total_progress_bar = self.generate_percentage_progress_bar()
         self.total_progress_label = self.generate_label("Total Progress")
