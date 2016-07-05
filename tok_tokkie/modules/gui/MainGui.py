@@ -26,12 +26,12 @@ LICENSE
 
 # imports
 from typing import List
-from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 from tok_tokkie.modules.hooks.GenericHook import GenericHook
 import tok_tokkie.metadata as metadata
 
 
-class MainGui(Globals.selected_grid_gui_framework):
+class MainGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
     Class that implements the Main GUI of the media manager program
 

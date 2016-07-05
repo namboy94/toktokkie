@@ -32,10 +32,10 @@ from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
 from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
 from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
-from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.gui.framework import GlobalGuiFramework
 
 
-class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
+class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
     GUI for the BatchDownloadManager plugin
     """
@@ -292,7 +292,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
     A list of search results from an XDCC search
     """
 
-    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
+    def __init__(self, parent: GlobalGuiFramework.selected_grid_gui_framework) -> None:
         """
         Constructor for the BatchDownloadManagerGui class
 
