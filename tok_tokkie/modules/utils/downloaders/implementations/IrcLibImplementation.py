@@ -108,7 +108,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     """
 
     def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
-                 file_name_override: str = None, verbose: bool = True) -> None:
+                 file_name_override: str = None, verbose: bool = False) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
@@ -166,6 +166,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Starts the download process and returns the file path of the downloaded file once the download completes
         :return: the path to the downloaded file
         """
+        self.log("Starting Download")
         download_started = False
         while not download_started:
             download_started = True
@@ -176,14 +177,14 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             except (UnicodeDecodeError, irc.client.ServerConnectionError):
                 download_started = False
                 os.remove(self.filename)
-                print("Download failed, retrying...")
+                self.log("Download failed, retrying...")
 
             except ConnectionAbortedError:
                 try:
                     self.server = self.common_servers[self.server_retry_counter]
                     self.server_retry_counter += 1
                     download_started = False
-                    print("Trying different server...")
+                    self.log("Trying different server...")
                 except IndexError:
                     raise ConnectionError("Failed to find the bot on any known server")
 
@@ -204,6 +205,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Make Pycharm happy
         if event is None:
             return
+        self.log("Connection to server " + self.server + " established. Sending WHOIS command for " + self.bot)
         connection.whois(self.bot)
 
     def on_nosuchnick(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -214,6 +216,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the nosuchnick event
         :return: None
         """
+        self.log("NOSUCHNICK")
         if connection is None:
             pass
         if event.arguments[0] == self.bot:
@@ -228,7 +231,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the whois channel event
         :return: None
         """
+        self.log("Got WHOIS information. Bot resides in: " + event.arguments[1])
         channel_to_join = event.arguments[1].split("%")[1].split(" ")[0]
+        self.log("Joining channel " + channel_to_join)
         connection.join(channel_to_join)  # Join the channel
 
     def on_join(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -239,8 +244,10 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
+        self.log("Successfully joined channel")
         if event.source.startswith(self.nickname):
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
+            self.log("Sending XDCC SEND request to " + self.bot)
             connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
     def on_ctcp(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -284,6 +291,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         peer_address = irc.client.ip_numstr_to_quad(peer_address)  # Calculate the bot's address
         peer_port = int(peer_port)  # Cast peer port to an integer value
         self.dcc = self.dcc_connect(peer_address, peer_port, "raw")  # Establish the DCC connection to the bot
+        self.log("Established DCC connection")
 
     def on_dccmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -347,6 +355,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
+        self.log("Disconnected")
         # Make Pycharm happy
         if connection is None:
             pass
