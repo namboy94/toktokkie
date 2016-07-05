@@ -24,9 +24,6 @@ This file is part of media-manager.
 LICENSE
 """
 
-# TODO Join Channel using whois
-
-
 # imports
 import os
 import random
@@ -49,11 +46,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     server = ""
     """
     The server address of the server the downloader has to connect to.
-    """
-
-    channel = ""
-    """
-    The channel name of the channel the downloader has to join.
     """
 
     bot = ""
@@ -101,14 +93,13 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Keeps track of the time to control how often status updates about the download are printed to the console
     """
 
-    def __init__(self, server: str, channel: str, bot: str, pack: int, destination_directory: str,
-                 progress_struct: ProgressStruct, file_name_override: str = None) -> None:
+    def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
+                 file_name_override: str = None) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
 
         :param server: The server to which the Downloader needs to connect to
-        :param channel: The channel the downloader needs to join
         :param bot: The bot serving the file to download
         :param pack: The pack number of the file to download
         :param destination_directory: The destination directory of the downloaded file
@@ -121,7 +112,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
         # Store values
         self.server = server
-        self.channel = channel
         self.bot = bot
         self.pack = pack
         self.destination_directory = destination_directory
@@ -137,7 +127,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         self.nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
-        # print("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
         super().connect(self.server, 6667, self.nickname)  # Connect to server
 
     def start(self) -> str:
@@ -161,8 +150,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
-        Method run when the IRCClient successfully connects to a server. It joins the specified channel
-        at this stage.
+        Method run when the IRCClient successfully connects to a server. It sends a whois request
+        to find out which channel to join
 
         :param connection: The IRC connection
         :param event: The event that caused this method to be run
@@ -173,6 +162,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             return
         connection.whois(self.bot)
 
+    # noinspection PyMethodMayBeStatic
     def on_whoischannels(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
         Checks the channels the bot is connected to.
@@ -181,10 +171,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the whois channel event
         :return: None
         """
-        print(event.arguments[1])
-        # print("Connected to server")
-        # print("Joining channel " + self.channel)
-        connection.join(self.channel)  # Join the channel
+        channel_to_join = event.arguments[1].split("%")[1].split(" ")[0]
+        connection.join(channel_to_join)  # Join the channel
 
     def on_join(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -194,15 +182,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
-        # Make Pycharm happy
-        if connection is None or event is None:
-            return
-
         if event.source.startswith(self.nickname):
-            # print("Joined channel")
-            # print("Sending DCC SEND request for pack " + str(self.pack) + " to " + self.bot)
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
-            self.connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
+            connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
     def on_ctcp(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -291,8 +273,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             pass
         if "XDCC SEND denied, you must be on a known channel to request a pack" in event.arguments[0]:
             raise ConnectionRefusedError("Not in the correct IRC channel")
-
-            # noinspection PyMethodMayBeStatic
 
     def on_dcc_disconnect(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
