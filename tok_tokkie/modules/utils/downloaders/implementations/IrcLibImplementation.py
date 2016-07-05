@@ -24,6 +24,9 @@ This file is part of media-manager.
 LICENSE
 """
 
+# TODO Join Channel using whois
+
+
 # imports
 import os
 import random
@@ -168,7 +171,17 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Make Pycharm happy
         if event is None:
             return
+        connection.whois(self.bot)
 
+    def on_whoischannels(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Checks the channels the bot is connected to.
+
+        :param connection: the IRC connection
+        :param event: the whois channel event
+        :return: None
+        """
+        print(event.arguments[1])
         # print("Connected to server")
         # print("Joining channel " + self.channel)
         connection.join(self.channel)  # Join the channel
@@ -278,6 +291,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             pass
         if "XDCC SEND denied, you must be on a known channel to request a pack" in event.arguments[0]:
             raise ConnectionRefusedError("Not in the correct IRC channel")
+
+            # noinspection PyMethodMayBeStatic
 
     def on_dcc_disconnect(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
