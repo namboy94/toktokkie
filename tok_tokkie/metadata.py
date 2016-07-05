@@ -75,12 +75,12 @@ license_type = "GNU GPL3"
 The project's license type
 """
 
-python3_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc']
+python3_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter']
 """
 Python 3 Python Packaging Index requirements
 """
 
-python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'typing', 'irc']
+python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'typing', 'irc', 'puffotter_2']
 """
 Python 2 Python Packaging Index requirements
 """
