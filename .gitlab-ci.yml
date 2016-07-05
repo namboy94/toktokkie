@@ -62,5 +62,6 @@ upload_documentation_and_statistics:
     - git commit -m "Updated Documentation and Statistics"
     - git push -u origin master
   artifacts:
-    - tok-tokkie.wiki/git_stats
-    - tok-tokkie-wiki/html
+    paths:
+      - tok-tokkie.wiki/git_stats
+      - tok-tokkie-wiki/html
