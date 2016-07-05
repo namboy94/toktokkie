@@ -29,7 +29,6 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-from tok_tokkie.modules.utils.searchengines.BotMapper import BotMapper
 from tok_tokkie.modules.utils.searchengines.GenericGetter import GenericGetter
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 
@@ -70,10 +69,10 @@ class NIBLGetter(GenericGetter):
             filename = file_names[i].text.rsplit(" \n", 1)[0]
             # The bot name has a link after it, which needs to be cut out
             bot = bot_names[i].text.rsplit(" ", 1)[0]
-            server = BotMapper.get_server(bot)  # Gets server name for the bot
-            channel = BotMapper.get_channel(bot)  # Gets channel name for the bot
-            packnumber = int(pack_numbers[i].text)  # packnumber is straight-forward
-            size = file_sizes[i].text  # size is also straight-forward
+            server = "irc.rizon.net"
+            channel = ""
+            packnumber = int(pack_numbers[i].text)
+            size = file_sizes[i].text
             result = XDCCPack(filename, server, channel, bot, packnumber, size)  # Generate the XDCCPack
             results.append(result)  # add to list
             i += 1  # Loop to next element

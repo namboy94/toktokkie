@@ -12,6 +12,7 @@
       <w>botnickname</w>
       <w>confirmer</w>
       <w>createnew</w>
+      <w>criten</w>
       <w>defaulttext</w>
       <w>destdir</w>
       <w>dlcomplete</w>
@@ -20,6 +21,7 @@
       <w>executer</w>
       <w>filesize</w>
       <w>firstepisode</w>
+      <w>freenode</w>
       <w>fsutil</w>
       <w>getenv</w>
       <w>gobject</w>
@@ -47,6 +49,7 @@
       <w>newserver</w>
       <w>nibl</w>
       <w>noconfirm</w>
+      <w>nosuchnick</w>
       <w>packlists</w>
       <w>packnumber</w>
       <w>pacman</w>
@@ -60,6 +63,7 @@
       <w>readline</w>
       <w>renamer</w>
       <w>rizon</w>
+      <w>scenep</w>
       <w>searchdownload</w>
       <w>showname</w>
       <w>slist</w>
@@ -73,6 +77,8 @@
       <w>uncheck</w>
       <w>userdata</w>
       <w>wget</w>
+      <w>whois</w>
+      <w>whoischannels</w>
       <w>writestart</w>
       <w>xdcc</w>
       <w>xdccbot</w>

@@ -27,7 +27,7 @@ LICENSE
 # imports
 import os
 
-from tok_tokkie.modules.utils.fileops.FileRenamer import FileRenamer
+from puffotter.fileops import rename_file
 from tok_tokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
 
 
@@ -102,14 +102,12 @@ class Episode(object):
         """
         try:
             # Rename the old file to have the new file name
-            self.episode_file = FileRenamer.rename_file(self.episode_file, self.new_name)
+            self.episode_file = rename_file(self.episode_file, self.new_name)
         except FileNotFoundError:
             try:
                 # If the file does not exist, try replacing spaces with underscores and try again
                 underscored_episode_file = os.path.basename(self.episode_file).replace(' ', '_')
-                underscored_episode_file_path = os.path.join(os.path.dirname(self.episode_file),
-                                                             underscored_episode_file)
-                self.episode_file = FileRenamer.rename_file(underscored_episode_file, self.new_name)
+                self.episode_file = rename_file(underscored_episode_file, self.new_name)
             except FileNotFoundError:
                 # If it fails again, just give up
                 print("Skipping renaming file " + self.episode_file + " to " + self.new_name)

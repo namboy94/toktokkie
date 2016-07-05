@@ -28,10 +28,10 @@ LICENSE
 # imports
 import os
 import sys
+
 from typing import Tuple
 
-from tok_tokkie.modules.utils.searchengines.BotMapper import BotMapper
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 
 
@@ -58,8 +58,7 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename
     :return: None
     """
     filename_override = None if not filename_override else filename_override  # Turn empty string into None object
-    downloader = IrcLibImplementation(BotMapper.get_server(xdcc_bot),
-                                      BotMapper.get_channel(xdcc_bot),
+    downloader = IrcLibImplementation("irc.rizon.net",
                                       xdcc_bot,
                                       xdcc_pack,
                                       target_directory,

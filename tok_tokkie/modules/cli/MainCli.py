@@ -25,11 +25,9 @@ LICENSE
 """
 
 # imports
-from typing import List
-
 import tok_tokkie.metadata as metadata
 from tok_tokkie.modules.cli.GenericCli import GenericCli
-from tok_tokkie.modules.hooks.GenericHook import GenericHook
+from tok_tokkie.modules.hooks.hooklist import hooks
 
 
 class MainCli(GenericCli):
@@ -40,54 +38,47 @@ class MainCli(GenericCli):
     all the available modules, then prints an instructional string to the console
     and waits for user input.
 
-    A plugin is selected by entering the index number displayed to the left of the
-    plugin name.
+    A hook is selected by entering the index number displayed to the left of the
+    hook name.
     """
 
-    plugin_dict = {}
+    hook_dict = {}
     """
     A dictionary that maps index numbers to modules
     """
 
-    plugin_list_string = ""
+    hook_list_string = ""
     """
     The modules displayed together with their indices as a newline-separated string
     They are sorted via their indices in ascending order
     """
 
     # noinspection PyTypeChecker
-    def __init__(self, active_plugins: List[GenericHook]) -> None:
+    def __init__(self) -> None:
         """
         Constructor of the Main CLI
 
         It invokes the GenericCli's init Constructor  without specifying
         a parent, as this is the top-level CLI of the program.
 
-        It also stores the list of active modules given via parameter as a
-        local variable.
-
-        These modules are then parsed and added to the plugin_dict and plugin_list
-        accordingly.
-
-        :param active_plugins: The modules to be displayed
         :return: None
         """
         super().__init__()
 
         # Parse the modules
         i = 1  # index number counter
-        for plugin in active_plugins:
-            # This is the name of the plugin + the index number, prepended by a tab character and appended by newline
-            self.plugin_list_string += "\t" + str(i) + ". " + plugin.get_name() + "\n"
-            # stores the plugin into the dictionary with the tag being the index number
-            self.plugin_dict[i] = plugin
+        for hook in hooks:
+            # This is the name of the hook + the index number, prepended by a tab character and appended by newline
+            self.hook_list_string += "\t" + str(i) + ". " + hook.get_name() + "\n"
+            # stores the hook into the dictionary with the tag being the index number
+            self.hook_dict[i] = hook
             i += 1  # increment the index number
 
     def start(self, title: str = None) -> None:
         """
         Starts the CLI by invoking the GenericCli's start method with a title,
         which prints the name of the program and the current version number as well as
-        "Available Plugins:" and all active modules (the strings from plugin_list)
+        "Available Hooks:" and all active modules (the strings from hook_list)
 
         :return: None
         """
@@ -95,7 +86,7 @@ class MainCli(GenericCli):
         greeting_message = "TOK TOKKIE MEDIA MANAGER VERSION " +\
                            metadata.version_number +\
                            "\n\n" + "Available Modules:\n" +\
-                           self.plugin_list_string
+                           self.hook_list_string
 
         super().start(greeting_message)
 
@@ -104,7 +95,7 @@ class MainCli(GenericCli):
         The main looping method of the CLI. This will be repeated until the user
         either quits the program or starts one of the modules
 
-        It asks the user for input and allows him/her to start a plugin,
+        It asks the user for input and allows him/her to start a hook,
         quit the program or list all available modules once more
 
         :return: None
@@ -113,19 +104,19 @@ class MainCli(GenericCli):
         print()
 
         # Asks the user for input
-        user_input = self.ask_user("\nSelect plugin by entering the plugin index number."
+        user_input = self.ask_user("\nSelect hook by entering the hook index number."
                                    "\nTo exit, enter 'exit' or 'quit'"
                                    "\nTo get the list of modules again, enter 'list'\n")
         try:
             print()  # empty line
-            self.plugin_dict[int(user_input)].start_cli(self)  # Try to start the plugin
+            self.hook_dict[int(user_input)].start_cli(self)  # Try to start the hook
             # This leads to KeyErrors if an invalid key is entered, say 100 if there are only 5 modules
             # ValueErrors can occur when the user doesn't enter a string that can be parsed as an integer
             return
-        except (KeyError, ValueError):  # If starting the plugin fails, parse the user input further
+        except (KeyError, ValueError):  # If starting the hook fails, parse the user input further
             if user_input.lower() == "list":
-                print(self.plugin_list_string)
-                # This lists all plugin options once more
+                print(self.hook_list_string)
+                # This lists all hook options once more
             else:
                 print("Unrecognized Command")
                 # If all fails, give the user this message

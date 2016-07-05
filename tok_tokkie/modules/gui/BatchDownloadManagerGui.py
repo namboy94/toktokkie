@@ -27,15 +27,15 @@ LICENSE
 # imports
 import os
 import time
-from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
-from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
-from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
-from tok_tokkie.modules.utils.ProgressStruct import ProgressStruct
+
+from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
-from tok_tokkie.metadata import Globals
+from tok_tokkie.modules.gui.framework import GlobalGuiFramework
+from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
+from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
-class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
+class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
     GUI for the BatchDownloadManager plugin
     """
@@ -139,16 +139,6 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
     search_button = None
     """
     Button that starts the XDCC search process with the currently entered information
-    """
-
-    download_engine_label = None
-    """
-    Text Label that indicates that the Combo Box beside it is used to select which downloader to use
-    """
-
-    download_engine_combo_box = None
-    """
-    Combo Box using string values to identify which downloader should be used when downloading XDCC packs
     """
 
     download_button = None
@@ -292,7 +282,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
     A list of search results from an XDCC search
     """
 
-    def __init__(self, parent: Globals.selected_grid_gui_framework) -> None:
+    def __init__(self, parent: GlobalGuiFramework.selected_grid_gui_framework) -> None:
         """
         Constructor for the BatchDownloadManagerGui class
 
@@ -376,16 +366,11 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         self.position_absolute(self.directory_content, 120, 5, 30, 40)
 
         # Download Section
-        self.rename_check = self.generate_check_box("Automatic Rename", True)
-        self.position_absolute(self.rename_check, 80, 45, 30, 12)
-
-        self.download_engine_label = self.generate_label("Download Engine")
-        self.download_engine_combo_box = self.generate_string_combo_box(DownloaderManager.get_downloader_strings("all"))
-        self.position_absolute(self.download_engine_label, 80, 57, 15, 13)
-        self.position_absolute(self.download_engine_combo_box, 95, 57, 15, 13)
-
         self.download_button = self.generate_button("Start Download", self.start_download)
-        self.position_absolute(self.download_button, 50, 45, 30, 25)
+        self.position_absolute(self.download_button, 50, 45, 30, 15)
+
+        self.rename_check = self.generate_check_box("Automatic Rename", True)
+        self.position_absolute(self.rename_check, 50, 60, 30, 10)
 
         self.total_progress_bar = self.generate_percentage_progress_bar()
         self.total_progress_label = self.generate_label("Total Progress")
@@ -401,20 +386,20 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         self.average_dl_speed_label = self.generate_label("Average Speed")
         self.time_left = self.generate_label("-")
         self.time_left_label = self.generate_label("Time Left")
-        self.position_absolute(self.total_progress_bar, 128, 45, 19, 5)
-        self.position_absolute(self.total_progress_label, 110, 45, 15, 5)
-        self.position_absolute(self.total_progress_current, 125, 45, 3, 5)
-        self.position_absolute(self.total_progress_total, 147, 45, 3, 5)
-        self.position_absolute(self.single_progress_bar, 128, 50, 19, 5)
-        self.position_absolute(self.single_progress_label, 110, 50, 15, 5)
-        self.position_absolute(self.single_progress_current, 125, 50, 3, 5)
-        self.position_absolute(self.single_progress_total, 147, 50, 3, 5)
-        self.position_absolute(self.download_speed, 128, 55, 19, 5)
-        self.position_absolute(self.download_speed_label, 110, 55, 15, 5)
-        self.position_absolute(self.average_dl_speed, 128, 60, 19, 5)
-        self.position_absolute(self.average_dl_speed_label, 110, 60, 15, 5)
-        self.position_absolute(self.time_left, 128, 65, 19, 5)
-        self.position_absolute(self.time_left_label, 110, 65, 15, 5)
+        self.position_absolute(self.total_progress_bar, 98, 45, 19, 5)
+        self.position_absolute(self.total_progress_label, 80, 45, 15, 5)
+        self.position_absolute(self.total_progress_current, 98, 45, 3, 5)
+        self.position_absolute(self.total_progress_total, 117, 45, 3, 5)
+        self.position_absolute(self.single_progress_bar, 98, 50, 19, 5)
+        self.position_absolute(self.single_progress_label, 80, 50, 15, 5)
+        self.position_absolute(self.single_progress_current, 95, 50, 3, 5)
+        self.position_absolute(self.single_progress_total, 117, 50, 3, 5)
+        self.position_absolute(self.download_speed, 98, 55, 19, 5)
+        self.position_absolute(self.download_speed_label, 80, 55, 15, 5)
+        self.position_absolute(self.average_dl_speed, 98, 60, 19, 5)
+        self.position_absolute(self.average_dl_speed_label, 80, 60, 15, 5)
+        self.position_absolute(self.time_left, 98, 65, 19, 5)
+        self.position_absolute(self.time_left_label, 80, 65, 15, 5)
 
     def search_xdcc(self, widget: object) -> None:
         """
@@ -616,9 +601,6 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
         # a download is currently running
         self.set_button_string(self.download_button, "Downloading...")
 
-        # Get selected downloader type from Combo Box
-        downloader = self.get_string_from_current_selected_combo_box_option(self.download_engine_combo_box)
-
         # Set up progress structure
         progress = ProgressStruct()
         progress.total = len(packs)
@@ -628,7 +610,7 @@ class BatchDownloadManagerGui(Globals.selected_grid_gui_framework):
 
         # Start the download thread
         self.run_thread_in_parallel(target=BatchDownloadManager.start_download_process,
-                                    args=(preparation, downloader, packs,
+                                    args=(preparation, packs,
                                           self.get_boolean_from_check_box(self.rename_check), progress))
 
         # Set the class variable dl_progress to point to the progress structure to disable

@@ -30,12 +30,11 @@ import shutil
 import urllib.error
 import urllib.request
 from typing import Tuple, List, Dict
-
 from requests.exceptions import ConnectionError
-from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
-from tok_tokkie.modules.utils.downloaders.DownloaderManager import DownloaderManager
 from tok_tokkie.modules.objects.XDCCPack import XDCCPack
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
+from tok_tokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
+from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
 class BatchDownloadManager(object):
@@ -197,33 +196,29 @@ class BatchDownloadManager(object):
                 "special": special, "target_directory": target_directory}
 
     @staticmethod
-    def start_download_process(preparation, downloader, packs, auto_rename, progress_struct):
+    def start_download_process(preparation, packs, auto_rename, progress_struct):
         """
         Starts the XDCC download
         :param preparation: the preparation dictionary created beforehand
-        :param downloader: the downloader to use
         :param packs: the packs to download
         :param auto_rename: bool that determines if the files will be auto-renamed
         :param progress_struct: A ProgressStruct object to keep track of the download progress
         :return: void
         """
-        # Get the downloader implementation selected by the user
-        downloader_implementation = DownloaderManager.get_downloader_from_string(downloader)
-
         # User different arguments depending on if auto-renaming is desired
         if auto_rename and not preparation["special"]:
             # Use the full constructor
             # noinspection PyCallingNonCallable
-            downloader_implementation(packs,
-                                      progress_struct,
-                                      preparation["target_directory"],
-                                      preparation["show"],
-                                      preparation["first_episode"],
-                                      preparation["season"]).download_loop()
+            IrcLibDownloader(packs,
+                             progress_struct,
+                             preparation["target_directory"],
+                             preparation["show"],
+                             preparation["first_episode"],
+                             preparation["season"]).download_loop()
         else:
             # only use the necessary constructor arguments
             # noinspection PyCallingNonCallable
-            downloader_implementation(packs, progress_struct, preparation["target_directory"]).download_loop()
+            IrcLibDownloader(packs, progress_struct, preparation["target_directory"]).download_loop()
 
     @staticmethod
     def analyse_show_directory(directory: str) -> Tuple[str, str, str, str, str]:
