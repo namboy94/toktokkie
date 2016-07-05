@@ -82,4 +82,4 @@ uninstall:
     - master
     - develop
   script:
-    pip uninstall toktokkie
+    pip3 uninstall toktokkie
