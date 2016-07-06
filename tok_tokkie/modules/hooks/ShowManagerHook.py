@@ -27,7 +27,7 @@ LICENSE
 # imports
 from gfworks.interfaces.GenericWindow import GenericWindow
 
-from tok_tokkie.modules.cli.GenericCli import GenericCli
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 from tok_tokkie.modules.cli.ShowManagerCli import ShowManagerCli
 from tok_tokkie.modules.gui.ShowManagerGui import ShowManagerGui
 from tok_tokkie.modules.hooks.GenericHook import GenericHook
@@ -66,7 +66,7 @@ class ShowManagerHook(GenericHook):
         """
         return "show-manager"
 
-    def start_cli(self, parent_cli: GenericCli) -> None:
+    def start_cli(self, parent_cli: PuffOtterCli) -> None:
         """
         Starts the CLI of the plugin in interactive mode
 

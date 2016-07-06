@@ -176,7 +176,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
             except (UnicodeDecodeError, irc.client.ServerConnectionError):
                 download_started = False
-                os.remove(self.filename)
+                if os.path.isfile(self.filename):
+                    os.remove(self.filename)
                 self.log("Download failed, retrying...")
 
             except ConnectionAbortedError:

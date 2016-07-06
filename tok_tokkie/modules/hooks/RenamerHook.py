@@ -27,7 +27,7 @@ LICENSE
 # imports
 from gfworks.interfaces.GenericWindow import GenericWindow
 
-from tok_tokkie.modules.cli.GenericCli import GenericCli
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 from tok_tokkie.modules.cli.RenamerCli import RenamerCli
 from tok_tokkie.modules.gui.RenamerGui import RenamerGui
 from tok_tokkie.modules.hooks.GenericHook import GenericHook
@@ -66,7 +66,7 @@ class RenamerHook(GenericHook):
         """
         return "renamer"
 
-    def start_cli(self, parent_cli: GenericCli) -> None:
+    def start_cli(self, parent_cli: PuffOtterCli) -> None:
         """
         Starts the CLI of the plugin in interactive mode
 
