@@ -39,12 +39,12 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.8.2"
+version_number = "0.9.9"
 """
 The current version of the program.
 """
 
-development_status = "Development Status :: 3 - Alpha"
+development_status = "Development Status :: 4 - Beta"
 """
 The current development status of the program
 """
