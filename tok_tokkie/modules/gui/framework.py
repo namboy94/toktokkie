@@ -31,8 +31,7 @@ from gfworks.templates.generic.GenericGridTemplate import GenericGridTemplate
 class GlobalGuiFramework(object):
     """
     A class that stores the currently selected GUI framework to enable cross-platform use using
-    gfworks. Future plans of gfworks may be able to make this admittedly ugly construct
-    obsolete, but as of right now it is required
+    gfworks across all windows
     """
 
     selected_grid_gui_framework = GenericGridTemplate
