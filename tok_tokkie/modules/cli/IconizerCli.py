@@ -26,19 +26,18 @@ LICENSE
 
 # imports
 import os
-
-from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.DeepIconizer import DeepIconizer
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 
 
-class IconizerCli(GenericCli):
+class IconizerCli(PuffOtterCli):
     """
     CLI for the Iconizer plugin
 
     It offers an interactive mode as well as an argument-driven mode
     """
 
-    def __init__(self, parent: GenericCli) -> None:
+    def __init__(self, parent: PuffOtterCli) -> None:
         """
         Constructor of the IconizerCli class
 

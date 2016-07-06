@@ -27,19 +27,18 @@ LICENSE
 # imports
 import os
 from typing import List, Dict
-
-from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.Renamer import Renamer
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 
 
-class RenamerCli(GenericCli):
+class RenamerCli(PuffOtterCli):
     """
     CLI for the Renamer plugin, that lets the user choose a directory to use the renamer on.
     The directory's content is evaluated and the proposed changes are then printed to the console,
     where the user can then either approve or cancel the renaming process.
     """
 
-    def __init__(self, parent: GenericCli) -> None:
+    def __init__(self, parent: PuffOtterCli) -> None:
         """
         Constructor of the RenamerCli, which only calls the GenericCli's constructor
         with the CLI's parent as argument.

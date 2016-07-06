@@ -26,11 +26,11 @@ LICENSE
 
 # imports
 import tok_tokkie.metadata as metadata
-from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.hooks.hooklist import hooks
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 
 
-class MainCli(GenericCli):
+class MainCli(PuffOtterCli):
     """
     Class that implements the Main CLI for the media manager program
 

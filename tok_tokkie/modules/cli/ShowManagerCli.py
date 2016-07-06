@@ -25,15 +25,15 @@ LICENSE
 """
 
 # imports
-from tok_tokkie.modules.cli.GenericCli import GenericCli
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 
 
-class ShowManagerCli(GenericCli):
+class ShowManagerCli(PuffOtterCli):
     """
     CLI for the Show Manager plugin
     """
 
-    def __init__(self, parent: GenericCli) -> None:
+    def __init__(self, parent: PuffOtterCli) -> None:
         """
         Constructor
         :param parent: the parent cli

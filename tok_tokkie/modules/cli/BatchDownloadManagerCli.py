@@ -27,14 +27,13 @@ LICENSE
 # imports
 import os
 import sys
-
+from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 from tok_tokkie.modules.objects.ProgressStruct import ProgressStruct
-from tok_tokkie.modules.cli.GenericCli import GenericCli
 from tok_tokkie.modules.utils.BatchDownloadManager import BatchDownloadManager
 from tok_tokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
-class BatchDownloadManagerCli(GenericCli):
+class BatchDownloadManagerCli(PuffOtterCli):
     """
     CLI for the BatchDownloadManager plugin
 
@@ -91,7 +90,7 @@ class BatchDownloadManagerCli(GenericCli):
     Flag that sets if the files should be auto-renamed after the download completes
     """
 
-    def __init__(self, parent: GenericCli = None) -> None:
+    def __init__(self, parent: PuffOtterCli = None) -> None:
         """
         Constructor of the BatchDownloadManagerCLi Class
         It calls the Constructor of the GenericCli Class
