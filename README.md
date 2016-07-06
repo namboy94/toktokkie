@@ -173,11 +173,9 @@ This project is mirrored to:
 * [github.com](https://github.com/namboy94/toktokkie)
 
 
-[Git Statistics](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/git_stats/general.html)
+[Git Statistics](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/git_stats/index.html)
 
 [Documentation](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/html/index.html)
-
-Note: Those Links need a manual refresh to load the CSS, I have no idea why.
 
 Check out this project's python package index site:
 
