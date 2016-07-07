@@ -22,11 +22,17 @@ This file is part of media-manager.
 
 # imports
 import os
+import sys
+import platform
 from setuptools import setup, find_packages
 import toktokkie.metadata as metadata
 
+if platform.system() == "Windows":
+    # noinspection PyUnresolvedReferences
+    import py2exe
 
-def readme() -> str:
+
+def readme():
     """
     Reads the readme file.
 
@@ -46,7 +52,7 @@ def readme() -> str:
             return f.read()
 
 
-def find_scripts() -> "list of scripts":
+def find_scripts():
     """
     Returns a list of scripts in the bin directory
 
@@ -58,32 +64,57 @@ def find_scripts() -> "list of scripts":
             scripts.append(os.path.join("bin", file_name))
     return scripts
 
+if platform.system() == "Windows" and sys.argv[1] == "py2exe":
+    setup(console=["bin/toktokkie"],
+          windows=["bin/toktokkie-tk"],
+          zipfile=None,
+          name=metadata.project_name,
+          version=metadata.version_number,
+          description=metadata.project_description,
+          long_description=readme(),
+          classifiers=[metadata.development_status,
+                       metadata.audience,
+                       metadata.license_identifier,
+                       metadata.topic,
+                       metadata.language,
+                       metadata.compatible_os,
+                       metadata.environment
+                       ] + metadata.programming_languages,
+          url=metadata.project_url,
+          download_url=metadata.download_url,
+          author=metadata.author_name,
+          author_email=metadata.author_email,
+          license=metadata.license_type,
+          packages=find_packages(),
+          install_requires=metadata.dependencies,
+          dependency_links=[],
+          test_suite='nose.collector',
+          tests_require=['nose'],
+          scripts=find_scripts(),
+          zip_safe=False)
 
-setup(name=metadata.project_name,
-      version=metadata.version_number,
-      description=metadata.project_description,
-      long_description=readme(),
-      classifiers=[metadata.development_status,
-                   metadata.audience,
-                   metadata.license_identifier,
-                   metadata.programming_language,
-                   metadata.topic,
-                   metadata.language,
-                   metadata.compatible_os,
-                   metadata.environment
-                   ],
-      url=metadata.project_url,
-      download_url=metadata.download_url,
-      author=metadata.author_name,
-      author_email=metadata.author_email,
-      license=metadata.license_type,
-      packages=find_packages(),
-      install_requires=metadata.python3_requirements,
-      dependency_links=[],
-      test_suite='nose.collector',
-      tests_require=['nose'],
-      scripts=find_scripts(),
-      zip_safe=False)
-
-# How to upload to pypi:
-# python setup.py register sdist upload
+else:
+    setup(name=metadata.project_name,
+          version=metadata.version_number,
+          description=metadata.project_description,
+          long_description=readme(),
+          classifiers=[metadata.development_status,
+                       metadata.audience,
+                       metadata.license_identifier,
+                       metadata.topic,
+                       metadata.language,
+                       metadata.compatible_os,
+                       metadata.environment
+                       ] + metadata.programming_languages,
+          url=metadata.project_url,
+          download_url=metadata.download_url,
+          author=metadata.author_name,
+          author_email=metadata.author_email,
+          license=metadata.license_type,
+          packages=find_packages(),
+          install_requires=metadata.dependencies,
+          dependency_links=[],
+          test_suite='nose.collector',
+          tests_require=['nose'],
+          scripts=find_scripts(),
+          zip_safe=False)

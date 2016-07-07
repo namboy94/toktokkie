@@ -75,14 +75,9 @@ license_type = "GNU GPL3"
 The project's license type
 """
 
-python3_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter']
+dependencies = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter']
 """
-Python 3 Python Packaging Index requirements
-"""
-
-python2_requirements = ['tvdb_api', 'beautifulsoup4', 'gfworks_2', 'typing', 'irc', 'puffotter_2']
-"""
-Python 2 Python Packaging Index requirements
+Python Packaging Index requirements
 """
 
 audience = "Intended Audience :: End Users/Desktop"
@@ -95,7 +90,8 @@ environment = "Environment :: Other Environment"
 The intended environment in which the program will be used
 """
 
-programming_language = 'Programming Language :: Python :: 3'
+programming_languages = ['Programming Language :: Python :: 3',
+                         'Programming Language :: Python :: 2']
 """
 The programming language used in this project
 """
