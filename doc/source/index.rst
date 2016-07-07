@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   media_manager.rst
+   toktokkie.rst
 
 Indices and tables
 ==================

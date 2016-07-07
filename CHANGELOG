@@ -1,3 +1,6 @@
+V 0.9.9.1
+  - Changed package name to toktokkie (was tok_tokkie)
+  - enabled python 2 support
 V 0.9.9
   - Removed Hexchat Downloader
   - Made IRCLib Downloader only IRC/XDCC Downloader

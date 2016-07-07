@@ -1,32 +1,40 @@
 """
+LICENSE:
 Copyright 2015,2016 Hermann Krumrey
 
-This file is part of media-manager.
+This file is part of toktokkie.
 
-    media-manager is a program that allows convenient managing of various
+    toktokkie is a program that allows convenient managing of various
     local media collections, mostly focused on video.
 
-    media-manager is free software: you can redistribute it and/or modify
+    toktokkie is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    media-manager is distributed in the hope that it will be useful,
+    toktokkie is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
+    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
+LICENSE
 """
 
 # imports
 import os
+import sys
+import platform
 from setuptools import setup, find_packages
-import tok_tokkie.metadata as metadata
+import toktokkie.metadata as metadata
+
+if platform.system() == "Windows":
+    # noinspection PyUnresolvedReferences
+    import py2exe
 
 
-def readme() -> str:
+def readme():
     """
     Reads the readme file.
 
@@ -46,7 +54,7 @@ def readme() -> str:
             return f.read()
 
 
-def find_scripts() -> "list of scripts":
+def find_scripts():
     """
     Returns a list of scripts in the bin directory
 
@@ -58,32 +66,57 @@ def find_scripts() -> "list of scripts":
             scripts.append(os.path.join("bin", file_name))
     return scripts
 
+if platform.system() == "Windows" and sys.argv[1] == "py2exe":
+    setup(console=["bin/toktokkie"],
+          windows=["bin/toktokkie-tk"],
+          zipfile=None,
+          name=metadata.project_name,
+          version=metadata.version_number,
+          description=metadata.project_description,
+          long_description=readme(),
+          classifiers=[metadata.development_status,
+                       metadata.audience,
+                       metadata.license_identifier,
+                       metadata.topic,
+                       metadata.language,
+                       metadata.compatible_os,
+                       metadata.environment
+                       ] + metadata.programming_languages,
+          url=metadata.project_url,
+          download_url=metadata.download_url,
+          author=metadata.author_name,
+          author_email=metadata.author_email,
+          license=metadata.license_type,
+          packages=find_packages(),
+          install_requires=metadata.dependencies,
+          dependency_links=[],
+          test_suite='nose.collector',
+          tests_require=['nose'],
+          scripts=find_scripts(),
+          zip_safe=False)
 
-setup(name=metadata.project_name,
-      version=metadata.version_number,
-      description=metadata.project_description,
-      long_description=readme(),
-      classifiers=[metadata.development_status,
-                   metadata.audience,
-                   metadata.license_identifier,
-                   metadata.programming_language,
-                   metadata.topic,
-                   metadata.language,
-                   metadata.compatible_os,
-                   metadata.environment
-                   ],
-      url=metadata.project_url,
-      download_url=metadata.download_url,
-      author=metadata.author_name,
-      author_email=metadata.author_email,
-      license=metadata.license_type,
-      packages=find_packages(),
-      install_requires=metadata.python3_requirements,
-      dependency_links=[],
-      test_suite='nose.collector',
-      tests_require=['nose'],
-      scripts=find_scripts(),
-      zip_safe=False)
-
-# How to upload to pypi:
-# python setup.py register sdist upload
+else:
+    setup(name=metadata.project_name,
+          version=metadata.version_number,
+          description=metadata.project_description,
+          long_description=readme(),
+          classifiers=[metadata.development_status,
+                       metadata.audience,
+                       metadata.license_identifier,
+                       metadata.topic,
+                       metadata.language,
+                       metadata.compatible_os,
+                       metadata.environment
+                       ] + metadata.programming_languages,
+          url=metadata.project_url,
+          download_url=metadata.download_url,
+          author=metadata.author_name,
+          author_email=metadata.author_email,
+          license=metadata.license_type,
+          packages=find_packages(),
+          install_requires=metadata.dependencies,
+          dependency_links=[],
+          test_suite='nose.collector',
+          tests_require=['nose'],
+          scripts=find_scripts(),
+          zip_safe=False)

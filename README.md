@@ -121,9 +121,7 @@ specified show.
 
 To specify the setting of the shows to download, modify [this python file](tok_tokkie/templates/anime-updater-config.py) to your liking and run it.
 
-## Installation Instructions
-
-**General Installation**
+## Installation
 
 To install the program, either download the source and run
 
@@ -135,55 +133,20 @@ or install using pip:
 
 Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/windows-builds)
 
-**Configuring Downloaders**
+## Contributing
 
-The Batch Download Manager currently has two different ways of downloading files via XDCC. One method, called
-the Hexchat Downloader, uses Hexchat's scripting interface to download the files, while the IRC Downloader uses
-irclib to do this natively. Sadly, the Hexchat Downloader is somewhat prone to system-specific
-errors, which is why we have a rough guide on how to get them working:
+This project is automatically mirrored to [github](https://github.com/namboy94/toktokkie), however all development
+is conducted at a privately hosted [Gitlab instance](http://gitlab.namibsun.net/namboy94/tok-tokkie). Issues
+on both services are taken unto consideration.
 
-*Hexchat Downloader*
+## Documentation
 
-For the Hexchat Downloader to work, both Hexchat and the Hexchat python plugin need to be installed on the system.
+Sphinx Documentation can be found [here](http://krumreyh.eu/toktokkie/documentation/html/index.html).
+A [PDF version](http://krumreyh.eu/toktokkie/documentation/documentation.pdf) is also available
 
-## Windows Installation
+## Statistics
 
-Installing the program and making it work requires some more steps on Windows operating systems.
-
-You will have to have a working python 3 installation on your machine. If you do not have this, download the file from
-the [official website](https://www.python.org/downloads/windows/).
-
-Once you have installed this, you should be able to install the program using pip or the setup.py file directly.
-
-To be able to use the Hexchat Downloader, you will have to install the 64-bit version of Hexchat for Windows from
-the [official website](https://hexchat.github.io/downloads.html).
-
-While running the installer, make sure to install the python plugin (version 3.4)!
-
-After the installation is completed, run hexchat and set it up to your liking. The recommended procedure is this:
-
-1. Skip Network List on Startup
-2. Settings/Preferences/Network/File transfers/Auto Accept File Offers: Save without interaction
-3. Uncheck "Always show this dialog after connecting" on first connection to a server
-
-## Links:
-
-This project is mirrored to:
-
-* [github.com](https://github.com/namboy94/toktokkie)
-
-
-[Git Statistics](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/git_stats/general.html)
-
-[Documentation](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/html/index.html)
-
-Note: Those Links need a manual refresh to load the CSS, I have no idea why.
-
-Check out this project's python package index site:
-
-[python 2 (Currently not available)](https://pypi.python.org/pypi/toktokkie-2)
-
-[python 3](https://pypi.python.org/pypi/toktokkie)
+Automatically generated git statistics can be found [here](http://krumreyh.eu/toktokkie/git_stats/index.html)
 
 
 ## Disclaimer:
