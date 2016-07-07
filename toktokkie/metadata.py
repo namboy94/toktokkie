@@ -47,13 +47,13 @@ development_status = "Development Status :: 4 - Beta"
 The current development status of the program
 """
 
-project_url = "http://namibsun.net/namboy94/tok-tokkie"
+project_url = "http://namibsun.net/namboy94/toktokkie"
 """
 A URL linking to the home page of the project, in this case a
 self-hosted Gitlab page
 """
 
-download_url = "http://gitlab.namibsun.net/namboy94/tok-tokkie/repository/archive.zip?ref=master"
+download_url = "http://gitlab.namibsun.net/namboy94/toktokkie/repository/archive.zip?ref=master"
 """
 A URL linking to the current source zip file.
 """

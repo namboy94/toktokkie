@@ -4,7 +4,7 @@ This is a program which allows convenient managing of various Media collections,
 in python 3 and won't normally run on python 2. However, a version converted using 3to2 is available on the python
 package index (Link below).
 
-[Changelog](http://gitlab.namibsun.net/namboy94/tok-tokkie/raw/master/CHANGELOG)
+[Changelog](http://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
 
 ## Main features
 
@@ -131,12 +131,12 @@ or install using pip:
 
     # pip install toktokkie
 
-Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/tok-tokkie/wikis/windows-builds)
+Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/toktokkie/wikis/windows-builds)
 
 ## Contributing
 
 This project is automatically mirrored to [github](https://github.com/namboy94/toktokkie), however all development
-is conducted at a privately hosted [Gitlab instance](http://gitlab.namibsun.net/namboy94/tok-tokkie). Issues
+is conducted at a privately hosted [Gitlab instance](http://gitlab.namibsun.net/namboy94/toktokkie). Issues
 on both services are taken unto consideration.
 
 ## Documentation
