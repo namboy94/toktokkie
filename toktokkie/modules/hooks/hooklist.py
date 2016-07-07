@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-# coding=utf-8
-
 """
+LICENSE:
+
 Copyright 2015,2016 Hermann Krumrey
 
 This file is part of media-manager.
@@ -21,16 +20,17 @@ This file is part of media-manager.
 
     You should have received a copy of the GNU General Public License
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
+
+LICENSE
 """
 
-import sys
+# imports
+from toktokkie.modules.hooks.BatchDownloadManagerHook import BatchDownloadManagerHook
+from toktokkie.modules.hooks.IconizerHook import IconizerHook
+from toktokkie.modules.hooks.RenamerHook import RenamerHook
+from toktokkie.modules.hooks.ShowManagerHook import ShowManagerHook
 
-from toktokkie.main import main
-
-if __name__ == '__main__':
-
-    try:
-        main("tk")
-    except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
-        sys.exit(0)
+hooks = [RenamerHook(),
+         IconizerHook(),
+         BatchDownloadManagerHook(),
+         ShowManagerHook()]

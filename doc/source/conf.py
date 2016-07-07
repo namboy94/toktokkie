@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath("../.."))
-from tok_tokkie.metadata import version_number
+from toktokkie.metadata import version_number
 
 extensions = [
     'sphinx.ext.autodoc',

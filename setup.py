@@ -23,7 +23,7 @@ This file is part of media-manager.
 # imports
 import os
 from setuptools import setup, find_packages
-import tok_tokkie.metadata as metadata
+import toktokkie.metadata as metadata
 
 
 def readme() -> str:
