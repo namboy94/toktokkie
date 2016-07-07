@@ -192,6 +192,12 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             except (SystemExit, ConnectionError):
                 pass  # If disconnect occurs, catch and ignore the system exit call
 
+            if not self.progress_struct.single_progress == self.progress_struct.single_size:
+                self.log("Download not completed successfully, trying again")
+                download_started = False
+                if os.path.isfile(self.filename):
+                    os.remove(self.filename)
+
         return self.filename  # Return the file path
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -259,6 +265,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
+        self.log(event.arguments)
         # Make Pycharm happy
         if connection is None:
             return
@@ -270,11 +277,13 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             return
         # Parse the arguments
         parts = shlex.split(payload)
+        if len(parts) != 5:
+            self.log("Too many arguments: " + str(event.arguments))
+            return
         command, filename, peer_address, peer_port, size = parts
         if command != "SEND":  # Only react on SENDs
             return
 
-        #  print("Receiving file:")
         self.progress_struct.single_size = int(size)  # Store the file size in the progress struct
 
         # Set the file name, but only if it was not set previously
