@@ -55,11 +55,6 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     """
 
     # GUI Elements
-    configure_label = None
-    """
-    A text Label that displays "Options" above the various configuration options
-    """
-
     destination_label = None
     """
     A Text Label used as an indicator that the Text Entry beside it is used to determine the
@@ -170,12 +165,6 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     A Text Entry used to store the secondary icon label's path
     """
 
-    method_label = None
-    """
-    A Text Label indicating that the Combo Box beside it is used to select the iconizing method to be used
-    with the selected icons
-    """
-
     method_combo_box = None
     """
     A Combobox with string options used to select the iconizing method to be used with the selected icons
@@ -186,20 +175,10 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
     A List Box with multiple columns allowing multiple selections that displays the results of an XDCC search
     """
 
-    search_results_label = None
-    """
-    A Text Label displayed above the search results displaying "Search Results"
-    """
-
     directory_content = None
     """
     A List Box with multiple columns allowing multiple selections that displays the content of the currently selected
     directory's highest season's content
-    """
-
-    directory_content_label = None
-    """
-    A Text Label displayed above the directory content displaying "Episodes"
     """
 
     total_progress_bar = None
@@ -327,16 +306,11 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.secondary_icon_label = self.generate_label("Season Icon")
         self.main_icon_location = self.generate_text_entry("")
         self.secondary_icon_location = self.generate_text_entry("")
-        self.method_label = self.generate_label("Method")
         self.method_combo_box = self.generate_string_combo_box(DeepIconizer.get_iconizer_options())
 
         # Multi List Boxes
-        self.search_results_label = self.generate_label("Search Results")
-        self.directory_content_label = self.generate_label("Episodes")
-
         self.search_results = self.generate_primitive_multi_column_list_box(
             {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
-
         self.directory_content = self.generate_primitive_multi_column_list_box({"File Name": (0, str)})
 
         # Download Section
@@ -389,7 +363,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_relative(self.search_engine_combo_box, self.search_field, "RIGHT", TWO, ONE)
         self.position_relative(self.search_button, self.search_engine_combo_box, "RIGHT", TWO, ONE)
 
-        self.position_relative(self.directory_content, self.search_label, "BOTTOM", TEN, FIVE, spacing=ONE)
+        self.position_relative(self.directory_content, self.search_label, "BOTTOM", TEN, THREE, spacing=ONE)
         self.position_relative(self.search_results, self.directory_content, "BOTTOM", TEN, TEN, spacing=ONE)
 
         self.position_relative(self.download_button, self.search_results, "BOTTOM", TWO, ONE, spacing=ONE)
