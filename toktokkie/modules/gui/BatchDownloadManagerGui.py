@@ -375,10 +375,10 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_relative(self.show_label, self.destination_label, "BOTTOM", TEN, ONE)
         self.position_relative(self.show, self.destination_browser, "BOTTOM", 8, ONE)
 
-        self.position_relative(self.season_label, self.show_label, "BOTTOM", THREE, ONE)
+        self.position_relative(self.season_label, self.show_label, "BOTTOM", SIX, ONE)
         self.position_relative(self.season, self.season_label, "RIGHT", ONE, ONE)
 
-        self.position_relative(self.episode_label, self.show, "BOTTOM", THREE, ONE)
+        self.position_relative(self.episode_label, self.show, "BOTTOM", SIX, ONE)
         self.position_relative(self.episode, self.episode_label, "RIGHT", ONE, ONE)
 
         self.position_relative(self.search_label, self.season_label, "BOTTOM", SIX, ONE)
