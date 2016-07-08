@@ -292,6 +292,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         """
         super().__init__("Batch Download Manager", parent, True)
 
+    # noinspection PyPep8Naming
     def lay_out(self):
         """
         Sets up all interface elements of the GUI and positions them in a Grid Layout
@@ -361,11 +362,8 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         THREE = 3
         FOUR = 4
         FIVE = 5
-        SIX = 6
         SEVEN = 7
         TEN = 10
-
-        # 18 per row currently
 
         # Position GUI elements
         self.position_absolute(self.destination_label, 1, 0, THREE, ONE)
@@ -380,58 +378,41 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_relative(self.episode_label, self.season, "RIGHT", FOUR, ONE)
         self.position_relative(self.episode, self.episode_label, "RIGHT", ONE, ONE)
 
-        self.position_relative(self.search_label, self.season_label, "BOTTOM", THREE, ONE)
+        self.position_relative(self.main_icon_label, self.season_label, "BOTTOM", FOUR, ONE)
+        self.position_relative(self.main_icon_location, self.main_icon_label, "RIGHT", FOUR, ONE)
+        self.position_relative(self.method_combo_box, self.main_icon_location, "RIGHT", TWO, TWO)
+        self.position_relative(self.secondary_icon_label, self.main_icon_label, "BOTTOM", FOUR, ONE)
+        self.position_relative(self.secondary_icon_location, self.secondary_icon_label, "RIGHT", FOUR, ONE)
+
+        self.position_relative(self.search_label, self.secondary_icon_label, "BOTTOM", THREE, ONE)
         self.position_relative(self.search_field, self.search_label, "RIGHT", THREE, ONE)
         self.position_relative(self.search_engine_combo_box, self.search_field, "RIGHT", TWO, ONE)
         self.position_relative(self.search_button, self.search_engine_combo_box, "RIGHT", TWO, ONE)
 
-        self.position_relative(self.main_icon_label, self.destination, "RIGHT", FIVE, ONE, spacing=10)
-        # self.position_relative(self.secondary_icon_label, self.search_label, "BOTTOM", 30, 1)
-        self.position_relative(self.search_results, self.search_label, "BOTTOM", 25, 10, spacing=1)
-        """
-        self.position_absolute(self.main_icon_location, 20, 55, 20, 5)
-        self.position_absolute(self.secondary_icon_location, 20, 60, 20, 5)
-        self.position_absolute(self.method_label, 0, 65, 20, 5)
-        self.position_absolute(self.method_combo_box, 20, 65, 20, 5)
+        self.position_relative(self.directory_content, self.search_label, "BOTTOM", TEN, FIVE, spacing=ONE)
+        self.position_relative(self.search_results, self.directory_content, "BOTTOM", TEN, TEN, spacing=ONE)
 
+        self.position_relative(self.download_button, self.search_results, "BOTTOM", TWO, ONE, spacing=ONE)
+        self.position_relative(self.rename_check, self.download_button, "BOTTOM", TWO, ONE)
 
+        self.position_relative(self.total_progress_label, self.download_button, "RIGHT", ONE, ONE)
+        self.position_relative(self.total_progress_current, self.total_progress_label, "RIGHT", ONE, ONE)
+        self.position_relative(self.total_progress_bar, self.total_progress_current, "RIGHT", ONE, ONE)
+        self.position_relative(self.total_progress_total, self.total_progress_bar, "RIGHT", ONE, ONE)
 
+        self.position_relative(self.single_progress_label, self.total_progress_total, "RIGHT", ONE, ONE)
+        self.position_relative(self.single_progress_current, self.single_progress_label, "RIGHT", ONE, ONE)
+        self.position_relative(self.single_progress_bar, self.single_progress_current, "RIGHT", ONE, ONE)
+        self.position_relative(self.single_progress_total, self.single_progress_bar, "RIGHT", ONE, ONE)
 
+        self.position_relative(self.download_speed_label, self.rename_check, "RIGHT", TWO, ONE)
+        self.position_relative(self.download_speed, self.download_speed_label, "RIGHT", ONE, ONE)
 
+        self.position_relative(self.average_dl_speed_label, self.download_speed, "RIGHT", TWO, ONE)
+        self.position_relative(self.average_dl_speed, self.average_dl_speed_label, "RIGHT", ONE, ONE)
 
-
-
-
-
-        self.position_absolute(self.search_results_label, 50, 0, 60, 5)
-        self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
-
-
-
-
-
-        self.position_absolute(self.directory_content, 120, 5, 30, 40)
-
-
-
-        self.position_absolute(self.download_button, 50, 45, 30, 15)
-        self.position_absolute(self.rename_check, 50, 60, 30, 10)
-
-        self.position_absolute(self.total_progress_bar, 98, 45, 19, 5)
-        self.position_absolute(self.total_progress_label, 80, 45, 15, 5)
-        self.position_absolute(self.total_progress_current, 95, 45, 3, 5)
-        self.position_absolute(self.total_progress_total, 117, 45, 3, 5)
-        self.position_absolute(self.single_progress_bar, 98, 50, 19, 5)
-        self.position_absolute(self.single_progress_label, 80, 50, 15, 5)
-        self.position_absolute(self.single_progress_current, 95, 50, 3, 5)
-        self.position_absolute(self.single_progress_total, 117, 50, 3, 5)
-        self.position_absolute(self.download_speed, 98, 55, 19, 5)
-        self.position_absolute(self.download_speed_label, 80, 55, 15, 5)
-        self.position_absolute(self.average_dl_speed, 98, 60, 19, 5)
-        self.position_absolute(self.average_dl_speed_label, 80, 60, 15, 5)
-        self.position_absolute(self.time_left, 98, 65, 19, 5)
-        self.position_absolute(self.time_left_label, 80, 65, 15, 5)
-        """
+        self.position_relative(self.time_left_label, self.average_dl_speed, "RIGHT", ONE, ONE)
+        self.position_relative(self.time_left, self.time_left_label, "RIGHT", ONE, ONE)
 
     def search_xdcc(self, widget: object) -> None:
         """
