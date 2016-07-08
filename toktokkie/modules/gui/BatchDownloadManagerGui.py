@@ -368,28 +368,27 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         # 18 per row currently
 
         # Position GUI elements
-        self.position_absolute(self.destination_label, 1, 0, TEN, ONE)
+        self.position_absolute(self.destination_label, 1, 0, THREE, ONE)
         self.position_relative(self.destination_browser, self.destination_label, "RIGHT", TWO, ONE)
-        self.position_relative(self.destination, self.destination_browser, "RIGHT", SIX, ONE)
+        self.position_relative(self.destination, self.destination_browser, "RIGHT", FIVE, ONE)
 
-        self.position_relative(self.show_label, self.destination_label, "BOTTOM", TEN, ONE)
-        self.position_relative(self.show, self.destination_browser, "BOTTOM", 8, ONE)
+        self.position_relative(self.show_label, self.destination_label, "BOTTOM", THREE, ONE)
+        self.position_relative(self.show, self.destination_browser, "BOTTOM", SEVEN, ONE)
 
-        self.position_relative(self.season_label, self.show_label, "BOTTOM", SIX, ONE)
+        self.position_relative(self.season_label, self.show_label, "BOTTOM", FOUR, ONE)
         self.position_relative(self.season, self.season_label, "RIGHT", ONE, ONE)
-
-        self.position_relative(self.episode_label, self.show, "BOTTOM", SIX, ONE)
+        self.position_relative(self.episode_label, self.season, "RIGHT", FOUR, ONE)
         self.position_relative(self.episode, self.episode_label, "RIGHT", ONE, ONE)
 
-        self.position_relative(self.search_label, self.season_label, "BOTTOM", SIX, ONE)
-        self.position_relative(self.search_field, self.search_label, "RIGHT", SIX, ONE)
-        self.position_relative(self.search_engine_combo_box, self.search_field, "RIGHT", SIX, ONE)
+        self.position_relative(self.search_label, self.season_label, "BOTTOM", THREE, ONE)
+        self.position_relative(self.search_field, self.search_label, "RIGHT", THREE, ONE)
+        self.position_relative(self.search_engine_combo_box, self.search_field, "RIGHT", TWO, ONE)
+        self.position_relative(self.search_button, self.search_engine_combo_box, "RIGHT", TWO, ONE)
 
+        self.position_relative(self.main_icon_label, self.destination, "RIGHT", FIVE, ONE, spacing=10)
+        # self.position_relative(self.secondary_icon_label, self.search_label, "BOTTOM", 30, 1)
+        self.position_relative(self.search_results, self.search_label, "BOTTOM", 25, 10, spacing=1)
         """
-        self.position_absolute(self.search_button, 0, 45, 40, 5)
-
-        self.position_absolute(self.main_icon_label, 0, 55, 20, 5)
-        self.position_absolute(self.secondary_icon_label, 0, 60, 20, 5)
         self.position_absolute(self.main_icon_location, 20, 55, 20, 5)
         self.position_absolute(self.secondary_icon_location, 20, 60, 20, 5)
         self.position_absolute(self.method_label, 0, 65, 20, 5)
@@ -408,7 +407,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
 
 
-        self.position_absolute(self.search_results, 50, 5, 70, 40)
+
 
 
         self.position_absolute(self.directory_content, 120, 5, 30, 40)
