@@ -298,43 +298,28 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
 
         :return: None
         """
-        self.configure_label = self.generate_label("Options")
-        self.position_absolute(self.configure_label, 0, 0, 40, 5)
 
+        # Initialize GUI elements
         self.destination_label = self.generate_label("Destination Directory")
         self.destination = self.generate_text_entry("", on_changed_command=self.on_directory_changed)
         self.destination_browser = self.generate_button("Browse", self.browse_for_destination)
-        self.position_absolute(self.destination_label, 0, 5, 8, 5)
-        self.position_absolute(self.destination_browser, 10, 5, 8, 5)
-        self.position_absolute(self.destination, 20, 5, 20, 5)
 
         self.show_label = self.generate_label("Show Name")
         self.show = self.generate_text_entry("")
-        self.position_absolute(self.show_label, 0, 10, 20, 5)
-        self.position_absolute(self.show, 20, 10, 20, 5)
 
         self.season_label = self.generate_label("Season Number")
         self.season = self.generate_text_entry("")
-        self.position_absolute(self.season_label, 0, 15, 20, 5)
-        self.position_absolute(self.season, 20, 15, 20, 5)
 
         self.episode_label = self.generate_label("Starting Episode Number")
-        self.episode = self.generate_text_entry("optional")
-        self.position_absolute(self.episode_label, 0, 20, 20, 5)
-        self.position_absolute(self.episode, 20, 20, 20, 5)
+        self.episode = self.generate_text_entry("")
 
         self.search_label = self.generate_label("Search Term")
         self.search_field = self.generate_text_entry("", self.search_xdcc)
-        self.position_absolute(self.search_label, 0, 30, 20, 5)
-        self.position_absolute(self.search_field, 20, 30, 20, 5)
 
         self.search_engine_label = self.generate_label("Search Engine")
         self.search_engine_combo_box = self.generate_string_combo_box(SearchEngineManager.get_search_engine_strings())
-        self.position_absolute(self.search_engine_label, 0, 35, 20, 5)
-        self.position_absolute(self.search_engine_combo_box, 20, 35, 20, 5)
 
         self.search_button = self.generate_button("Start Search", self.search_xdcc)
-        self.position_absolute(self.search_button, 0, 45, 40, 5)
 
         # Icon Information
         self.main_icon_label = self.generate_label("Main Icon")
@@ -343,33 +328,19 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.secondary_icon_location = self.generate_text_entry("")
         self.method_label = self.generate_label("Method")
         self.method_combo_box = self.generate_string_combo_box(DeepIconizer.get_iconizer_options())
-        self.position_absolute(self.main_icon_label, 0, 55, 20, 5)
-        self.position_absolute(self.secondary_icon_label, 0, 60, 20, 5)
-        self.position_absolute(self.main_icon_location, 20, 55, 20, 5)
-        self.position_absolute(self.secondary_icon_location, 20, 60, 20, 5)
-        self.position_absolute(self.method_label, 0, 65, 20, 5)
-        self.position_absolute(self.method_combo_box, 20, 65, 20, 5)
 
         # Multi List Boxes
         self.search_results_label = self.generate_label("Search Results")
         self.directory_content_label = self.generate_label("Episodes")
-        self.position_absolute(self.search_results_label, 50, 0, 60, 5)
-        self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
 
         self.search_results = self.generate_primitive_multi_column_list_box(
             {"#": (0, int), "Bot": (1, str), "Pack": (2, int), "Size": (3, str), "Filename": (4, str)})
-        self.position_absolute(self.search_results, 50, 5, 70, 40)
 
         self.directory_content = self.generate_primitive_multi_column_list_box({"File Name": (0, str)})
-        self.position_absolute(self.directory_content, 120, 5, 30, 40)
 
         # Download Section
         self.download_button = self.generate_button("Start Download", self.start_download)
-        self.position_absolute(self.download_button, 50, 45, 30, 15)
-
         self.rename_check = self.generate_check_box("Automatic Rename", True)
-        self.position_absolute(self.rename_check, 50, 60, 30, 10)
-
         self.total_progress_bar = self.generate_percentage_progress_bar()
         self.total_progress_label = self.generate_label("Total Progress")
         self.total_progress_current = self.generate_label("")
@@ -384,6 +355,69 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.average_dl_speed_label = self.generate_label("Average Speed")
         self.time_left = self.generate_label("-")
         self.time_left_label = self.generate_label("Time Left")
+
+        ONE = 1
+        TWO = 2
+        THREE = 3
+        FOUR = 4
+        FIVE = 5
+        SIX = 6
+        SEVEN = 7
+        TEN = 10
+
+        # 18 per row currently
+
+        # Position GUI elements
+        self.position_absolute(self.destination_label, 1, 0, TEN, ONE)
+        self.position_relative(self.destination_browser, self.destination_label, "RIGHT", TWO, ONE)
+        self.position_relative(self.destination, self.destination_browser, "RIGHT", SIX, ONE)
+
+        self.position_relative(self.show_label, self.destination_label, "BOTTOM", TEN, ONE)
+        self.position_relative(self.show, self.destination_browser, "BOTTOM", 8, ONE)
+
+        self.position_relative(self.season_label, self.show_label, "BOTTOM", THREE, ONE)
+        self.position_relative(self.season, self.season_label, "RIGHT", ONE, ONE)
+
+        self.position_relative(self.episode_label, self.show, "BOTTOM", THREE, ONE)
+        self.position_relative(self.episode, self.episode_label, "RIGHT", ONE, ONE)
+
+        self.position_relative(self.search_label, self.season_label, "BOTTOM", SIX, ONE)
+        self.position_relative(self.search_field, self.search_label, "RIGHT", SIX, ONE)
+        self.position_relative(self.search_engine_combo_box, self.search_field, "RIGHT", SIX, ONE)
+
+        """
+        self.position_absolute(self.search_button, 0, 45, 40, 5)
+
+        self.position_absolute(self.main_icon_label, 0, 55, 20, 5)
+        self.position_absolute(self.secondary_icon_label, 0, 60, 20, 5)
+        self.position_absolute(self.main_icon_location, 20, 55, 20, 5)
+        self.position_absolute(self.secondary_icon_location, 20, 60, 20, 5)
+        self.position_absolute(self.method_label, 0, 65, 20, 5)
+        self.position_absolute(self.method_combo_box, 20, 65, 20, 5)
+
+
+
+
+
+
+
+
+
+
+        self.position_absolute(self.search_results_label, 50, 0, 60, 5)
+        self.position_absolute(self.directory_content_label, 120, 0, 20, 5)
+
+
+        self.position_absolute(self.search_results, 50, 5, 70, 40)
+
+
+        self.position_absolute(self.directory_content, 120, 5, 30, 40)
+
+
+
+        self.position_absolute(self.download_button, 50, 45, 30, 15)
+        self.position_absolute(self.rename_check, 50, 60, 30, 10)
+
         self.position_absolute(self.total_progress_bar, 98, 45, 19, 5)
         self.position_absolute(self.total_progress_label, 80, 45, 15, 5)
         self.position_absolute(self.total_progress_current, 95, 45, 3, 5)
@@ -398,6 +432,7 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
         self.position_absolute(self.average_dl_speed_label, 80, 60, 15, 5)
         self.position_absolute(self.time_left, 98, 65, 19, 5)
         self.position_absolute(self.time_left_label, 80, 65, 15, 5)
+        """
 
     def search_xdcc(self, widget: object) -> None:
         """
