@@ -23,7 +23,7 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from tok_tokkie.scripts.single_xdcc import main
+from toktokkie.scripts.single_xdcc import main
 
 
 if __name__ == "__main__":
