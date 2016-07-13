@@ -11,9 +11,11 @@ clone_master:
     - develop
   script:
     - git checkout master
-    - git push -u git@github.com:namboy94/toktokkie.git HEAD:master --force
+    - git pull origin master
+    - git push -u git@github.com:namboy94/toktokkie.git master --force
     - git checkout develop
-    - git push -u git@github.com:namboy94/toktokkie.git HEAD:develop --force
+    - git pull origin develop
+    - git push -u git@github.com:namboy94/toktokkie.git develop --force
 
 run_unit_tests:
   stage: test
