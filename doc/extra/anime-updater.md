@@ -84,6 +84,8 @@ dictionaries we define 5 parameters for the show:
 5. **season**
    The season of the show to download.
    
+Now, to starting the actual script:
+   
 ```python
 start(config, search_engines)
 start(config, search_engines, continuous=True)
