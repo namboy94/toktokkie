@@ -31,6 +31,7 @@ from typing import Dict, List
 
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.objects.XDCCPack import XDCCPack
+from toktokkie.modules.objects.Episode import Episode
 from toktokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 from toktokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
@@ -64,6 +65,13 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
             os.makedirs(meta_directory)
         if not os.path.isdir(target_directory):
             os.makedirs(target_directory)
+
+        episode_count = 1
+        previous_eps = os.listdir(target_directory)
+        for previous_ep in sorted(previous_eps):
+            episode = Episode(os.path.join(target_directory, previous_ep), episode_count, season, showname)
+            episode.rename()
+            episode_count += 1
 
         while True:  # == Do While Loop
             current_episode = len(os.listdir(target_directory)) + 1

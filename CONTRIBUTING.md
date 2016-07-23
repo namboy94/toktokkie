@@ -1,2 +1,3 @@
-This is more of a personal project, but if you want to contribute, send me an
-email at krumreyh.namibsun.net
+1. Fork the project at our [Gitlab instance](http://gitlab.namibsun.net/namboy94/toktokkie)
+2. Add your changes
+3. Create a Merge request

@@ -37,7 +37,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.9.1"
+version_number = "0.9.9.2"
 """
 The current version of the program.
 """
@@ -47,13 +47,13 @@ development_status = "Development Status :: 4 - Beta"
 The current development status of the program
 """
 
-project_url = "http://namibsun.net/namboy94/tok-tokkie"
+project_url = "http://namibsun.net/namboy94/toktokkie"
 """
 A URL linking to the home page of the project, in this case a
 self-hosted Gitlab page
 """
 
-download_url = "http://gitlab.namibsun.net/namboy94/tok-tokkie/repository/archive.zip?ref=master"
+download_url = "http://gitlab.namibsun.net/namboy94/toktokkie/repository/archive.zip?ref=master"
 """
 A URL linking to the current source zip file.
 """

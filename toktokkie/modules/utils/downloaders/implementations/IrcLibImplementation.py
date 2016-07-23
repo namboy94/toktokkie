@@ -237,7 +237,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         self.log("Got WHOIS information. Bot resides in: " + event.arguments[1])
-        channel_to_join = event.arguments[1].split("%")[1].split(" ")[0]
+        channel_to_join = "#" + event.arguments[1].split("#")[1].split(" ")[0]
         self.log("Joining channel " + channel_to_join)
         connection.join(channel_to_join)  # Join the channel
 
