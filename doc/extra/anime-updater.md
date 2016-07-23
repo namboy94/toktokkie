@@ -79,10 +79,12 @@ dictionaries we define 5 parameters for the show:
 4. **quality**
    The quality requested. Should always be something like 480p, 720p or
    1080p. Series that don't have a quality indicator in their filenames
-   ignore this setting. It is however still requires for shws that DO
+   ignore this setting. It is however still requires for shows that DO
    specify the quality
 5. **season**
    The season of the show to download.
+   
+Now, to starting the actual script:
    
 ```python
 start(config, search_engines)
