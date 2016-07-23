@@ -86,7 +86,7 @@ class Episode(object):
         self.episode_number = episode_number
         self.season_number = season_number
         self.show_name = show_name
-        self.old_name = os.path.basename(episode_file)
+        self.old_name = os.path.basename(episode_file).rsplit(".", 1)[0]
 
         # Generate new and tvdb names
         self.__generate_tvdb_name()
@@ -97,6 +97,8 @@ class Episode(object):
 
         :return: None
         """
+        if self.new_name == self.old_name:
+            return
         try:
             # Rename the old file to have the new file name
             self.episode_file = rename_file(self.episode_file, self.new_name)
