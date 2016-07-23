@@ -121,6 +121,8 @@ specified show.
 
 To specify the setting of the shows to download, modify [this python file](tok_tokkie/templates/anime-updater-config.py) to your liking and run it.
 
+Documentation for this feature can be found [here](doc/extra/anime-updater.md)
+
 ## Installation
 
 To install the program, either download the source and run
