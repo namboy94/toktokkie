@@ -51,8 +51,9 @@ config = [
 ]
 
 if __name__ == '__main__':
+
     # Uncomment just the configuration you want, leave all others commented
 
-    start(config, search_engines)
-    # start(config, search_engines, continuous=True)
-    # start(config, search_engines, continuous=True, looptime = 3600)
+    start(config, search_engines)  # Runs the script once
+    # start(config, search_engines, continuous=True)  # Loops the script continuously
+    # start(config, search_engines, continuous=True, looptime = 3600)  # Loops the script at defined intervals
