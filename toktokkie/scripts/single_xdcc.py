@@ -60,7 +60,16 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_destination: str, irc_se
     :return: None
     """
     irc_server = irc_server if irc_server is not None else "irc.rizon.net"
-    filename_override = False if target_destination is not None and os.path.isdir(target_destination) else True
+
+    filename_override = None
+    if target_destination is not None:
+        if os.path.isdir(target_destination):
+            pass
+        else:
+            filename_override = os.path.basename(target_destination).rsplit(".")[0]
+            target_destination = os.path.dirname(target_destination)
+    else:
+        target_destination = os.getcwd()
 
     filename_override = None if not filename_override else filename_override  # Turn empty string into None object
     downloader = IrcLibImplementation(irc_server,
