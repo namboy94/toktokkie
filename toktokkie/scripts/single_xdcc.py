@@ -26,40 +26,56 @@ LICENSE
 # imports
 import os
 import sys
-
+import argparse
 from typing import Tuple
-
+from puffotter.fileops import ensure_directory_exists
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 
 
-def parse_xdcc_string(xdcc_string: str) -> Tuple[str, str]:
+def parse_arguments() -> Tuple[str, str, str, str]:
     """
-    Parses an XDCC message string of the form '/msg BOTNAME xdcc send #PACKNUMBER' for the
-    bot name and pack number
-    :param xdcc_string: the XDCC message string to parse
-    :return: the bot name, the pack number
+    Parses the command line parameters and establishes the important information from the input
+    :return: the bot name, the pack number, the file destination, the irc server
     """
-    bot = xdcc_string.split(" ")[1]
-    pack = xdcc_string.split(" ")[4].split("#")[1]
-    return bot, pack
+    parser = argparse.ArgumentParser(description="Downloads an XDCC pack")
+    parser.add_argument("packstring", help="The XDCC get packstring, of form: '\"/msg BOTNAME xdcc send #PACKNUMBER\"'")
+    parser.add_argument("--dest", help="Optional file path to store the downloaded file in")
+    parser.add_argument("--server", help="Optional irc server. If this is not set, the script will automatically"
+                                         "go through the most popular IRC servers")
+    args = parser.parse_args()
+    bot = args.packstring.split(" ")[1]
+    pack = args.packstring.split(" ")[4].split("#")[1]
+    return bot, pack, args.dest, args.server
 
 
-def download_pack(xdcc_bot: str, xdcc_pack: int, target_directory: str, filename_override: str) -> None:
+def download_pack(xdcc_bot: str, xdcc_pack: int, target_destination: str, irc_server: str) -> None:
     """
     Downloads a single XDCC pack
     :param xdcc_bot: the bot from which the pack will be downloaded from
     :param xdcc_pack: the xdcc pack to download
-    :param target_directory: the target directory
-    :param filename_override: the filename, if it's an empty string, the filename will stay the
-            default filename.
+    :param target_destination: the target file destination
+    :param irc_server: the irc server to use
     :return: None
     """
+    irc_server = irc_server if irc_server is not None else "irc.rizon.net"
+
+    filename_override = None
+    if target_destination is not None:
+        if os.path.isdir(target_destination):
+            pass
+        else:
+            filename_override = os.path.basename(target_destination).rsplit(".")[0]
+            target_destination = os.path.dirname(target_destination)
+            ensure_directory_exists(target_destination)
+    else:
+        target_destination = os.getcwd()
+
     filename_override = None if not filename_override else filename_override  # Turn empty string into None object
-    downloader = IrcLibImplementation("irc.rizon.net",
+    downloader = IrcLibImplementation(irc_server,
                                       xdcc_bot,
                                       xdcc_pack,
-                                      target_directory,
+                                      target_destination,
                                       ProgressStruct(),
                                       file_name_override=filename_override)
     downloader.start()
@@ -94,18 +110,8 @@ def main() -> None:
     Usage: single-xdcc (")/msg botname xdcc send #pack(") destination
     :return: None
     """
-    if len(sys.argv) in range(6, 8) and sys.argv[1] == "/msg":
-        bot = sys.argv[2]
-        pack = sys.argv[5].split("#")[1]
-        destination_dir, override_filename = check_target_directory(7)
-    elif len(sys.argv) in range(2, 4) and sys.argv[1].startswith("/msg"):
-        bot, pack = parse_xdcc_string(sys.argv[1])
-        destination_dir, override_filename = check_target_directory(3)
-    else:
-        print("Invalid parameters.")
-        print("Usage:\n")
-        print(os.path.basename(sys.argv[0]) + " /msg BOTNAME xdcc send \\#PACKNUMBER [destination_file]")
-        print(os.path.basename(sys.argv[0]) + " \"/msg BOTNAME xdcc send #PACKNUMBER\" [destination_file]")
-        sys.exit(1)
+    bot, pack, dest, server = parse_arguments()
+    download_pack(bot, int(pack), dest, server)
 
-    download_pack(bot, int(pack), destination_dir, override_filename)
+if __name__ == '__main__':
+    main()
