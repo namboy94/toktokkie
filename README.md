@@ -109,10 +109,7 @@ This will be able to manage your existing media in some way. It's not implemente
 
 The Program also offers a few standalone CLI tools:
 
-**xdcc-dl**
-This script can be used to instantly download a xdcc-get formatted pack string, like this:
-
-    /msg BOT xdcc send #PACK
+[**xdcc-dl**](doc/extra/xdcc-dl.md)
     
 **anime-updater**
 
