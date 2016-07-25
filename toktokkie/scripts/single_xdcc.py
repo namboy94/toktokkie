@@ -27,9 +27,8 @@ LICENSE
 import os
 import sys
 import argparse
-
 from typing import Tuple
-
+from puffotter.fileops import ensure_directory_exists
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 
@@ -68,6 +67,7 @@ def download_pack(xdcc_bot: str, xdcc_pack: int, target_destination: str, irc_se
         else:
             filename_override = os.path.basename(target_destination).rsplit(".")[0]
             target_destination = os.path.dirname(target_destination)
+            ensure_directory_exists(target_destination)
     else:
         target_destination = os.getcwd()
 
