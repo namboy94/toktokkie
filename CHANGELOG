@@ -1,3 +1,5 @@
+V 0.9.9.4
+  - Implemented RSS opml file generator to anime updater script
 V 0.9.9.3
   - Remodelled the xdcc-dl script to be more versatile, can now specify server
 V 0.9.9.2
