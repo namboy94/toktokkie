@@ -25,6 +25,7 @@ LICENSE
 # imports
 import os
 import re
+import sys
 import time
 
 from typing import Dict, List
@@ -116,20 +117,53 @@ def get_next(horriblesubs_name: str, bot: str, quality: str, episode: int, searc
     return None
 
 
+def generate_rss_file(config: List[Dict[str, str]]) -> None:
+    """
+    Generates a Nyaa RSS OPML file as updater-rss.opml
+
+    :param config: the config to turn into an RSS file
+    :return: None
+    """
+    with open("updater-rss.opml", 'w') as opml_file:
+        opml_file.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
+        opml_file.write("<opml version=\"1.1\">\n")
+        opml_file.write("\t<head>\n")
+        opml_file.write("\t\t<text>Anime Updater Releases</text>\n")
+        opml_file.write("\t</head>\n")
+        opml_file.write("\t<body>\n")
+        opml_file.write("\t\t<outline text=\"Seasonal Anime\" title=\"Seasonal Anime\">\n")
+
+        for show in config:
+            showname = show["horriblesubs_name"]
+            show_rss_outline = "\t\t\t<outline text=\"" + showname + "\" title=\"" + showname + "\" type=\"rss\" "
+            show_rss_outline += "xmlUrl=\"https://www.nyaa.se/?page=rss&amp;cats=1_0&amp;term=horriblesubs+"
+            show_rss_outline += showname.replace(" ", "+") + "+" + show["quality"] + "\" />\n"
+            opml_file.write(show_rss_outline)
+
+        opml_file.write("\t\t</outline>\n")
+        opml_file.write("\t</body>\n")
+        opml_file.write("</opml>")
+
+
 def start(config: List[Dict[str, str]], search_engines: List[str], continuous: bool = False, looptime: int = 3600)\
         -> None:
     """
     Starts the updater either once or in a continuous mode
+
     :param config: the config to be used to determine which shows to update
     :param search_engines: The search engines to be used
     :param continuous: flag to set continuous mode
     :param looptime: Can be set to determine the intervals between updates
     :return: None
     """
+    if "rss" in sys.argv:
+        generate_rss_file(config)
 
-    if continuous:
-        while True:
-            update(config, search_engines)
-            time.sleep(looptime)
     else:
-        update(config, search_engines)
+
+        if continuous:
+            while True:
+                update(config, search_engines)
+                time.sleep(looptime)
+        else:
+            update(config, search_engines)
