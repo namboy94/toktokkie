@@ -128,7 +128,7 @@ def generate_rss_file(config: List[Dict[str, str]]) -> None:
         opml_file.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
         opml_file.write("<opml version=\"1.1\">\n")
         opml_file.write("\t<head>\n")
-        opml_file.write("\t\t<text>Anime Updater Releases</head>\n")
+        opml_file.write("\t\t<text>Anime Updater Releases</text>\n")
         opml_file.write("\t</head>\n")
         opml_file.write("\t<body>\n")
         opml_file.write("\t\t<outline text=\"Seasonal Anime\" title=\"Seasonal Anime\">\n")

@@ -140,3 +140,11 @@ title.
 Afterwards, it searches the specified search engines for new episodes of
 the show. If any are found, they are downloaded and renamed according
 to the naming scheme seen above.
+
+## RSS Function
+
+The script can also be used to generate an OPML file that can be imported
+by most RSS Readers from the script configuration.
+
+To do this, just call the command like you would when updating, but
+add the 'rss' command line argument as well.
