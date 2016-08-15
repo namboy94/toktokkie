@@ -30,6 +30,8 @@ import struct
 import sys
 import time
 import irc.client
+from typing import List
+from puffotter.stringformatter import ForegroundColors, BackgroundColors, print_formatted_string
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 
 
@@ -100,13 +102,18 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Counter for server retries
     """
 
+    joined_channel = False
+    """
+    Flag that gets set when the bot successfully enters a channel
+    """
+
     verbose = False
     """
     Variable to determine the verbosity of the input
     """
 
     def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
-                 file_name_override: str = None, verbose: bool = False) -> None:
+                 file_name_override: str = None, verbose: bool = True) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
@@ -140,15 +147,19 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if file_name_override is not None:
             self.filename = os.path.join(destination_directory, file_name_override)
 
-    def log(self, string: str) -> None:
+    def log(self, string: str, formatting: str or List[str] = None) -> None:
         """
         Prints a string, if the verbose option is set
 
         :param string: the string to print
+        :param formatting: optional formatting options for the string used with puffotter's string formatter
         :return: None
         """
         if self.verbose:
-            print(string)
+            if formatting is None:
+                print(string)
+            else:
+                print_formatted_string(string, formatting)
 
     def connect(self) -> None:
         """
@@ -156,7 +167,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         self.nickname = "media_manager_python" + str(random.randint(0, 1000000))  # Generate random nickname
-        self.log("Connecting to server " + self.server + " at port 6667 as user " + self.nickname)
+        self.log("Connecting to server " + self.server + " at port 6667 as user " + self.nickname,
+                 ForegroundColors.WHITE)
         super().connect(self.server, 6667, self.nickname)  # Connect to server
 
     def start(self) -> str:
@@ -164,7 +176,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Starts the download process and returns the file path of the downloaded file once the download completes
         :return: the path to the downloaded file
         """
-        self.log("Starting Download")
+        self.log("Starting Download", ForegroundColors.WHITE)
         download_started = False
         while not download_started:
             download_started = True
@@ -176,14 +188,14 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 download_started = False
                 if os.path.isfile(self.filename):
                     os.remove(self.filename)
-                self.log("Download failed, retrying...")
+                self.log("Download failed, retrying...", ForegroundColors.RED)
 
             except ConnectionAbortedError:
                 try:
                     self.server = self.common_servers[self.server_retry_counter]
                     self.server_retry_counter += 1
                     download_started = False
-                    self.log("Trying different server...")
+                    self.log("Trying different server...", ForegroundColors.RED)
                 except IndexError:
                     raise ConnectionError("Failed to find the bot on any known server")
 
@@ -191,7 +203,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 pass  # If disconnect occurs, catch and ignore the system exit call
 
             if not self.progress_struct.single_progress == self.progress_struct.single_size:
-                self.log("Download not completed successfully, trying again")
+                self.log("Download not completed successfully, trying again", ForegroundColors.RED)
                 download_started = False
                 if os.path.isfile(self.filename):
                     os.remove(self.filename)
@@ -210,7 +222,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         # Make Pycharm happy
         if event is None:
             return
-        self.log("Connection to server " + self.server + " established. Sending WHOIS command for " + self.bot)
+        self.log("Connection to server " + self.server + " established. Sending WHOIS command for " + self.bot,
+                 ForegroundColors.WHITE)
         connection.whois(self.bot)
 
     def on_nosuchnick(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
@@ -221,7 +234,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the nosuchnick event
         :return: None
         """
-        self.log("NOSUCHNICK")
+        self.log("NOSUCHNICK", ForegroundColors.RED)
         if connection is None:
             pass
         if event.arguments[0] == self.bot:
@@ -236,10 +249,17 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the whois channel event
         :return: None
         """
-        self.log("Got WHOIS information. Bot resides in: " + event.arguments[1])
-        channel_to_join = "#" + event.arguments[1].split("#")[1].split(" ")[0]
-        self.log("Joining channel " + channel_to_join)
-        connection.join(channel_to_join)  # Join the channel
+        self.log("Got WHOIS information. Bot resides in: " + event.arguments[1], ForegroundColors.WHITE)
+
+        channels = event.arguments[1].split("#")
+        channels.pop(0)
+
+        for channel in channels:
+            if not self.joined_channel:
+                channel_to_join = "#" + channel.split(" ")[0]
+                self.log("Joining channel " + channel_to_join, ForegroundColors.WHITE)
+                connection.join(channel_to_join)  # Join the channel
+                # time.sleep(10)
 
     def on_join(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -250,8 +270,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         if event.source.startswith(self.nickname):
-            self.log("Successfully joined channel")
-            self.log("Sending XDCC SEND request to " + self.bot)
+            self.joined_channel = True
+            self.log("Successfully joined channel", ForegroundColors.WHITE)
+            self.log("Sending XDCC SEND request to " + self.bot, ForegroundColors.WHITE)
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
             connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
 
@@ -263,7 +284,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
-        self.log(event.arguments)
+        self.log("ON CTCP: " + str(event.arguments), ForegroundColors.BLUE)
         # Make Pycharm happy
         if connection is None:
             return
@@ -299,7 +320,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         peer_address = irc.client.ip_numstr_to_quad(peer_address)  # Calculate the bot's address
         peer_port = int(peer_port)  # Cast peer port to an integer value
         self.dcc = self.dcc_connect(peer_address, peer_port, "raw")  # Establish the DCC connection to the bot
-        self.log("Established DCC connection")
+        self.log("Established DCC connection", ForegroundColors.WHITE)
 
     def on_dccmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -363,7 +384,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: The event that caused this method to be run
         :return: None
         """
-        self.log("Disconnected")
+        self.log("Disconnected", ForegroundColors.RED)
         # Make Pycharm happy
         if connection is None:
             pass
@@ -381,7 +402,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
-        self.log("PRIVATE MESSAGE: " + str(event.arguments))
+        self.log("PRIVATE MESSAGE: " + str(event.arguments), ForegroundColors.YELLOW)
 
     def on_privnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -392,7 +413,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
-        self.log("PRIVATE NOTICE: " + str(event.arguments))
+        self.log("PRIVATE NOTICE: " + str(event.arguments), ForegroundColors.MAGENTA)
 
     def on_pubmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -403,7 +424,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
-        self.log("PUBLIC MESSAGE: " + str(event.arguments))
+        self.log("PUBLIC MESSAGE: " + str(event.arguments), ForegroundColors.LIGHT_YELLOW)
 
     def on_pubnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -414,4 +435,4 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
-        self.log("PUBLIC NOTICE: " + str(event.arguments))
+        self.log("PUBLIC NOTICE: " + str(event.arguments), ForegroundColors.LIGHT_MAGENTA)
