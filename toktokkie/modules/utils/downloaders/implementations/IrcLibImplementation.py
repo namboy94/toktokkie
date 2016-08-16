@@ -31,7 +31,7 @@ import sys
 import time
 import irc.client
 from typing import List
-from puffotter.stringformatter import ForegroundColors, BackgroundColors, print_formatted_string
+from puffotter.stringformatter import ForegroundColors, print_formatted_string
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 
 
@@ -270,11 +270,13 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: None
         """
         if event.source.startswith(self.nickname):
-            self.joined_channel = True
             self.log("Successfully joined channel", ForegroundColors.WHITE)
-            self.log("Sending XDCC SEND request to " + self.bot, ForegroundColors.WHITE)
+
             # Send a private message to the bot to request the pack file (xdcc send #packnumber)
-            connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
+            if not self.joined_channel:
+                self.log("Sending XDCC SEND request to " + self.bot, ForegroundColors.WHITE)
+                connection.privmsg(self.bot, "xdcc send #" + str(self.pack))
+                self.joined_channel = True
 
     def on_ctcp(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -286,7 +288,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         self.log("ON CTCP: " + str(event.arguments), ForegroundColors.BLUE)
         # Make Pycharm happy
-        if connection is None:
+        if connection is None or event.arguments[0] != "DCC":
             return
 
         # Check that the correct type of CTCP message is received
