@@ -33,6 +33,15 @@ import irc.client
 from typing import List
 from puffotter.stringformatter import ForegroundColors, print_formatted_string
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
+from jaraco.stream import buffer
+
+
+# This construct ignores all non-decodeable received strings
+class IgnoreErrorsBuffer(buffer.DecodingLineBuffer):
+    def handle_exception(self):
+        pass
+irc.client.ServerConnection.buffer_class = IgnoreErrorsBuffer
+irc.client.SimpleIRCClient.buffer_class = IgnoreErrorsBuffer
 
 
 class IrcLibImplementation(irc.client.SimpleIRCClient):
@@ -107,6 +116,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Flag that gets set when the bot successfully enters a channel
     """
 
+    download_started = False
+    """
+    Flag that is set to true while a download is in progress
+    """
+
     verbose = False
     """
     Variable to determine the verbosity of the input
@@ -177,24 +191,22 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :return: the path to the downloaded file
         """
         self.log("Starting Download", ForegroundColors.WHITE)
-        download_started = False
-        while not download_started:
-            download_started = True
+        self.download_started = False
+        while not self.download_started:
+            self.download_started = True
             try:
                 self.connect()  # Connect to server
                 super().start()  # Start the download
 
             except (UnicodeDecodeError, irc.client.ServerConnectionError):
-                download_started = False
-                if os.path.isfile(self.filename):
-                    os.remove(self.filename)
+                self.reset_state()
                 self.log("Download failed, retrying...", ForegroundColors.RED)
 
             except ConnectionAbortedError:
                 try:
                     self.server = self.common_servers[self.server_retry_counter]
                     self.server_retry_counter += 1
-                    download_started = False
+                    self.reset_state()
                     self.log("Trying different server...", ForegroundColors.RED)
                 except IndexError:
                     raise ConnectionError("Failed to find the bot on any known server")
@@ -204,11 +216,19 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
             if not self.progress_struct.single_progress == self.progress_struct.single_size:
                 self.log("Download not completed successfully, trying again", ForegroundColors.RED)
-                download_started = False
-                if os.path.isfile(self.filename):
-                    os.remove(self.filename)
+                self.reset_state()
 
         return self.filename  # Return the file path
+
+    def reset_state(self) -> None:
+        """
+        Resets the state of the downloader (deletes previously downloaded file, resets progress struct)
+        :return: None
+        """
+        self.download_started = False
+        if os.path.isfile(self.filename):
+            os.remove(self.filename)
+        self.progress_struct.single_progress = 0
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -298,10 +318,15 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             return
         # Parse the arguments
         parts = shlex.split(payload)
-        if len(parts) != 5:
+        if len(parts) > 6:
             self.log("Too many arguments: " + str(event.arguments))
             return
-        command, filename, peer_address, peer_port, size = parts
+
+        if len(parts) == 5:
+            command, filename, peer_address, peer_port, size = parts
+        else:
+            command, filename, peer_address, peer_port, size, dummy = parts
+
         if command != "SEND":  # Only react on SENDs
             return
 
