@@ -198,23 +198,28 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 self.connect()  # Connect to server
                 super().start()  # Start the download
 
-            except (UnicodeDecodeError, irc.client.ServerConnectionError):
-                self.reset_state()
-                self.log("Download failed, retrying...", ForegroundColors.RED)
-
-            except ConnectionAbortedError:
+            except ConnectionAbortedError:  # Bot not found on current server
                 try:
                     self.server = self.common_servers[self.server_retry_counter]
                     self.server_retry_counter += 1
                     self.reset_state()
                     self.log("Trying different server...", ForegroundColors.RED)
-                except IndexError:
+
+                except IndexError:  # Went through list of servers, could not find a match
                     raise ConnectionError("Failed to find the bot on any known server")
 
-            except (SystemExit, ConnectionError):
-                pass  # If disconnect occurs, catch and ignore the system exit call
+            except SystemExit:  # Fallback in case the self.connection.quit() call failed
+                pass
+            except ConnectionError:  # Bot not found on any known server
+                pass
 
-            if not self.progress_struct.single_progress == self.progress_struct.single_size:
+            if not self.progress_struct.single_progress == self.progress_struct.single_size and self.verbose:
+                self.log("WARNING: Progresss does not match file size", ForegroundColors.LIGHT_RED)
+                self.log("PROGRESS: " + str(self.progress_struct.single_progress), ForegroundColors.LIGHT_GRAY)
+                self.log("SIZE    : " + str(self.progress_struct.single_size), ForegroundColors.LIGHT_GRAY)
+
+            # Check that the complete file was downloaded
+            if self.progress_struct.single_progress <= self.progress_struct.single_size:
                 self.log("Download not completed successfully, trying again", ForegroundColors.RED)
                 self.reset_state()
 
