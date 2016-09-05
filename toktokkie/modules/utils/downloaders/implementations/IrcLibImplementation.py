@@ -219,7 +219,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 self.log("SIZE    : " + str(self.progress_struct.single_size), ForegroundColors.LIGHT_GRAY)
 
             # Check that the complete file was downloaded
-            if self.progress_struct.single_progress <= self.progress_struct.single_size:
+            if self.progress_struct.single_progress < self.progress_struct.single_size:
                 self.log("Download not completed successfully, trying again", ForegroundColors.RED)
                 self.reset_state()
 
