@@ -30,6 +30,7 @@ import sys
 import argparse
 from typing import Tuple, List
 from puffotter.fileops import ensure_directory_exists
+from toktokkie.metadata import sentry
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 
@@ -131,8 +132,13 @@ def main() -> None:
     Usage: single-xdcc (")/msg botname xdcc send #pack(") destination
     :return: None
     """
-    bot, packs, dest, server = parse_arguments()
-    download_pack(bot, packs, dest, server)
+    # noinspection PyBroadException
+    try:
+        bot, packs, dest, server = parse_arguments()
+        download_pack(bot, packs, dest, server)
+    except:
+        sentry.captureException()
+
 
 if __name__ == '__main__':
     main()
