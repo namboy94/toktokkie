@@ -73,7 +73,7 @@ license_type = "GNU GPL3"
 The project's license type
 """
 
-dependencies = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter']
+dependencies = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter', 'raven']
 """
 Python Packaging Index requirements
 """
@@ -112,4 +112,12 @@ The Operating Systems on which the program can run
 license_identifier = "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
 """
 The license used for this project
+"""
+
+# Sentry Configuration
+
+from raven import Client
+sentry = Client('https://85931c0f6983433694b24d1a6bf270e7:e5a504275e5e453dbdb352ddad9e01bc@sentry.io/97102')
+"""
+The Sentry client for logging bugs
 """
