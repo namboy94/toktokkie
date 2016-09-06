@@ -117,7 +117,7 @@ The license used for this project
 # Sentry Configuration
 
 from raven import Client
-sentry = Client('https://85931c0f6983433694b24d1a6bf270e7:e5a504275e5e453dbdb352ddad9e01bc@sentry.io/97102')
+sentry = Client('http://738d8f4e36844faa91283ea26e98b153:81b79214220049d2b5c5fe26bd28e877@85.214.124.204:9000/2')
 """
 The Sentry client for logging bugs
 """
