@@ -64,7 +64,7 @@ def parse_arguments() -> Tuple[str, List[int], str, str]:
 
     packnumbers = []
 
-    for pack in range(0, len(packs)):
+    for pack in range(int(packs[0]), int(packs[len(packs) - 1])):
         packnumbers.append(int(pack))
 
     return bot, packnumbers, args.dest, args.server
@@ -99,7 +99,8 @@ def download_pack(xdcc_bot: str, xdcc_packs: List[int], target_destination: str,
                                           xdcc_pack,
                                           target_destination,
                                           ProgressStruct(),
-                                          file_name_override=filename_override)
+                                          file_name_override=filename_override,
+                                          verbosity_level=10)
         downloader.start()
 
 
