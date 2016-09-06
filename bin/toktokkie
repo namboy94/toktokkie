@@ -28,9 +28,4 @@ import sys
 from toktokkie.main import main
 
 if __name__ == '__main__':
-
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
-        sys.exit(0)
+    main()

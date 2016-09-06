@@ -30,6 +30,7 @@ from typing import List
 from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
 from toktokkie.eastereggs.EasterEggManager import EasterEggManager
 from toktokkie.modules.gui.framework import GlobalGuiFramework
+from toktokkie.metadata import sentry
 
 
 # noinspection PyTypeChecker
@@ -49,34 +50,41 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
     :return: None
     """
 
-    # Activate Easter Eggs
-    EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
-
-    # First, the used mode of the program is determined using sys.argv
-    cli_mode = False
-
-    # Try to set a GUI framework, if it fails use the CLI instead
+    # noinspection PyBroadException
     try:
-        selected_gui = ui_override
-        if not selected_gui:
-            selected_gui = sys.argv[1]
-        GlobalGuiFramework.selected_grid_gui_framework = GridTemplateGenerator.get_grid_templates()[selected_gui]
-    except (KeyError, IndexError):
-        cli_mode = True
 
-    # The program starts here, using the selected mode
-    if cli_mode:
-        from toktokkie.modules.cli.MainCli import MainCli
-        MainCli().start()
-    else:
-        from toktokkie.modules.gui.MainGui import MainGui
-        MainGui().start()
+        # Activate Easter Eggs
+        EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
 
-# This executes the main method
-if __name__ == '__main__':
-    # Keyboard Interrupts are caught and display a farewell message when they occur.
-    try:
-        main()
+        # First, the used mode of the program is determined using sys.argv
+        cli_mode = False
+
+        # Try to set a GUI framework, if it fails use the CLI instead
+        try:
+            selected_gui = ui_override
+            if not selected_gui:
+                selected_gui = sys.argv[1]
+            GlobalGuiFramework.selected_grid_gui_framework = GridTemplateGenerator.get_grid_templates()[selected_gui]
+        except (KeyError, IndexError):
+            cli_mode = True
+
+        # The program starts here, using the selected mode
+        if cli_mode:
+            from toktokkie.modules.cli.MainCli import MainCli
+            MainCli().start()
+        else:
+            from toktokkie.modules.gui.MainGui import MainGui
+            MainGui().start()
+
     except KeyboardInterrupt:
         print("\nThanks for using the tok tokkie media manager!")
         sys.exit(0)
+    except:
+        sentry.captureException()
+
+
+# This executes the main method
+if __name__ == '__main__':
+    main()
+
+
