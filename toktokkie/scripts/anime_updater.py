@@ -33,6 +33,7 @@ from typing import Dict, List
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.objects.XDCCPack import XDCCPack
 from toktokkie.modules.objects.Episode import Episode
+from toktokkie.metadata import sentry
 from toktokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 from toktokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 
@@ -156,14 +157,21 @@ def start(config: List[Dict[str, str]], search_engines: List[str], continuous: b
     :param looptime: Can be set to determine the intervals between updates
     :return: None
     """
-    if "rss" in sys.argv:
-        generate_rss_file(config)
+    # noinspection PyBroadException
+    try:
+        if "rss" in sys.argv:
+            generate_rss_file(config)
 
-    else:
-
-        if continuous:
-            while True:
-                update(config, search_engines)
-                time.sleep(looptime)
         else:
-            update(config, search_engines)
+
+            if continuous:
+                while True:
+                    update(config, search_engines)
+                    time.sleep(looptime)
+            else:
+                update(config, search_engines)
+    except KeyboardInterrupt:
+        print("\nThanks for using the Tok Tokkie media manager!")
+        sys.exit(0)
+    except:
+        sentry.captureException()
