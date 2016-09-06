@@ -136,6 +136,9 @@ def main() -> None:
     try:
         bot, packs, dest, server = parse_arguments()
         download_pack(bot, packs, dest, server)
+    except KeyboardInterrupt:
+        print("\nThanks for using the Tok Tokkie media manager!")
+        sys.exit(0)
     except:
         sentry.captureException()
 

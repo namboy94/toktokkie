@@ -170,5 +170,8 @@ def start(config: List[Dict[str, str]], search_engines: List[str], continuous: b
                     time.sleep(looptime)
             else:
                 update(config, search_engines)
+    except KeyboardInterrupt:
+        print("\nThanks for using the Tok Tokkie media manager!")
+        sys.exit(0)
     except:
         sentry.captureException()

@@ -77,7 +77,7 @@ def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
             MainGui().start()
 
     except KeyboardInterrupt:
-        print("\nThanks for using the tok tokkie media manager!")
+        print("\nThanks for using the Tok Tokkie media manager!")
         sys.exit(0)
     except:
         sentry.captureException()
