@@ -37,7 +37,7 @@ or install using pip:
 Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/toktokkie/wikis/windows-builds)
 
 [Changelog](http://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
-
+ 
 ## Contributing
 
 This project is automatically mirrored to [github](https://github.com/namboy94/toktokkie), however all development

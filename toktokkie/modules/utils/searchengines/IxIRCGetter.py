@@ -93,6 +93,8 @@ class IxIRCGetter(GenericGetter):
         for url in urls:
             self.__get_page_results__(url, results)
 
+        results.sort(key=lambda x: x.packnumber)
+        results.sort(key=lambda x: x.bot)
         return results
 
     # noinspection PyTypeChecker

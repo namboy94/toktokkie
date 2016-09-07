@@ -96,6 +96,8 @@ class IntelGetter(GenericGetter):
                 results.append(result)
             i += 1  # Move to next 'td element'
 
+        results.sort(key=lambda x: x.packnumber)
+        results.sort(key=lambda x: x.bot)
         return results
 
     @staticmethod
