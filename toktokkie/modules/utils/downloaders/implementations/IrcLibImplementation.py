@@ -410,6 +410,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         peer_port = int(peer_port)  # Cast peer port to an integer value
         self.dcc = self.dcc_connect(peer_address, peer_port, "raw")  # Establish the DCC connection to the bot
         self.log("Established DCC connection", 2, ForegroundColors.WHITE)
+        self.download_started = True
 
     def on_dccmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
