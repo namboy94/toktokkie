@@ -111,6 +111,16 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Counter for server retries
     """
 
+    connection_started = False
+    """
+    Flag that is set to true while a connection is in progress
+    """
+
+    bot_requires_channel_join = False
+    """
+    Flag that gets set if the bot resides in one or more channels
+    """
+
     joined_channel = False
     """
     Flag that gets set when the bot successfully enters a channel
@@ -118,17 +128,18 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
 
     download_started = False
     """
-    Flag that is set to true while a download is in progress
+    Flag that gets set once the download starts
     """
 
-    timeout_delta = time.time()
+    start_time = time.time()
     """
     Timestamp to calculate if a timeout occurred in the onping() method
     """
 
-    verbose = False
+    verbosity_level = 0
     """
-    Variable to determine the verbosity of the input
+    Defines how verbose the logging will be printed to the console.
+    Verbosity Level 0 prints nothing
     """
 
     def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
@@ -197,10 +208,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Starts the download process and returns the file path of the downloaded file once the download completes
         :return: the path to the downloaded file
         """
+        success = False
         self.log("Starting Download", 1, ForegroundColors.WHITE)
-        self.download_started = False
-        while not self.download_started:
-            self.download_started = True
+        self.connection_started = False
+        while not self.connection_started:
+            self.connection_started = True
             try:
                 self.connect()  # Connect to server
                 super().start()  # Start the download
@@ -216,11 +228,16 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                     raise ConnectionError("Failed to find the bot on any known server")
 
             except SystemExit:  # Fallback in case the self.connection.quit() call failed
-                pass
+                success = True
             except ConnectionError:  # Bot not found on any known server
                 pass
 
-            if not self.progress_struct.single_progress == self.progress_struct.single_size and self.verbose:
+            if success:
+                self.log("Download completed Successfully", 1)
+            else:
+                self.log("Download did not complete successfully.", 1)
+
+            if not self.progress_struct.single_progress == self.progress_struct.single_size:
                 self.log("WARNING: Progress does not match file size", 1, ForegroundColors.LIGHT_RED)
                 self.log("PROGRESS: " + str(self.progress_struct.single_progress), 1, ForegroundColors.LIGHT_GRAY)
                 self.log("SIZE    : " + str(self.progress_struct.single_size), 1, ForegroundColors.LIGHT_GRAY)
@@ -237,6 +254,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         Resets the state of the downloader (deletes previously downloaded file, resets progress struct)
         :return: None
         """
+        self.connection_started = False
+        self.bot_requires_channel_join = False
+        self.joined_channel = False
         self.download_started = False
         if os.path.isfile(self.filename):
             os.remove(self.filename)
@@ -251,8 +271,9 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
+
         current_time = time.time()
-        time_delta = current_time - self.timeout_delta
+        time_delta = current_time - self.start_time
         if not self.download_started and time_delta > 120.0:
             self.log("TIMEOUT: Aborting", 1, ForegroundColors.LIGHT_RED)
             event.arguments[0] = "TIMEOUT"
@@ -282,13 +303,26 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the nosuchnick event
         :return: None
         """
+        self.bot_requires_channel_join = True
         self.log("NOSUCHNICK", 1, ForegroundColors.RED)
         if connection is None:
             pass
         if event.arguments[0] == self.bot:
             connection.disconnect("Bot does not exist on server")
 
-    # noinspection PyMethodMayBeStatic
+    def on_endofwhois(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Checks the end of a WHOIS command if a channel join has occured or was even necessary
+        If it was not necessary, starts the download
+
+        :param connection: the IRC connection
+        :param event: the endofwhois event
+        :return: None
+        """
+        if not self.bot_requires_channel_join:
+            event.source = self.nickname
+            self.on_join(connection, event)
+
     def on_whoischannels(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
         Checks the channels the bot is connected to.
@@ -297,6 +331,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         :param event: the whois channel event
         :return: None
         """
+        self.bot_requires_channel_join = True
         self.log("Got WHOIS information. Bot resides in: " + event.arguments[1], 1, ForegroundColors.WHITE)
 
         channels = event.arguments[1].split("#")
@@ -307,7 +342,6 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 channel_to_join = "#" + channel.split(" ")[0]
                 self.log("Joining channel " + channel_to_join, 1, ForegroundColors.WHITE)
                 connection.join(channel_to_join)  # Join the channel
-                # time.sleep(10)
 
     def on_join(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
