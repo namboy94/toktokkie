@@ -121,6 +121,11 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     Flag that is set to true while a download is in progress
     """
 
+    timeout_delta = time.time()
+    """
+    Timestamp to calculate if a timeout occurred in the onping() method
+    """
+
     verbose = False
     """
     Variable to determine the verbosity of the input
@@ -236,6 +241,22 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         if os.path.isfile(self.filename):
             os.remove(self.filename)
         self.progress_struct.single_progress = 0
+
+    def on_ping(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
+        """
+        Checks for timeouts
+        :param connection: the IRC connection
+        :param event: the notice event
+        :return: None
+        """
+        if connection is None:
+            pass
+        current_time = time.time()
+        time_delta = current_time - self.timeout_delta
+        if not self.download_started and time_delta > 120.0:
+            self.log("TIMEOUT: Aborting", 1, ForegroundColors.LIGHT_RED)
+            event.arguments[0] = "TIMEOUT"
+            self.on_disconnect(connection, event)
 
     def on_welcome(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -424,6 +445,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             pass
         if event.arguments[0] == "Bot does not exist on server":
             raise ConnectionAbortedError("Bot does not exist on server")
+        if event.arguments[0] == "TIMEOUT":
+            raise ConnectionError("Timeout")
         else:
             sys.exit(0)
 

@@ -78,7 +78,8 @@ class IrcLibDownloader(object):
 
     # noinspection PyTypeChecker
     def __init__(self, packs: List[XDCCPack], progress_struct: ProgressStruct, target_directory: str,
-                 show_name: str = "", episode_number: int = 0, season_number: int = 0) -> None:
+                 show_name: str = "", episode_number: int = 0, season_number: int = 0, verbosity_level: int = 0) \
+            -> None:
         """
         Constructor for the IrcLibDownloader. It calls the constructor for the
         GenericDownloader class
@@ -89,12 +90,14 @@ class IrcLibDownloader(object):
         :param show_name: the show name for auto renaming
         :param episode_number: the (starting) episode number for auto renaming
         :param season_number: the season number for auto renaming
+        :param verbosity_level: The level of verbosity, defaults to 0
         :return: None
         """
         # Store variables
         self.packs = packs
         self.progress_struct = progress_struct
         self.target_directory = target_directory
+        self.verbosity_level = verbosity_level
 
         # Establish if the downloader should auto rename the files
         # Only auto rename if show name, season and episode are specified
@@ -127,7 +130,8 @@ class IrcLibDownloader(object):
                                           pack.packnumber,
                                           self.target_directory,
                                           self.progress_struct,
-                                          file_name_override=file_name)
+                                          file_name_override=file_name,
+                                          verbosity_level=self.verbosity_level)
         return downloader.start()
 
     # noinspection PyTypeChecker

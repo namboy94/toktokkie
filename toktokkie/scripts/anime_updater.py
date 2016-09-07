@@ -80,7 +80,13 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
             next_pack = get_next(horriblesubs_name, bot, quality, current_episode, search_engines)
             if next_pack:
                 prog = ProgressStruct()
-                downloader = IrcLibDownloader([next_pack], prog, target_directory, showname, current_episode, season)
+                downloader = IrcLibDownloader([next_pack],
+                                              prog,
+                                              target_directory,
+                                              showname,
+                                              current_episode,
+                                              season,
+                                              verbosity_level=1)
                 downloader.download_loop()
                 logfile.write(showname + " episode " + str(current_episode) + "\n")
             else:

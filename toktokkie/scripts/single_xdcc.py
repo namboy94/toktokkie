@@ -64,7 +64,7 @@ def parse_arguments() -> Tuple[str, List[int], str, str]:
 
     packnumbers = []
 
-    for pack in range(int(packs[0]), int(packs[len(packs) - 1])):
+    for pack in range(int(packs[0]), 1 + int(packs[len(packs) - 1])):
         packnumbers.append(int(pack))
 
     return bot, packnumbers, args.dest, args.server
