@@ -70,9 +70,9 @@ def parse_arguments() -> Tuple[str, List[int], str, str]:
     return bot, packnumbers, args.dest, args.server
 
 
-def download_pack(xdcc_bot: str, xdcc_packs: List[int], target_destination: str, irc_server: str) -> None:
+def download_packs(xdcc_bot: str, xdcc_packs: List[int], target_destination: str, irc_server: str) -> None:
     """
-    Downloads a single XDCC pack
+    Downloads XDCC Packs
     :param xdcc_bot: the bot from which the pack will be downloaded from
     :param xdcc_packs: the xdcc packs to download
     :param target_destination: the target file destination
@@ -136,7 +136,7 @@ def main() -> None:
     # noinspection PyBroadException
     try:
         bot, packs, dest, server = parse_arguments()
-        download_pack(bot, packs, dest, server)
+        download_packs(bot, packs, dest, server)
     except KeyboardInterrupt:
         print("\nThanks for using the Tok Tokkie media manager!")
         sys.exit(0)

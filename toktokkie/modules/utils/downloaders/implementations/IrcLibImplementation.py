@@ -127,7 +127,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
     """
 
     def __init__(self, server: str, bot: str, pack: int, destination_directory: str, progress_struct: ProgressStruct,
-                 file_name_override: str = None, verbosity_level = 0) -> None:
+                 file_name_override: str = None, verbosity_level: int = 0) -> None:
         """
         Constructor for the IrcLibImplementation class. It initializes the base SimpleIRCClient class
         and stores the necessary information for the download process as class variables
@@ -216,7 +216,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
                 pass
 
             if not self.progress_struct.single_progress == self.progress_struct.single_size and self.verbose:
-                self.log("WARNING: Progresss does not match file size", 1, ForegroundColors.LIGHT_RED)
+                self.log("WARNING: Progress does not match file size", 1, ForegroundColors.LIGHT_RED)
                 self.log("PROGRESS: " + str(self.progress_struct.single_progress), 1, ForegroundColors.LIGHT_GRAY)
                 self.log("SIZE    : " + str(self.progress_struct.single_size), 1, ForegroundColors.LIGHT_GRAY)
 

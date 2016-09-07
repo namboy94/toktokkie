@@ -56,7 +56,7 @@ class HorribleSubsGetter(GenericGetter):
                 filename = self.get_attribute(result, "f")
                 filesize = self.get_attribute(result, "s")
                 packnumber = self.get_attribute(result, "n")
-                pack = XDCCPack(filename, "irc.rizon.net", "#horriblesubs", botname, packnumber, filesize)
+                pack = XDCCPack(filename, "irc.rizon.net", botname, packnumber, filesize)
                 packs.append(pack)
             except IndexError:  # In case the line is not parseable
                 pass

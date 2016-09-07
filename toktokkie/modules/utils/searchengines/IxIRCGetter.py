@@ -153,7 +153,8 @@ class IxIRCGetter(GenericGetter):
                 elif column_count == 1:
                     server = line_part.text
                 elif column_count == 2:
-                    channel = line_part.text
+                    # channel = line_part.text  (No longer needed thanks to /whois)
+                    pass
                 elif column_count == 3:
                     bot = line_part.text
                 elif column_count == 4:
@@ -170,7 +171,7 @@ class IxIRCGetter(GenericGetter):
                 next_element = True  # Sets flag to communicate that a next element was found
 
                 # Generate XDCCPack and append it to the list
-                result = XDCCPack(file_name, "irc." + server + ".net", channel, bot, pack_number, size)
+                result = XDCCPack(file_name, "irc." + server + ".net", bot, pack_number, size)
                 results.append(result)
 
             # If an invalid pack is found, this is called
