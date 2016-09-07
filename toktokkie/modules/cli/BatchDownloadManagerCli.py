@@ -414,7 +414,7 @@ class BatchDownloadManagerCli(PuffOtterCli):
 
         # Start downloading
         BatchDownloadManager.start_download_process(
-            preparation, self.selected_packs, self.auto_rename, progress)
+            preparation, self.selected_packs, self.auto_rename, progress, 1)
 
         print("Download complete")  # Let the user know that the downloads have all completed
 

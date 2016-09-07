@@ -22,6 +22,8 @@ This file is part of toktokkie.
 LICENSE
 """
 
+# TODO Type Annotations
+
 # imports
 import os
 import shutil
@@ -194,13 +196,14 @@ class BatchDownloadManager(object):
                 "special": special, "target_directory": target_directory}
 
     @staticmethod
-    def start_download_process(preparation, packs, auto_rename, progress_struct):
+    def start_download_process(preparation, packs, auto_rename: bool, progress_struct, verbosity: int):
         """
         Starts the XDCC download
         :param preparation: the preparation dictionary created beforehand
         :param packs: the packs to download
         :param auto_rename: bool that determines if the files will be auto-renamed
         :param progress_struct: A ProgressStruct object to keep track of the download progress
+        :param verbosity: The verbosity with which the downloader should run
         :return: void
         """
         # User different arguments depending on if auto-renaming is desired
@@ -212,7 +215,8 @@ class BatchDownloadManager(object):
                              preparation["target_directory"],
                              preparation["show"],
                              preparation["first_episode"],
-                             preparation["season"]).download_loop()
+                             preparation["season"],
+                             verbosity_level=verbosity).download_loop()
         else:
             # only use the necessary constructor arguments
             # noinspection PyCallingNonCallable
