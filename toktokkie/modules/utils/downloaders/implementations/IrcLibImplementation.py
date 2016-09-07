@@ -31,7 +31,7 @@ import sys
 import time
 import irc.client
 from typing import List
-from puffotter.stringformatter import ForegroundColors, print_formatted_string
+from puffotter.stringformatter import ForegroundColors, BackgroundColors, print_formatted_string
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from jaraco.stream import buffer
 
@@ -389,6 +389,8 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         else:
             command, filename, peer_address, peer_port, size, dummy = parts
 
+        self.log("Starting Download of " + filename, 2, ForegroundColors.LIGHT_BLUE)
+
         if command != "SEND":  # Only react on SENDs
             return
 
@@ -460,7 +462,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         self.file.close()  # Close the file
         # Print a summary of the file
         self.log("Received file %s (%d bytes)." % (self.filename, self.progress_struct.single_progress), 1,
-                 ForegroundColors.LIGHT_YELLOW)
+                 BackgroundColors.LIGHT_YELLOW)
         self.connection.quit()  # Close the IRC connection
 
         if self.connection.connected:
@@ -506,7 +508,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
-        self.log("PRIVATE NOTICE: " + str(event.arguments), 4, ForegroundColors.MAGENTA)
+        self.log("PRIVATE NOTICE: " + str(event.arguments), 4, ForegroundColors.LIGHT_YELLOW)
 
     def on_pubmsg(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
@@ -517,7 +519,7 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
         """
         if connection is None:
             pass
-        self.log("PUBLIC MESSAGE: " + str(event.arguments), 4, ForegroundColors.LIGHT_YELLOW)
+        self.log("PUBLIC MESSAGE: " + str(event.arguments), 4, ForegroundColors.MAGENTA)
 
     def on_pubnotice(self, connection: irc.client.ServerConnection, event: irc.client.Event) -> None:
         """
