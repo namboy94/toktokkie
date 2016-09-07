@@ -25,60 +25,83 @@ LICENSE
 
 # imports
 import os
+import re
 import sys
 import argparse
-from typing import Tuple
+from typing import Tuple, List
 from puffotter.fileops import ensure_directory_exists
+from toktokkie.metadata import sentry
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.utils.downloaders.implementations.IrcLibImplementation import IrcLibImplementation
 
 
-def parse_arguments() -> Tuple[str, str, str, str]:
+def parse_arguments() -> Tuple[str, List[int], str, str]:
     """
     Parses the command line parameters and establishes the important information from the input
-    :return: the bot name, the pack number, the file destination, the irc server
+    :return: the bot name, the pack numbers, the file destination, the irc server
     """
     parser = argparse.ArgumentParser(description="Downloads an XDCC pack")
-    parser.add_argument("packstring", help="The XDCC get packstring, of form: '\"/msg BOTNAME xdcc send #PACKNUMBER\"'")
+    parser.add_argument("packstring", help="The XDCC get packstring of form:\n"
+                                           "\"/msg <BOTNAME> xdcc send #<PACKNUMBER>\"\n"
+                                           "OR, if you want to download a range of packs:\n"
+                                           "\"/msg <BOTNAME> xdcc send #<PN_START>-<PN_END>\"\n"
+                                           "\n"
+                                           "The variables in <> should be replaced with the user's input")
     parser.add_argument("--dest", help="Optional file path to store the downloaded file in")
     parser.add_argument("--server", help="Optional irc server. If this is not set, the script will automatically"
                                          "go through the most popular IRC servers")
     args = parser.parse_args()
+
+    if not re.search(r"/msg [^ ]+ xdcc send #[0-9]+(-[0-9]+)?", args.packstring):
+        print("Packstring does not match standard XDCC request. Aborting.")
+        exit(1)
+
     bot = args.packstring.split(" ")[1]
-    pack = args.packstring.split(" ")[4].split("#")[1]
-    return bot, pack, args.dest, args.server
+    packs = [args.packstring.split(" ")[4].split("#")[1]]
+
+    if re.search(r"[0-9]+-[0-9+]", packs[0]):
+        packs = packs[0].split("-")
+
+    packnumbers = []
+
+    for pack in range(int(packs[0]), 1 + int(packs[len(packs) - 1])):
+        packnumbers.append(int(pack))
+
+    return bot, packnumbers, args.dest, args.server
 
 
-def download_pack(xdcc_bot: str, xdcc_pack: int, target_destination: str, irc_server: str) -> None:
+def download_packs(xdcc_bot: str, xdcc_packs: List[int], target_destination: str, irc_server: str) -> None:
     """
-    Downloads a single XDCC pack
+    Downloads XDCC Packs
     :param xdcc_bot: the bot from which the pack will be downloaded from
-    :param xdcc_pack: the xdcc pack to download
+    :param xdcc_packs: the xdcc packs to download
     :param target_destination: the target file destination
     :param irc_server: the irc server to use
     :return: None
     """
-    irc_server = irc_server if irc_server is not None else "irc.rizon.net"
+    for xdcc_pack in xdcc_packs:
+        irc_server = irc_server if irc_server is not None else "irc.rizon.net"
 
-    filename_override = None
-    if target_destination is not None:
-        if os.path.isdir(target_destination):
-            pass
+        filename_override = None
+        if target_destination is not None:
+            if os.path.isdir(target_destination):
+                pass
+            else:
+                filename_override = os.path.basename(target_destination).rsplit(".")[0]
+                target_destination = os.path.dirname(target_destination)
+                ensure_directory_exists(target_destination)
         else:
-            filename_override = os.path.basename(target_destination).rsplit(".")[0]
-            target_destination = os.path.dirname(target_destination)
-            ensure_directory_exists(target_destination)
-    else:
-        target_destination = os.getcwd()
+            target_destination = os.getcwd()
 
-    filename_override = None if not filename_override else filename_override  # Turn empty string into None object
-    downloader = IrcLibImplementation(irc_server,
-                                      xdcc_bot,
-                                      xdcc_pack,
-                                      target_destination,
-                                      ProgressStruct(),
-                                      file_name_override=filename_override)
-    downloader.start()
+        filename_override = None if not filename_override else filename_override  # Turn empty string into None object
+        downloader = IrcLibImplementation(irc_server,
+                                          xdcc_bot,
+                                          xdcc_pack,
+                                          target_destination,
+                                          ProgressStruct(),
+                                          file_name_override=filename_override,
+                                          verbosity_level=10)
+        downloader.start()
 
 
 def check_target_directory(args_maxlength: int) -> Tuple[str, str]:
@@ -110,8 +133,16 @@ def main() -> None:
     Usage: single-xdcc (")/msg botname xdcc send #pack(") destination
     :return: None
     """
-    bot, pack, dest, server = parse_arguments()
-    download_pack(bot, int(pack), dest, server)
+    # noinspection PyBroadException
+    try:
+        bot, packs, dest, server = parse_arguments()
+        download_packs(bot, packs, dest, server)
+    except KeyboardInterrupt:
+        print("\nThanks for using the Tok Tokkie media manager!")
+        sys.exit(0)
+    except:
+        sentry.captureException()
+
 
 if __name__ == '__main__':
     main()

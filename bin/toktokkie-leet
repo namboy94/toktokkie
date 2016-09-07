@@ -23,14 +23,7 @@ This file is part of media-manager.
     along with media-manager.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
-
 from toktokkie.main import main
 
 if __name__ == '__main__':
-
-    try:
-        main(easter_egg_override=["leet"])
-    except KeyboardInterrupt:
-        print("\nThanks for using media-manager!")
-        sys.exit(0)
+    main(easter_egg_override=["leet"])

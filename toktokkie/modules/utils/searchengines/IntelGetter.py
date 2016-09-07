@@ -90,12 +90,13 @@ class IntelGetter(GenericGetter):
                 size = line.text
             elif (i - 4) % 5 == 0:  # Fifth/Last Column (Generate XDCCPack)
                 filename = line.text
-                channel = ""
                 server = "irc.rizon.net"
-                result = XDCCPack(filename, server, channel, bot, packnumber, size)
+                result = XDCCPack(filename, server, bot, packnumber, size)
                 results.append(result)
             i += 1  # Move to next 'td element'
 
+        results.sort(key=lambda x: x.packnumber)
+        results.sort(key=lambda x: x.bot)
         return results
 
     @staticmethod

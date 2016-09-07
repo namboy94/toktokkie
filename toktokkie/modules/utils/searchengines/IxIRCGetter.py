@@ -93,6 +93,8 @@ class IxIRCGetter(GenericGetter):
         for url in urls:
             self.__get_page_results__(url, results)
 
+        results.sort(key=lambda x: x.packnumber)
+        results.sort(key=lambda x: x.bot)
         return results
 
     # noinspection PyTypeChecker
@@ -151,7 +153,8 @@ class IxIRCGetter(GenericGetter):
                 elif column_count == 1:
                     server = line_part.text
                 elif column_count == 2:
-                    channel = line_part.text
+                    # channel = line_part.text  (No longer needed thanks to /whois)
+                    pass
                 elif column_count == 3:
                     bot = line_part.text
                 elif column_count == 4:
@@ -168,7 +171,7 @@ class IxIRCGetter(GenericGetter):
                 next_element = True  # Sets flag to communicate that a next element was found
 
                 # Generate XDCCPack and append it to the list
-                result = XDCCPack(file_name, "irc." + server + ".net", channel, bot, pack_number, size)
+                result = XDCCPack(file_name, "irc." + server + ".net", bot, pack_number, size)
                 results.append(result)
 
             # If an invalid pack is found, this is called

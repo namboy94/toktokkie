@@ -1,3 +1,9 @@
+V 0.9.9.5
+  - Implemented colorized printing for the XDCC downloader
+  - Implemented Range Downloading in Single XDCC Downloader Script
+  - XDCC Downloader Stability Improvements
+  - Fixed IRC Encoding Issues
+  - integrated Sentry Exception logging
 V 0.9.9.4
   - Implemented RSS opml file generator to anime updater script
 V 0.9.9.3

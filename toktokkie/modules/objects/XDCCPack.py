@@ -70,14 +70,13 @@ class XDCCPack(object):
     The file size in a more human-readable format
     """
 
-    def __init__(self, filename: str, server: str, channel: str, bot: str, packnumber: int, size: str) -> None:
+    def __init__(self, filename: str, server: str, bot: str, packnumber: int, size: str) -> None:
         """
         Constructor of the XDCCPack class. It gets information of the pack via the arguments
         and parses them accordingly
 
         :param filename: the pack's file name
         :param server: the server of the pack
-        :param channel: the channel of the pack
         :param bot: the bot of the pack
         :param packnumber: the pack number
         :param size: the file size
@@ -85,7 +84,6 @@ class XDCCPack(object):
         """
         self.filename = filename
         self.server = server
-        self.channel = channel
         self.bot = bot
         self.packnumber = packnumber
         self.size = get_byte_size_from_string(size)

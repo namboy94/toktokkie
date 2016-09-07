@@ -68,10 +68,9 @@ class NIBLGetter(GenericGetter):
             # The bot name has a link after it, which needs to be cut out
             bot = bot_names[i].text.rsplit(" ", 1)[0]
             server = "irc.rizon.net"
-            channel = ""
             packnumber = int(pack_numbers[i].text)
             size = file_sizes[i].text
-            result = XDCCPack(filename, server, channel, bot, packnumber, size)  # Generate the XDCCPack
+            result = XDCCPack(filename, server, bot, packnumber, size)  # Generate the XDCCPack
             results.append(result)  # add to list
             i += 1  # Loop to next element
 

@@ -1,10 +1,8 @@
 # Tok Tokkie Media Manager
 
-This is a program which allows convenient managing of various Media collections, mostly Videos. The program is written
-in python 3 and won't normally run on python 2. However, a version converted using 3to2 is available on the python
-package index (Link below).
+This is a program which allows convenient managing of various Media collections, with a focus
+on TV Shows.
 
-[Changelog](http://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
 
 ## Main features
 
@@ -25,6 +23,7 @@ The Program also offers a few standalone CLI tools:
     
 [**anime-updater**](doc/extra/anime-updater.md)
 
+
 ## Installation
 
 To install the program, either download the source and run
@@ -37,11 +36,15 @@ or install using pip:
 
 Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/toktokkie/wikis/windows-builds)
 
+[Changelog](http://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
+ 
 ## Contributing
 
 This project is automatically mirrored to [github](https://github.com/namboy94/toktokkie), however all development
 is conducted at a privately hosted [Gitlab instance](http://gitlab.namibsun.net/namboy94/toktokkie). Issues
 on both services are taken unto consideration.
+
+We're also tracking bugs using a [self-hosted Sentry instance](http://85.214.124.204:9000/sentry/toktokkie/)
 
 ## Documentation
 
@@ -51,7 +54,6 @@ A [PDF version](http://krumreyh.eu/toktokkie/documentation/documentation.pdf) is
 ## Statistics
 
 Automatically generated git statistics can be found [here](http://krumreyh.eu/toktokkie/git_stats/index.html)
-
 
 ## Disclaimer:
 

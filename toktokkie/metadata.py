@@ -37,7 +37,7 @@ project_description = "A personal media manager program"
 A short description of the project
 """
 
-version_number = "0.9.9.4"
+version_number = "0.9.9.5"
 """
 The current version of the program.
 """
@@ -73,7 +73,7 @@ license_type = "GNU GPL3"
 The project's license type
 """
 
-dependencies = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter']
+dependencies = ['tvdb_api', 'beautifulsoup4', 'gfworks', 'typing', 'irc', 'puffotter', 'raven']
 """
 Python Packaging Index requirements
 """
@@ -112,4 +112,13 @@ The Operating Systems on which the program can run
 license_identifier = "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
 """
 The license used for this project
+"""
+
+# Sentry Configuration
+
+from raven import Client
+sentry = Client(dsn='http://738d8f4e36844faa91283ea26e98b153:81b79214220049d2b5c5fe26bd28e877@85.214.124.204:9000/2',
+                release=version_number)
+"""
+The Sentry client for logging bugs
 """
