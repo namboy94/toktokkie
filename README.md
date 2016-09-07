@@ -44,6 +44,8 @@ This project is automatically mirrored to [github](https://github.com/namboy94/t
 is conducted at a privately hosted [Gitlab instance](http://gitlab.namibsun.net/namboy94/toktokkie). Issues
 on both services are taken unto consideration.
 
+We're also tracking bugs using a [self-hosted Sentry instance](http://85.214.124.204:9000/sentry/toktokkie/)
+
 ## Documentation
 
 Sphinx Documentation can be found [here](http://krumreyh.eu/toktokkie/documentation/html/index.html).
@@ -52,7 +54,6 @@ A [PDF version](http://krumreyh.eu/toktokkie/documentation/documentation.pdf) is
 ## Statistics
 
 Automatically generated git statistics can be found [here](http://krumreyh.eu/toktokkie/git_stats/index.html)
-
 
 ## Disclaimer:
 
