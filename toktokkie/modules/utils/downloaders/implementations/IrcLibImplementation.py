@@ -401,10 +401,13 @@ class IrcLibImplementation(irc.client.SimpleIRCClient):
             self.filename = os.path.join(self.destination_directory, os.path.basename(filename))
         else:
             # Add file extension to override-name
-            self.filename += "." + filename.rsplit(".", 1)[1]
+            extension = "." + filename.rsplit(".", 1)[1]
+            if not self.filename.endswith(extension):
+                self.filename += extension
 
         # Check if the file already exists. If it does, delete it beforehand
         if os.path.exists(self.filename):
+            self.log("Deleting prevously existing file", 2, BackgroundColors.LIGHT_RED)
             os.remove(self.filename)
 
         self.file = open(self.filename, "wb")  # Open the file for writing
