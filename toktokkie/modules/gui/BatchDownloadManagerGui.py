@@ -597,8 +597,11 @@ class BatchDownloadManagerGui(GlobalGuiFramework.selected_grid_gui_framework):
 
         # Start the download thread
         self.run_thread_in_parallel(target=BatchDownloadManager.start_download_process,
-                                    args=(preparation, packs,
-                                          self.get_boolean_from_check_box(self.rename_check), progress))
+                                    args=(preparation,
+                                          packs,
+                                          self.get_boolean_from_check_box(self.rename_check),
+                                          progress,
+                                          0))
 
         # Set the class variable dl_progress to point to the progress structure to disable
         # additional concurrent downloads

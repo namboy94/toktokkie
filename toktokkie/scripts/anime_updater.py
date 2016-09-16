@@ -71,6 +71,7 @@ def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:
         episode_count = 1
         previous_eps = os.listdir(target_directory)
         for previous_ep in sorted(previous_eps):
+
             episode = Episode(os.path.join(target_directory, previous_ep), episode_count, season, showname)
             episode.rename()
             episode_count += 1
