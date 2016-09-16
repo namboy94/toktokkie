@@ -25,6 +25,8 @@ LICENSE
 # imports
 import os
 import shutil
+import requests
+from puffotter.fileops import ensure_directory_exists
 from toktokkie.modules.utils.manga.MangaScraperManager import MangaScraperManager
 
 
@@ -95,15 +97,45 @@ class MangaSeries(object):
         if self.scraper is not None and len(self.volumes) == 0:
             self.volumes = self.scraper.scrape_volumes_from_url(self.url)
 
+    def download_manga(self, update: bool = False, repair: bool = False):
+        """
+        Starts downloading the manga series
+
+        :param update: flag to set an update process, i.e. only downloads files that don't exist
+        :param repair: flag to set a repair process, i.e. updates + checks if files are OK
+        :return: None
+        """
+        self.scrape()
+
+        if not self.dry_run:
+            ensure_directory_exists(self.root_directory)
+
+        for volume in self.volumes:
+            volume_directory = os.path.join(self.root_directory, volume.get_volume_name())
+
+            if not self.dry_run:
+                ensure_directory_exists(volume_directory)
+
+            for chapter in volume.get_chapters():
+                chapter_directory = os.path.join(volume_directory, chapter.get_chapter_name())
+
+                if not self.dry_run:
+                    ensure_directory_exists(chapter_directory)
+
+                for page in chapter.get_pages():
+                    page_file = os.path.join(chapter_directory, page.get_page_name())
+                    if update:
+                        self.__download_file__(page.image_url, page_file, overwrite_existing=False, repair=False)
+                    elif repair:
+                        self.__download_file__(page.image_url, page_file, overwrite_existing=True, repair=True)
+
     def update(self) -> None:
         """
         Updates the current directory with volumes and chapters that do not exist yet
 
         :return: None
         """
-        self.scrape()
-        for volume in self.volumes:
-            pass
+        self.download_manga(update=True)
 
     def repair(self) -> None:
         """
@@ -112,9 +144,7 @@ class MangaSeries(object):
 
         :return: None
         """
-        self.scrape()
-        for volume in self.volumes:
-            pass
+        self.download_manga(repair=True)
 
     def zip(self, zip_volumes: bool = False, zip_chapters: bool = False):
         """
@@ -184,3 +214,33 @@ class MangaSeries(object):
         :return: None
         """
         self.dry_run = dry_run
+
+    def __download_file__(self, url: str, destination: str, overwrite_existing: bool = False, repair: bool = False)\
+            -> None:
+        """
+        Downloads a file, can also be used to repair previously downloaded files
+
+        :param url: the file's URL
+        :param destination: the local destination for the file
+        :param overwrite_existing: flag that enables overwriting existing files
+        :param repair: flag that can be set to enable repair mode
+        :return: None
+        """
+        if not overwrite_existing and os.path.isfile(destination):
+            return
+
+        if repair:
+            try:
+                url_size = int(requests.head(url).headers["Content-Length"])
+                file_size = os.path.getsize(destination)
+
+                if url_size == file_size:
+                    return
+
+            except FileNotFoundError:
+                pass
+
+        if not self.dry_run:
+            with open(destination, 'wb') as destination_file:
+                content = requests.get(url).content
+                destination_file.write(content)
