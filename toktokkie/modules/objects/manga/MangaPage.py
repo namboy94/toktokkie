@@ -22,30 +22,29 @@ This file is part of toktokkie.
 LICENSE
 """
 
-# imports
-from typing import List
-from toktokkie.modules.objects.manga.MangaVolume import MangaVolume
 
-
-class GenericMangaScraper(object):
+class MangaPage(object):
     """
-    Class that models how a Manga Scraper should operate
+    Class that models a page in a Manga chapter
     """
 
-    def url_match(self, manga_url: str) -> bool:
-        """
-        Checks if a URL matches the pattern expected by the scraper
+    page_number = -1
+    """
+    The page's page number
+    """
 
-        :param manga_url: the URL to check
-        :return: True if it matches, False otherwise
-        """
-        raise NotImplementedError()
+    image_url = ""
+    """
+    The URL to the page's image
+    """
 
-    def scrape_volumes_from_url(self, manga_url) -> List[MangaVolume]:
+    def __init__(self, page_number: int, image_url: str) -> None:
         """
-        Scrapes a given URL
+        Initializes the Manga Page with a page number and an image URL
 
-        :param manga_url: the given URL to scrape
-        :return: a list of volumes, which should also contain chapters
+        :param page_number: the page number
+        :param image_url: the image URL
+        :return: None
         """
-        raise NotImplementedError()
+        self.page_number = page_number
+        self.image_url = image_url

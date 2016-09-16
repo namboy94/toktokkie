@@ -39,11 +39,18 @@ class MangaVolume(object):
     List of Manga chapters in this volume
     """
 
-    def __init__(self, chapters: List[MangaChapter]) -> None:
+    volume_number = -1
+    """
+    The volume's Volume Number
+    """
+
+    def __init__(self, volume_number: int, chapters: List[MangaChapter]) -> None:
         """
         Initializes a Manga volume with a list of chapters
 
+        :param volume_number: The volume number of this volume
         :param chapters: the chapters belonging to this volume
         :return: None
         """
+        self.volume_number = volume_number
         self.chapters = chapters

@@ -23,7 +23,8 @@ LICENSE
 """
 
 # imports
-from typing import Dict
+from typing import List
+from toktokkie.modules.objects.manga.MangaPage import MangaPage
 
 
 class MangaChapter(object):
@@ -33,16 +34,24 @@ class MangaChapter(object):
     Contains download links to the individual chapter pages
     """
 
-    pages = {}
+    pages = []
     """
-    The individual pages in the format  {int(page_number): str(image_url)}
+    The individual pages of the chapter
     """
 
-    def __init__(self, pages: Dict[int, str]) -> None:
+    chapter_number = -1.0
+    """
+    The chapter's chapter number
+    Is a float to allow chapters like 5.5 or the like
+    """
+
+    def __init__(self, chapter_number: float, pages: List[MangaPage]) -> None:
         """
         Initializes a Manga chapter with the contained pages.
 
-        :param pages: the chapter pages as a dictionary with page numbers as keys and image URLs as content
+        :param chapter_number: The chapter number of this chapter
+        :param pages: the chapter pages as list of MangaPage objects
         :return: None
         """
+        self.chapter_number = chapter_number
         self.pages = pages
