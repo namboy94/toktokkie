@@ -21,3 +21,28 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+# imports
+from typing import Dict
+
+
+class MangaChapter(object):
+    """
+    Class that models a Chapter of the manga
+
+    Contains download links to the individual chapter pages
+    """
+
+    pages = {}
+    """
+    The individual pages in the format  {int(page_number): str(image_url)}
+    """
+
+    def __init__(self, pages: Dict[int, str]) -> None:
+        """
+        Initializes a Manga chapter with the contained pages.
+
+        :param pages: the chapter pages as a dictionary with page numbers as keys and image URLs as content
+        :return: None
+        """
+        self.pages = pages

@@ -21,3 +21,29 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+# import
+from typing import List
+from toktokkie.modules.objects.manga.MangaChapter import MangaChapter
+
+
+class MangaVolume(object):
+    """
+    Class that models a Manga chapter.
+
+    Contains a list of chapters
+    """
+
+    chapters = []
+    """
+    List of Manga chapters in this volume
+    """
+
+    def __init__(self, chapters: List[MangaChapter]) -> None:
+        """
+        Initializes a Manga volume with a list of chapters
+
+        :param chapters: the chapters belonging to this volume
+        :return: None
+        """
+        self.chapters = chapters
