@@ -107,11 +107,13 @@ class MangaSeries(object):
         """
         self.scrape()
 
+        series_directory = os.path.join(self.root_directory, self.name)
         if not self.dry_run:
             ensure_directory_exists(self.root_directory)
+            ensure_directory_exists(series_directory)
 
         for volume in self.volumes:
-            volume_directory = os.path.join(self.root_directory, volume.get_volume_name())
+            volume_directory = os.path.join(series_directory, volume.get_volume_name())
 
             if not self.dry_run:
                 ensure_directory_exists(volume_directory)
@@ -161,6 +163,10 @@ class MangaSeries(object):
 
             if volume.startswith("Volume ") and os.path.isdir(volume_dir):
 
+                if zip_volumes:
+                    if not self.dry_run:
+                        shutil.make_archive(volume_dir, "zip", volume_dir)
+
                 if zip_chapters:
                     for chapter in os.listdir(volume_dir):
                         chapter_dir = os.path.join(volume_dir, chapter)
@@ -168,10 +174,6 @@ class MangaSeries(object):
                         if chapter.startswith("Chapter ") and os.path.isdir(chapter_dir):
                             if not self.dry_run:
                                 shutil.make_archive(chapter_dir, "zip", chapter_dir)
-
-                if zip_volumes:
-                    if not self.dry_run:
-                        shutil.make_archive(volume_dir, "zip", volume_dir)
 
     def zip_chapters(self) -> None:
         """

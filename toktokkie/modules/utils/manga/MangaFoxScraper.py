@@ -88,8 +88,6 @@ class MangaFoxScraper(GenericMangaScraper):
 
                 for image_number in range(1, page_amount + 1):
 
-                    print(image_number)
-
                     image_page_url = chapter_base_url + "/" + str(image_number) + ".html"
                     image_html = requests.get(image_page_url).text
                     image_soup = BeautifulSoup(image_html, "html.parser")
