@@ -24,36 +24,25 @@ LICENSE
 """
 
 # imports
-from toktokkie.scripts.anime_updater import start
+from toktokkie.scripts.manga_updater import start
 
-# Remove unwanted search engines to speed up the script
-search_engines = ["Horriblesubs",
-                  "NIBL.co.uk",
-                  "ixIRC.com",
-                  "intel.haruhichan.com"]
-
-# Add as many shows as you want.
+# Add as many manga series as you want
 # Don't forget to separate the dictionaries (parts enclosed in curly brackets {}) with commas
 config = [
 
     {"target_directory": "Target Directory 1",
-     "horriblesubs_name": "Show Name 1",
-     "bot": "Bot Name 1",
-     "quality": "1080p",
-     "season": "Season Number 1"},
+     "manga_url": "http://mangasite.domain/path/to/manga1"},
 
     {"target_directory": "Target Directory 2",
-     "horriblesubs_name": "Show Name 2",
-     "bot": "Bot Name 2",
-     "quality": "720p",
-     "season": "Season Number 2"}
+     "manga_url": "http://mangasite.domain/path/to/manga2"}
 
 ]
 
 if __name__ == '__main__':
 
-    # Uncomment just the configuration you want, leave all others commented
-
-    start(config, search_engines)  # Runs the script once
-    # start(config, search_engines, continuous=True)  # Loops the script continuously
-    # start(config, search_engines, continuous=True, looptime = 3600)  # Loops the script at defined intervals
+    # Uncomment options that you would like to use
+    start(config,
+          # repair=True,
+          # verbose=True,
+          # dry_run=True
+          )

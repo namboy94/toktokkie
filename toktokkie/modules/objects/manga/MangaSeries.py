@@ -44,11 +44,6 @@ class MangaSeries(object):
     The manga series' URL
     """
 
-    name = ""
-    """
-    The manga series' name
-    """
-
     root_directory = ""
     """
     The root directory of the downloaded manga
@@ -75,17 +70,15 @@ class MangaSeries(object):
     to the rsync dry run flag '-n'
     """
 
-    def __init__(self, url: str, name: str, root_directory: str) -> None:
+    def __init__(self, url: str, root_directory: str) -> None:
         """
         Initializes the Manga series
 
         :param url: the URL for where to look for volumes to download
-        :param name: the name of the series
         :param root_directory: the directory in which the local copy of the series resides in
         """
 
         self.url = url
-        self.name = name
         self.root_directory = root_directory
         self.scraper = MangaScraperManager.get_scraper_for(url)  # Automatically find the correct scraper
 
@@ -107,13 +100,11 @@ class MangaSeries(object):
         """
         self.scrape()
 
-        series_directory = os.path.join(self.root_directory, self.name)
         if not self.dry_run:
             ensure_directory_exists(self.root_directory)
-            ensure_directory_exists(series_directory)
 
         for volume in self.volumes:
-            volume_directory = os.path.join(series_directory, volume.get_volume_name())
+            volume_directory = os.path.join(self.root_directory, volume.get_volume_name())
 
             if not self.dry_run:
                 ensure_directory_exists(volume_directory)
