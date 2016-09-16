@@ -63,6 +63,7 @@ class MangaFoxScraper(GenericMangaScraper):
         :param verbose: Sets the verbosity flag. Defaults to no output
         :return: a list of volumes, which should also contain chapters
         """
+
         class ThreadManager:
             active_threads = 0
 
@@ -92,9 +93,13 @@ class MangaFoxScraper(GenericMangaScraper):
                 chapter_base_url = chapter_start_url.rsplit("/", 1)[0]
                 chapter_number = float(chapter.text.rsplit(" ", 1)[1])
 
+                if chapter_number.is_integer():
+                    formatted_chapter_number = str(int(chapter_number)).zfill(3)
+                else:
+                    pre_dot, post_dot = str(chapter_number).split(".")
+                    formatted_chapter_number = pre_dot.zfill(3) + "." + post_dot
+
                 chapter_directory = os.path.join(manga_directory, "Volume " + str(volume_number).zfill(2))
-                pre_dot, post_dot = str(chapter_number).split(".")
-                formatted_chapter_number = pre_dot.zfill(3) + "." + post_dot
                 chapter_directory = os.path.join(chapter_directory, "Chapter " + formatted_chapter_number)
 
                 if verbose:
