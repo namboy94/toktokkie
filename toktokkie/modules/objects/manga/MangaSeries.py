@@ -91,7 +91,8 @@ class MangaSeries(object):
         Finds a list of all volumes using the scraper found in the __init__ method
         :return:
         """
-        self.volumes = self.scraper.scrape_volumes_from_url(self.url)
+        if self.scraper is not None:
+            self.volumes = self.scraper.scrape_volumes_from_url(self.url)
 
     def update(self) -> None:
         """
