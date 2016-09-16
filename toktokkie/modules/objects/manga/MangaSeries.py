@@ -70,6 +70,11 @@ class MangaSeries(object):
     to the rsync dry run flag '-n'
     """
 
+    max_threads = 1
+    """
+    Defines the maximum number of concurrent threads while scraping
+    """
+
     def __init__(self, url: str, root_directory: str) -> None:
         """
         Initializes the Manga series
@@ -82,13 +87,19 @@ class MangaSeries(object):
         self.root_directory = root_directory
         self.scraper = MangaScraperManager.get_scraper_for(url)  # Automatically find the correct scraper
 
-    def scrape(self) -> None:
+    def scrape(self, skip_existing_chapters: bool = False) -> None:
         """
         Finds a list of all volumes using the scraper found in the __init__ method
-        :return:
+
+        :param skip_existing_chapters: Can be set to skip existing chapters
+        :return: None
         """
         if self.scraper is not None and len(self.volumes) == 0:
-            self.volumes = self.scraper.scrape_volumes_from_url(self.url)
+            self.volumes = self.scraper.scrape_volumes_from_url(self.url,
+                                                                self.root_directory,
+                                                                skip_existing_chapters=skip_existing_chapters,
+                                                                max_threads=self.max_threads,
+                                                                verbose=self.verbose)
 
     def download_manga(self, update: bool = False, repair: bool = False):
         """
@@ -98,7 +109,13 @@ class MangaSeries(object):
         :param repair: flag to set a repair process, i.e. updates + checks if files are OK
         :return: None
         """
-        self.scrape()
+        if self.verbose:
+            print("Scraping " + self.url)
+
+        if update:
+            self.scrape(True)
+        else:
+            self.scrape()
 
         if not self.dry_run:
             ensure_directory_exists(self.root_directory)
@@ -208,6 +225,15 @@ class MangaSeries(object):
         """
         self.dry_run = dry_run
 
+    def set_maximum_thread_amount(self, max_threads: int) -> None:
+        """
+        Sets the maximum amount of threads to be used
+
+        :param max_threads: the new thread maximum
+        :return: None
+        """
+        self.max_threads = max_threads
+
     def __download_file__(self, url: str, destination: str, overwrite_existing: bool = False, repair: bool = False)\
             -> None:
         """
@@ -235,5 +261,7 @@ class MangaSeries(object):
 
         if not self.dry_run:
             with open(destination, 'wb') as destination_file:
+                if self.verbose:
+                    print("Downloading " + destination)
                 content = requests.get(url).content
                 destination_file.write(content)

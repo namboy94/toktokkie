@@ -24,9 +24,11 @@ LICENSE
 
 
 # imports
+import os
 import requests
-from bs4 import BeautifulSoup
 from typing import List
+from threading import Thread
+from bs4 import BeautifulSoup
 from toktokkie.modules.objects.manga.MangaPage import MangaPage
 from toktokkie.modules.objects.manga.MangaVolume import MangaVolume
 from toktokkie.modules.objects.manga.MangaChapter import MangaChapter
@@ -49,13 +51,20 @@ class MangaFoxScraper(GenericMangaScraper):
         return manga_url.startswith("http://mangafox.me")
 
     @staticmethod
-    def scrape_volumes_from_url(manga_url) -> List[MangaVolume]:
+    def scrape_volumes_from_url(manga_url: str, manga_directory: str, skip_existing_chapters: bool = False,
+                                max_threads: int = 1, verbose: bool = False) -> List[MangaVolume]:
         """
-        Scrapes a given URL
+        Scrapes a given URL from mangafox.me
 
         :param manga_url: the given URL to scrape
+        :param manga_directory: the manga directory, which can be used to skip existing chapters
+        :param skip_existing_chapters: Flag that can be set to skip existing chapters, thereby increasing scraping speed
+        :param max_threads: The maximum amount of threads that can be used
+        :param verbose: Sets the verbosity flag. Defaults to no output
         :return: a list of volumes, which should also contain chapters
         """
+        class ThreadManager:
+            active_threads = 0
 
         html = requests.get(manga_url).text
         soup = BeautifulSoup(html, "html.parser")
@@ -71,6 +80,9 @@ class MangaFoxScraper(GenericMangaScraper):
         volume_objects = []
 
         for volume in volumes:
+            if verbose:
+                print("Scraping Volume " + str(volume_number))
+
             chapters = volume.select(".tips")
 
             chapter_objects = []
@@ -80,25 +92,59 @@ class MangaFoxScraper(GenericMangaScraper):
                 chapter_base_url = chapter_start_url.rsplit("/", 1)[0]
                 chapter_number = float(chapter.text.rsplit(" ", 1)[1])
 
+                chapter_directory = os.path.join(manga_directory, "Volume " + str(volume_number).zfill(2))
+                pre_dot, post_dot = str(chapter_number).split(".")
+                formatted_chapter_number = pre_dot.zfill(3) + "." + post_dot
+                chapter_directory = os.path.join(chapter_directory, "Chapter " + formatted_chapter_number)
+
+                if verbose:
+                    print("Scraping Chapter " + str(chapter_number))
+
                 chapter_html = requests.get(chapter_start_url).text
                 chapter_soup = BeautifulSoup(chapter_html, "html.parser")
                 page_amount = int(str(chapter_soup.select(".l")[0]).rsplit("of ", 1)[1].split("\t", 1)[0])  # Don't ask
+
+                if os.path.isdir(chapter_directory) and skip_existing_chapters:
+                    if page_amount == len(os.listdir(chapter_directory)):
+                        if verbose:
+                            print("Skipping Chapter " + formatted_chapter_number)
+                        continue
 
                 page_objects = []
 
                 for image_number in range(1, page_amount + 1):
 
-                    image_page_url = chapter_base_url + "/" + str(image_number) + ".html"
-                    image_html = requests.get(image_page_url).text
-                    image_soup = BeautifulSoup(image_html, "html.parser")
+                    def parse_page():
 
-                    image = image_soup.select("img")[0]
-                    image_url = str(image).split("src='")[1].split("'")[0]
+                        if verbose:
+                            print("Scraping Page " + str(image_number))
 
-                    page_objects.append(MangaPage(image_number, image_url))
+                        image_page_url = chapter_base_url + "/" + str(image_number) + ".html"
+                        image_html = requests.get(image_page_url).text
+                        image_soup = BeautifulSoup(image_html, "html.parser")
+
+                        image = image_soup.select("img")[0]
+                        image_url = str(image).split("src='")[1].split("'")[0]
+
+                        page_objects.append(MangaPage(image_number, image_url))
+                        ThreadManager.active_threads -= 1
+
+                    while ThreadManager.active_threads >= max_threads:
+                        pass
+
+                    if max_threads == 1:
+                        parse_page()
+                    else:
+                        ThreadManager.active_threads += 1
+                        page_thread = Thread(target=parse_page)
+                        page_thread.start()
+
+                while ThreadManager.active_threads > 0:
+                    pass
 
                 chapter_objects.append(MangaChapter(chapter_number, page_objects))
 
             volume_objects.append(MangaVolume(volume_number, chapter_objects))
+            volume_number -= 1
 
         return volume_objects

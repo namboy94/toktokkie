@@ -43,11 +43,16 @@ class GenericMangaScraper(object):
         raise NotImplementedError()
 
     @staticmethod
-    def scrape_volumes_from_url(manga_url) -> List[MangaVolume]:
+    def scrape_volumes_from_url(manga_url: str, manga_directory: str, skip_existing_chapters: bool = False,
+                                max_threads: int = 1, verbose: bool = False) -> List[MangaVolume]:
         """
         Scrapes a given URL
 
         :param manga_url: the given URL to scrape
+        :param manga_directory: the manga directory, which can be used to skip existing chapters
+        :param skip_existing_chapters: Flag that can be set to skip existing chapters, thereby increasing scraping speed
+        :param max_threads: the maximum numbers of threads to use
+        :param verbose: Sets the verbosity flag. Defaults to no output
         :return: a list of volumes, which should also contain chapters
         """
         raise NotImplementedError()

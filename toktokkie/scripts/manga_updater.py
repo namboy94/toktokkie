@@ -27,18 +27,19 @@ from typing import List, Dict
 from toktokkie.modules.objects.manga.MangaSeries import MangaSeries
 
 
-def start(config: List[Dict[str, str]], repair: bool = False, verbose: bool = False, dry_run: bool = False,
-          zip_chapters: bool = False, zip_volumes: bool = False) -> None:
+def start(config: List[Dict[str, str]], max_threads: int = 1, repair: bool = False, verbose: bool = False,
+          dry_run: bool = False, zip_chapters: bool = False, zip_volumes: bool = False) -> None:
     """
     Starts the manga updating process
 
-    :param config:
-    :param repair:
-    :param verbose:
-    :param dry_run:
-    :param zip_chapters:
-    :param zip_volumes:
-    :return:
+    :param config: the config in form of a list of dictionaries, as defined in the template file
+    :param max_threads: maximum amount of concurrent threads
+    :param repair: sets the Manga Series 'repair' flag
+    :param verbose: sets the Manga Series 'verbose' flag
+    :param dry_run: sets the Manga Series 'dry_run' flag
+    :param zip_chapters: Zips the chapters afterwards
+    :param zip_volumes: Zips the volumes afterwards
+    :return: None
     """
     manga_series = []
 
@@ -49,8 +50,8 @@ def start(config: List[Dict[str, str]], repair: bool = False, verbose: bool = Fa
         manga_serie = MangaSeries(url, target_directory)
         manga_serie.set_verbose(verbose)
         manga_serie.set_dry_run(dry_run)
+        manga_serie.set_maximum_thread_amount(max_threads)
         manga_series.append(manga_serie)
-        manga_serie.download_manga()
 
     for manga in manga_series:
         manga.download_manga(update=not repair, repair=repair)
