@@ -24,6 +24,7 @@ LICENSE
 
 # imports
 import os
+import shutil
 from toktokkie.modules.utils.manga.MangaScraperManager import MangaScraperManager
 
 
@@ -91,7 +92,7 @@ class MangaSeries(object):
         Finds a list of all volumes using the scraper found in the __init__ method
         :return:
         """
-        if self.scraper is not None:
+        if self.scraper is not None and len(self.volumes) == 0:
             self.volumes = self.scraper.scrape_volumes_from_url(self.url)
 
     def update(self) -> None:
@@ -100,6 +101,7 @@ class MangaSeries(object):
 
         :return: None
         """
+        self.scrape()
         for volume in self.volumes:
             pass
 
@@ -110,8 +112,36 @@ class MangaSeries(object):
 
         :return: None
         """
+        self.scrape()
         for volume in self.volumes:
             pass
+
+    def zip(self, zip_volumes: bool = False, zip_chapters: bool = False):
+        """
+        Zips parts of the series together to enable reading in some manga readers,
+        like ComicRack for android
+
+        :param zip_volumes: flag to enable zipping volumes
+        :param zip_chapters: flag to enable zipping chapters
+        :return: None
+        """
+
+        for volume in os.listdir(self.root_directory):
+            volume_dir = os.path.join(self.root_directory, volume)
+
+            if volume.startswith("Volume ") and os.path.isdir(volume_dir):
+
+                if zip_chapters:
+                    for chapter in os.listdir(volume_dir):
+                        chapter_dir = os.path.join(volume_dir, chapter)
+
+                        if chapter.startswith("Chapter ") and os.path.isdir(chapter_dir):
+                            if not self.dry_run:
+                                shutil.make_archive(chapter_dir, "zip", chapter_dir)
+
+                if zip_volumes:
+                    if not self.dry_run:
+                        shutil.make_archive(volume_dir, "zip", volume_dir)
 
     def zip_chapters(self) -> None:
         """
@@ -119,8 +149,7 @@ class MangaSeries(object):
 
         :return: None
         """
-        for volume in os.listdir(self.root_directory):
-            pass
+        self.zip(zip_chapters=True)
 
     def zip_volumes(self) -> None:
         """
@@ -128,8 +157,7 @@ class MangaSeries(object):
 
         :return: None
         """
-        for volume in os.listdir(self.root_directory):
-            pass
+        self.zip(zip_volumes=True)
 
     def zip_all(self) -> None:
         """
@@ -137,8 +165,7 @@ class MangaSeries(object):
 
         :return: None
         """
-        self.zip_volumes()
-        self.zip_chapters()
+        self.zip(zip_volumes=True, zip_chapters=True)
 
     def set_verbose(self, verbose: bool = True) -> None:
         """

@@ -38,7 +38,8 @@ class MangaFoxScraper(GenericMangaScraper):
     Class that models how a Manga Scraper should operate
     """
 
-    def url_match(self, manga_url: str) -> bool:
+    @staticmethod
+    def url_match(manga_url: str) -> bool:
         """
         Checks if a URL matches the pattern expected by the scraper
 
@@ -47,7 +48,8 @@ class MangaFoxScraper(GenericMangaScraper):
         """
         return manga_url.startswith("http://mangafox.me")
 
-    def scrape_volumes_from_url(self, manga_url) -> List[MangaVolume]:
+    @staticmethod
+    def scrape_volumes_from_url(manga_url) -> List[MangaVolume]:
         """
         Scrapes a given URL
 
@@ -85,6 +87,8 @@ class MangaFoxScraper(GenericMangaScraper):
                 page_objects = []
 
                 for image_number in range(1, page_amount + 1):
+
+                    print(image_number)
 
                     image_page_url = chapter_base_url + "/" + str(image_number) + ".html"
                     image_html = requests.get(image_page_url).text

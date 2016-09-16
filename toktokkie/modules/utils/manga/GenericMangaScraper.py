@@ -32,7 +32,8 @@ class GenericMangaScraper(object):
     Class that models how a Manga Scraper should operate
     """
 
-    def url_match(self, manga_url: str) -> bool:
+    @staticmethod
+    def url_match(manga_url: str) -> bool:
         """
         Checks if a URL matches the pattern expected by the scraper
 
@@ -41,7 +42,8 @@ class GenericMangaScraper(object):
         """
         raise NotImplementedError()
 
-    def scrape_volumes_from_url(self, manga_url) -> List[MangaVolume]:
+    @staticmethod
+    def scrape_volumes_from_url(manga_url) -> List[MangaVolume]:
         """
         Scrapes a given URL
 
