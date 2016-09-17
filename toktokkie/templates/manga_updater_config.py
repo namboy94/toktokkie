@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     # Uncomment options that you would like to use
     start(config,
-          max_threads=50,
+          max_threads=4,
           # repair=True,
           # verbose=True,
           # dry_run=True

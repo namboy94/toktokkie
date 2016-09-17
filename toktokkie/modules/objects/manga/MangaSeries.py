@@ -26,6 +26,8 @@ LICENSE
 import os
 import shutil
 import requests
+from typing import Tuple
+from multiprocessing import Pool
 from puffotter.fileops import ensure_directory_exists
 from toktokkie.modules.utils.manga.MangaScraperManager import MangaScraperManager
 
@@ -132,12 +134,16 @@ class MangaSeries(object):
                 if not self.dry_run:
                     ensure_directory_exists(chapter_directory)
 
+                page_parameters = []
                 for page in chapter.get_pages():
                     page_file = os.path.join(chapter_directory, page.get_page_name())
                     if update:
-                        self.__download_file__(page.image_url, page_file, overwrite_existing=False, repair=False)
+                        page_parameters.append((page.image_url, page_file, False, False, self.verbose, self.dry_run))
                     elif repair:
-                        self.__download_file__(page.image_url, page_file, overwrite_existing=True, repair=True)
+                        page_parameters.append((page.image_url, page_file, True, True, self.verbose, self.dry_run))
+
+                threadpool = Pool(self.max_threads)
+                threadpool.map(MangaSeries.download_file, page_parameters)
 
     def update(self) -> None:
         """
@@ -234,17 +240,24 @@ class MangaSeries(object):
         """
         self.max_threads = max_threads
 
-    def __download_file__(self, url: str, destination: str, overwrite_existing: bool = False, repair: bool = False)\
-            -> None:
+    @staticmethod
+    def download_file(options: Tuple[str, str, bool, bool, bool, bool]) -> None:
         """
         Downloads a file, can also be used to repair previously downloaded files
+        Can be run in parallel using the multiprocessing Pool class.
+        This limits the function to a single parameter, a Tuple in this case
 
-        :param url: the file's URL
-        :param destination: the local destination for the file
-        :param overwrite_existing: flag that enables overwriting existing files
-        :param repair: flag that can be set to enable repair mode
+        :param options: Tuple containing the following parameters:
+                            url: the file's URL
+                            destination: the local destination for the file
+                            overwrite_existing: flag that enables overwriting existing files
+                            repair: flag that can be set to enable repair mode
+                            verbose: Sets the verbosity flag
+                            dry_run: Sets the dry run flag
         :return: None
         """
+        url, destination, overwrite_existing, repair, verbose, dry_run = options
+
         if not overwrite_existing and os.path.isfile(destination):
             return
 
@@ -259,9 +272,9 @@ class MangaSeries(object):
             except FileNotFoundError:
                 pass
 
-        if not self.dry_run:
+        if not dry_run:
             with open(destination, 'wb') as destination_file:
-                if self.verbose:
+                if verbose:
                     print("Downloading " + destination)
                 content = requests.get(url).content
                 destination_file.write(content)

@@ -26,9 +26,9 @@ LICENSE
 # imports
 import os
 import requests
-from typing import List
-from threading import Thread
 from bs4 import BeautifulSoup
+from typing import List, Tuple
+from multiprocessing import Pool
 from toktokkie.modules.objects.manga.MangaPage import MangaPage
 from toktokkie.modules.objects.manga.MangaVolume import MangaVolume
 from toktokkie.modules.objects.manga.MangaChapter import MangaChapter
@@ -39,6 +39,33 @@ class MangaFoxScraper(GenericMangaScraper):
     """
     Class that models how a Manga Scraper should operate
     """
+
+    @staticmethod
+    def parse_page(options: Tuple[int, bool, str]) -> MangaPage:
+        """
+        Parses a single page of a chapter. Can be run in parallel using multiprocessing.Pool, which is the reason why
+        the arguments are all passed via a single Tuple, due to the limitations of Pool.map()
+
+        :param options: the options for the page to parse:
+                        image_number: The image number of the image page to parse
+                        verbose: Enabling or disabling verbose output
+                        chapter_base_url: The base URL of the chapter
+        :return: the scraped manga page object
+        """
+
+        image_number, verbose, chapter_base_url = options
+
+        if verbose:
+            print("Scraping Page " + str(image_number))
+
+        image_page_url = chapter_base_url + "/" + str(image_number) + ".html"
+        image_html = requests.get(image_page_url).text
+        image_soup = BeautifulSoup(image_html, "html.parser")
+
+        image = image_soup.select("img")[0]
+        image_url = str(image).split("src='")[1].split("'")[0]
+
+        return MangaPage(image_number, image_url)
 
     @staticmethod
     def url_match(manga_url: str) -> bool:
@@ -63,10 +90,6 @@ class MangaFoxScraper(GenericMangaScraper):
         :param verbose: Sets the verbosity flag. Defaults to no output
         :return: a list of volumes, which should also contain chapters
         """
-
-        class ThreadManager:
-            active_threads = 0
-
         html = requests.get(manga_url).text
         soup = BeautifulSoup(html, "html.parser")
         volumes = soup.select(".chlist")
@@ -115,38 +138,13 @@ class MangaFoxScraper(GenericMangaScraper):
                             print("Skipping Chapter " + formatted_chapter_number)
                         continue
 
-                page_objects = []
+                threadpool = Pool(processes=max_threads)
+                page_arguments = []
 
-                for image_number in range(1, page_amount + 1):
+                for number in range(1, page_amount + 1):
+                    page_arguments.append((number, verbose, chapter_base_url))
 
-                    def parse_page():
-
-                        if verbose:
-                            print("Scraping Page " + str(image_number))
-
-                        image_page_url = chapter_base_url + "/" + str(image_number) + ".html"
-                        image_html = requests.get(image_page_url).text
-                        image_soup = BeautifulSoup(image_html, "html.parser")
-
-                        image = image_soup.select("img")[0]
-                        image_url = str(image).split("src='")[1].split("'")[0]
-
-                        page_objects.append(MangaPage(image_number, image_url))
-                        ThreadManager.active_threads -= 1
-
-                    while ThreadManager.active_threads >= max_threads:
-                        pass
-
-                    if max_threads == 1:
-                        parse_page()
-                    else:
-                        ThreadManager.active_threads += 1
-                        page_thread = Thread(target=parse_page)
-                        page_thread.start()
-
-                while ThreadManager.active_threads > 0:
-                    pass
-
+                page_objects = threadpool.map(MangaFoxScraper.parse_page, page_arguments)
                 chapter_objects.append(MangaChapter(chapter_number, page_objects))
 
             volume_objects.append(MangaVolume(volume_number, chapter_objects))
