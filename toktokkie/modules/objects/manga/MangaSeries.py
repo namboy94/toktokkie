@@ -122,6 +122,8 @@ class MangaSeries(object):
         if not self.dry_run:
             ensure_directory_exists(self.root_directory)
 
+        download_parameters = []
+
         for volume in self.volumes:
             volume_directory = os.path.join(self.root_directory, volume.get_volume_name())
 
@@ -134,16 +136,17 @@ class MangaSeries(object):
                 if not self.dry_run:
                     ensure_directory_exists(chapter_directory)
 
-                page_parameters = []
                 for page in chapter.get_pages():
                     page_file = os.path.join(chapter_directory, page.get_page_name())
                     if update:
-                        page_parameters.append((page.image_url, page_file, False, False, self.verbose, self.dry_run))
+                        download_parameters.append((page.image_url, page_file, False, False, self.verbose, self.dry_run))
                     elif repair:
-                        page_parameters.append((page.image_url, page_file, True, True, self.verbose, self.dry_run))
+                        download_parameters.append((page.image_url, page_file, True, True, self.verbose, self.dry_run))
 
-                threadpool = Pool(self.max_threads)
-                threadpool.map(MangaSeries.download_file, page_parameters)
+        threadpool = Pool(self.max_threads)
+        threadpool.map(MangaSeries.download_file, download_parameters)
+        threadpool.close()
+        threadpool.join()
 
     def update(self) -> None:
         """

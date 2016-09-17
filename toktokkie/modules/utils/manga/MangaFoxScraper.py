@@ -138,16 +138,19 @@ class MangaFoxScraper(GenericMangaScraper):
                             print("Skipping Chapter " + formatted_chapter_number)
                         continue
 
-                threadpool = Pool(processes=max_threads)
+                poolsize = page_amount if page_amount < max_threads else max_threads
+                threadpool = Pool(processes=poolsize)
                 page_arguments = []
-
-                # TODO Revert back to normal threading.
-                # Pool -> Nasty, nasty memory leaks
 
                 for number in range(1, page_amount + 1):
                     page_arguments.append((number, verbose, chapter_base_url))
 
                 page_objects = threadpool.map(MangaFoxScraper.parse_page, page_arguments)
+
+                # Cleans up RAM
+                threadpool.close()
+                threadpool.join()
+
                 chapter_objects.append(MangaChapter(chapter_number, page_objects))
 
             volume_objects.append(MangaVolume(volume_number, chapter_objects))
