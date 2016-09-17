@@ -138,10 +138,12 @@ class MangaSeries(object):
 
                 for page in chapter.get_pages():
                     page_file = os.path.join(chapter_directory, page.get_page_name())
-                    if update:
-                        download_parameters.append((page.image_url, page_file, False, False, self.verbose, self.dry_run))
-                    elif repair:
-                        download_parameters.append((page.image_url, page_file, True, True, self.verbose, self.dry_run))
+                    download_parameters.append((page.image_url,
+                                                page_file,
+                                                not update,
+                                                repair,
+                                                self.verbose,
+                                                self.dry_run))
 
         threadpool = Pool(self.max_threads)
         threadpool.map(MangaSeries.download_file, download_parameters)
@@ -271,8 +273,12 @@ class MangaSeries(object):
 
                 if url_size == file_size:
                     return
+                elif verbose:
+                    print("Local file broken, starting repair")
 
             except FileNotFoundError:
+                if verbose:
+                    print("File does not exist")
                 pass
 
         if not dry_run:
