@@ -22,6 +22,11 @@ This file is part of toktokkie.
 LICENSE
 """
 
+# imports
+from typing import List
+from toktokkie.modules.objects.manga.MangaVolume import MangaVolume
+
+
 class GenericMangaScraper(object):
     """
     Class that handles scraping of Manga series from http://jb2448.info/ (Pokemon Special Gallery)
@@ -51,6 +56,3 @@ class GenericMangaScraper(object):
         :return: a list of volumes, which should also contain chapters
         """
         raise NotImplementedError()
-
-
-#

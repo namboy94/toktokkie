@@ -141,6 +141,9 @@ class MangaFoxScraper(GenericMangaScraper):
                 threadpool = Pool(processes=max_threads)
                 page_arguments = []
 
+                # TODO Revert back to normal threading.
+                # Pool -> Nasty, nasty memory leaks
+
                 for number in range(1, page_amount + 1):
                     page_arguments.append((number, verbose, chapter_base_url))
 
