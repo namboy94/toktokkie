@@ -24,12 +24,11 @@ LICENSE
 
 # imports
 import os
-import sys
 from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_Renamer
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QTreeWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView
 
 
 class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
@@ -138,13 +137,3 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         self.rename_list.clear()
         for item in self.confirmation:
             self.rename_list.addTopLevelItem(QTreeWidgetItem([item.get_names()[0], item.get_names()[1]]))
-
-
-def start_gui():
-    app = QApplication(sys.argv)
-    form = TVSeriesRenamerQtGui()
-    form.show()
-    app.exec_()
-
-if __name__ == '__main__':
-    start_gui()

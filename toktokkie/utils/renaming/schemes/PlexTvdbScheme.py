@@ -42,8 +42,11 @@ class PlexTvdbScheme(GenericScheme):
         :return: the generated name
         """
         episode_name = self.get_tvdb_episode_name(self.series_name, self.season_number, self.episode_number)
-        episode_number = str(self.episode_number).zfill(2)
-        season_number = str(self.season_number).zfill(2)
+        episode_number = str(self.episode_number).zfill(2) if self.episode_number >= 0 \
+            else str(self.episode_number).zfill(3)
+        season_number = str(self.season_number).zfill(2) if self.season_number >= 0 \
+            else str(self.season_number).zfill(3)
+
         return self.series_name + " - S" + season_number + "E" + episode_number + " - " + episode_name
 
     @staticmethod

@@ -36,14 +36,16 @@ class TVSeriesRenamer(object):
     naming schemes
     """
 
-    def __init__(self, directory: str, naming_scheme: GenericScheme, recursive: bool = True) -> None:
+    def __init__(self, directory: str, naming_scheme: GenericScheme, recursive: bool = False) -> None:
         """
         Constructor of the Renamer class. It stores the directory path to the class variable
         reserved for it and parses it.
 
+        If the directory does not contain valid episodes, the self.episodes variable will remain
+        an empty array
+
         :param directory:         the directory to be used
         :param recursive:         Flag to recursively check the directory for episode files
-        :raise FileNotFoundError: if the directory is invalid, i.e. contains no .meta subdirectory
         """
         # Local Variables
         self.episodes = []
@@ -55,7 +57,7 @@ class TVSeriesRenamer(object):
         elif TVSeriesManager.is_tv_series_directory(directory):
             directories = [directory]
         else:
-            raise FileNotFoundError("No .meta subdirectory and type='tv_series' found")
+            return
 
         self.__add_directory_contents__(directories)
 

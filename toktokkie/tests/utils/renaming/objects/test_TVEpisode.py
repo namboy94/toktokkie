@@ -23,21 +23,25 @@ LICENSE
 """
 
 # imports
+import os
 import unittest
-from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
+from toktokkie.tests.helpers import touch, test_dir, cleanup
+from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
+from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 
 
-class GenericSchemeUnitTests(unittest.TestCase):
+class TVEpisodeUnitTests(unittest.TestCase):
 
     def setUp(self):
-        pass
+        os.makedirs(test_dir)
+        touch(os.path.join(test_dir, "episode_file"))
 
     def tearDown(self):
-        pass
+        cleanup()
 
-    def test_get_tvdb_episode_name(self):
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 1), "Winter Is Coming")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 11), "Episode 11")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Show does not exist", 1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", -1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, -1), "Episode -1")
+    def test_renaming(self):
+        episode = TVEpisode(os.path.join(test_dir, "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
+        self.assertTrue(os.path.isfile(os.path.join(test_dir, "episode_file")))
+        episode.rename()
+        self.assertFalse(os.path.isfile(os.path.join(test_dir, "episode_file")))
+        self.assertTrue(os.path.isfile(os.path.join(test_dir, "Game of Thrones - S01E01 - Winter Is Coming")))

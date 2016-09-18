@@ -24,31 +24,24 @@ LICENSE
 
 # imports
 import os
+import shutil
+from typing import List
 
 
-def create_temporary_tv_series_directories() -> str:
-    
-    temporary_directory = os.path.join(os.getcwd(), "temp_testing")
-    
-    test_show_one_directory = os.path.join(temporary_directory, "Test Show 1")
-    test_show_two_directory = os.path.join(temporary_directory, "Test Show 2")
-    test_show_three_directory = os.path.join(temporary_directory, "Test Show 3")
-    test_show_four_directory = os.path.join(temporary_directory, "Test Show 4")
-    test_show_five_directory = os.path.join(temporary_directory, "Test Show 5")
-    
-    os.makedirs(os.path.join(test_show_one_directory, ".meta"))
-    os.makedirs(os.path.join(test_show_two_directory, ".meta"))
-    os.makedirs(os.path.join(test_show_three_directory, ".meta"))
-    os.makedirs(test_show_four_directory)
-    os.makedirs(os.path.join(test_show_five_directory, ".meta"))
+test_dir = os.path.join(os.getcwd(), "temp_testing")
 
-    touch(os.path.join(test_show_one_directory, ".meta", "type"), "tv_series")
-    touch(os.path.join(test_show_two_directory, ".meta", "type"), "tv_series")
-    touch(os.path.join(test_show_three_directory, ".meta", "type"), "other")
 
-    return temporary_directory
+def create_temp_files_and_folders(folders: List[str], files: List[str]):
+    for folder in folders:
+        os.makedirs(os.path.join(test_dir, folder))
+    for fil in files:
+        touch(os.path.join(test_dir, fil))
 
 
 def touch(path: str, initial_text: str = ""):
     with open(path, 'w') as touchfile:
         touchfile.write(initial_text)
+
+
+def cleanup():
+    shutil.rmtree(test_dir)

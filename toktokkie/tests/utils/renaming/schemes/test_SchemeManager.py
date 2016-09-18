@@ -24,10 +24,10 @@ LICENSE
 
 # imports
 import unittest
-from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
+from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 
 
-class GenericSchemeUnitTests(unittest.TestCase):
+class SchemeManagerUnitTests(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -35,9 +35,10 @@ class GenericSchemeUnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_get_tvdb_episode_name(self):
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 1), "Winter Is Coming")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 11), "Episode 11")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Show does not exist", 1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", -1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, -1), "Episode -1")
+    def test_scheme_name_passing(self):
+        all_schemes = SchemeManager.get_all_schemes()
+        scheme_names = SchemeManager.get_scheme_names()
+
+        for scheme in all_schemes:
+            self.assertTrue(scheme.get_scheme_name() in scheme_names)
+            self.assertEqual(scheme, SchemeManager.get_scheme_from_scheme_name(scheme.get_scheme_name()))
