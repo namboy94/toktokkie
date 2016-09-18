@@ -135,7 +135,7 @@ class Renamer(object):
 
         :param season_directory: The season directory path to be parsed
         :param season_number:  The season number of the season to be parsed
-        :param show_name: The show name associated wihh this season
+        :param show_name: The show name associated with this season
         :return: None
         """
 
