@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>928</width>
+    <width>960</width>
     <height>555</height>
    </rect>
   </property>
@@ -116,7 +116,7 @@
      </widget>
     </item>
     <item row="8" column="7">
-     <widget class="QListWidget" name="listWidget">
+     <widget class="QListWidget" name="download_list">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -142,7 +142,7 @@
      </spacer>
     </item>
     <item row="3" column="4">
-     <widget class="QSpinBox" name="spinBox_2"/>
+     <widget class="QSpinBox" name="episode_number_entry"/>
     </item>
     <item row="6" column="1">
      <widget class="QPushButton" name="season_icon_browser">
@@ -154,14 +154,14 @@
     <item row="9" column="7">
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="1" column="0">
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="send_item_up_button">
         <property name="text">
          <string>▲</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton_5">
+       <widget class="QPushButton" name="send_item_down_button">
         <property name="text">
          <string>▼</string>
         </property>
@@ -193,7 +193,7 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QSpinBox" name="spinBox"/>
+     <widget class="QSpinBox" name="season_number_entry"/>
     </item>
     <item row="0" column="1">
      <widget class="QPushButton" name="directory_browser">
@@ -274,7 +274,7 @@
      </widget>
     </item>
     <item row="0" column="7" rowspan="7">
-     <widget class="QWidget" name="" native="true">
+     <widget class="QWidget" name="widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -286,7 +286,7 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="4" column="1">
-        <widget class="QLCDNumber" name="lcdNumber">
+        <widget class="QLCDNumber" name="current_speed_display">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -302,21 +302,21 @@
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QProgressBar" name="progressBar">
+        <widget class="QProgressBar" name="ingle_progress_bar">
          <property name="value">
           <number>24</number>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QProgressBar" name="progressBar_2">
+        <widget class="QProgressBar" name="total_progress_bar">
          <property name="value">
           <number>24</number>
          </property>
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QLCDNumber" name="lcdNumber_2">
+        <widget class="QLCDNumber" name="avg_speed_display">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -398,7 +398,7 @@
         </spacer>
        </item>
        <item row="1" column="0">
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="add_to_downloads_button">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -417,7 +417,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="remove_from_downloads_button">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>

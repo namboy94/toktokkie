@@ -24,11 +24,11 @@ LICENSE
 
 # imports
 from gfworks.interfaces.GenericWindow import GenericWindow
-
 from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
-from toktokkie.modules.cli.RenamerCli import RenamerCli
 from toktokkie.modules.gui.RenamerGui import RenamerGui
+
 from toktokkie.modules.hooks.GenericHook import GenericHook
+from ui.cli.RenamerCli import RenamerCli
 
 
 class RenamerHook(GenericHook):

@@ -1,8 +1,10 @@
 import os
 import sys
+
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox, QTreeWidgetItem, QHeaderView
-from toktokkie.modules.utils.Renamer import Renamer
+
 from toktokkie.modules.beta.qt_renamer import Ui_Renamer
+from utils.renaming.Renamer import Renamer
 
 
 class RenamerGui(QMainWindow, Ui_Renamer):

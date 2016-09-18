@@ -25,8 +25,10 @@ LICENSE
 # imports
 import os
 from typing import List, Dict
-from toktokkie.modules.utils.Renamer import Renamer
+
 from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
+
+from utils.renaming.Renamer import Renamer
 
 
 class RenamerCli(PuffOtterCli):

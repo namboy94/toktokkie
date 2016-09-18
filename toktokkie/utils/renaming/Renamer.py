@@ -26,7 +26,8 @@ import os
 from typing import List
 
 from toktokkie.modules.objects.renamer.Episode import Episode
-from toktokkie.modules.objects.renamer.RenamerConfirmation import RenamerConfirmation
+
+from utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
 
 
 class Renamer(object):
