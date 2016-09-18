@@ -23,62 +23,27 @@ LICENSE
 """
 # imports
 import os
-
 from puffotter.fileops import rename_file
-from toktokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
+from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
 
 
 class TVEpisode(object):
     """
-    Episode Object, containing important episode info used for renaming an episode file
+    TV Episode Object, containing important episode info used for renaming an episode file
     """
 
-    episode_file = ""
-    """
-    Path to the actual file of the episode
-    """
-
-    episode_number = -1
-    """
-    The episode number of the episode
-    """
-
-    season_number = -1
-    """
-    The season number of the episode
-    """
-
-    show_name = ""
-    """
-    The show name of the show of which this episode is a part of
-    """
-
-    old_name = ""
-    """
-    The old/current file name of the episode
-    """
-
-    tvdb_name = ""
-    """
-    The episode name of this episode according to thetvdb.com
-    """
-
-    new_name = ""
-    """
-    The new, generated file name for this episode
-    Has the form: 'Show Name - SXXEXX - tvdb_name'
-    """
-
-    def __init__(self, episode_file: str, episode_number: int, season_number: int, show_name: str) -> None:
+    def __init__(self, episode_file: str, episode_number: int, season_number: int, show_name: str,
+                 naming_scheme: GenericScheme) -> None:
         """
-        Constructor for the Episode class, getting information about the Episode
-        via the method parameters and calculating the TVDB name of the episode
+        Constructor for the TVEpisode class, getting information about the Episode
+        via the method parameters and generating the new episode name using a provided
+        naming scheme
 
-        :param episode_file: the current episode file path
+        :param episode_file:   the current episode file path
         :param episode_number: the episode number
-        :param season_number: the season number
-        :param show_name: the show name
-        :return: None
+        :param season_number:  the season number
+        :param show_name: the  show name
+        :param naming_scheme:  the naming scheme with which the new episode name is generated
         """
 
         # Store data about the episode in class variables
@@ -88,39 +53,30 @@ class TVEpisode(object):
         self.show_name = show_name
         self.old_name = os.path.basename(episode_file).rsplit(".", 1)[0]
 
-        # Generate new and tvdb names
-        self.__generate_tvdb_name()
+        # noinspection PyCallingNonCallable
+        renamer = naming_scheme(self.show_name, self.season_number, self.episode_number)
+        self.new_name = renamer.generate_episode_name()
 
     def rename(self) -> None:
         """
-        Renames the original file to the new name generated with help of thetvdb.com
+        Renames the original file to the new name generated with help of the naming scheme
 
-        :return: None
+        :raise FileNotFoundError: if the episode file does not exist, which of course should not happen
+                                  under normal circumstances
+        :return:                  None
         """
         if self.new_name == self.old_name:
             return
-        try:
-            # Rename the old file to have the new file name
-            self.episode_file = rename_file(self.episode_file, self.new_name)
-        except FileNotFoundError:
-            try:
-                # If the file does not exist, try replacing spaces with underscores and try again
-                underscored_episode_file = os.path.basename(self.episode_file).replace(' ', '_')
-                self.episode_file = rename_file(underscored_episode_file, self.new_name)
-            except FileNotFoundError:
-                # If it fails again, just give up
-                print("Skipping renaming file " + self.episode_file + " to " + self.new_name)
-                print("Please contact the developer and explain the exact circumstances leading to this.")
+        self.episode_file = rename_file(self.episode_file, self.new_name)
 
-    def __generate_tvdb_name(self) -> None:
+    def get_old_name(self) -> str:
         """
-        Generates the episode name from thetvdb.com using the tvdb_api module
-
-        :return: None
+        :return: The old episode name
         """
-        # Generate a TVDBGetter using the available metadata
-        tvdb_getter = TVDBGetter(self.show_name, self.season_number, self.episode_number)
+        return self.old_name
 
-        # get the episode name from theTVDB.com
-        self.tvdb_name = tvdb_getter.find_episode_name()
-        self.new_name = tvdb_getter.get_formatted_episode_name()
+    def get_new_name(self) -> str:
+        """
+        :return: The new episode name
+        """
+        return self.new_name

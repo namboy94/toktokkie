@@ -40,10 +40,9 @@ class TVSeriesRenamer(object):
         Constructor of the Renamer class. It stores the directory path to the class variable
         reserved for it and parses it.
 
-        :param directory: the directory to be used
-        :param recursive: Flag to recursively check the directory for episode files
-        :raise FileNotFoundError if the directory is invalid, i.e. contains no .meta subdirectory
-        :return: None
+        :param directory:         the directory to be used
+        :param recursive:         Flag to recursively check the directory for episode files
+        :raise FileNotFoundError: if the directory is invalid, i.e. contains no .meta subdirectory
         """
         # Local Variables
         self.episodes = []
@@ -63,7 +62,7 @@ class TVSeriesRenamer(object):
         Add the content of a list of directories directory to the internal Episode list
 
         :param directories: the directories to be parsed for episode content
-        :return: None
+        :return:            None
         """
         for directory in directories:
 
@@ -95,9 +94,9 @@ class TVSeriesRenamer(object):
         Adds a 'season' subdirectory's content to the internal Episode List
 
         :param season_directory: The season directory path to be parsed
-        :param season_number:  The season number of the season to be parsed
-        :param show_name: The show name associated with this season
-        :return: None
+        :param season_number:    The season number of the season to be parsed
+        :param show_name:        The show name associated with this season
+        :return:                 None
         """
 
         # get the episode file names and sort them alphabetically
@@ -121,8 +120,8 @@ class TVSeriesRenamer(object):
         Adds all special episodes like OVAs, Movies, etc. to the internal Episode list
 
         :param list_of_special_directories: List of paths to the special season subdirectories
-        :param show_name: The show name associated with these special seasons
-        :return: None
+        :param show_name:                   The show name associated with these special seasons
+        :return:                            None
         """
         special_episodes = []
 
@@ -163,7 +162,7 @@ class TVSeriesRenamer(object):
         Only confirmed objects will be put back into the episode list
 
         :param confirmation: the list of RenamerConfirmation objects previously sent out by request_confirmation
-        :return None
+        :return              None
         """
         # Clear the episode list
         self.episodes = []
@@ -182,8 +181,8 @@ class TVSeriesRenamer(object):
         noconfirm flag as 'True'
 
         :param noconfirm: Can be used to bypass confirming.
-        :return: True, if the renaming was successful, False otherwise. The renaming may fail
-                       if the user did not confirm() beforehand and the noconfirm flag was not set
+        :return:          True, if the renaming was successful, False otherwise. The renaming may fail
+                          if the user did not confirm() beforehand and the noconfirm flag was not set
         """
         # If the result has not been confirmed before, return False
         # Do not return False if the noconfirm flag has been set though.

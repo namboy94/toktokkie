@@ -61,7 +61,7 @@ class SchemeManager(object):
         Turns a scheme name into a Scheme class and returns it
 
         :param scheme_name: the scheme name of the scheme to return
-        :return: the scheme's class, or None if the name did not match any implemented scheme
+        :return:            the scheme's class, or None if the name did not match any implemented scheme
         """
         for scheme in SchemeManager.implemented_schemes:
             if scheme_name == scheme.get_scheme_name():

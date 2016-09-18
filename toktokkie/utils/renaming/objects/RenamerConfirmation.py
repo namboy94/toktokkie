@@ -23,8 +23,8 @@ LICENSE
 """
 
 # imports
-from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from typing import Tuple
+from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 
 
 class RenamerConfirmation(object):
@@ -37,12 +37,11 @@ class RenamerConfirmation(object):
         Initializes A new RenamerConfirmation episode based on a provided Episode object
 
         :param episode: the episode to act as base for this object
-        :return: None
         """
 
         self.episode = episode
-        self.old_name = episode.old_name
-        self.new_name = episode.new_name
+        self.old_name = episode.get_old_name()
+        self.new_name = episode.get_new_name()
         self.confirmed = False
 
     def get_episode(self) -> TVEpisode:
@@ -66,6 +65,7 @@ class RenamerConfirmation(object):
     def confirm(self) -> None:
         """
         Confirms the renaming for this episode
+
         :return: None
         """
         self.confirmed = True

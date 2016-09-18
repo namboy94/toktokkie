@@ -24,6 +24,7 @@ LICENSE
 
 # imports
 import tvdb_api
+from puffotter.fileops import sanitize_filename
 from requests.exceptions import ConnectionError
 from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
 
@@ -36,9 +37,10 @@ class GenericScheme(object):
     def __init__(self, series_name: str, season_number: int, episode_number: int) -> None:
         """
         Initializes a Scheme object for a single episode
-        :param series_name: the episode's series' name
-        :param season_number: the episode's season number
-        :param episode_number:
+
+        :param series_name:    the episode's series' name
+        :param season_number:  the episode's season number
+        :param episode_number: the episode's episode number
         """
         self.series_name = series_name
         self.season_number = season_number
@@ -51,7 +53,7 @@ class GenericScheme(object):
 
         :return: the generated name
         """
-        return self.sanitize_episode_name(self.apply_scheme())
+        return sanitize_filename(self.apply_scheme())
 
     def apply_scheme(self) -> str:
         """
@@ -69,27 +71,14 @@ class GenericScheme(object):
         raise NotImplementedError()
 
     @staticmethod
-    def sanitize_episode_name(episode_name: str) -> str:
-        """
-        Removes any illegal file system characters from an episode name
-
-        :param episode_name: the episode name to be sanitized
-        :return: the sanitized episode name
-        """
-        illegal_characters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
-        for illegal_character in illegal_characters:
-            episode_name = episode_name.replace(illegal_character, "")
-        return episode_name
-
-    @staticmethod
     def get_tvdb_episode_name(series_name: str, season_number: int, episode_number: int) -> str:
         """
         Finds the TVDB episode name for a specified episode
         
-        :param series_name: the episode's series name
-        :param season_number: the episode's season number
+        :param series_name:    the episode's series name
+        :param season_number:  the episode's season number
         :param episode_number: the episode's episode number
-        :return: the TVDB episode name, or Episode <episode_number> if any sort of error occurs
+        :return:               the TVDB episode name, or Episode <episode_number> if any sort of error occurs
         """
         try:
             tvdb = tvdb_api.Tvdb()
