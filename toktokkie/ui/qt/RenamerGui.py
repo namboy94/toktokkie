@@ -27,7 +27,7 @@ import os
 from typing import List, Dict
 
 from toktokkie.modules.gui.framework import GlobalGuiFramework
-from utils.renaming.Renamer import Renamer
+from utils.renaming.TVSeriesRenamer import Renamer
 
 
 class RenamerGui(GlobalGuiFramework.selected_grid_gui_framework):

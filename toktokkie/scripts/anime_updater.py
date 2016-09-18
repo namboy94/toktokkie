@@ -34,7 +34,7 @@ from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.objects.XDCCPack import XDCCPack
 from toktokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 from toktokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
-from utils.renaming.objects.Episode import Episode
+from utils.renaming.objects.TVEpisode import Episode
 
 
 def update(config: List[Dict[str, str]], search_engines: List[str]) -> None:

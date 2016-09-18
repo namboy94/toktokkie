@@ -28,7 +28,7 @@ from typing import List, Dict
 
 from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 
-from utils.renaming.Renamer import Renamer
+from utils.renaming.TVSeriesRenamer import Renamer
 
 
 class RenamerCli(PuffOtterCli):

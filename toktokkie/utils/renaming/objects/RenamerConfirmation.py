@@ -22,38 +22,50 @@ This file is part of toktokkie.
 LICENSE
 """
 
+# imports
+from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
+from typing import Tuple
+
 
 class RenamerConfirmation(object):
     """
     Class that holds the renaming confirmation state of an Episode object
     """
 
-    episode = None
-    """
-    The Episode which is wrapped by the RenamerConfirmation
-    """
-
-    old_name = ""
-    """
-    The old name of the episode
-    """
-
-    new_name = ""
-    """
-    The new name of the episode
-    """
-
-    confirmed = False
-    """
-    The confirmation state.
-    """
-
-    def __init__(self, episode):
+    def __init__(self, episode: TVEpisode) -> None:
         """
         Initializes A new RenamerConfirmation episode based on a provided Episode object
+
         :param episode: the episode to act as base for this object
+        :return: None
         """
 
         self.episode = episode
         self.old_name = episode.old_name
         self.new_name = episode.new_name
+        self.confirmed = False
+
+    def get_episode(self) -> TVEpisode:
+        """
+        :return: The stored episode object
+        """
+        return self.episode
+
+    def get_names(self) -> Tuple[str, str]:
+        """
+        :return: A tuple of the old name, new name of the episode
+        """
+        return self.old_name, self.new_name
+
+    def get_confirmed_status(self) -> bool:
+        """
+        :return: The current confirmation status
+        """
+        return self.confirmed
+
+    def confirm(self) -> None:
+        """
+        Confirms the renaming for this episode
+        :return: None
+        """
+        self.confirmed = True

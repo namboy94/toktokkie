@@ -28,7 +28,7 @@ from puffotter.fileops import rename_file
 from toktokkie.modules.utils.onlinedatagetters.TVDBGetter import TVDBGetter
 
 
-class Episode(object):
+class TVEpisode(object):
     """
     Episode Object, containing important episode info used for renaming an episode file
     """
