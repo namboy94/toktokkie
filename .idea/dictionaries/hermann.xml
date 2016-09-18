@@ -41,6 +41,8 @@
       <w>leet</w>
       <w>leetspeak</w>
       <w>mainconfig</w>
+      <w>manga</w>
+      <w>mangafox</w>
       <w>mediamanager</w>
       <w>mediamanagergui</w>
       <w>mmgui</w>
@@ -63,6 +65,7 @@
       <w>readline</w>
       <w>renamer</w>
       <w>rizon</w>
+      <w>rsync</w>
       <w>scenep</w>
       <w>searchdownload</w>
       <w>showname</w>
