@@ -23,8 +23,10 @@ LICENSE
 """
 
 import os
-from typing import List, Dict
-from toktokkie.modules.objects.Episode import Episode
+from typing import List
+
+from toktokkie.modules.objects.renamer.Episode import Episode
+from toktokkie.modules.objects.renamer.RenamerConfirmation import RenamerConfirmation
 
 
 class Renamer(object):
@@ -53,9 +55,10 @@ class Renamer(object):
         :param directory: the directory to be used
         :return: None
         """
-        self.__parse_directory(directory)
+        self.episodes = []
+        self.parse_directory(directory)
 
-    def __parse_directory(self, directory: str) -> None:
+    def parse_directory(self, directory: str) -> None:
         """
         Parses the given directory recursively until it finds .icon directories, which are used as indicators
 
@@ -77,15 +80,15 @@ class Renamer(object):
         # Check if one of the subdirectories is .icons
         if ".icons" in children:
             # If yes, add the content to the list of episodes
-            self.__add_directory_content(directory)
+            self.add_directory_content(directory)
         else:
             # Else parse every subdirectory like the original directory
             for child in children:
                 child_path = os.path.join(directory, child)
                 if os.path.isdir(child_path):  # Check if this is a directory
-                    self.__parse_directory(child_path)  # Recurse
+                    self.parse_directory(child_path)  # Recurse
 
-    def __add_directory_content(self, directory: str) -> None:
+    def add_directory_content(self, directory: str) -> None:
         """
         Add the content of a directory to the Episode list
 
@@ -121,12 +124,12 @@ class Renamer(object):
                 # Calculate the season number
                 season_number = int(season.lower().split("season ")[1])
                 # Add Episode objects to the Episode list
-                self.__add_season_to_episodes(season_path, season_number, show_name)
+                self.add_season_to_episodes(season_path, season_number, show_name)
 
         # Add the special episodes to the Episode list
-        self.__add_specials_to_episodes(specials, show_name)
+        self.add_specials_to_episodes(specials, show_name)
 
-    def __add_season_to_episodes(self, season_directory: str, season_number: int, show_name: str) -> None:
+    def add_season_to_episodes(self, season_directory: str, season_number: int, show_name: str) -> None:
         """
         Adds a 'season' subdirectory's content to the Episode List
 
@@ -156,7 +159,7 @@ class Renamer(object):
             episode_number += 1  # Increment the episode counter
 
     # noinspection PyTypeChecker
-    def __add_specials_to_episodes(self, list_of_special_directories: List[str], show_name: str) -> None:
+    def add_specials_to_episodes(self, list_of_special_directories: List[str], show_name: str) -> None:
         """
         Adds all special episodes like OVAs, Movies, etc. to the Episode list
 
@@ -183,42 +186,37 @@ class Renamer(object):
             self.episodes.append(Episode(special_episode, special_episode_number, 0, show_name))  # Add to List
             special_episode_number += 1  # Increment Counter
 
-    def request_confirmation(self) -> List[Dict[str, str]]:
+    def request_confirmation(self) -> List[RenamerConfirmation]:
         """
-        Request for the user confirmation dictionaries. The dictionaries are of the form
+        Request for the renaming confirmation objects.
 
-        {"old": 'old_episode_name', "new": 'new_episode_name"}
-
-        :return: the confirmation prompt as list of Dictionaries
+        :return: the confirmation prompt as list of RenamerConfirmation objects
         """
         confirmation = []  # Initialize list
         for episode in self.episodes:  # Loop through all episodes
-            # Generate dictionary and add to list
-            confirmation.append({"old": episode.old_name, "new": episode.new_name})
-        return confirmation  # Return the list of dictionaries
+            confirmation.append(RenamerConfirmation(episode))
+        return confirmation
 
-    def confirm(self, confirmation: List[Dict[str, str]]) -> bool:
+    def confirm(self, confirmation: List[RenamerConfirmation]) -> None:
         """
-        Confirms the rename process by getting the previously returned list of dictionaries
-        and comparing the state to what it was before.
+        Confirms the rename process by getting the previously returned list of RenamerConfirmations
+        and checking their status.
+        Only confirmed objects will be put back into the episode list
 
-        :param confirmation: to check the confirmation once more
-        :return The result of the confirmation check
+        :param confirmation: the confirmation list
+        :return None
         """
-        # Check if the length of the list of dictionaries matches the amount of episodes to rename
-        if len(confirmation) != len(self.episodes):
-            return False  # If not, the renaming failed
+        if len(self.episodes) != len(confirmation):
+            self.confirmed = False
+            return
 
-        i = 0  # Counter for the list of dictionaries
-        for episode in self.episodes:
-            # Check if the file names have not been edited
-            if not episode.old_name == confirmation[i]["old"] or not episode.new_name == confirmation[i]["new"]:
-                return False  # If not, the renaming failed
-            i += 1
+        self.episodes = []
 
-        # If all checks pass, we can set the confirmed attribute to True
+        for item in confirmation:
+            if item.confirmed:
+                self.episodes.append(item.episode)
+
         self.confirmed = True
-        return True
 
     def start_rename(self, noconfirm: bool = False) -> None:
         """

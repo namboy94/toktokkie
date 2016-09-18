@@ -27,13 +27,12 @@ import os
 import re
 import sys
 import time
-
 from typing import Dict, List
 
+from toktokkie.modules.objects.renamer.Episode import Episode
+from toktokkie.metadata import sentry
 from toktokkie.modules.objects.ProgressStruct import ProgressStruct
 from toktokkie.modules.objects.XDCCPack import XDCCPack
-from toktokkie.modules.objects.Episode import Episode
-from toktokkie.metadata import sentry
 from toktokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
 from toktokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
 

@@ -1,0 +1,54 @@
+"""
+LICENSE:
+Copyright 2015,2016 Hermann Krumrey
+
+This file is part of toktokkie.
+
+    toktokkie is a program that allows convenient managing of various
+    local media collections, mostly focused on video.
+
+    toktokkie is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    toktokkie is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
+LICENSE
+"""
+
+
+class RenamerConfirmation(object):
+    """
+    Class that holds the renaming confirmation state of an Episode object
+    """
+
+    episode = None
+    """
+    The Episode which is wrapped by the RenamerConfirmation
+    """
+
+    old_name = ""
+    """
+    The old name of the episode
+    """
+
+    new_name = ""
+    """
+    The new name of the episode
+    """
+
+    confirmed = False
+    """
+    The confirmation state.
+    """
+
+    def __init__(self, episode):
+        self.episode = episode
+        self.old_name = episode.old_name
+        self.new_name = episode.new_name

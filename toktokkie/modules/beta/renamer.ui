@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
-    <height>266</height>
+    <width>853</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,12 @@
     </item>
     <item row="0" column="1">
      <widget class="QTextEdit" name="directory_path_edit">
+      <property name="minimumSize">
+       <size>
+        <width>191</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>1777215</width>
@@ -56,20 +62,37 @@
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>60</width>
+        <width>40</width>
         <height>20</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="1" column="0" colspan="5">
-     <widget class="QListWidget" name="changelist">
+    <item row="0" column="5">
+     <widget class="QPushButton" name="cancel_button">
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="6">
+     <widget class="QTreeWidget" name="changelist">
       <property name="selectionMode">
-       <enum>QAbstractItemView::MultiSelection</enum>
+       <enum>QAbstractItemView::ExtendedSelection</enum>
       </property>
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
+      <column>
+       <property name="text">
+        <string>Old Name</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>New Name</string>
+       </property>
+      </column>
      </widget>
     </item>
    </layout>
