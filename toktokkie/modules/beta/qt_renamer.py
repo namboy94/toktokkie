@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'renamer.ui'
+# Form implementation generated from reading ui file 'tv_series_renamer.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
