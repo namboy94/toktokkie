@@ -43,7 +43,7 @@ class TVSeriesManager(object):
         an empty list is returned
 
         :param directory: the directory to check
-        :return: a list of directories that are identified as TV Series
+        :return:          a list of directories that are identified as TV Series
         """
         directories = []
 
@@ -75,11 +75,11 @@ class TVSeriesManager(object):
         directory contains a file called 'type' which contains the string value 'tv_series'
 
         :param directory: The directory to check
-        :return: True if the directory is a TV Series directory, False otherwise
+        :return:          True if the directory is a TV Series directory, False otherwise
         """
         try:
             if ".meta" in os.listdir(directory):
-                with open(os.path.join(directory, ".meta")) as typefile:
+                with open(os.path.join(directory, ".meta", "type")) as typefile:
                     media_type = typefile.read().rstrip().lstrip()
                 return media_type == "tv_series"
         except (PermissionError, FileNotFoundError):

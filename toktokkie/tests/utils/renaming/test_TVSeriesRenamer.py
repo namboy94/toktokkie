@@ -22,21 +22,24 @@ This file is part of toktokkie.
 LICENSE
 """
 
-import os
 import shutil
 import unittest
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
+from toktokkie.tests.helpers import create_temporary_tv_series_directories
+from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 
 
-class UnitTestClass(unittest.TestCase):
+class TVSeriesRenamerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        self.temporary_directory = os.path.join(os.getcwd(), "temp_testing")
-        os.makedirs(self.temporary_directory)
+        self.temporary_directory = create_temporary_tv_series_directories()
 
     def tearDown(self):
         shutil.rmtree(self.temporary_directory)
 
-    def test_constructor(self):
-        TVSeriesRenamer(self.temporary_directory)
+    def test_constructors(self):
+        TVSeriesRenamer(self.temporary_directory, PlexTvdbScheme)
+        TVSeriesRenamer(self.temporary_directory, PlexTvdbScheme, recursive=True)
 
+    def test_stuff(self):
+        pass

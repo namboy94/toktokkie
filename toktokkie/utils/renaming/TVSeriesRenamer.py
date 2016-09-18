@@ -26,6 +26,7 @@ import os
 from typing import List
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
+from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
 from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
 
 
@@ -35,7 +36,7 @@ class TVSeriesRenamer(object):
     naming schemes
     """
 
-    def __init__(self, directory: str, recursive: bool = True) -> None:
+    def __init__(self, directory: str, naming_scheme: GenericScheme, recursive: bool = True) -> None:
         """
         Constructor of the Renamer class. It stores the directory path to the class variable
         reserved for it and parses it.
@@ -47,6 +48,7 @@ class TVSeriesRenamer(object):
         # Local Variables
         self.episodes = []
         self.confirmed = False
+        self.naming_scheme = naming_scheme
 
         if recursive:
             directories = TVSeriesManager.find_recursive_tv_series_directories(directory)
@@ -112,7 +114,7 @@ class TVSeriesRenamer(object):
                     continue
 
             episode_path = os.path.join(season_directory, episode)
-            self.episodes.append(TVEpisode(episode_path, episode_number, season_number, show_name))
+            self.episodes.append(TVEpisode(episode_path, episode_number, season_number, show_name, self.naming_scheme))
             episode_number += 1
 
     def __add_specials_to_episodes__(self, list_of_special_directories: List[str], show_name: str) -> None:
@@ -140,7 +142,7 @@ class TVSeriesRenamer(object):
         for special_episode in special_episodes:
 
             # Use season number 0 to specify that this is part of a special season
-            self.episodes.append(TVEpisode(special_episode, special_episode_number, 0, show_name))
+            self.episodes.append(TVEpisode(special_episode, special_episode_number, 0, show_name, self.naming_scheme))
             special_episode_number += 1
 
     def request_confirmation(self) -> List[RenamerConfirmation]:
