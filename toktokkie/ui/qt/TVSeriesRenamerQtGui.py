@@ -52,8 +52,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         self.cancel_button.clicked.connect(lambda: self.cancel(True))
         self.confirm_button.clicked.connect(self.confirm)
         self.rename_list.header().setSectionResizeMode(0, QHeaderView.Stretch)
-        self.selection_inverter_button.clicked.connect(self.invert_selection)
         self.selection_remover_button.clicked.connect(self.remove_selection)
+        self.recursive_check.stateChanged.connect(self.parse_directory)
 
         for scheme in SchemeManager.get_scheme_names():
             self.scheme_selector.addItem(scheme)
@@ -62,6 +62,7 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         self.confirmation = []
         self.renamer = None
 
+    # noinspection PyArgumentList
     def browse_for_directory(self) -> None:
         """
         Brings up a directory browser window.
@@ -70,8 +71,7 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
 
         :return: None
         """
-        # TODO check if supression necessary
-        # noinspection PyCallByClass
+        # noinspection PyCallByClass,PyTypeChecker
         directory = QFileDialog.getExistingDirectory(self, "Test")
         if directory:
             self.directory_entry.setText(directory)
@@ -86,16 +86,16 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         self.cancel(False)
         directory = self.directory_entry.text()
 
-        if os.path.isdir(directory) and TVSeriesManager.is_tv_series_directory(directory):
+        if os.path.isdir(directory) and \
+                (TVSeriesManager.is_tv_series_directory(directory) or self.recursive_check.checkState()):
 
             self.meta_warning_label.setVisible(False)
 
             renaming_scheme = self.scheme_selector.currentText()
             renaming_scheme = SchemeManager.get_scheme_from_scheme_name(renaming_scheme)
-            self.renamer = TVSeriesRenamer(directory, renaming_scheme, False)
+            self.renamer = TVSeriesRenamer(directory, renaming_scheme, self.recursive_check.checkState())
 
             self.confirmation = self.renamer.request_confirmation()
-
             for item in self.confirmation:
                 self.rename_list.addTopLevelItem(QTreeWidgetItem([item.get_names()[0], item.get_names()[1]]))
 
@@ -106,7 +106,6 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         :param directory_entry: Clearing the directory entry can be disabled optionally
         :return: None
         """
-        self.confirmation = []
         self.renamer = None
         self.rename_list.clear()
         self.meta_warning_label.setVisible(True)
@@ -126,22 +125,19 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         self.renamer.start_rename()
         self.parse_directory()
 
-    def invert_selection(self) -> None:
-        """
-        Inverts the current selection of list elements
-
-        :return: None
-        """
-        pass
-
     def remove_selection(self) -> None:
         """
         Removes the selected items from the list
 
         :return: None
         """
-        print(self.rename_list.selectedItems())
-        print(self.rename_list.selectedIndexes())
+        for index, row in enumerate(self.rename_list.selectedIndexes()):
+            if index % 2 != 0:
+                continue
+            self.confirmation.pop(row.row() - int(index / 2))
+        self.rename_list.clear()
+        for item in self.confirmation:
+            self.rename_list.addTopLevelItem(QTreeWidgetItem([item.get_names()[0], item.get_names()[1]]))
 
 
 def start_gui():
@@ -152,4 +148,3 @@ def start_gui():
 
 if __name__ == '__main__':
     start_gui()
-

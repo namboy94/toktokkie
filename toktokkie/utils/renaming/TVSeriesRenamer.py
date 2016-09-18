@@ -102,7 +102,8 @@ class TVSeriesRenamer(object):
         """
 
         # get the episode file names and sort them alphabetically
-        episodes = sorted(os.listdir(season_directory))
+        episodes = os.listdir(season_directory)
+        episodes.sort(key=lambda x: x.lower())
         episode_number = 1
 
         for episode in episodes:
@@ -136,7 +137,7 @@ class TVSeriesRenamer(object):
                 special_episodes.append(os.path.join(special_season, episode))
 
         # Sort by filename
-        special_episodes.sort(key=lambda x: os.path.basename(x))
+        special_episodes.sort(key=lambda x: os.path.basename(x).lower())
 
         special_episode_number = 1
         for special_episode in special_episodes:
