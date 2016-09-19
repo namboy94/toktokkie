@@ -28,7 +28,7 @@ from puffotter.interactive_cli.PuffOtterCli import PuffOtterCli
 from toktokkie.modules.gui.RenamerGui import RenamerGui
 
 from toktokkie.modules.hooks.GenericHook import GenericHook
-from ui.cli.RenamerCli import RenamerCli
+from ui.cli.TVSeriesRenamerCli import RenamerCli
 
 
 class RenamerHook(GenericHook):
