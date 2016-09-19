@@ -57,6 +57,3 @@ def start():
     form = StartPageQtGui()
     form.show()
     app.exec_()
-
-if __name__ == '__main__':
-    start()

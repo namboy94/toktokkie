@@ -22,8 +22,9 @@ This file is part of toktokkie.
 LICENSE
 """
 
-# importsselectio
+# import
 import curses
+import _curses
 import toktokkie.metadata as metadata
 
 
@@ -82,20 +83,27 @@ class StartScreenCli(object):
 
         :return: None
         """
-
-        for line in self.gpl_notice:
-            self.screen.addstr(self.cursor_location, 0, line)
+        try:
+            for line in self.gpl_notice:
+                self.screen.addstr(self.cursor_location, 0, line)
+                self.cursor_location += 1
             self.cursor_location += 1
-        self.cursor_location += 1
 
-        for element in self.selection:
-            self.screen.addstr(self.cursor_location, 0, element)
-            self.selection_indices[self.cursor_location] = element
-            self.cursor_location += 1
-        self.cursor_location -= 1
+            for element in self.selection:
+                self.screen.addstr(self.cursor_location, 0, element)
+                self.selection_indices[self.cursor_location] = element
+                self.cursor_location += 1
+            self.cursor_location = min(self.selection_indices)
 
-        self.screen.addstr(self.cursor_location, 0, self.selection_indices[self.cursor_location], curses.color_pair(1))
-        self.handle_user_input()
+            self.screen.addstr(self.cursor_location, 0, self.selection_indices[self.cursor_location],
+                               curses.color_pair(1))
+            self.handle_user_input()
+        except _curses.error:
+            self.end()
+            print("Terminal too small to display the CLI")
+        except Exception as e:
+            self.end()
+            raise e
 
     def handle_user_input(self) -> None:
         """
@@ -103,15 +111,24 @@ class StartScreenCli(object):
 
         :return: None
         """
-        while True:
-            keypress = self.screen.getch()
+        try:
+            while True:
+                keypress = self.screen.getch()
 
-            if keypress == curses.KEY_UP and self.cursor_location > min(self.selection_indices):
-                self.move_selection_cursor(up=True)
-            elif keypress == curses.KEY_DOWN and self.cursor_location < max(self.selection_indices):
-                self.move_selection_cursor(down=True)
-            elif keypress == curses.KEY_ENTER or keypress == 10:
-                pass
+                if keypress == curses.KEY_UP and self.cursor_location > min(self.selection_indices):
+                    self.move_selection_cursor(up=True)
+                elif keypress == curses.KEY_DOWN and self.cursor_location < max(self.selection_indices):
+                    self.move_selection_cursor(down=True)
+                elif keypress == curses.KEY_ENTER or keypress == 10:
+                    selected = self.selection[self.selection_indices[self.cursor_location]]
+                    if selected is not None:
+                        self.end()
+                        # noinspection PyCallingNonCallable
+                        selected().start()
+                        break
+        except KeyboardInterrupt:
+            self.end()
+            print("Thanks for using the Tok Tokkie Media Manager!")
 
     def move_selection_cursor(self, up: bool = False, down: bool = False) -> None:
         """
@@ -129,7 +146,3 @@ class StartScreenCli(object):
         self.screen.addstr(self.cursor_location, 0, self.selection_indices[self.cursor_location], curses.color_pair(0))
         self.cursor_location = self.cursor_location - 1 if up else self.cursor_location + 1
         self.screen.addstr(self.cursor_location, 0, self.selection_indices[self.cursor_location], curses.color_pair(1))
-
-
-if __name__ == '__main__':
-    StartScreenCli().start()

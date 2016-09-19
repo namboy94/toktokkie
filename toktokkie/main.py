@@ -24,67 +24,39 @@ LICENSE
 """
 
 # imports
-import sys
-from typing import List
-
-from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
-from toktokkie.eastereggs.EasterEggManager import EasterEggManager
-from toktokkie.modules.gui.framework import GlobalGuiFramework
+import argparse
 from toktokkie.metadata import sentry
+from toktokkie.ui.cli.StartScreenCli import StartScreenCli
+from toktokkie.ui.qt.StartPageQtGui import start as gui_start
 
 
 # noinspection PyTypeChecker
-def main(ui_override: str = "", easter_egg_override: List[str] = None) -> None:
+def main(cli_mode: bool = False) -> None:
     """
     Main method that runs the program.
 
-    It can be used without parameters, in which case it will start in interactive
-    command line mode.
+    It can be used without parameters, in which case it will start in the most appropriate
+    UI mode, which is usually the QT GUI. The CLI can be used as a fallback.
 
-    Other options include using the --gtk or --tk flags to start either a GTK 3- or
-    a Tkinter-based graphical user interface. This can also be accomplished by
-    passing 'gtk' or 'tk' as the ui_override parameter of the main method.
-
-    :param ui_override: Can override the program mode programmatically
-    :param easter_egg_override: Can give a second kind of sys.argv for use in easter eggs
-    :return: None
+    :param cli_mode: Flag that can be set to force CLI mode
+    :return:         None
     """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", action="store_true", help="Starts the program in CLI mode")
+    args = parser.parse_args()
 
-    # noinspection PyBroadException
+    if args.c:
+        cli_mode = True
+
     try:
-
-        # Activate Easter Eggs
-        EasterEggManager.activate_easter_eggs(sys.argv, easter_egg_override)
-
-        # First, the used mode of the program is determined using sys.argv
-        cli_mode = False
-
-        # Try to set a GUI framework, if it fails use the CLI instead
-        try:
-            selected_gui = ui_override
-            if not selected_gui:
-                selected_gui = sys.argv[1]
-            GlobalGuiFramework.selected_grid_gui_framework = GridTemplateGenerator.get_grid_templates()[selected_gui]
-        except (KeyError, IndexError):
-            cli_mode = True
-
-        # The program starts here, using the selected mode
-        if cli_mode:
-            from toktokkie.modules.cli.MainCli import MainCli
-            MainCli().start()
+        if not cli_mode:
+            try:
+                gui_start()
+            except Exception as e:
+                str(e)
+                StartScreenCli().start()
         else:
-            from toktokkie.modules.gui.MainGui import MainGui
-            MainGui().start()
-
-    except KeyboardInterrupt:
-        print("\nThanks for using the Tok Tokkie media manager!")
-        sys.exit(0)
-    except:
+            StartScreenCli().start()
+    except Exception as e:
+        str(e)
         sentry.captureException()
-
-
-# This executes the main method
-if __name__ == '__main__':
-    main()
-
-

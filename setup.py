@@ -68,7 +68,7 @@ def find_scripts():
 
 if platform.system() == "Windows" and sys.argv[1] == "py2exe":
     setup(console=["bin/toktokkie"],
-          windows=["bin/toktokkie-tk"],
+          windows=["bin/toktokkie"],
           zipfile=None,
           name=metadata.project_name,
           version=metadata.version_number,
