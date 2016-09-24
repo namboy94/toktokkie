@@ -24,10 +24,10 @@ LICENSE
 
 # imports
 import unittest
-from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
+from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
 
 
-class GenericSchemeUnitTests(unittest.TestCase):
+class GenericProcedureUnitTests(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -35,22 +35,9 @@ class GenericSchemeUnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_get_tvdb_episode_name(self):
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 1), "Winter Is Coming")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 11), "Episode 11")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Show does not exist", 1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", -1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, -1), "Episode -1")
-
-    def abstract_method(self):
+    def test_is_abstract_class(self):
         try:
-            GenericScheme("", 0, 0).apply_scheme()
-            self.assertTrue(False)
-        except NotImplementedError:
-            pass
-
-        try:
-            GenericScheme("", 0, 0).generate_episode_name()
+            GenericProcedure.iconize("", "")
             self.assertTrue(False)
         except NotImplementedError:
             pass
