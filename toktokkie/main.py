@@ -25,7 +25,7 @@ LICENSE
 
 # imports
 import argparse
-from toktokkie.metadata import sentry
+from toktokkie.metadata import SentryLogger
 from toktokkie.ui.cli.StartScreenCli import StartScreenCli
 from toktokkie.ui.qt.StartPageQtGui import start as gui_start
 
@@ -48,6 +48,7 @@ def main(cli_mode: bool = False) -> None:
     if args.c:
         cli_mode = True
 
+    # noinspection PyBroadException
     try:
         if not cli_mode:
             try:
@@ -57,6 +58,5 @@ def main(cli_mode: bool = False) -> None:
                 StartScreenCli().start()
         else:
             StartScreenCli().start()
-    except Exception as e:
-        str(e)
-        sentry.captureException()
+    except:
+        SentryLogger.sentry.captureException()

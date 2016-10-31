@@ -118,12 +118,13 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
 
         :return: None
         """
-        for item in self.confirmation:
-            item.confirmed = True
+        if self.renamer is not None:
+            for item in self.confirmation:
+                item.confirmed = True
 
-        self.renamer.confirm(self.confirmation)
-        self.renamer.start_rename()
-        self.parse_directory()
+            self.renamer.confirm(self.confirmation)
+            self.renamer.start_rename()
+            self.parse_directory()
 
     def remove_selection(self) -> None:
         """

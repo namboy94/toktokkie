@@ -31,10 +31,10 @@ import urllib.error
 import urllib.request
 from typing import Tuple, List, Dict
 from requests.exceptions import ConnectionError
-from toktokkie.modules.objects.XDCCPack import XDCCPack
-from toktokkie.modules.utils.DeepIconizer import DeepIconizer
-from toktokkie.modules.utils.downloaders.IrcLibDownloader import IrcLibDownloader
-from toktokkie.modules.utils.searchengines.SearchEngineManager import SearchEngineManager
+from toktokkie.old.objects.XDCCPack import XDCCPack
+from toktokkie.old.utils.DeepIconizer import DeepIconizer
+from toktokkie.old.utils.downloaders.IrcLibDownloader import IrcLibDownloader
+from toktokkie.old.utils.searchengines.SearchEngineManager import SearchEngineManager
 
 
 class BatchDownloadManager(object):
