@@ -42,7 +42,10 @@ class GnomeProcedure(GenericProcedure):
 
         :return: True, if the procedures is applicable, False otherwise
         """
-        return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
+        try:
+            return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
+        except KeyError:
+            return False
 
     @staticmethod
     def iconize(directory: str, icon_file: str) -> None:
