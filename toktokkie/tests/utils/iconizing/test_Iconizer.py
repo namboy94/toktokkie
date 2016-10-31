@@ -38,4 +38,4 @@ class IconizerUnitTests(unittest.TestCase):
         pass
 
     def test(self):
-        iconizer = Iconizer()
+        pass

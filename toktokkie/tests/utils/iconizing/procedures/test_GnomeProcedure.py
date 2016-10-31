@@ -38,10 +38,9 @@ class GnomeProcedureUnitTests(unittest.TestCase):
         pass
 
     def test_eligibility(self):
-        if sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]:
-            self.assertTrue(GnomeProcedure.is_eligible())
-        else:
-            self.assertFalse(GnomeProcedure.is_eligible())
+        self.assertEqual(sys.platform == "linux" and
+                         os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"],
+                         GnomeProcedure.is_eligible())
 
     def test(self):
         pass
