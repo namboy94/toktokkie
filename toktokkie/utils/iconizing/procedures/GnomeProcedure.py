@@ -75,3 +75,10 @@ class GnomeProcedure(GenericProcedure):
             return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
         else:
             return None
+
+    @staticmethod
+    def get_procedure_name() -> str:
+        """
+        :return: The name of the Procedure
+        """
+        return "gnome"

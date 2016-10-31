@@ -99,3 +99,10 @@ class DesktopIniProcedure(GenericProcedure):
 
         if "IconFile=" in desktop_ini:
             return desktop_ini.split("IconFile=")[1].split("\n")[0]
+
+    @staticmethod
+    def get_procedure_name() -> str:
+        """
+        :return: The name of the Procedure
+        """
+        return "desktop_ini"

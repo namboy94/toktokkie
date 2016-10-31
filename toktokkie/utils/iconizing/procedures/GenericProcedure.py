@@ -57,3 +57,10 @@ class GenericProcedure(object):
         :return:          Either the path to the icon file or None if no icon file exists
         """
         raise NotImplementedError()
+
+    @staticmethod
+    def get_procedure_name() -> str:
+        """
+        :return: The name of the Procedure
+        """
+        raise NotImplementedError()
