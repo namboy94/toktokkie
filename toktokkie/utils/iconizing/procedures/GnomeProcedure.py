@@ -48,11 +48,16 @@ class GnomeProcedure(GenericProcedure):
     def iconize(directory: str, icon_file: str) -> None:
         """
         Iconizes the given directory using gvfs and the provided icon file
+        The icon file should be a PNG file
+        The file extension may be omiited, i.e. icon instead of icon.png
 
         :param directory: The directory to iconize
-        :param icon_file: The icon file to use
+        :param icon_file: The icon file to use.
         :return:          None
         """
+        if not icon_file.endswith(".png"):
+            icon_file += ".png"
+
         print("Iconizing Directory " + directory)
         Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])
 
