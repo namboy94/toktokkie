@@ -34,7 +34,8 @@ from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirma
 class RenamerConfirmationUnitTests(unittest.TestCase):
 
     def setUp(self):
-        os.makedirs(test_dir)
+        if not os.path.isdir(test_dir):
+            os.makedirs(test_dir)
         with open(os.path.join(test_dir, "episode_file"), 'w'):
             pass
         self.episode = TVEpisode(os.path.join(test_dir, "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)

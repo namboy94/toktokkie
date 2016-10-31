@@ -33,7 +33,8 @@ from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 class TVEpisodeUnitTests(unittest.TestCase):
 
     def setUp(self):
-        os.makedirs(test_dir)
+        if not os.path.isdir(test_dir):
+            os.makedirs(test_dir)
         with open(os.path.join(test_dir, "episode_file"), 'w'):
             pass
 

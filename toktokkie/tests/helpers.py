@@ -31,14 +31,12 @@ test_dir = os.path.join(os.getcwd(), "temp_testing")
 
 
 def generate_test_directory():
-
-    try:
-        cleanup()
-    except FileNotFoundError:
-        pass
-
+    cleanup()
     shutil.copytree("toktokkie/tests/resources/directories", test_dir)
 
 
 def cleanup():
-    shutil.rmtree(test_dir)
+    try:
+        shutil.rmtree(test_dir)
+    except FileNotFoundError:
+        pass
