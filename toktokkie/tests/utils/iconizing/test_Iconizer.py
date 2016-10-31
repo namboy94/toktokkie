@@ -45,15 +45,21 @@ class IconizerUnitTests(unittest.TestCase):
         if self.native_iconizer.procedure is not None:
             self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
 
-        self.native_iconizer.recursive_iconize("temp_testing")
+            self.native_iconizer.recursive_iconize("temp_testing")
 
-        if self.native_iconizer.procedure is not None:
             self.assertNotEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
             self.assertTrue(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones) in
                             [os.path.join(self.game_of_thrones, ".meta", "icons", "main.png"),
                              os.path.join(self.game_of_thrones, ".meta", "icons", "main.ico")])
 
-        self.native_iconizer.reverse_iconization("temp_testing")
+            self.native_iconizer.reverse_iconization("temp_testing")
 
-        if self.native_iconizer.procedure is not None:
-            self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+            if self.native_iconizer.procedure is not None:
+                self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+
+    # noinspection PyMethodMayBeStatic
+    def test_no_iconizer_available(self):
+
+        iconizer = Iconizer()
+        iconizer.procedure = None
+        iconizer.recursive_iconize("temp_testing")  # Just to check that no errors are thrown

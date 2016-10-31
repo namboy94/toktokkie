@@ -65,7 +65,8 @@ class Iconizer(object):
         """
         icon_directory = os.path.join(directory, ".meta", "icons")
         if os.path.isdir(icon_directory):
-            self.procedure.iconize(directory, os.path.join(icon_directory, "main"))
+            if self.procedure is not None:
+                self.procedure.iconize(directory, os.path.join(icon_directory, "main"))
 
     def __inner_iconize__(self, directory: str, icon_directory: str) -> None:
         """
