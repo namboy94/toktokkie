@@ -23,7 +23,7 @@ LICENSE
 """
 # imports
 import os
-from puffotter.fileops import rename_file
+import shutil
 from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
 
 
@@ -65,9 +65,16 @@ class TVEpisode(object):
                                   under normal circumstances
         :return:                  None
         """
-        if self.new_name == self.old_name:
-            return
-        self.episode_file = rename_file(self.episode_file, self.new_name)
+        if not self.new_name == self.old_name:
+
+            original_file_name = os.path.basename(self.episode_file)
+            extension = os.path.splitext(original_file_name)[1]
+            new_file = os.path.join(os.path.dirname(self.episode_file), self.new_name + extension)
+
+            print("renaming file " + self.episode_file + " to " + self.new_name)
+            shutil.move(self.episode_file, new_file)
+
+            self.episode_file = new_file
 
     def get_old_name(self) -> str:
         """

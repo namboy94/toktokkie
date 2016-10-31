@@ -24,7 +24,6 @@ LICENSE
 
 # imports
 import tvdb_api
-from puffotter.fileops import sanitize_filename
 from requests.exceptions import ConnectionError
 from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
 
@@ -53,7 +52,11 @@ class GenericScheme(object):
 
         :return: the generated name
         """
-        return sanitize_filename(self.apply_scheme())
+        sanitized = self.apply_scheme()
+        illegal_characters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
+        for illegal_character in illegal_characters:
+            sanitized = sanitized.replace(illegal_character, "")
+        return sanitized
 
     def apply_scheme(self) -> str:
         """
