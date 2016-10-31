@@ -23,13 +23,10 @@ LICENSE
 """
 
 # imports
-import os
-import sys
 import unittest
-from toktokkie.utils.iconizing.Iconizer import Iconizer
 
 
-class IconizerUnitTests(unittest.TestCase):
+class UnitTests(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -38,4 +35,4 @@ class IconizerUnitTests(unittest.TestCase):
         pass
 
     def test(self):
-        iconizer = Iconizer()
+        pass

@@ -23,7 +23,10 @@ LICENSE
 """
 
 # imports
+import os
+import sys
 import unittest
+from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
 
 
 class GnomeProcedureUnitTests(unittest.TestCase):
@@ -33,6 +36,12 @@ class GnomeProcedureUnitTests(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_eligibility(self):
+        if sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]:
+            self.assertTrue(GnomeProcedure.is_eligible())
+        else:
+            self.assertFalse(GnomeProcedure.is_eligible())
 
     def test(self):
         pass

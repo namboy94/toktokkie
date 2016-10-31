@@ -23,7 +23,10 @@ LICENSE
 """
 
 # imports
+import os
+import sys
 import unittest
+from toktokkie.utils.iconizing.procedures.DesktopIniProcedure import DesktopIniProcedure
 
 
 class DesktopIniUnitTests(unittest.TestCase):
@@ -34,5 +37,8 @@ class DesktopIniUnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test(self):
+    def test_eligibility(self):
+        self.assertEqual(sys.platform == "windows", DesktopIniProcedure.is_eligible())
+
+    def test_iconizing(self):
         pass
