@@ -24,40 +24,41 @@ LICENSE
 
 # imports
 import os
+import shutil
 import unittest
 from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
-from toktokkie.tests.helpers import generate_test_directory, cleanup, test_dir
 
 
 class TVSeriesManagerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        generate_test_directory()
+        shutil.copytree("toktokkie/tests/resources/directories", "temp_testing")
 
     def tearDown(self):
-        cleanup()
+        shutil.rmtree("temp_testing")
 
     def test_tv_series_directory_check(self):
-        self.assertTrue(TVSeriesManager.is_tv_series_directory(os.path.join(test_dir, "Game of Thrones")))
-        self.assertTrue(TVSeriesManager.is_tv_series_directory(os.path.join(test_dir, "The Big Bang Theory")))
-        self.assertFalse(TVSeriesManager.is_tv_series_directory(os.path.join(test_dir, "NotAShow")))
+        self.assertTrue(TVSeriesManager.is_tv_series_directory(os.path.join("temp_testing", "Game of Thrones")))
+        self.assertTrue(TVSeriesManager.is_tv_series_directory(os.path.join("temp_testing", "The Big Bang Theory")))
+        self.assertFalse(TVSeriesManager.is_tv_series_directory(os.path.join("temp_testing", "NotAShow")))
 
     def test_recursive_tv_series_checker(self):
-        directories = TVSeriesManager.find_recursive_tv_series_directories(test_dir)
+        directories = TVSeriesManager.find_recursive_tv_series_directories("temp_testing")
         self.assertEqual(len(directories), 4)
-        self.assertTrue(os.path.join(test_dir, "Game of Thrones") in directories)
-        self.assertTrue(os.path.join(test_dir, "The Big Bang Theory") in directories)
-        self.assertTrue(os.path.join(test_dir, "Re Zero") in directories)
-        self.assertTrue(os.path.join(test_dir, "NotExistingShow") in directories)
-        self.assertTrue(os.path.join(test_dir, "NotAShow") not in directories)
-        self.assertTrue(os.path.join(test_dir, "OtherMedia") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
+        self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") in directories)
+        self.assertTrue(os.path.join("temp_testing", "Re Zero") in directories)
+        self.assertTrue(os.path.join("temp_testing", "NotExistingShow") in directories)
+        self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "OtherMedia") not in directories)
 
     def test_recursive_tv_series_checker_with_single_folder(self):
-        directories = TVSeriesManager.find_recursive_tv_series_directories(os.path.join(test_dir, "Game of Thrones"))
+        directories = TVSeriesManager.find_recursive_tv_series_directories(os.path.join("temp_testing",
+                                                                                        "Game of Thrones"))
         self.assertEqual(len(directories), 1)
-        self.assertTrue(os.path.join(test_dir, "Game of Thrones") in directories)
-        self.assertTrue(os.path.join(test_dir, "The Big Bang Theory") not in directories)
-        self.assertTrue(os.path.join(test_dir, "Re Zero") not in directories)
-        self.assertTrue(os.path.join(test_dir, "NotExistingShow") not in directories)
-        self.assertTrue(os.path.join(test_dir, "NotAShow") not in directories)
-        self.assertTrue(os.path.join(test_dir, "OtherMedia") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
+        self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "Re Zero") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "NotExistingShow") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "OtherMedia") not in directories)
