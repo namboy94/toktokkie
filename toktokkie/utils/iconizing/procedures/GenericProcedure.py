@@ -21,3 +21,39 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+
+class GenericProcedure(object):
+    """
+    Class that models the behaviour of an iconizing procedure
+    """
+
+    @staticmethod
+    def is_eligible() -> bool:
+        """
+        Checks if the iconizing procedure is eligible for the current system
+
+        :return: True, if the procedure is applicable
+        """
+        raise NotImplementedError()
+
+    @staticmethod
+    def iconize(directory: str, icon_file: str) -> None:
+        """
+        Iconizes a given directory with a given icon file using the procedure
+
+        :param directory: The directory to iconize
+        :param icon_file: The icon with which to iconize the directory
+        :return:          None
+        """
+        raise NotImplementedError()
+
+    @staticmethod
+    def get_icon_file(directory: str) -> str or None:
+        """
+        Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
+
+        :param directory: The directory to check
+        :return:          Either the path to the icon file or None if no icon file exists
+        """
+        raise NotImplementedError()

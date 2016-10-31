@@ -21,3 +21,52 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+# imports
+import os
+import sys
+from subprocess import Popen, check_output
+from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+
+
+class GnomeProcedure(GenericProcedure):
+    """
+    Iconizing Procedure used on Linux system using Gnome and Gnome-derivative desktop environments
+    """
+
+    @staticmethod
+    def is_eligible() -> bool:
+        """
+        The Gnome procedure is eligible if the system is running Linux as well as a Gnome environment,
+        like the Gnome DE or Cinnamon
+
+        :return: True, if the procedures is eligible, False otherwise
+        """
+        return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
+
+    @staticmethod
+    def iconize(directory: str, icon_file: str) -> None:
+        """
+        Iconizes the given directory using gvfs and the provided icon file
+
+        :param directory: The directory to iconize
+        :param icon_file: The icon file to use
+        :return:          None
+        """
+        print("Iconizing Directory " + directory)
+        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])
+
+    @staticmethod
+    def get_icon_file(directory: str) -> str or None:
+        """
+        Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
+
+        :param directory: The directory to check
+        :return:          Either the path to the icon file or None if no icon file exists
+        """
+        gvfs_info = check_output(["gvfs-info", directory]).decode()
+
+        if "metadata::custom-icon: file://" in gvfs_info:
+            return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
+        else:
+            return None
