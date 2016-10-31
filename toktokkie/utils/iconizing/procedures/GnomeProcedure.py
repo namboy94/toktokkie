@@ -62,7 +62,16 @@ class GnomeProcedure(GenericProcedure):
             icon_file += ".png"
 
         print("Iconizing Directory " + directory)
-        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])
+        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file]).wait()
+
+    @staticmethod
+    def reset_iconization_state(directory: str) -> None:
+        """
+        Resets the iconization state of the given directory using the unset option of gvfs-set-attribute
+        :param directory: the directory to de-iconize
+        :return:          None
+        """
+        Popen(["gvfs-set-attribute", "-t", "unset", directory, "metadata::custom-icon"]).wait()
 
     @staticmethod
     def get_icon_file(directory: str) -> str or None:

@@ -24,7 +24,7 @@ LICENSE
 
 # imports
 import os
-import sys
+import shutil
 import unittest
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 
@@ -32,10 +32,28 @@ from toktokkie.utils.iconizing.Iconizer import Iconizer
 class IconizerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        pass
+        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        self.game_of_thrones = os.path.join("temp_testing", "Game of Thrones")
+        self.native_iconizer = Iconizer()
 
     def tearDown(self):
-        pass
+        self.native_iconizer.reverse_iconization("temp_testing")
+        shutil.rmtree("temp_testing")
 
-    def test(self):
-        pass
+    def test_native_iconizing(self):
+
+        if self.native_iconizer.procedure is not None:
+            self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+
+        self.native_iconizer.recursive_iconize("temp_testing")
+
+        if self.native_iconizer.procedure is not None:
+            self.assertNotEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+            self.assertTrue(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones) in
+                            [os.path.join(self.game_of_thrones, ".meta", "icons", "main.png"),
+                             os.path.join(self.game_of_thrones, ".meta", "icons", "main.ico")])
+
+        self.native_iconizer.reverse_iconization("temp_testing")
+
+        if self.native_iconizer.procedure is not None:
+            self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)

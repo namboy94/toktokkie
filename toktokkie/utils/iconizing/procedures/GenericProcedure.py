@@ -49,6 +49,15 @@ class GenericProcedure(object):
         raise NotImplementedError()
 
     @staticmethod
+    def reset_iconization_state(directory: str) -> None:
+        """
+        Resets the iconization state of the given directory
+        :param directory: the directory to de-iconize
+        :return:          None
+        """
+        raise NotImplementedError()
+
+    @staticmethod
     def get_icon_file(directory: str) -> str or None:
         """
         Returns the path to the given directory's icon file, if it is iconized. If not, None is returned

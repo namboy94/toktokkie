@@ -59,6 +59,7 @@ class Iconizer(object):
     def iconize_directory(self, directory: str) -> None:
         """
         Iconizes a single directory containing a .meta/icons directory
+
         :param directory: The directory to iconize
         :return:          None
         """
@@ -69,6 +70,7 @@ class Iconizer(object):
     def __inner_iconize__(self, directory: str, icon_directory: str) -> None:
         """
         Iconizes inner directories of a directory containing a .meta/icons directory
+
         :param directory:       The parent directory
         :param icon_directory:  The path to the icon directory
         :return:                None
@@ -80,3 +82,16 @@ class Iconizer(object):
                 child_icon = os.path.join(icon_directory, child)
                 self.procedure.iconize(child_dir, child_icon)
                 self.__inner_iconize__(child_dir, icon_directory)
+
+    def reverse_iconization(self, directory: str) -> None:
+        """
+        Reverses every folder iconization under the current directory
+
+        :param directory: The directory to de-iconize
+        :return:          None
+        """
+        self.procedure.reset_iconization_state(directory)
+        for child in os.listdir(directory):
+            child_dir = os.path.join(directory, child)
+            if os.path.isdir(child_dir):
+                self.reverse_iconization(child_dir)

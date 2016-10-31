@@ -87,6 +87,16 @@ class DesktopIniProcedure(GenericProcedure):
         Popen(["attrib", "+r", directory]).wait()
 
     @staticmethod
+    def reset_iconization_state(directory: str) -> None:
+        """
+        Resets the iconization state of the given directory by simply deleting the desktop.ini file
+        :param directory: the directory to de-iconize
+        :return:          None
+        """
+        if os.path.isfile(os.path.join(directory, "desktop.ini")):
+            os.remove(os.path.join(directory, "desktop.ini"))
+
+    @staticmethod
     def get_icon_file(directory: str) -> str:
         """
         Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
