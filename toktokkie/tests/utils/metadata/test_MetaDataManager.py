@@ -26,10 +26,10 @@ LICENSE
 import os
 import shutil
 import unittest
-from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 
 
-class TVSeriesManagerUnitTests(unittest.TestCase):
+class MetaDataManagerUnitTests(unittest.TestCase):
 
     def setUp(self):
         shutil.copytree("toktokkie/tests/resources/directories", "temp_testing")
@@ -38,12 +38,15 @@ class TVSeriesManagerUnitTests(unittest.TestCase):
         shutil.rmtree("temp_testing")
 
     def test_tv_series_directory_check(self):
-        self.assertTrue(TVSeriesManager.is_tv_series_directory(os.path.join("temp_testing", "Game of Thrones")))
-        self.assertTrue(TVSeriesManager.is_tv_series_directory(os.path.join("temp_testing", "The Big Bang Theory")))
-        self.assertFalse(TVSeriesManager.is_tv_series_directory(os.path.join("temp_testing", "NotAShow")))
+        self.assertTrue(MetaDataManager.is_media_directory(
+            os.path.join("temp_testing", "Game of Thrones"), media_type="tv_series"))
+        self.assertTrue(MetaDataManager.is_media_directory(
+            os.path.join("temp_testing", "The Big Bang Theory"), media_type="tv_series"))
+        self.assertFalse(MetaDataManager.is_media_directory(
+            os.path.join("temp_testing", "NotAShow"), media_type="tv_series"))
 
     def test_recursive_tv_series_checker(self):
-        directories = TVSeriesManager.find_recursive_tv_series_directories("temp_testing")
+        directories = MetaDataManager.find_recursive_media_directories("temp_testing", media_type="tv_series")
         self.assertEqual(len(directories), 4)
         self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
         self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") in directories)
@@ -53,8 +56,8 @@ class TVSeriesManagerUnitTests(unittest.TestCase):
         self.assertTrue(os.path.join("temp_testing", "OtherMedia") not in directories)
 
     def test_recursive_tv_series_checker_with_single_folder(self):
-        directories = TVSeriesManager.find_recursive_tv_series_directories(os.path.join("temp_testing",
-                                                                                        "Game of Thrones"))
+        directories = MetaDataManager.find_recursive_media_directories(
+            os.path.join("temp_testing", "Game of Thrones"), media_type="tv_series")
         self.assertEqual(len(directories), 1)
         self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
         self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") not in directories)
@@ -62,3 +65,13 @@ class TVSeriesManagerUnitTests(unittest.TestCase):
         self.assertTrue(os.path.join("temp_testing", "NotExistingShow") not in directories)
         self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
         self.assertTrue(os.path.join("temp_testing", "OtherMedia") not in directories)
+
+    def test_generic_recursive_media_checker(self):
+        directories = MetaDataManager.find_recursive_media_directories("temp_testing")
+        self.assertEqual(len(directories), 5)
+        self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
+        self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") in directories)
+        self.assertTrue(os.path.join("temp_testing", "Re Zero") in directories)
+        self.assertTrue(os.path.join("temp_testing", "NotExistingShow") in directories)
+        self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "OtherMedia") in directories)

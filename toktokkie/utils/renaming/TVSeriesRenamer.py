@@ -25,7 +25,7 @@ LICENSE
 import os
 from typing import List
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
-from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
 from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
 
@@ -53,8 +53,8 @@ class TVSeriesRenamer(object):
         self.naming_scheme = naming_scheme
 
         if recursive:
-            directories = TVSeriesManager.find_recursive_tv_series_directories(directory)
-        elif TVSeriesManager.is_tv_series_directory(directory):
+            directories = MetaDataManager.find_recursive_media_directories(directory, media_type="tv_series")
+        elif MetaDataManager.is_media_directory(directory, media_type="tv_series"):
             directories = [directory]
         else:
             return

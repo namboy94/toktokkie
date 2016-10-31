@@ -27,23 +27,24 @@ import os
 from typing import List
 
 
-class TVSeriesManager(object):
+class MetaDataManager(object):
     """
-    Class that handles the metadata for TV Series
+    Class that handles the metadata for Media files
     """
 
     @staticmethod
-    def find_recursive_tv_series_directories(directory: str) -> List[str]:
+    def find_recursive_media_directories(directory: str, media_type: str = "") -> List[str]:
         """
         Finds all directories that include a .meta directory below a given
-        directory. Only considers .meta directories with the "tv_series"
-        string value in its type file
+        directory. If a media_type is specified, only those directories containing a .meta/type file
+        with the media_type as content are considered
 
         In case the given directory does not exist or the current user has no read access,
         an empty list is returned
 
-        :param directory: the directory to check
-        :return:          a list of directories that are identified as TV Series
+        :param directory:  The directory to check
+        :param media_type: The media type to check for
+        :return:           A list of directories that are identified as TV Series
         """
         directories = []
 
@@ -56,32 +57,36 @@ class TVSeriesManager(object):
             # If we don't have read permissions for this directory, skip this directory
             return []
 
-        if TVSeriesManager.is_tv_series_directory(directory):
+        if MetaDataManager.is_media_directory(directory, media_type):
             directories.append(directory)
         else:
             # Parse every subdirectory like the original directory recursively
             for child in children:
                 child_path = os.path.join(directory, child)
                 if os.path.isdir(child_path):
-                    directories += TVSeriesManager.find_recursive_tv_series_directories(child_path)
+                    directories += MetaDataManager.find_recursive_media_directories(child_path, media_type)
 
         return directories
 
     @staticmethod
-    def is_tv_series_directory(directory: str) -> bool:
+    def is_media_directory(directory: str, media_type: str = "") -> bool:
         """
-        Checks if a given directory is a TV Series directory
-        A directory is a TV Series directory when it contains a .meta directory and the .meta
-        directory contains a file called 'type' which contains the string value 'tv_series'
+        Checks if a given directory is a Media directory.
+        A directory is a Media directory when it contains a .meta directory. It may also contain a file
+        called 'type', which contains information about the type of media it contains.
 
-        :param directory: The directory to check
-        :return:          True if the directory is a TV Series directory, False otherwise
+        :param directory:  The directory to check
+        :param media_type: The type of media to check for, optional
+        :return:           True if the directory is a TV Series directory, False otherwise
         """
         try:
             if ".meta" in os.listdir(directory):
-                with open(os.path.join(directory, ".meta", "type")) as typefile:
-                    media_type = typefile.read().rstrip().lstrip()
-                return media_type == "tv_series"
+                if media_type:
+                    with open(os.path.join(directory, ".meta", "type")) as typefile:
+                        stored_media_type = typefile.read().rstrip().lstrip()
+                    return stored_media_type == media_type
+                else:
+                    return True
         except (PermissionError, FileNotFoundError):
             pass
 

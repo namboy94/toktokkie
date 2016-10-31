@@ -26,7 +26,7 @@ LICENSE
 import os
 from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_Renamer
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
-from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView
 
@@ -86,7 +86,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         directory = self.directory_entry.text()
 
         if os.path.isdir(directory) and \
-                (TVSeriesManager.is_tv_series_directory(directory) or self.recursive_check.checkState()):
+                (MetaDataManager.is_media_directory(directory, media_type="tv_series")
+                 or self.recursive_check.checkState()):
 
             self.meta_warning_label.setVisible(False)
 
