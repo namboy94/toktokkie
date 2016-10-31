@@ -26,13 +26,13 @@ LICENSE
 import os
 import unittest
 from toktokkie.utils.metadata.TVSeriesManager import TVSeriesManager
-from toktokkie.tests.helpers import create_filled_temp_folder, cleanup, test_dir
+from toktokkie.tests.helpers import generate_test_directory, cleanup, test_dir
 
 
 class TVSeriesManagerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        create_filled_temp_folder()
+        generate_test_directory()
 
     def tearDown(self):
         cleanup()

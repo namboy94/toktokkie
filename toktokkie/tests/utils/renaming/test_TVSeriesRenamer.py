@@ -26,13 +26,13 @@ import os
 import unittest
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
-from toktokkie.tests.helpers import cleanup, test_dir, create_filled_temp_folder
+from toktokkie.tests.helpers import cleanup, test_dir, generate_test_directory
 
 
 class TVSeriesRenamerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        create_filled_temp_folder()
+        generate_test_directory()
 
     def tearDown(self):
         cleanup()
@@ -54,16 +54,14 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                          "Game of Thrones - S01E10 - Fire and Blood",
                                          "Game of Thrones - S01E11 - Episode 11"],
                             "Season 2": ["Game of Thrones - S02E01 - The North Remembers",
-                                         "Game of Thrones - S02E10 - Valar Morghulis",
-                                         "Game of Thrones - S02E13 - Episode 13"],
+                                         "Game of Thrones - S02E10 - Valar Morghulis"],
                             "Specials": ["Game of Thrones - S00E01 - Inside Game of Thrones",
-                                         "Game of Thrones - S00E02 - 15-Minute Preview",
-                                         "Game of Thrones - S00E13 - World Premiere"]}
+                                         "Game of Thrones - S00E02 - 15-Minute Preview"]}
 
         game_of_thrones = TVSeriesRenamer(os.path.join(test_dir, "Game of Thrones"), PlexTvdbScheme)
 
         confirmation = game_of_thrones.request_confirmation()
-        self.assertEqual(len(confirmation), 45)
+        self.assertEqual(len(confirmation), 26)
 
         try:
             game_of_thrones.start_rename()
@@ -95,7 +93,7 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
 
         big_bang = TVSeriesRenamer(os.path.join(test_dir, "The Big Bang Theory"), PlexTvdbScheme)
         confirmation = big_bang.request_confirmation()
-        self.assertEqual(len(confirmation), 75)
+        self.assertEqual(len(confirmation), 120)
         big_bang.start_rename(True)
 
         for result in expected_results:
@@ -109,11 +107,9 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                                          "Game of Thrones - S01E10 - Fire and Blood",
                                                          "Game of Thrones - S01E11 - Episode 11"],
                                             "Season 2": ["Game of Thrones - S02E01 - The North Remembers",
-                                                         "Game of Thrones - S02E10 - Valar Morghulis",
-                                                         "Game of Thrones - S02E13 - Episode 13"],
+                                                         "Game of Thrones - S02E10 - Valar Morghulis"],
                                             "Specials": ["Game of Thrones - S00E01 - Inside Game of Thrones",
-                                                         "Game of Thrones - S00E02 - 15-Minute Preview",
-                                                         "Game of Thrones - S00E13 - World Premiere"]}
+                                                         "Game of Thrones - S00E02 - 15-Minute Preview"]}
         expected_big_bang_theory_results = {"Season 1": ["The Big Bang Theory - S01E01 - Pilot",
                                                          "The Big Bang Theory - S01E14 - The Nerdvana Annihilation"],
                                             "Season 2": ["The Big Bang Theory - S02E05 - The Euclid Alternative",

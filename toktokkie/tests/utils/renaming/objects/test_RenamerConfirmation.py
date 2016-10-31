@@ -25,7 +25,7 @@ LICENSE
 # imports
 import os
 import unittest
-from toktokkie.tests.helpers import touch, test_dir, cleanup
+from toktokkie.tests.helpers import test_dir, cleanup
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
@@ -35,7 +35,8 @@ class RenamerConfirmationUnitTests(unittest.TestCase):
 
     def setUp(self):
         os.makedirs(test_dir)
-        touch(os.path.join(test_dir, "episode_file"))
+        with open(os.path.join(test_dir, "episode_file"), 'w'):
+            pass
         self.episode = TVEpisode(os.path.join(test_dir, "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
 
     def tearDown(self):

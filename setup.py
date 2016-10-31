@@ -29,10 +29,6 @@ import platform
 from setuptools import setup, find_packages
 import toktokkie.metadata as metadata
 
-if platform.system() == "Windows":
-    # noinspection PyUnresolvedReferences
-    import py2exe
-
 
 def readme():
     """
@@ -40,18 +36,7 @@ def readme():
 
     :return: the readme file as a string
     """
-    try:
-        # noinspection PyPackageRequirements
-        import pypandoc
-        with open('README.md') as f:
-            # Convert markdown file to rst
-            markdown = f.read()
-            rst = pypandoc.convert(markdown, 'rst', format='md')
-            return rst
-    except (OSError, ImportError):
-        # If pandoc is not installed, just return the raw markdown text
-        with open('README.md') as f:
-            return f.read()
+    return "aaa"
 
 
 def find_scripts():

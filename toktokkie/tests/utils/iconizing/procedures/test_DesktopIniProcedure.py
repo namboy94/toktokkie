@@ -41,4 +41,4 @@ class DesktopIniUnitTests(unittest.TestCase):
         self.assertEqual(sys.platform == "windows", DesktopIniProcedure.is_eligible())
 
     def test_iconizing(self):
-        pass
+        self.assertTrue()
