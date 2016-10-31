@@ -179,7 +179,7 @@ class SentryLogger:
     Class that handles the sentry logger initialization
     """
 
-    sentry_dsn = "http://738d8f4e36844faa91283ea26e98b153:81b79214220049d2b5c5fe26bd28e877@85.214.124.204:9000/2"
+    sentry_dsn = "https://82919205c6e8434683783f57939149ae:8f27907cecb7419184dd274cb41963fc@sentry.io/110683"
     """
     The DSN associated with this project
     """
