@@ -91,8 +91,9 @@ class Iconizer(object):
         :param directory: The directory to de-iconize
         :return:          None
         """
-        self.procedure.reset_iconization_state(directory)
-        for child in os.listdir(directory):
-            child_dir = os.path.join(directory, child)
-            if os.path.isdir(child_dir):
-                self.reverse_iconization(child_dir)
+        if self.procedure is not None:
+            self.procedure.reset_iconization_state(directory)
+            for child in os.listdir(directory):
+                child_dir = os.path.join(directory, child)
+                if os.path.isdir(child_dir):
+                    self.reverse_iconization(child_dir)
