@@ -21,3 +21,63 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+# imports
+from typing import List
+from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
+from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+from toktokkie.utils.iconizing.procedures.DesktopIniProcedure import DesktopIniProcedure
+
+
+class ProcedureManager(object):
+    """
+    Class that offers an interface for choosing the correct iconization procedure
+    """
+
+    implemented_procedures = [GnomeProcedure,
+                              DesktopIniProcedure]
+    """
+    List of currently implemented procedures
+    """
+
+    @staticmethod
+    def get_all_procedures() -> List[GenericProcedure]:
+        """
+        :return: A list of all implemented procedures
+        """
+        return ProcedureManager.implemented_procedures
+
+    @staticmethod
+    def get_procedure_names() -> List[str]:
+        """
+        :return: A list of implemented procedure names
+        """
+        procedure_names = []
+        for procedure in ProcedureManager.implemented_procedures:
+            procedure_names.append(procedure.get_procedure_name())
+        return procedure_names
+
+    @staticmethod
+    def get_procedure_from_procedure_name(procedure_name: str) -> GenericProcedure:
+        """
+        Turns a procedure name into a Procedure class and returns it
+
+        :param procedure_name: the procedure name of the procedure to return
+        :return:               the procedure's class, or None if the name did not match any implemented procedure
+        """
+        for procedure in ProcedureManager.implemented_procedures:
+            if procedure_name == procedure.get_procedure_name():
+                return procedure
+        return None
+
+    @staticmethod
+    def get_applicable_procedure() -> GenericProcedure or None:
+        """
+        Gets an applicable iconizing procedure from the list of implemented procedures
+
+        :return: The iconizing procedure, or None if no applicable procedure was found
+        """
+        for procedure in ProcedureManager.implemented_procedures:
+            if procedure.is_applicable():
+                return procedure
+        return None

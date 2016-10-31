@@ -35,12 +35,12 @@ class GnomeProcedure(GenericProcedure):
     """
 
     @staticmethod
-    def is_eligible() -> bool:
+    def is_applicable() -> bool:
         """
-        The Gnome procedure is eligible if the system is running Linux as well as a Gnome environment,
+        The Gnome procedure is applicable if the system is running Linux as well as a Gnome environment,
         like the Gnome DE or Cinnamon
 
-        :return: True, if the procedures is eligible, False otherwise
+        :return: True, if the procedures is applicable, False otherwise
         """
         return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
 

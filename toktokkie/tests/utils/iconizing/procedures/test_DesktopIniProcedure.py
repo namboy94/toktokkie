@@ -37,8 +37,8 @@ class DesktopIniUnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_eligibility(self):
-        self.assertEqual(sys.platform == "win32", DesktopIniProcedure.is_eligible())
+    def test_applicability(self):
+        self.assertEqual(sys.platform == "win32", DesktopIniProcedure.is_applicable())
 
     def test_iconizing(self):
         pass

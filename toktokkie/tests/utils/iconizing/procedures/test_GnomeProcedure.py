@@ -37,10 +37,10 @@ class GnomeProcedureUnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_eligibility(self):
+    def test_applicability(self):
         self.assertEqual(sys.platform == "linux" and
                          os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"],
-                         GnomeProcedure.is_eligible())
+                         GnomeProcedure.is_applicable())
 
     def test(self):
         pass

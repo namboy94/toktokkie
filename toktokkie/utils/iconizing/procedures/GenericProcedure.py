@@ -29,9 +29,9 @@ class GenericProcedure(object):
     """
 
     @staticmethod
-    def is_eligible() -> bool:
+    def is_applicable() -> bool:
         """
-        Checks if the iconizing procedure is eligible for the current system
+        Checks if the iconizing procedure is applicable to the current system
 
         :return: True, if the procedure is applicable
         """
