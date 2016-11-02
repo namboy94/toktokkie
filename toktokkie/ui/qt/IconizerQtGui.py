@@ -23,16 +23,13 @@ LICENSE
 """
 
 # imports
-import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from toktokkie.ui.qt.IconizerQtGui import IconizerQtGui
-from toktokkie.ui.qt.pyuic.start_page import Ui_StartPage
-from toktokkie.ui.qt.TVSeriesRenamerQtGui import TVSeriesRenamerQtGui
+from toktokkie.ui.qt.pyuic.iconizer import Ui_IconizerWindow
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
 
-class StartPageQtGui(QMainWindow, Ui_StartPage):
+class IconizerQtGui(QMainWindow, Ui_IconizerWindow):
     """
-    Class that models th QT GUI for the program's Start Page
+    Class that models th QT GUI for the TV Series Renamer
     """
 
     def __init__(self, parent: QMainWindow = None) -> None:
@@ -44,18 +41,16 @@ class StartPageQtGui(QMainWindow, Ui_StartPage):
         super().__init__(parent)
         self.setupUi(self)
 
-        # Initialize UI elements
-        self.tv_series_renamer.clicked.connect(TVSeriesRenamerQtGui(self).show)
-        self.folder_iconizer.clicked.connect(IconizerQtGui(self).show)
+    # noinspection PyArgumentList
+    def browse_for_directory(self) -> None:
+        """
+        Brings up a directory browser window.
+        Once a directory was selected, the new directory is then inserted into the
+        directory path entry.
 
-
-def start():
-    """
-    Starts the Start Page GUI
-
-    :return: None
-    """
-    app = QApplication(sys.argv)
-    form = StartPageQtGui()
-    form.show()
-    app.exec_()
+        :return: None
+        """
+        # noinspection PyCallByClass,PyTypeChecker
+        directory = QFileDialog.getExistingDirectory(self, "Test")
+        if directory:
+            self.directory_entry.setText(directory)

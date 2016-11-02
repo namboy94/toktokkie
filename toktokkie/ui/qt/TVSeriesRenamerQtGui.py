@@ -71,7 +71,7 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
         :return: None
         """
         # noinspection PyCallByClass,PyTypeChecker
-        directory = QFileDialog.getExistingDirectory(self, "Test")
+        directory = QFileDialog.getExistingDirectory(self, "Browse")
         if directory:
             self.directory_entry.setText(directory)
 

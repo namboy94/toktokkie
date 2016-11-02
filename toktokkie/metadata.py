@@ -132,7 +132,7 @@ class PypiVariables:
     Python Packaging Index dependencies
     """
 
-    name = "xdcc_dl"
+    name = General.project_name
     """
     The name of the project on Pypi
     """
