@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Renamer</class>
- <widget class="QMainWindow" name="Renamer">
+ <class>TVSeriesRenamer</class>
+ <widget class="QMainWindow" name="TVSeriesRenamer">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
+    <width>486</width>
     <height>348</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>TV Series Renamer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">

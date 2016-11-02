@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'qt_designer/tv_series_renamer.ui'
+# Form implementation generated from reading ui file 'toktokkie/ui/qt/qt_designer/tv_series_renamer.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
@@ -8,11 +8,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Renamer(object):
-    def setupUi(self, Renamer):
-        Renamer.setObjectName("Renamer")
-        Renamer.resize(475, 348)
-        self.centralwidget = QtWidgets.QWidget(Renamer)
+class Ui_TVSeriesRenamer(object):
+    def setupUi(self, TVSeriesRenamer):
+        TVSeriesRenamer.setObjectName("TVSeriesRenamer")
+        TVSeriesRenamer.resize(486, 348)
+        self.centralwidget = QtWidgets.QWidget(TVSeriesRenamer)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
@@ -71,30 +71,30 @@ class Ui_Renamer(object):
         self.gridLayout.addWidget(self.confirm_button, 1, 7, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(15, 20, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 1, 5, 1, 1)
-        Renamer.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(Renamer)
+        TVSeriesRenamer.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(TVSeriesRenamer)
         self.statusbar.setObjectName("statusbar")
-        Renamer.setStatusBar(self.statusbar)
+        TVSeriesRenamer.setStatusBar(self.statusbar)
 
-        self.retranslateUi(Renamer)
-        QtCore.QMetaObject.connectSlotsByName(Renamer)
+        self.retranslateUi(TVSeriesRenamer)
+        QtCore.QMetaObject.connectSlotsByName(TVSeriesRenamer)
 
-    def retranslateUi(self, Renamer):
+    def retranslateUi(self, TVSeriesRenamer):
         _translate = QtCore.QCoreApplication.translate
-        Renamer.setWindowTitle(_translate("Renamer", "MainWindow"))
-        self.browse_button.setToolTip(_translate("Renamer", "<html><head/><body><p>Browse for a directory on your PC</p></body></html>"))
-        self.browse_button.setText(_translate("Renamer", "Browse"))
-        self.rename_list.headerItem().setText(0, _translate("Renamer", "Old Name"))
-        self.rename_list.headerItem().setText(1, _translate("Renamer", "New Name"))
-        self.selection_remover_button.setToolTip(_translate("Renamer", "<html><head/><body><p>Removes all selected entries from the list</p></body></html>"))
-        self.selection_remover_button.setText(_translate("Renamer", "Remove Selection"))
-        self.meta_warning_label.setText(_translate("Renamer", "<html><head/><body><p><span style=\" color:#ff0000;\">Warning: Selected Directory does not contain any .meta subdirectories with type \'tv_series\'</span></p></body></html>"))
-        self.scheme_selector.setToolTip(_translate("Renamer", "<html><head/><body><p>The naming scheme used for renaming the episodes</p></body></html>"))
-        self.directory_entry.setToolTip(_translate("Renamer", "<html><head/><body><p>The Path to the directory is specified here</p></body></html>"))
-        self.cancel_button.setToolTip(_translate("Renamer", "<html><head/><body><p>Resets all input fields.</p></body></html>"))
-        self.cancel_button.setText(_translate("Renamer", "Cancel"))
-        self.recursive_check.setToolTip(_translate("Renamer", "<html><head/><body><p>If checked, all directories below the selected directory are taken into consideration.</p></body></html>"))
-        self.recursive_check.setText(_translate("Renamer", "Recursive"))
-        self.confirm_button.setToolTip(_translate("Renamer", "<html><head/><body><p>Starts renaming the files in the list below.</p></body></html>"))
-        self.confirm_button.setText(_translate("Renamer", "Confirm"))
+        TVSeriesRenamer.setWindowTitle(_translate("TVSeriesRenamer", "TV Series Renamer"))
+        self.browse_button.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>Browse for a directory on your PC</p></body></html>"))
+        self.browse_button.setText(_translate("TVSeriesRenamer", "Browse"))
+        self.rename_list.headerItem().setText(0, _translate("TVSeriesRenamer", "Old Name"))
+        self.rename_list.headerItem().setText(1, _translate("TVSeriesRenamer", "New Name"))
+        self.selection_remover_button.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>Removes all selected entries from the list</p></body></html>"))
+        self.selection_remover_button.setText(_translate("TVSeriesRenamer", "Remove Selection"))
+        self.meta_warning_label.setText(_translate("TVSeriesRenamer", "<html><head/><body><p><span style=\" color:#ff0000;\">Warning: Selected Directory does not contain any .meta subdirectories with type \'tv_series\'</span></p></body></html>"))
+        self.scheme_selector.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>The naming scheme used for renaming the episodes</p></body></html>"))
+        self.directory_entry.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>The Path to the directory is specified here</p></body></html>"))
+        self.cancel_button.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>Resets all input fields.</p></body></html>"))
+        self.cancel_button.setText(_translate("TVSeriesRenamer", "Cancel"))
+        self.recursive_check.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>If checked, all directories below the selected directory are taken into consideration.</p></body></html>"))
+        self.recursive_check.setText(_translate("TVSeriesRenamer", "Recursive"))
+        self.confirm_button.setToolTip(_translate("TVSeriesRenamer", "<html><head/><body><p>Starts renaming the files in the list below.</p></body></html>"))
+        self.confirm_button.setText(_translate("TVSeriesRenamer", "Confirm"))
 

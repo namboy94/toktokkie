@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 LICENSE:
 Copyright 2015,2016 Hermann Krumrey
@@ -23,22 +24,26 @@ LICENSE
 """
 
 # imports
-from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from old.scripts import start
 
+# Add as many manga series as you want
+# Don't forget to separate the dictionaries (parts enclosed in curly brackets {}) with commas
+config = [
 
-class IconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
+    {"target_directory": "Target Directory 1",
+     "manga_url": "http://mangasite.domain/path/to/manga1"},
 
+    {"target_directory": "Target Directory 2",
+     "manga_url": "http://mangasite.domain/path/to/manga2"}
 
-    def __init__(self, parent: QMainWindow = None) -> None:
+]
 
-        super().__init__(parent)
-        self.setupUi(self)
+if __name__ == '__main__':
 
-    # noinspection PyArgumentList
-    def browse_for_directory(self) -> None:
-
-        # noinspection PyCallByClass,PyTypeChecker
-        directory = QFileDialog.getExistingDirectory(self, "Browse")
-        if directory:
-            self.directory_entry.setText(directory)
+    # Uncomment options that you would like to use
+    start(config,
+          max_threads=4,
+          # repair=True,
+          # verbose=True,
+          # dry_run=True
+          )

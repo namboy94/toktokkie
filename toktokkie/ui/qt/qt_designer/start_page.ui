@@ -1,66 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>StartPage</class>
- <widget class="QMainWindow" name="StartPage">
+ <class>StartPageWindow</class>
+ <widget class="QMainWindow" name="StartPageWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>594</width>
-    <height>110</height>
+    <width>352</width>
+    <height>178</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Toktokkie</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QPushButton" name="tv_series_manager">
-      <property name="text">
-       <string>TV Series Manager</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="tv_series_renamer">
-      <property name="text">
-       <string>TV Series Renamer</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="xdcc_downloader">
-      <property name="text">
-       <string>XDCC Downloader</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="manga_downloader">
-      <property name="text">
-       <string>Manga Downloader</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
+    <item row="2" column="0">
      <widget class="QPushButton" name="folder_iconizer">
       <property name="text">
        <string>Folder Iconizer</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="xdcc_download_manager">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="tv_series_renamer">
       <property name="text">
-       <string>XDCC Download Manager</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QPushButton" name="manga_download_manager">
-      <property name="text">
-       <string>Manga Download Manager</string>
+       <string>TV Series Renamer</string>
       </property>
      </widget>
     </item>

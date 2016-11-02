@@ -1,3 +1,5 @@
+#!/bin/env python
+
 """
 LICENSE:
 Copyright 2015,2016 Hermann Krumrey
@@ -22,23 +24,15 @@ This file is part of toktokkie.
 LICENSE
 """
 
-# imports
-from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+import os
 
+qt_designer_dir = os.path.join("toktokkie", "ui", "qt", "qt_designer")
+pyuic_dir = os.path.join("toktokkie", "ui", "qt", "pyuic")
 
-class IconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
+for design in os.listdir(qt_designer_dir):
 
+    if design.endswith(".ui"):
 
-    def __init__(self, parent: QMainWindow = None) -> None:
-
-        super().__init__(parent)
-        self.setupUi(self)
-
-    # noinspection PyArgumentList
-    def browse_for_directory(self) -> None:
-
-        # noinspection PyCallByClass,PyTypeChecker
-        directory = QFileDialog.getExistingDirectory(self, "Browse")
-        if directory:
-            self.directory_entry.setText(directory)
+        design_file = os.path.join(qt_designer_dir, design)
+        result_file = os.path.join(pyuic_dir, design.replace(".ui", ".py"))
+        os.system("pyuic5 \"" + design_file + "\" > \"" + result_file + "\"")

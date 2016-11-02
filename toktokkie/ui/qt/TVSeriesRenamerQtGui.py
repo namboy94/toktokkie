@@ -24,14 +24,14 @@ LICENSE
 
 # imports
 import os
-from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_Renamer
+from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_TVSeriesRenamer
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView
 
 
-class TVSeriesRenamerQtGui(QMainWindow, Ui_Renamer):
+class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
     """
     Class that models th QT GUI for the TV Series Renamer
     """

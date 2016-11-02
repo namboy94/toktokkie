@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'qt_designer/iconizer.ui'
+# Form implementation generated from reading ui file 'toktokkie/ui/qt/qt_designer/iconizer.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
@@ -8,11 +8,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_IconizerWindow(object):
-    def setupUi(self, IconizerWindow):
-        IconizerWindow.setObjectName("IconizerWindow")
-        IconizerWindow.resize(513, 62)
-        self.centralwidget = QtWidgets.QWidget(IconizerWindow)
+class Ui_FolderIconizerWindow(object):
+    def setupUi(self, FolderIconizerWindow):
+        FolderIconizerWindow.setObjectName("FolderIconizerWindow")
+        FolderIconizerWindow.resize(513, 62)
+        self.centralwidget = QtWidgets.QWidget(FolderIconizerWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
@@ -25,17 +25,17 @@ class Ui_IconizerWindow(object):
         self.start_button = QtWidgets.QPushButton(self.centralwidget)
         self.start_button.setObjectName("start_button")
         self.gridLayout.addWidget(self.start_button, 0, 2, 1, 1)
-        IconizerWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(IconizerWindow)
+        FolderIconizerWindow.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(FolderIconizerWindow)
         self.statusbar.setObjectName("statusbar")
-        IconizerWindow.setStatusBar(self.statusbar)
+        FolderIconizerWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(IconizerWindow)
-        QtCore.QMetaObject.connectSlotsByName(IconizerWindow)
+        self.retranslateUi(FolderIconizerWindow)
+        QtCore.QMetaObject.connectSlotsByName(FolderIconizerWindow)
 
-    def retranslateUi(self, IconizerWindow):
+    def retranslateUi(self, FolderIconizerWindow):
         _translate = QtCore.QCoreApplication.translate
-        IconizerWindow.setWindowTitle(_translate("IconizerWindow", "MainWindow"))
-        self.browse_directory_button.setText(_translate("IconizerWindow", "Browse"))
-        self.start_button.setText(_translate("IconizerWindow", "Start"))
+        FolderIconizerWindow.setWindowTitle(_translate("FolderIconizerWindow", "Folder Iconizer"))
+        self.browse_directory_button.setText(_translate("FolderIconizerWindow", "Browse"))
+        self.start_button.setText(_translate("FolderIconizerWindow", "Start"))
 
