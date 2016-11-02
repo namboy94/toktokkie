@@ -41,3 +41,16 @@ class GenericSchemeUnitTests(unittest.TestCase):
         self.assertEqual(GenericScheme.get_tvdb_episode_name("Show does not exist", 1, 1), "Episode 1")
         self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", -1, 1), "Episode 1")
         self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, -1), "Episode -1")
+
+    def abstract_method(self):
+        try:
+            GenericScheme("", 0, 0).apply_scheme()
+            self.assertTrue(False)
+        except NotImplementedError:
+            pass
+
+        try:
+            GenericScheme("", 0, 0).generate_episode_name()
+            self.assertTrue(False)
+        except NotImplementedError:
+            pass

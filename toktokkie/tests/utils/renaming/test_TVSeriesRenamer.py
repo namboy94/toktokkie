@@ -23,25 +23,25 @@ LICENSE
 """
 
 import os
+import shutil
 import unittest
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
-from toktokkie.tests.helpers import cleanup, test_dir, create_filled_temp_folder
 
 
 class TVSeriesRenamerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        create_filled_temp_folder()
+        shutil.copytree("toktokkie/tests/resources/directories", "temp_testing")
 
     def tearDown(self):
-        cleanup()
+        shutil.rmtree("temp_testing")
 
     def test_constructors(self):
-        non_rec_root = TVSeriesRenamer(test_dir, PlexTvdbScheme)
-        non_rec_show = TVSeriesRenamer(os.path.join(test_dir, "Game of Thrones"), PlexTvdbScheme)
-        rec_root = TVSeriesRenamer(test_dir, PlexTvdbScheme, recursive=True)
-        rec_show = TVSeriesRenamer(os.path.join(test_dir, "Game of Thrones"), PlexTvdbScheme, recursive=True)
+        non_rec_root = TVSeriesRenamer("temp_testing", PlexTvdbScheme)
+        non_rec_show = TVSeriesRenamer(os.path.join("temp_testing", "Game of Thrones"), PlexTvdbScheme)
+        rec_root = TVSeriesRenamer("temp_testing", PlexTvdbScheme, recursive=True)
+        rec_show = TVSeriesRenamer(os.path.join("temp_testing", "Game of Thrones"), PlexTvdbScheme, recursive=True)
 
         self.assertEqual(non_rec_root.episodes, [])
         self.assertEqual(len(non_rec_show.episodes), len(rec_show.episodes))
@@ -54,16 +54,14 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                          "Game of Thrones - S01E10 - Fire and Blood",
                                          "Game of Thrones - S01E11 - Episode 11"],
                             "Season 2": ["Game of Thrones - S02E01 - The North Remembers",
-                                         "Game of Thrones - S02E10 - Valar Morghulis",
-                                         "Game of Thrones - S02E13 - Episode 13"],
+                                         "Game of Thrones - S02E10 - Valar Morghulis"],
                             "Specials": ["Game of Thrones - S00E01 - Inside Game of Thrones",
-                                         "Game of Thrones - S00E02 - 15-Minute Preview",
-                                         "Game of Thrones - S00E13 - World Premiere"]}
+                                         "Game of Thrones - S00E02 - 15-Minute Preview"]}
 
-        game_of_thrones = TVSeriesRenamer(os.path.join(test_dir, "Game of Thrones"), PlexTvdbScheme)
+        game_of_thrones = TVSeriesRenamer(os.path.join("temp_testing", "Game of Thrones"), PlexTvdbScheme)
 
         confirmation = game_of_thrones.request_confirmation()
-        self.assertEqual(len(confirmation), 45)
+        self.assertEqual(len(confirmation), 26)
 
         try:
             game_of_thrones.start_rename()
@@ -79,7 +77,8 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
 
         for result in expected_results:
             for episode in expected_results[result]:
-                self.assertTrue(os.path.isfile(os.path.join(test_dir, "Game of Thrones", result, episode) + ".mkv"))
+                self.assertTrue(os.path.isfile(os.path.join(
+                    "temp_testing", "Game of Thrones", result, episode) + ".mkv"))
 
     def test_confirmationless_renaming(self):
         expected_results = {"Season 1": ["The Big Bang Theory - S01E01 - Pilot",
@@ -93,14 +92,15 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                             "Season 5": ["The Big Bang Theory - S05E08 - The Isolation Permutation",
                                          "The Big Bang Theory - S05E13 - The Recombination Hypothesis"]}
 
-        big_bang = TVSeriesRenamer(os.path.join(test_dir, "The Big Bang Theory"), PlexTvdbScheme)
+        big_bang = TVSeriesRenamer(os.path.join("temp_testing", "The Big Bang Theory"), PlexTvdbScheme)
         confirmation = big_bang.request_confirmation()
-        self.assertEqual(len(confirmation), 75)
+        self.assertEqual(len(confirmation), 120)
         big_bang.start_rename(True)
 
         for result in expected_results:
             for episode in expected_results[result]:
-                self.assertTrue(os.path.isfile(os.path.join(test_dir, "The Big Bang Theory", result, episode) + ".mkv"))
+                self.assertTrue(os.path.isfile(os.path.join(
+                    "temp_testing", "The Big Bang Theory", result, episode) + ".mkv"))
 
     def test_recursive_renamer_renaming(self):
         expected_game_of_thrones_results = {"Season 1": ["Game of Thrones - S01E01 - Winter Is Coming",
@@ -109,11 +109,9 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                                          "Game of Thrones - S01E10 - Fire and Blood",
                                                          "Game of Thrones - S01E11 - Episode 11"],
                                             "Season 2": ["Game of Thrones - S02E01 - The North Remembers",
-                                                         "Game of Thrones - S02E10 - Valar Morghulis",
-                                                         "Game of Thrones - S02E13 - Episode 13"],
+                                                         "Game of Thrones - S02E10 - Valar Morghulis"],
                                             "Specials": ["Game of Thrones - S00E01 - Inside Game of Thrones",
-                                                         "Game of Thrones - S00E02 - 15-Minute Preview",
-                                                         "Game of Thrones - S00E13 - World Premiere"]}
+                                                         "Game of Thrones - S00E02 - 15-Minute Preview"]}
         expected_big_bang_theory_results = {"Season 1": ["The Big Bang Theory - S01E01 - Pilot",
                                                          "The Big Bang Theory - S01E14 - The Nerdvana Annihilation"],
                                             "Season 2": ["The Big Bang Theory - S02E05 - The Euclid Alternative",
@@ -125,12 +123,14 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                             "Season 5": ["The Big Bang Theory - S05E08 - The Isolation Permutation",
                                                          "The Big Bang Theory - S05E13 - The Recombination Hypothesis"]}
 
-        recursive_root = TVSeriesRenamer(test_dir, PlexTvdbScheme, recursive=True)
+        recursive_root = TVSeriesRenamer("temp_testing", PlexTvdbScheme, recursive=True)
         recursive_root.start_rename(True)
 
         for result in expected_game_of_thrones_results:
             for episode in expected_game_of_thrones_results[result]:
-                self.assertTrue(os.path.isfile(os.path.join(test_dir, "Game of Thrones", result, episode) + ".mkv"))
+                self.assertTrue(os.path.isfile(os.path.join(
+                    "temp_testing", "Game of Thrones", result, episode) + ".mkv"))
         for result in expected_big_bang_theory_results:
             for episode in expected_big_bang_theory_results[result]:
-                self.assertTrue(os.path.isfile(os.path.join(test_dir, "The Big Bang Theory", result, episode) + ".mkv"))
+                self.assertTrue(os.path.isfile(os.path.join(
+                    "temp_testing", "The Big Bang Theory", result, episode) + ".mkv"))

@@ -24,8 +24,8 @@ LICENSE
 
 # imports
 import os
+import shutil
 import unittest
-from toktokkie.tests.helpers import touch, test_dir, cleanup
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
@@ -34,12 +34,13 @@ from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirma
 class RenamerConfirmationUnitTests(unittest.TestCase):
 
     def setUp(self):
-        os.makedirs(test_dir)
-        touch(os.path.join(test_dir, "episode_file"))
-        self.episode = TVEpisode(os.path.join(test_dir, "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
+        os.makedirs("temp_testing")
+        with open(os.path.join("temp_testing", "episode_file"), 'w'):
+            pass
+        self.episode = TVEpisode(os.path.join("temp_testing", "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
 
     def tearDown(self):
-        cleanup()
+        shutil.rmtree("temp_testing")
 
     def test_wrapper(self):
         confirmer = RenamerConfirmation(self.episode)

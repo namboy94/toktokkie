@@ -24,8 +24,8 @@ LICENSE
 
 # imports
 import os
+import shutil
 import unittest
-from toktokkie.tests.helpers import touch, test_dir, cleanup
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 
@@ -33,15 +33,16 @@ from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 class TVEpisodeUnitTests(unittest.TestCase):
 
     def setUp(self):
-        os.makedirs(test_dir)
-        touch(os.path.join(test_dir, "episode_file"))
+        os.makedirs("temp_testing")
+        with open(os.path.join("temp_testing", "episode_file"), 'w'):
+            pass
 
     def tearDown(self):
-        cleanup()
+        shutil.rmtree("temp_testing")
 
     def test_renaming(self):
-        episode = TVEpisode(os.path.join(test_dir, "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
-        self.assertTrue(os.path.isfile(os.path.join(test_dir, "episode_file")))
+        episode = TVEpisode(os.path.join("temp_testing", "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
+        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "episode_file")))
         episode.rename()
-        self.assertFalse(os.path.isfile(os.path.join(test_dir, "episode_file")))
-        self.assertTrue(os.path.isfile(os.path.join(test_dir, "Game of Thrones - S01E01 - Winter Is Coming")))
+        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "episode_file")))
+        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones - S01E01 - Winter Is Coming")))

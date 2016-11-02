@@ -25,11 +25,12 @@ LICENSE
 # imports
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from toktokkie.ui.qt.pyuic.start_page import Ui_StartPage
+from toktokkie.ui.qt.IconizerQtGui import IconizerQtGui
+from toktokkie.ui.qt.pyuic.start_page import Ui_StartPageWindow
 from toktokkie.ui.qt.TVSeriesRenamerQtGui import TVSeriesRenamerQtGui
 
 
-class StartPageQtGui(QMainWindow, Ui_StartPage):
+class StartPageQtGui(QMainWindow, Ui_StartPageWindow):
     """
     Class that models th QT GUI for the program's Start Page
     """
@@ -45,6 +46,7 @@ class StartPageQtGui(QMainWindow, Ui_StartPage):
 
         # Initialize UI elements
         self.tv_series_renamer.clicked.connect(TVSeriesRenamerQtGui(self).show)
+        self.folder_iconizer.clicked.connect(IconizerQtGui(self).show)
 
 
 def start():

@@ -24,14 +24,8 @@ LICENSE
 
 # imports
 import os
-import sys
-import platform
+from toktokkie.metadata import PypiVariables
 from setuptools import setup, find_packages
-import toktokkie.metadata as metadata
-
-if platform.system() == "Windows":
-    # noinspection PyUnresolvedReferences
-    import py2exe
 
 
 def readme():
@@ -40,6 +34,7 @@ def readme():
 
     :return: the readme file as a string
     """
+    # noinspection PyBroadException
     try:
         # noinspection PyPackageRequirements
         import pypandoc
@@ -48,7 +43,7 @@ def readme():
             markdown = f.read()
             rst = pypandoc.convert(markdown, 'rst', format='md')
             return rst
-    except (OSError, ImportError):
+    except:
         # If pandoc is not installed, just return the raw markdown text
         with open('README.md') as f:
             return f.read()
@@ -60,63 +55,28 @@ def find_scripts():
 
     :return: the list of scripts
     """
-    scripts = []
-    for file_name in os.listdir("bin"):
-        if not file_name == "__init__.py" and os.path.isfile(os.path.join("bin", file_name)):
-            scripts.append(os.path.join("bin", file_name))
-    return scripts
+    try:
+        scripts = []
+        for file_name in os.listdir("bin"):
+            if not file_name == "__init__.py" and os.path.isfile(os.path.join("bin", file_name)):
+                scripts.append(os.path.join("bin", file_name))
+        return scripts
+    except OSError:
+        return []
 
-if platform.system() == "Windows" and sys.argv[1] == "py2exe":
-    setup(console=["bin/toktokkie"],
-          windows=["bin/toktokkie"],
-          zipfile=None,
-          name=metadata.project_name,
-          version=metadata.version_number,
-          description=metadata.project_description,
-          long_description=readme(),
-          classifiers=[metadata.development_status,
-                       metadata.audience,
-                       metadata.license_identifier,
-                       metadata.topic,
-                       metadata.language,
-                       metadata.compatible_os,
-                       metadata.environment
-                       ] + metadata.programming_languages,
-          url=metadata.project_url,
-          download_url=metadata.download_url,
-          author=metadata.author_name,
-          author_email=metadata.author_email,
-          license=metadata.license_type,
-          packages=find_packages(),
-          install_requires=metadata.dependencies,
-          dependency_links=[],
-          test_suite='nose.collector',
-          tests_require=['nose'],
-          scripts=find_scripts(),
-          zip_safe=False)
-
-else:
-    setup(name=metadata.project_name,
-          version=metadata.version_number,
-          description=metadata.project_description,
-          long_description=readme(),
-          classifiers=[metadata.development_status,
-                       metadata.audience,
-                       metadata.license_identifier,
-                       metadata.topic,
-                       metadata.language,
-                       metadata.compatible_os,
-                       metadata.environment
-                       ] + metadata.programming_languages,
-          url=metadata.project_url,
-          download_url=metadata.download_url,
-          author=metadata.author_name,
-          author_email=metadata.author_email,
-          license=metadata.license_type,
-          packages=find_packages(),
-          install_requires=metadata.dependencies,
-          dependency_links=[],
-          test_suite='nose.collector',
-          tests_require=['nose'],
-          scripts=find_scripts(),
-          zip_safe=False)
+setup(name=PypiVariables.name,
+      version=PypiVariables.version,
+      description=PypiVariables.description,
+      long_description=readme(),
+      classifiers=PypiVariables.classifiers,
+      url=PypiVariables.url,
+      download_url=PypiVariables.download_url,
+      author=PypiVariables.author,
+      author_email=PypiVariables.author_email,
+      license=PypiVariables.license,
+      packages=find_packages(),
+      install_requires=PypiVariables.install_requires,
+      test_suite='nose.collector',
+      tests_require=['nose'],
+      scripts=find_scripts(),
+      zip_safe=False)
