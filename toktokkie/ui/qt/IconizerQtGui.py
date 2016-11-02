@@ -23,22 +23,48 @@ LICENSE
 """
 
 # imports
-from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from toktokkie.utils.iconizing.Iconizer import Iconizer
+from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
 
 
 class IconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
-
+    """
+    Class that defines the functionality of the Folder Iconizer GUI
+    """
 
     def __init__(self, parent: QMainWindow = None) -> None:
+        """
+        Initializes the interactive components of the GUI
 
+        :param parent: The parent QT GUI
+        """
         super().__init__(parent)
         self.setupUi(self)
 
-    # noinspection PyArgumentList
-    def browse_for_directory(self) -> None:
+        self.iconizer = Iconizer()
 
-        # noinspection PyCallByClass,PyTypeChecker
+        self.browse_directory_button.clicked.connect(self.browse_for_directory)
+        self.start_button.clicked.connect(self.start_iconizing)
+
+    def browse_for_directory(self) -> None:
+        """
+        Lets the user browse for a local directory path
+
+        :return: None
+        """
+        # noinspection PyCallByClass,PyTypeChecker, PyArgumentList
         directory = QFileDialog.getExistingDirectory(self, "Browse")
         if directory:
-            self.directory_entry.setText(directory)
+            self.directory_path_edit.setText(directory)
+
+    def start_iconizing(self) -> None:
+        """
+        Starts the iconizing process for the specified directory
+
+        :return: None
+        """
+        if self.recursive_check.checkState():
+            self.iconizer.recursive_iconize(self.directory_path_edit.text())
+        else:
+            self.iconizer.iconize_directory(self.directory_path_edit.text())

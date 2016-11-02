@@ -54,7 +54,7 @@ def main(cli_mode: bool = False) -> None:
             try:
                 gui_start()
             except Exception as e:
-                str(e)
+                raise e
                 StartScreenCli().start()
         else:
             StartScreenCli().start()
