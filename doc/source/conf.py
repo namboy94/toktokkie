@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath("../.."))
-from toktokkie.metadata import version_number
+from toktokkie.metadata import General
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -20,8 +20,8 @@ project = 'toktokkie'
 copyright = '2016, Hermann Krumrey'
 author = 'Hermann Krumrey'
 
-version = version_number
-release = version_number
+version = General.version_number
+release = General.version_number
 
 language = None
 exclude_patterns = []

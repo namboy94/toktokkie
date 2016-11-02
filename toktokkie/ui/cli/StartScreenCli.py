@@ -25,7 +25,7 @@ LICENSE
 # import
 import curses
 import _curses
-import toktokkie.metadata as metadata
+from toktokkie.metadata import General
 from toktokkie.ui.cli.CursesCli import CursesCli
 from toktokkie.ui.cli.TVSeriesRenamerCli import TVSeriesRenamerCli
 
@@ -41,7 +41,7 @@ class StartScreenCli(CursesCli):
         """
         super().__init__()
 
-        self.gpl_notice = ["Tok Tokkie Media Manager V" + metadata.version_number,
+        self.gpl_notice = ["Tok Tokkie Media Manager V" + General.version_number,
                            "Copyright (C) 2015,2016 Hermann Krumrey",
                            "",
                            "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.",
