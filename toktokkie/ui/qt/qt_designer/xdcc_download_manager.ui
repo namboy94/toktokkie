@@ -6,31 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>848</width>
-    <height>543</height>
+    <width>836</width>
+    <height>792</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>XDCC Download Manager</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="1">
-     <widget class="QComboBox" name="renaming_scheme_combo_box">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>150</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="1">
      <widget class="QSpinBox" name="season_spin_box"/>
     </item>
@@ -59,6 +55,9 @@
       </property>
      </widget>
     </item>
+    <item row="11" column="4">
+     <widget class="QComboBox" name="search_engine_combo_box"/>
+    </item>
     <item row="11" column="0">
      <widget class="QLabel" name="label_8">
       <property name="text">
@@ -66,8 +65,12 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="4">
-     <widget class="QComboBox" name="iconizing_method_combo_box"/>
+    <item row="11" column="7">
+     <widget class="QPushButton" name="download_button">
+      <property name="text">
+       <string>Download</string>
+      </property>
+     </widget>
     </item>
     <item row="5" column="0" colspan="2">
      <widget class="QCheckBox" name="auto_rename_check">
@@ -98,16 +101,19 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="6" rowspan="7">
-     <widget class="Line" name="line">
+    <item row="3" column="1">
+     <widget class="QComboBox" name="renaming_scheme_combo_box">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>16777215</height>
+       </size>
       </property>
      </widget>
     </item>
@@ -122,16 +128,6 @@
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Target Directory</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="7">
-     <widget class="QListWidget" name="listWidget">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
       </property>
      </widget>
     </item>
@@ -158,40 +154,8 @@
       </property>
      </widget>
     </item>
-    <item row="8" column="0" rowspan="3" colspan="5">
-     <widget class="QTreeWidget" name="search_result_list">
-      <property name="minimumSize">
-       <size>
-        <width>512</width>
-        <height>300</height>
-       </size>
-      </property>
-      <column>
-       <property name="text">
-        <string>#</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Bot</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Pack</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Size</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Filename</string>
-       </property>
-      </column>
-     </widget>
+    <item row="1" column="1" colspan="4">
+     <widget class="QLineEdit" name="show_name_edit"/>
     </item>
     <item row="0" column="1">
      <widget class="QPushButton" name="directory_browse_button">
@@ -200,88 +164,8 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="7">
-     <widget class="QPushButton" name="download_button">
-      <property name="text">
-       <string>Download</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="5">
-     <widget class="QFrame" name="gridFrame">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="3" column="0">
-        <spacer name="verticalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="add_to_queue_button">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>►</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="remove_from_queue_button">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>◄</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
+    <item row="2" column="4">
+     <widget class="QSpinBox" name="episode_spin_box"/>
     </item>
     <item row="11" column="3">
      <widget class="QPushButton" name="search_button">
@@ -290,15 +174,8 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Renaming Scheme</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="4">
-     <widget class="QSpinBox" name="episode_spin_box"/>
+    <item row="0" column="2" colspan="3">
+     <widget class="QLineEdit" name="directory_edit"/>
     </item>
     <item row="0" column="7" rowspan="7">
      <widget class="QWidget" name="widget" native="true">
@@ -389,8 +266,43 @@
       </layout>
      </widget>
     </item>
-    <item row="11" column="4">
-     <widget class="QComboBox" name="search_engine_combo_box"/>
+    <item row="0" column="6" rowspan="7">
+     <widget class="Line" name="line">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="4">
+     <widget class="QComboBox" name="iconizing_method_combo_box"/>
+    </item>
+    <item row="8" column="7">
+     <widget class="QListWidget" name="download_queue">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>433</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+     </widget>
     </item>
     <item row="3" column="2">
      <widget class="QLabel" name="label_5">
@@ -399,14 +311,132 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="2" colspan="3">
-     <widget class="QLineEdit" name="directory_edit"/>
-    </item>
-    <item row="1" column="1" colspan="4">
-     <widget class="QLineEdit" name="show_name_edit"/>
-    </item>
     <item row="11" column="1" colspan="2">
      <widget class="QLineEdit" name="search_term_edit"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Renaming Scheme</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="5">
+     <widget class="QFrame" name="gridFrame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="add_to_queue_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>►</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="remove_from_queue_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>◄</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="8" column="0" rowspan="3" colspan="5">
+     <widget class="QTreeWidget" name="search_result_list">
+      <property name="minimumSize">
+       <size>
+        <width>512</width>
+        <height>300</height>
+       </size>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <column>
+       <property name="text">
+        <string>#</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Bot</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Pack</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Size</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Filename</string>
+       </property>
+      </column>
+     </widget>
     </item>
    </layout>
   </widget>
