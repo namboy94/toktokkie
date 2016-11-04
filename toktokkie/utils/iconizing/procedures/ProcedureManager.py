@@ -48,13 +48,19 @@ class ProcedureManager(object):
         return ProcedureManager.implemented_procedures
 
     @staticmethod
-    def get_procedure_names() -> List[str]:
+    def get_procedure_names(supports_current_platform: bool = True) -> List[str]:
         """
-        :return: A list of implemented procedure names
+        :param supports_current_platform: Can be set to True if only procedures for the current platform should
+                                          be shown, and False if all implemented procedures should be returned
+        :return:                          A list of implemented procedure names
         """
         procedure_names = []
         for procedure in ProcedureManager.implemented_procedures:
-            procedure_names.append(procedure.get_procedure_name())
+            if supports_current_platform:
+                if procedure.is_applicable():
+                    procedure_names.append(procedure.get_procedure_name())
+            else:
+                procedure_names.append(procedure.get_procedure_name())
         return procedure_names
 
     @staticmethod

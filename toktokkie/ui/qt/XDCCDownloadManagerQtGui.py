@@ -23,8 +23,13 @@ LICENSE
 """
 
 # imports
+import os
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.ui.qt.pyuic.xdcc_download_manager import Ui_XDCCDownloadManagerWindow
+from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
+from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
 
 
 class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
@@ -44,6 +49,20 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.directory_browse_button.clicked.connect(self.browse_for_directory)
         self.download_button.clicked.connect(self.start_download)
         self.search_button.clicked.connect(self.start_search)
+
+        self.add_to_queue_button.clicked.connect(self.add_to_queue)
+        self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
+        self.move_up_button.clicked.connect(self.move_up)
+        self.move_down_button.clicked.connect(self.move_down)
+
+        self.directory_edit.textChanged.connect(self.parse_directory)
+
+        for scheme in SchemeManager.get_scheme_names():
+            self.renaming_scheme_combo_box.addItem(scheme)
+        for procedure in ProcedureManager.get_procedure_names():
+            self.iconizing_method_combo_box.addItem(procedure)
+        for pack_searcher in PackSearcher.get_available_pack_searchers():
+            self.search_engine_combo_box.addItem(pack_searcher)
 
     def browse_for_directory(self) -> None:
         """
@@ -83,4 +102,37 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         # Iconize
 
+    def parse_directory(self) -> None:
+        """
+        Parses the currently entered directory, checks if it contains a .meta directory.
+        Fills show name, episode and season according to info found.
+        Search Term = show name
 
+        :return: None
+        """
+        directory = self.directory_edit.text()
+
+        if MetaDataManager.is_media_directory(directory):
+            # TODO Season, Episode
+            self.episode_spin_box.setValue(1)
+            self.season_spin_box.setValue(1)
+
+        else:
+            self.episode_spin_box.setValue(1)
+            self.season_spin_box.setValue(1)
+
+        name = os.path.basename(directory)
+        self.search_term_edit.setText(name)
+        self.show_name_edit.setText(name)
+
+    def add_to_queue(self) -> None:
+        pass
+
+    def remove_from_queue(self) -> None:
+        pass
+
+    def move_up(self) -> None:
+        pass
+
+    def move_down(self) -> None:
+        pass

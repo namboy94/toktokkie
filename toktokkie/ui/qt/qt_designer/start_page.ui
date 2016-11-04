@@ -15,6 +15,13 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="tv_series_renamer">
+      <property name="text">
+       <string>TV Series Renamer</string>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QPushButton" name="folder_iconizer">
       <property name="text">
@@ -22,10 +29,10 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="tv_series_renamer">
+    <item row="3" column="0">
+     <widget class="QPushButton" name="xdcc_download_manager">
       <property name="text">
-       <string>TV Series Renamer</string>
+       <string>XDCC Download Manager</string>
       </property>
      </widget>
     </item>
