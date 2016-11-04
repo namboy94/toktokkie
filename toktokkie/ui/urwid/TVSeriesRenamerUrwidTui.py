@@ -25,12 +25,12 @@ LICENSE
 # imports
 import os
 import curses
-from toktokkie.ui.cli.CursesCli import CursesCli
+from toktokkie.ui.urwid.CursesCli import CursesCli
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 
 
-class TVSeriesRenamerCli(CursesCli):
+class TVSeriesRenamerUrwidTui(object):
     """
     CLI for the TV Series Renamer functionality.
     """

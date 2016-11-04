@@ -26,8 +26,8 @@ LICENSE
 import curses
 import _curses
 from toktokkie.metadata import General
-from toktokkie.ui.cli.CursesCli import CursesCli
-from toktokkie.ui.cli.TVSeriesRenamerCli import TVSeriesRenamerCli
+from toktokkie.ui.urwid.CursesCli import CursesCli
+from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerCli
 
 
 class StartScreenCli(CursesCli):
@@ -49,12 +49,7 @@ class StartScreenCli(CursesCli):
                            "under certain conditions; type `show c' for details."]
 
         self.selection = {"TV Series Renamer            ": TVSeriesRenamerCli,
-                          "TV Series Manager            ": None,
-                          "Folder Iconizer              ": None,
-                          "XDCC Downloader              ": None,
-                          "XDCC Download Manager        ": None,
-                          "Manga Downloader             ": None,
-                          "Manga Download Manager       ": None}
+                          "Folder Iconizer              ": None}
 
     def start(self) -> None:
         """

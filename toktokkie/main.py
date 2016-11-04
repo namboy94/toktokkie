@@ -26,37 +26,30 @@ LICENSE
 # imports
 import argparse
 from toktokkie.metadata import SentryLogger
-from toktokkie.ui.cli.StartScreenCli import StartScreenCli
 from toktokkie.ui.qt.StartPageQtGui import start as gui_start
+from toktokkie.ui.urwid.StartScreenUrwidTui import StartScreenUrwidTui
 
 
 # noinspection PyTypeChecker
-def main(cli_mode: bool = False) -> None:
+def main() -> None:
     """
     Main method that runs the program.
+    The UI is determined by the arguments passed. '-g' will start the QT GUI, '-t' will start the Urwid TUI
 
-    It can be used without parameters, in which case it will start in the most appropriate
-    UI mode, which is usually the QT GUI. The CLI can be used as a fallback.
-
-    :param cli_mode: Flag that can be set to force CLI mode
-    :return:         None
+    :return: None
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", action="store_true", help="Starts the program in CLI mode")
+    parser.add_argument("-t", "--tui", action="store_true", help="Starts the program in TUI mode")
+    parser.add_argument("-g", "--gui", action="store_true", help="Starts the program in GUI mode")
     args = parser.parse_args()
-
-    if args.c:
-        cli_mode = True
 
     # noinspection PyBroadException
     try:
-        if not cli_mode:
-            try:
-                gui_start()
-            except Exception as e:
-                raise e
-                StartScreenCli().start()
-        else:
-            StartScreenCli().start()
+        if args.tui:
+            StartScreenUrwidTui().start()
+        elif args.gui:
+            gui_start()
+    except KeyboardInterrupt:
+        print("Thanks for using toktokkie!")
     except:
         SentryLogger.sentry.captureException()
