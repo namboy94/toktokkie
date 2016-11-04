@@ -43,7 +43,6 @@ def main() -> None:
     parser.add_argument("-g", "--gui", action="store_true", help="Starts the program in GUI mode")
     args = parser.parse_args()
 
-    # noinspection PyBroadException
     try:
         if args.tui:
             StartScreenUrwidTui().start()
@@ -51,5 +50,6 @@ def main() -> None:
             gui_start()
     except KeyboardInterrupt:
         print("Thanks for using toktokkie!")
-    except:
+    except Exception as e:
         SentryLogger.sentry.captureException()
+        raise e

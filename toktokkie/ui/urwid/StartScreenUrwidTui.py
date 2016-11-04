@@ -47,23 +47,25 @@ class StartScreenUrwidTui(object):
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
                    "Folder Iconizer": None}
 
+        self.selected = None
+
         self.menu = urwid.Padding(self.generate_menu(gpl_notice, options), left=2, right=2)
         self.top = urwid.Overlay(self.menu, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
-                                 align='center', width=('relative', 60),
-                                 valign='middle', height=('relative', 60),
-                                 min_width=20, min_height=9)
+                                 align='center', width=('relative', 80),
+                                 valign='middle', height=('relative', 70),
+                                 min_width=20, min_height=10)
 
     def start(self) -> None:
         """
         Starts the TUI
+
         :return: None
         """
-        try:
-            urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')]).run()
-        except urwid.ExitMainLoop:
-            pass
+        urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')]).run()
+        if self.selected is not None:
+            self.selected().start()
 
-    def generate_menu(self, header: str, options: Dict[str, 'TUI']) -> urwid.ListBox:
+    def generate_menu(self, header: str, options: Dict[str, object]) -> urwid.ListBox:
         """
         Generates the Menu for selecting which module to use
 
@@ -79,7 +81,7 @@ class StartScreenUrwidTui(object):
         return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
     # noinspection PyUnusedLocal,PyMethodMayBeStatic
-    def start_tui(self, button: urwid.Button, choice: 'TUI' = None) -> None:
+    def start_tui(self, button: urwid.Button, choice: object = None) -> None:
         """
         Starts the selected TUI option when pressing Enter
 
@@ -88,5 +90,6 @@ class StartScreenUrwidTui(object):
         :return:       None
         """
         if choice is not None:
-            choice().start()
+            # noinspection PyCallingNonCallable
+            self.selected = choice
             raise urwid.ExitMainLoop()
