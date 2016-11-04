@@ -130,7 +130,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 if not os.path.isdir(directory):
                     os.makedirs(directory)
 
-            with open(os.path.join(destination_directory, "type"), 'w') as f:
+            with open(os.path.join(destination_directory, ".meta", "type"), 'w') as f:
                 f.write("tv_series")
 
         for i, pack in enumerate(packs):
@@ -140,10 +140,14 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def handle_download() -> None:
 
-            MultipleServerDownloader("random").download(packs, progress)
+            MultipleServerDownloader("random", 5).download(packs, progress)
 
             if self.auto_rename_check.checkState():
-                renamer = TVSeriesRenamer(destination_directory, self.renaming_scheme_combo_box.currentText())
+
+                renaming_scheme = SchemeManager.get_scheme_from_scheme_name(
+                    self.renaming_scheme_combo_box.currentText())
+                renamer = TVSeriesRenamer(destination_directory, renaming_scheme)
+
                 confirmation = renamer.request_confirmation()
 
                 for item in confirmation:
