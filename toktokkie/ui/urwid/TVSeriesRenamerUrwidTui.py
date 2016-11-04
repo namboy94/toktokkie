@@ -36,7 +36,7 @@ class TVSeriesRenamerUrwidTui(object):
 
     def __init__(self) -> None:
         """
-        Initializes the CLI's various widgets
+        Initializes the TUI's various widgets
         """
 
         self.renamer = None
@@ -87,10 +87,8 @@ class TVSeriesRenamerUrwidTui(object):
         self.lower_body = [div, self.confirm_button]
 
         self.list_walker = urwid.SimpleFocusListWalker(self.upper_body + self.middle_body + self.lower_body)
-        box = urwid.ListBox(self.list_walker)
-        padding = urwid.Padding(box, left=2, right=2)
-
-        self.top = urwid.Overlay(padding, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+        self.top = urwid.Overlay(urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
+                                 urwid.SolidFill(u'\N{MEDIUM SHADE}'),
                                  align='center', width=('relative', 80),
                                  valign='middle', height=('relative', 70),
                                  min_width=20, min_height=10)

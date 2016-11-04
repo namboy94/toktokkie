@@ -26,6 +26,7 @@ LICENSE
 import urwid
 from typing import Dict
 from toktokkie.metadata import General
+from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
 
 
@@ -45,7 +46,7 @@ class StartScreenUrwidTui(object):
                      "under certain conditions; type `show c' for details."
 
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
-                   "Folder Iconizer": None}
+                   "Folder Iconizer": FolderIconizerUrwidTui}
 
         self.selected = None
 
