@@ -71,7 +71,6 @@ class TVEpisode(object):
             extension = os.path.splitext(original_file_name)[1]
             new_file = os.path.join(os.path.dirname(self.episode_file), self.new_name + extension)
 
-            print("renaming file " + self.episode_file + " to " + self.new_name)
             shutil.move(self.episode_file, new_file)
 
             self.episode_file = new_file

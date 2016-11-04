@@ -59,8 +59,6 @@ class DesktopIniProcedure(GenericProcedure):
         if not icon_file.endswith(".ico"):
             icon_file += ".ico"
 
-        print("Iconizing Directory " + directory)
-
         desktop_ini_file = os.path.join(directory, "desktop.ini")
         relative_path = os.path.relpath(icon_file, directory)
 

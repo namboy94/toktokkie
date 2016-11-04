@@ -25,6 +25,7 @@ LICENSE
 # imports
 import os
 import urwid
+from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 
 
@@ -35,31 +36,58 @@ class TVSeriesRenamerUrwidTui(object):
 
     def __init__(self) -> None:
         """
-        Initializes the CLI's various local variables
+        Initializes the CLI's various widgets
         """
 
-        title = urwid.Text("TV Episode Renamer")
-        div = urwid.Divider()
+        self.renamer = None
+        self.confirmation = None
 
-        dir_entry_text = urwid.Text("Directory:")
-        self.dir_entry = urwid.Edit()
-        self.dir_entry.set_edit_text(os.getcwd())
-        self.recursive_check = urwid.CheckBox("Recursive?")
+        self.list_walker = None
+        self.upper_body, self.middle_body, self.lower_body = [[], [], []]
+        self.top = None
 
-        naming_scheme_text = urwid.Text("Naming Scheme:")
+        self.title = urwid.Text("TV Episode Renamer")
+
+        self.naming_scheme_text = urwid.Text("Naming Scheme:")
         self.renaming_schemes = []
 
         for scheme in SchemeManager.get_scheme_names() + ["Test"]:
             urwid.RadioButton(group=self.renaming_schemes, label=scheme)
 
-        episodes_text = urwid.Text("Episodes:")
+        self.dir_entry_text = urwid.Text("Directory:")
+        self.dir_entry = urwid.Edit()
+        self.dir_entry.set_edit_text(os.getcwd())
+        self.recursive_check = urwid.CheckBox("Recursive?")
+        self.start_search_button = urwid.Button("Start Search")
+        urwid.connect_signal(self.start_search_button, 'click', self.search)
 
-        confirm_button = urwid.Button("Confirm")
+        self.episodes_text = urwid.Text("Episodes: (Old -> New)")
 
-        self.body = [title, div, dir_entry_text, self.dir_entry, self.recursive_check, div, naming_scheme_text]
-        self.body += self.renaming_schemes + [div, episodes_text, div, confirm_button]
+        self.confirm_button = urwid.Button("Confirm")
+        urwid.connect_signal(self.confirm_button, 'click', self.confirm)
 
-        box = urwid.ListBox(urwid.SimpleFocusListWalker(self.body))
+        self.lay_out()
+
+    def lay_out(self) -> None:
+        """
+        Handles the layout of the TUI elements
+
+        :return: None
+        """
+        div = urwid.Divider()
+
+        self.confirm_button = urwid.AttrMap(self.confirm_button, None, focus_map='reversed')
+        self.start_search_button = urwid.AttrMap(self.start_search_button, None, focus_map='reversed')
+
+        dir_entry_formatted = urwid.AttrMap(self.dir_entry, None, focus_map='reversed')
+
+        self.upper_body = [self.title, div, self.naming_scheme_text] + self.renaming_schemes + [div]
+        self.upper_body += [self.dir_entry_text, dir_entry_formatted, self.recursive_check, self.start_search_button]
+        self.upper_body += [div, self.episodes_text, div]
+        self.lower_body = [div, self.confirm_button]
+
+        self.list_walker = urwid.SimpleFocusListWalker(self.upper_body + self.middle_body + self.lower_body)
+        box = urwid.ListBox(self.list_walker)
         padding = urwid.Padding(box, left=2, right=2)
 
         self.top = urwid.Overlay(padding, urwid.SolidFill(u'\N{MEDIUM SHADE}'),
@@ -74,3 +102,68 @@ class TVSeriesRenamerUrwidTui(object):
         :return: None
         """
         urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')]).run()
+
+    # noinspection PyUnusedLocal
+    def confirm(self, button: urwid.Button) -> None:
+        """
+        Starts the renaming process
+
+        :param button: The Confirm Button
+        :return:       None
+        """
+        if self.confirmation is not None and self.renamer is not None:
+            for index, confirmation in enumerate(self.confirmation):
+                if self.middle_body[index].get_state():
+                    confirmation.confirm()
+
+        self.renamer.confirm(self.confirmation)
+        self.renamer.start_rename()
+
+        # noinspection PyTypeChecker
+        self.search(None)
+
+    # noinspection PyUnusedLocal
+    def search(self, directory_entry: urwid.Button, parameters: None = None) -> None:
+        """
+        Fills the episode list from the provided directory with the current recursive option
+
+        :param directory_entry: The widget that caused the method to be called
+        :param parameters:      Parameters passed by the widget, but not used
+        :return:                None
+        """
+        directory = self.dir_entry.get_edit_text()
+        self.renamer = None
+        self.confirmation = None
+
+        if os.path.isdir:
+
+            recursive = self.recursive_check.get_state()
+            scheme = ""
+            for radio_button in self.renaming_schemes:
+                if radio_button.get_state():
+                    scheme = radio_button.get_label()
+
+            self.renamer = TVSeriesRenamer(directory, SchemeManager.get_scheme_from_scheme_name(scheme), recursive)
+            self.confirmation = self.renamer.request_confirmation()
+
+        self.refresh()
+
+    def refresh(self) -> None:
+        """
+        Refreshes the Window with the currently active widgets
+
+        :return: None
+        """
+        self.middle_body = []
+
+        if self.confirmation is not None:
+
+            old_name_max = max(len(x.get_names()[0]) for x in self.confirmation) + 1
+
+            for episode in self.confirmation:
+                episode_checkbox = urwid.CheckBox(
+                    episode.get_names()[0].ljust(old_name_max) + " --->  " + episode.get_names()[1])
+                episode_checkbox.set_state(True)
+                self.middle_body.append(episode_checkbox)
+
+        self.list_walker[:] = self.upper_body + self.middle_body + self.lower_body

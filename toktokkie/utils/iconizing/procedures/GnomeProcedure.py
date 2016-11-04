@@ -61,7 +61,6 @@ class GnomeProcedure(GenericProcedure):
         if not icon_file.endswith(".png"):
             icon_file += ".png"
 
-        print("Iconizing Directory " + directory)
         Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file]).wait()
 
     @staticmethod

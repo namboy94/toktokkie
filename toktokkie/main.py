@@ -48,8 +48,13 @@ def main() -> None:
             StartScreenUrwidTui().start()
         elif args.gui:
             gui_start()
+        else:
+            print("No Valid Arguments supplied")
     except KeyboardInterrupt:
         print("Thanks for using toktokkie!")
     except Exception as e:
         SentryLogger.sentry.captureException()
         raise e
+
+if __name__ == '__main__':
+    main()
