@@ -24,7 +24,12 @@ LICENSE
 
 # imports
 import os
+from threading import Thread
+from xdcc_dl.entities.Progress import Progress
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
+from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
+from toktokkie.utils.iconizing.Iconizer import Iconizer
+from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
@@ -108,14 +113,50 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
-        destination_directory = self.directory_edit.text()
-        # Get selected items
+        if os.path.basename(self.directory_edit.text()) == self.show_name_edit.text():
+            destination_directory = self.directory_edit.text()
+        else:
+            destination_directory = os.path.join(self.directory_edit.text(), self.show_name_edit.text())
 
-        # Check if .meta exists, if not, create it, tv_show
+        season_directory = os.path.join(destination_directory, "Season " + str(self.season_spin_box.value()))
 
-        # Download, keep progress bar informed though
+        progress = Progress(len(self.download_queue_list), callback=self.update_progress_bars)
+        packs = list(self.download_queue_list)
 
-        # Iconize
+        if not MetaDataManager.is_media_directory(destination_directory, "tv_series"):
+
+            dirs = [destination_directory, os.path.join(destination_directory, ".meta", "icons"), season_directory]
+            for directory in dirs:
+                if not os.path.isdir(directory):
+                    os.makedirs(directory)
+
+            with open(os.path.join(destination_directory, "type"), 'w') as f:
+                f.write("tv_series")
+
+        for i, pack in enumerate(packs):
+            name = "xdcc_dl_" + str(i).zfill(int(len(packs) / 10) + 1)
+            pack.set_directory(season_directory)
+            pack.set_filename(name, override=True)
+
+        def handle_download() -> None:
+
+            MultipleServerDownloader("random").download(packs, progress)
+
+            if self.auto_rename_check.checkState():
+                renamer = TVSeriesRenamer(destination_directory, self.renaming_scheme_combo_box.currentText())
+                confirmation = renamer.request_confirmation()
+
+                for item in confirmation:
+                    if " - S" + str(self.season_spin_box.value()).zfill(2) in item.get_names()[1]:
+                        item.confirm()
+
+                renamer.confirm(confirmation)
+                renamer.start_rename()
+
+            if self.iconize_check.checkState():
+                Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
+
+        Thread(target=handle_download).start()
 
     def parse_directory(self) -> None:
         """
@@ -198,3 +239,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 self.download_queue_list.insert(index_change(index), self.download_queue_list.pop(index))
 
         self.refresh_download_queue()
+
+    def update_progress_bars(self, a,b,c,d,e,f,g,h):
+        pass
