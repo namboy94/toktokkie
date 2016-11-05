@@ -46,7 +46,7 @@ class XDCCDownloadManager(object):
         :param season:      The target season
         :return:            The valid media directory, The selected season directory
         """
-        if directory == series_name:
+        if os.path.basename(directory) == series_name:
             destination_directory = directory
         else:
             destination_directory = os.path.join(directory, series_name)

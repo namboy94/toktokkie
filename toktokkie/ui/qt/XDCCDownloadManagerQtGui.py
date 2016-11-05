@@ -54,7 +54,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.downloading = False
         self.searching = False
         self.progress = None
-        self.running = True
 
         self.search_results = []
         self.download_queue_list = []
@@ -90,7 +89,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.search_result_list.header().setSectionResizeMode(4, QHeaderView.Stretch)
 
-        self.single_progress_bar.windowTitleChanged.connect(self.redraw_progress)
+        self.single_progress_bar.windowTitleChanged.connect(self.redraw_progress)  # Updates Progress
+        self.total_progress_bar.windowTitleChanged.connect(self.post_download)  # Post-download handling
 
         Thread(target=self.ui_updater).start()
 
@@ -146,8 +146,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         """
         if self.downloading or len(self.download_queue_list) == 0:
             return
-        else:
-            self.downloading = True
 
         destination_directory, season_directory = XDCCDownloadManager.prepare_directory(self.directory_edit.text(),
                                                                                         self.show_name_edit.text(),
@@ -167,6 +165,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def handle_download() -> None:
 
+            self.downloading = True
             MultipleServerDownloader("random").download(packs, self.progress)
 
             if self.auto_rename_check.checkState():
@@ -180,10 +179,19 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
 
             self.downloading = False
-            self.progress = None
-            self.directory_edit.textChanged.emit()
+            self.total_progress_bar.windowTitleChanged.emit("Title")
 
         Thread(target=handle_download).start()
+
+    def post_download(self) -> None:
+        """
+        Handles Post-download cleanup
+
+        :return: None
+        """
+        self.progress = None
+        self.parse_directory()
+        self.download_queue.clear()
 
     def parse_directory(self) -> None:
         """
@@ -318,18 +326,11 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
-        while self.running:
+        while self.downloading or self.searching:
             self.download_button.windowTitleChanged.emit("Title")
             self.search_button.windowTitleChanged.emit("Title")
             self.single_progress_bar.windowTitleChanged.emit("Title")
             time.sleep(pause_time)
-
-    def closeEvent(self, close_event: object) -> None:
-        """
-        Overrides the close event to stop the UI Updater thread
-
-        :param close_event: The close event
-        :return:            None
-        """
-        self.running = False
-        super().closeEvent(close_event)
+        self.download_button.windowTitleChanged.emit("Title")
+        self.search_button.windowTitleChanged.emit("Title")
+        self.single_progress_bar.windowTitleChanged.emit("Title")
