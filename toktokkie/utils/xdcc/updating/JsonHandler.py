@@ -35,8 +35,9 @@ class JsonHandler(object):
 
     def __init__(self, json_file: str = None) -> None:
         """
-        Creates a new JsonHandler, either from scratch or from an exisitng JSON file
+        Creates a new JsonHandler, either from scratch or from an existing JSON file
 
+        :raises:          json.decoder.JSONDecodeError if the loaded JSON file was invalid
         :param json_file: An optional JSON file location.
         """
         self.json_data = []
@@ -44,6 +45,30 @@ class JsonHandler(object):
         if json_file is not None:
             with open(json_file, 'r') as f:
                 self.json_data = json.load(f)
+        self.check_validity()
+
+    def check_validity(self) -> None:
+        """
+        Checks the JSON data for validity. If the file is not valid, an exception is raised
+
+        :raises: json.decoder.JSONDecodeError if the loaded JSON file was invalid
+        :return: None
+        """
+
+        try:
+            for series in self.json_data:
+                for check in ["destination_directory",
+                              "search_name",
+                              "quality_identifier",
+                              "bot_preference",
+                              "season",
+                              "search_engines",
+                              "naming_scheme",
+                              "search_pattern"]:
+                    if check not in series.keys():
+                        raise json.decoder.JSONDecodeError
+        except AttributeError:
+            raise json.decoder.JSONDecodeError
 
     def store_json(self, destination: str) -> None:
         """

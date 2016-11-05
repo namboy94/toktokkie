@@ -109,9 +109,11 @@ class Series(object):
         :param season_dir: The season directory to check
         :return:           None
         """
+        show_name = os.path.basename(self.data["destination_directory"])
+
         for i, episode in enumerate(sorted(os.listdir(season_dir))):
             episode_file = os.path.join(season_dir, episode)
-            tv_episode = TVEpisode(episode_file, i + 1, self.data["season"], self.data["destination_directory"],
+            tv_episode = TVEpisode(episode_file, i + 1, self.data["season"], show_name,
                                    SchemeManager.get_scheme_from_scheme_name(self.data["naming_scheme"]))
             tv_episode.rename()
 
@@ -167,6 +169,54 @@ class Series(object):
                 return result
 
         return None
+
+    def get_destination_directory(self) -> str:
+        """
+        :return: The destination directory
+        """
+        return self.data["destination_directory"]
+
+    def get_search_name(self) -> str:
+        """
+        :return: The search name
+        """
+        return self.data["search_name"]
+
+    def get_quality_identifier(self) -> str:
+        """
+        :return: The quality identifier
+        """
+        return self.data["quality_identifier"]
+
+    def get_bot_preference(self) -> str:
+        """
+        :return: The bot preference
+        """
+        return self.data["bot_preference"]
+
+    def get_season(self) -> int:
+        """
+        :return: The season number
+        """
+        return self.data["season"]
+
+    def get_search_engines(self) -> str:
+        """
+        :return: The search engines
+        """
+        return self.data["search_engines"]
+
+    def get_naming_scheme(self) -> str:
+        """
+        :return: The naming scheme
+        """
+        return self.data["naming_scheme"]
+
+    def get_search_pattern(self) -> str:
+        """
+        :return: The search pattern
+        """
+        return self.data["search_pattern"]
 
 
 def from_dict(data: Dict[str, str or int or List[str]]) -> Series:

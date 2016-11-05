@@ -25,6 +25,9 @@ class Ui_StartPageWindow(object):
         self.xdcc_download_manager = QtWidgets.QPushButton(self.centralwidget)
         self.xdcc_download_manager.setObjectName("xdcc_download_manager")
         self.gridLayout.addWidget(self.xdcc_download_manager, 3, 0, 1, 1)
+        self.xdcc_update_configurator = QtWidgets.QPushButton(self.centralwidget)
+        self.xdcc_update_configurator.setObjectName("xdcc_update_configurator")
+        self.gridLayout.addWidget(self.xdcc_update_configurator, 4, 0, 1, 1)
         StartPageWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(StartPageWindow)
         self.statusbar.setObjectName("statusbar")
@@ -39,4 +42,5 @@ class Ui_StartPageWindow(object):
         self.tv_series_renamer.setText(_translate("StartPageWindow", "TV Series Renamer"))
         self.folder_iconizer.setText(_translate("StartPageWindow", "Folder Iconizer"))
         self.xdcc_download_manager.setText(_translate("StartPageWindow", "XDCC Download Manager"))
+        self.xdcc_update_configurator.setText(_translate("StartPageWindow", "XDCC Update Configurator"))
 

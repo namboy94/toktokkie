@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding=utf-8
-
 """
 LICENSE:
 Copyright 2015,2016 Hermann Krumrey
@@ -24,25 +21,3 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
-
-# imports
-import os
-import sys
-from toktokkie.utils.xdcc.updating.JsonHandler import JsonHandler
-
-
-if __name__ == "__main__":
-
-    if len(sys.argv) != 2:
-        json_file = "series.json"
-    else:
-        json_file = sys.argv[1]
-
-    if not os.path.isfile(json_file):
-        print(json_file + " does not exist.")
-        sys.exit(1)
-
-    handler = JsonHandler(json_file)
-
-    for series in handler.get_series():
-        series.update()
