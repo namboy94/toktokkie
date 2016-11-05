@@ -1,7 +1,5 @@
 build
 dist
 doc/build
-media_manager.egg-info
-media_manager_2.egg-info
-media_manager_py2.egg-info
+toktokkie.egg-info
 .idea
