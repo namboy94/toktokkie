@@ -28,8 +28,10 @@ from typing import List, Dict
 from xdcc_dl.entities.XDCCPack import XDCCPack
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
+from toktokkie.utils.xdcc.updating.AutoSearcher import AutoSearcher
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
+from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 
 
 class Series(object):
@@ -38,8 +40,8 @@ class Series(object):
     dictionary, which can be stored as JSON data
     """
 
-    def __init__(self, destination_directory: str, search_name: str, quality_identifier: str,
-                 bot_preference: str, season: int, search_engines: List[str], naming_scheme: str) -> None:
+    def __init__(self, destination_directory: str, search_name: str, quality_identifier: str, bot_preference: str,
+                 season: int, search_engines: List[str], naming_scheme: str, search_pattern: str) -> None:
 
         self.data = {
             "destination_directory": destination_directory,
@@ -48,7 +50,8 @@ class Series(object):
             "bot_preference": bot_preference,
             "season": season,
             "search_engines": search_engines,
-            "naming_scheme": naming_scheme
+            "naming_scheme": naming_scheme,
+            "search_pattern": search_pattern
         }
 
     def to_dict(self) -> Dict[str, str or int or List[str]]:
@@ -84,8 +87,8 @@ class Series(object):
         if not os.path.isdir(season_dir):
             os.makedirs(season_dir)
 
-        self.check_existing_episode_names()
-        self.download_new_episodes()
+        self.check_existing_episode_names(season_dir)
+        self.download_new_episodes(season_dir)
 
     def check_existing_episode_names(self, season_dir: str) -> None:
         """
@@ -107,37 +110,47 @@ class Series(object):
         :param season_dir: The Season directory in which the files will be stored
         :return:           None
         """
-        first_episode_to_check = len(os.listdir(season_dir)) + 1
+        first_not_existing_episode = len(os.listdir(season_dir)) + 1
+        episode_to_check = first_not_existing_episode
 
-    def search_for_episode(self, episode: int) -> List[XDCCPack]:
+        download_queue = []
+        search_result = self.search_for_episode(episode_to_check)
+
+        while search_result is not None:
+            download_queue.append(search_result)
+            episode_to_check += 1
+            search_result = self.search_for_episode(episode_to_check)
+
+        for i, pack in enumerate(download_queue):
+            pack.set_directory(season_dir)
+            pack.set_filename("xdcc_updater_" + str(i).zfill(int(len(download_queue) / 10) + 1))
+
+        MultipleServerDownloader("random", 1).download(download_queue)
+
+        show_name = os.path.basename(self.data["destination_directory"])
+        renaming_scheme = SchemeManager.get_scheme_from_scheme_name(self.data["naming_scheme"])
+        episode_number = first_not_existing_episode
+        for pack in download_queue:
+            TVEpisode(pack.get_filepath(), episode_number, self.data["season"], show_name, renaming_scheme).rename()
+            episode_number += 1
+
+    def search_for_episode(self, episode: int) -> XDCCPack or None:
         """
-        Searches for a specific episode, and returns the results
+        Searches for a specific episode, and returns the resultant XDCC Pack
 
         :param episode: The episode to search for
-        :return:        A list of found XDCC Packs
+        :return:        The XDCCPack, or None if no episode pack was found
         """
-        results = []
-
-        search_query = self.data["search_name"] + " " + str(episode).zfill(2)
+        search_query = AutoSearcher.generate_search_string(
+            self.data["search_pattern"], self.data["search_name"], episode, self.data["quality_identifier"])
 
         search = PackSearcher(self.data["search_engines"]).search(search_query)
 
+        for result in search:
+            if result.get_bot() == self.data["bot_preference"] and AutoSearcher.matches_pattern(
+                    self.data["search_pattern"], result.get_filename(),
+                    self.data["search_name"], episode, self.data["quality_identifier"]):
 
+                return result
 
-
-            for searcher in search_engines:
-
-                search_engine = SearchEngineManager.get_search_engine_from_string(searcher)
-
-                episode_string = str(episode) if episode >= 10 else "0" + str(episode)
-
-                episode_patterns = [horriblesubs_name + " - " + episode_string + " \[" + quality + "\].mkv",
-                                    horriblesubs_name + "_-_" + episode_string]
-
-                results = search_engine(horriblesubs_name + " " + episode_string).search()
-
-                for result in results:
-                    for pattern in episode_patterns:
-                        if result.bot == bot and re.search(re.compile(pattern), result.filename):
-                            return result
-            return None
+        return None
