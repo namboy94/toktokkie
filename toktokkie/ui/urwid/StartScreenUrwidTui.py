@@ -28,6 +28,7 @@ from typing import Dict
 from toktokkie.metadata import General
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
+from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import XDCCDownloadManagerUrwidTui
 
 
 class StartScreenUrwidTui(object):
@@ -46,7 +47,8 @@ class StartScreenUrwidTui(object):
                      "under certain conditions; type `show c' for details."
 
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
-                   "Folder Iconizer": FolderIconizerUrwidTui}
+                   "Folder Iconizer": FolderIconizerUrwidTui,
+                   "XDCC Download Manager": XDCCDownloadManagerUrwidTui}
 
         self.selected = None
 

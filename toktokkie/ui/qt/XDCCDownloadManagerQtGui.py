@@ -62,6 +62,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.download_button.clicked.connect(self.start_download)
         self.search_button.clicked.connect(self.start_search)
         self.search_term_edit.returnPressed.connect(self.start_search)
+        self.directory_edit.textChanged.connect(self.parse_directory)
 
         self.download_button.windowTitleChanged.connect(lambda x: self.spinner(self.download_button, self.downloading,
                                                                                "Download", "Downloading"))
@@ -78,8 +79,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.episode_spin_box.valueChanged.connect(self.refresh_download_queue)
         self.auto_rename_check.stateChanged.connect(self.refresh_download_queue)
 
-        self.directory_edit.textChanged.connect(self.parse_directory)
-
         for scheme in SchemeManager.get_scheme_names():
             self.renaming_scheme_combo_box.addItem(scheme)
         for procedure in ProcedureManager.get_procedure_names():
@@ -93,6 +92,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.total_progress_bar.windowTitleChanged.connect(self.post_download)  # Post-download handling
 
         Thread(target=self.ui_updater).start()
+        self.directory_edit.setText(os.getcwd())
 
     def browse_for_directory(self) -> None:
         """
