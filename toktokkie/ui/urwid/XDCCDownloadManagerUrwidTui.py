@@ -215,7 +215,7 @@ class XDCCDownloadManagerUrwidTui(object):
             season = int(self.season_number_edit.get_edit_text())
             episode = int(self.episode_number_edit.get_edit_text())
         except ValueError:
-            return  # TODO Let user know he's a dummy
+            return
 
         destination_directory, season_directory = \
             XDCCDownloadManager.prepare_directory(self.target_directory_edit.get_edit_text(),
@@ -251,6 +251,9 @@ class XDCCDownloadManagerUrwidTui(object):
                 Iconizer(iconization_method).iconize_directory(destination_directory)
 
             self.downloading = False
+            self.progress_update(0, 0, 0.0, 0, 0, 0.0, 0, 0)
+            self.current_speed.set_text("Current Speed:")
+            self.average_speed.set_text("Average Speed:")
 
         Thread(target=handle_download).start()
         Thread(target=self.spinner).start()
