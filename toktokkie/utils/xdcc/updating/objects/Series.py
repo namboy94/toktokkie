@@ -200,7 +200,7 @@ class Series(object):
         """
         return self.data["season"]
 
-    def get_search_engines(self) -> str:
+    def get_search_engines(self) -> List[str]:
         """
         :return: The search engines
         """
@@ -217,6 +217,62 @@ class Series(object):
         :return: The search pattern
         """
         return self.data["search_pattern"]
+
+    def set_destination_directory(self, directory: str) -> None:
+        """
+        :param directory: The destination directory
+        :return:          None
+        """
+        self.data["destination_directory"] = directory
+
+    def set_search_name(self, name: str) -> None:
+        """
+        :param name: The search name
+        :return:     None
+        """
+        self.data["search_name"] = name
+
+    def set_quality_identifier(self, quality: str) -> None:
+        """
+        :param quality: The Quality identifier
+        :return:        None
+        """
+        self.data["quality_identifier"] = quality
+
+    def set_bot_preference(self, bot: str) -> None:
+        """
+        :param bot: The bot preference
+        :return:    None
+        """
+        self.data["bot_preference"] = bot
+
+    def set_season(self, season: int) -> None:
+        """
+        :param season: The season
+        :return:       None
+        """
+        self.data["season"] = season
+
+    def set_search_engines(self, search_engines: List[str]) -> None:
+        """
+        :param search_engines: The search engines
+        :return:               None
+        """
+        self.data["search_engines"] = search_engines
+
+    def set_naming_scheme(self, naming_scheme: str) -> None:
+        """
+        :param naming_scheme: The naming scheme
+        :return:              None
+        """
+        self.data["naming_scheme"] = naming_scheme
+
+    def set_search_pattern(self, pattern: str) -> None:
+        """
+        :param pattern: The pattern
+        :return:        None
+        """
+        self.data["search_pattern"] = pattern
 
 
 def from_dict(data: Dict[str, str or int or List[str]]) -> Series:
