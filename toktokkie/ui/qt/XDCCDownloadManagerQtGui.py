@@ -24,7 +24,9 @@ LICENSE
 
 # imports
 import os
-from threading import Thread
+import random
+import PyQt5.QtCore as QtCore
+from PyQt5.QtCore import QThread, QObject
 from xdcc_dl.entities.Progress import Progress
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
@@ -35,6 +37,7 @@ from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
 from toktokkie.ui.qt.pyuic.xdcc_download_manager import Ui_XDCCDownloadManagerWindow
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView
+
 
 
 class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
@@ -51,12 +54,19 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         super().__init__(parent)
         self.setupUi(self)
 
+        self.download_thread = None
+        self.single_progress = 0.0
+        self.total_progress = 0.0
+        self.current_speed = "0 kB/s"
+        self.average_speed = "0 kB/s"
+
         self.search_results = []
         self.download_queue_list = []
 
         self.directory_browse_button.clicked.connect(self.browse_for_directory)
         self.download_button.clicked.connect(self.start_download)
         self.search_button.clicked.connect(self.start_search)
+        self.search_term_edit.returnPressed.connect(self.start_search)
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
@@ -69,10 +79,12 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
             self.renaming_scheme_combo_box.addItem(scheme)
         for procedure in ProcedureManager.get_procedure_names():
             self.iconizing_method_combo_box.addItem(procedure)
-        for pack_searcher in PackSearcher.get_available_pack_searchers() + ["All"]:
+        for pack_searcher in ["All"] + PackSearcher.get_available_pack_searchers():
             self.search_engine_combo_box.addItem(pack_searcher)
 
         self.search_result_list.header().setSectionResizeMode(4, QHeaderView.Stretch)
+
+        self.single_progress_bar.windowTitleChanged.connect(self.redraw_progress)
 
     def browse_for_directory(self) -> None:
         """
@@ -125,13 +137,15 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         if not MetaDataManager.is_media_directory(destination_directory, "tv_series"):
 
-            dirs = [destination_directory, os.path.join(destination_directory, ".meta", "icons"), season_directory]
-            for directory in dirs:
+            for directory in [destination_directory, os.path.join(destination_directory, ".meta", "icons")]:
                 if not os.path.isdir(directory):
                     os.makedirs(directory)
 
             with open(os.path.join(destination_directory, ".meta", "type"), 'w') as f:
                 f.write("tv_series")
+
+        if not os.path.isdir(season_directory):
+            os.makedirs(season_directory)
 
         for i, pack in enumerate(packs):
             name = "xdcc_dl_" + str(i).zfill(int(len(packs) / 10) + 1)
@@ -160,7 +174,12 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
             if self.iconize_check.checkState():
                 Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
 
-        Thread(target=handle_download).start()
+        class DownloadHandler(QThread):
+            def run(self):
+                handle_download()
+
+        self.download_thread = DownloadHandler()
+        self.download_thread.start()
 
     def parse_directory(self) -> None:
         """
@@ -244,5 +263,24 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.refresh_download_queue()
 
-    def update_progress_bars(self, a,b,c,d,e,f,g,h):
-        pass
+    # noinspection PyUnusedLocal
+    def update_progress_bars(self,
+                             single_progress, single_total, single_percentage,
+                             total_progress, total_total, total_percentage,
+                             current_speed, average_speed) -> None:
+
+        self.single_progress = single_percentage
+        self.total_progress = total_percentage
+        self.current_speed = int(current_speed / 1000)
+        self.average_speed = int(average_speed / 1000)
+
+        self.single_progress_bar.windowTitleChanged.emit("Title")
+
+
+
+    def redraw_progress(self) -> None:
+
+        self.single_progress_bar.setValue(self.single_progress)
+        self.total_progress_bar.setValue(self.total_progress)
+        self.current_speed_number.display(self.current_speed)
+        self.average_speed_number.display(self.average_speed)
