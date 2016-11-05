@@ -37,7 +37,7 @@ class UnitTests(unittest.TestCase):
 
     def test_procedure_name_passing(self):
         all_procedures = ProcedureManager.get_all_procedures()
-        procedure_names = ProcedureManager.get_procedure_names()
+        procedure_names = ProcedureManager.get_procedure_names(supports_current_platform=False)
 
         for procedure in all_procedures:
             self.assertTrue(procedure.get_procedure_name() in procedure_names)
