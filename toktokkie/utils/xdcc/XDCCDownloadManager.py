@@ -51,14 +51,7 @@ class XDCCDownloadManager(object):
         else:
             destination_directory = os.path.join(directory, series_name)
 
-        if not MetaDataManager.is_media_directory(destination_directory, "tv_series"):
-
-            for directory in [destination_directory, os.path.join(destination_directory, ".meta", "icons")]:
-                if not os.path.isdir(directory):
-                    os.makedirs(directory)
-
-            with open(os.path.join(destination_directory, ".meta", "type"), 'w') as f:
-                f.write("tv_series")
+        MetaDataManager.generate_media_directory(destination_directory, media_type="tv_series")
 
         season_directory = os.path.join(destination_directory, "Season " + str(season))
         if not os.path.isdir(season_directory):

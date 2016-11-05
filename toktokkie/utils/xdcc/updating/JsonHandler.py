@@ -71,20 +71,8 @@ class JsonHandler(object):
         """
         pop_index = None
         for i, show in enumerate(self.json_data):
-            if show["directory"] == series.get_directory():
+            if series.is_same(show):
                 pop_index = i
 
         if pop_index is not None:
             self.json_data.pop(pop_index)
-
-    def edit_series(self, series: Series) -> None:
-        """
-        Edits the information of a series
-
-        :param series: The series to edit
-        :return:       None
-        """
-        for i in range(0, len(self.json_data)):
-            if self.json_data[i]["directory"] == series.get_directory():
-                self.json_data[i] = series.to_dict()
-
