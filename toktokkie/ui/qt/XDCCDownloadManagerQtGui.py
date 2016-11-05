@@ -24,20 +24,17 @@ LICENSE
 
 # imports
 import os
-import random
-import PyQt5.QtCore as QtCore
-from PyQt5.QtCore import QThread, QObject
+import time
+from threading import Thread
 from xdcc_dl.entities.Progress import Progress
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.utils.iconizing.Iconizer import Iconizer
-from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
-from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
+from toktokkie.utils.xdcc.XDCCDownloadManager import XDCCDownloadManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
 from toktokkie.ui.qt.pyuic.xdcc_download_manager import Ui_XDCCDownloadManagerWindow
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView
-
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton
 
 
 class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
@@ -54,11 +51,10 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.download_thread = None
-        self.single_progress = 0.0
-        self.total_progress = 0.0
-        self.current_speed = "0 kB/s"
-        self.average_speed = "0 kB/s"
+        self.downloading = False
+        self.searching = False
+        self.progress = None
+        self.running = True
 
         self.search_results = []
         self.download_queue_list = []
@@ -68,10 +64,20 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.search_button.clicked.connect(self.start_search)
         self.search_term_edit.returnPressed.connect(self.start_search)
 
+        self.download_button.windowTitleChanged.connect(lambda x: self.spinner(self.download_button, self.downloading,
+                                                                               "Download", "Downloading"))
+        self.search_button.windowTitleChanged.connect(lambda x: self.spinner(self.search_button, self.searching,
+                                                                             "Search", "Searching"))
+
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
         self.move_up_button.clicked.connect(lambda x: self.move_queue_item(up=True))
         self.move_down_button.clicked.connect(lambda x: self.move_queue_item(down=True))
+
+        self.show_name_edit.textChanged.connect(self.refresh_download_queue)
+        self.season_spin_box.valueChanged.connect(self.refresh_download_queue)
+        self.episode_spin_box.valueChanged.connect(self.refresh_download_queue)
+        self.auto_rename_check.stateChanged.connect(self.refresh_download_queue)
 
         self.directory_edit.textChanged.connect(self.parse_directory)
 
@@ -86,6 +92,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.single_progress_bar.windowTitleChanged.connect(self.redraw_progress)
 
+        Thread(target=self.ui_updater).start()
+
     def browse_for_directory(self) -> None:
         """
         Lets the user browse for a local directory path
@@ -99,25 +107,36 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
     def start_search(self) -> None:
         """
-        Starts the search using the
+        Starts the search using the selected Search engine(s)
 
         :return: None
         """
-        search_term = self.search_term_edit.text()
-        search_engine = self.search_engine_combo_box.currentText()
 
-        if search_engine == "All":
-            self.search_results = PackSearcher(PackSearcher.get_available_pack_searchers()).search(search_term)
-        else:
-            self.search_results = PackSearcher([search_engine]).search(search_term)
+        if self.searching:
+            return
 
-        self.search_result_list.clear()
-        for i, result in enumerate(self.search_results):
-            self.search_result_list.addTopLevelItem(QTreeWidgetItem([str(i),
-                                                                     result.get_bot(),
-                                                                     str(result.get_packnumber()),
-                                                                     str(result.get_size()),
-                                                                     result.get_filename()]))
+        def search():
+
+            self.searching = True
+
+            search_term = self.search_term_edit.text()
+            search_engine = self.search_engine_combo_box.currentText()
+
+            if search_engine == "All":
+                self.search_results = PackSearcher(PackSearcher.get_available_pack_searchers()).search(search_term)
+            else:
+                self.search_results = PackSearcher([search_engine]).search(search_term)
+
+            self.search_result_list.clear()
+            for i, result in enumerate(self.search_results):
+                self.search_result_list.addTopLevelItem(QTreeWidgetItem([str(i),
+                                                                         result.get_bot(),
+                                                                         str(result.get_packnumber()),
+                                                                         str(result.get_size()),
+                                                                         result.get_filename()]))
+            self.searching = False
+
+        Thread(target=search).start()
 
     def start_download(self) -> None:
         """
@@ -125,27 +144,21 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
-        if os.path.basename(self.directory_edit.text()) == self.show_name_edit.text():
-            destination_directory = self.directory_edit.text()
+        if self.downloading or len(self.download_queue_list) == 0:
+            return
         else:
-            destination_directory = os.path.join(self.directory_edit.text(), self.show_name_edit.text())
+            self.downloading = True
 
-        season_directory = os.path.join(destination_directory, "Season " + str(self.season_spin_box.value()))
+        destination_directory, season_directory = XDCCDownloadManager.prepare_directory(self.directory_edit.text(),
+                                                                                        self.show_name_edit.text(),
+                                                                                        self.season_spin_box.value())
 
-        progress = Progress(len(self.download_queue_list), callback=self.update_progress_bars)
+        # noinspection PyShadowingNames
+        self.progress = Progress(len(self.download_queue_list),
+                                 callback=lambda a, b, c, d, e, f, g, h:
+                                 self.single_progress_bar.windowTitleChanged.emit("Title"))
+
         packs = list(self.download_queue_list)
-
-        if not MetaDataManager.is_media_directory(destination_directory, "tv_series"):
-
-            for directory in [destination_directory, os.path.join(destination_directory, ".meta", "icons")]:
-                if not os.path.isdir(directory):
-                    os.makedirs(directory)
-
-            with open(os.path.join(destination_directory, ".meta", "type"), 'w') as f:
-                f.write("tv_series")
-
-        if not os.path.isdir(season_directory):
-            os.makedirs(season_directory)
 
         for i, pack in enumerate(packs):
             name = "xdcc_dl_" + str(i).zfill(int(len(packs) / 10) + 1)
@@ -154,32 +167,23 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def handle_download() -> None:
 
-            MultipleServerDownloader("random", 5).download(packs, progress)
+            MultipleServerDownloader("random").download(packs, self.progress)
 
             if self.auto_rename_check.checkState():
 
-                renaming_scheme = SchemeManager.get_scheme_from_scheme_name(
-                    self.renaming_scheme_combo_box.currentText())
-                renamer = TVSeriesRenamer(destination_directory, renaming_scheme)
+                scheme = SchemeManager.get_scheme_from_scheme_name(
+                                              self.renaming_scheme_combo_box.currentText())
 
-                confirmation = renamer.request_confirmation()
-
-                for item in confirmation:
-                    if " - S" + str(self.season_spin_box.value()).zfill(2) in item.get_names()[1]:
-                        item.confirm()
-
-                renamer.confirm(confirmation)
-                renamer.start_rename()
+                XDCCDownloadManager.auto_rename(scheme, self.episode_spin_box.value(), packs)
 
             if self.iconize_check.checkState():
                 Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
 
-        class DownloadHandler(QThread):
-            def run(self):
-                handle_download()
+            self.downloading = False
+            self.progress = None
+            self.directory_edit.textChanged.emit()
 
-        self.download_thread = DownloadHandler()
-        self.download_thread.start()
+        Thread(target=handle_download).start()
 
     def parse_directory(self) -> None:
         """
@@ -189,18 +193,12 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
-        directory = self.directory_edit.text()
+        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(self.directory_edit.text())
+        self.episode_spin_box.setValue(episode)
+        self.episode_spin_box.setMinimum(episode)
+        self.season_spin_box.setValue(season)
 
-        if MetaDataManager.is_media_directory(directory):
-            # TODO Season, Episode
-            self.episode_spin_box.setValue(1)
-            self.season_spin_box.setValue(1)
-
-        else:
-            self.episode_spin_box.setValue(1)
-            self.season_spin_box.setValue(1)
-
-        name = os.path.basename(directory)
+        name = os.path.basename(self.directory_edit.text())
         self.search_term_edit.setText(name)
         self.show_name_edit.setText(name)
 
@@ -210,10 +208,25 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
-        self.download_queue.clear()
-        for pack in self.download_queue_list:
-            self.download_queue.addItem(pack.get_filename())
-            # TODO Change the displayed name if renaming is active
+
+        if self.auto_rename_check.checkState():
+
+            naming_scheme = SchemeManager.get_scheme_from_scheme_name(self.renaming_scheme_combo_box.currentText())
+
+            episodes = XDCCDownloadManager.get_preliminary_renaming_results(naming_scheme,
+                                                                            self.episode_spin_box.value(),
+                                                                            self.download_queue_list,
+                                                                            self.season_spin_box.value(),
+                                                                            self.show_name_edit.text())
+
+            self.download_queue.clear()
+            for pack in episodes:
+                self.download_queue.addItem(pack)
+
+        else:
+            self.download_queue.clear()
+            for pack in self.download_queue_list:
+                self.download_queue.addItem(pack.get_filename())
 
     def add_to_queue(self) -> None:
         """
@@ -263,24 +276,60 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.refresh_download_queue()
 
-    # noinspection PyUnusedLocal
-    def update_progress_bars(self,
-                             single_progress, single_total, single_percentage,
-                             total_progress, total_total, total_percentage,
-                             current_speed, average_speed) -> None:
-
-        self.single_progress = single_percentage
-        self.total_progress = total_percentage
-        self.current_speed = int(current_speed / 1000)
-        self.average_speed = int(average_speed / 1000)
-
-        self.single_progress_bar.windowTitleChanged.emit("Title")
-
-
-
     def redraw_progress(self) -> None:
+        """
+        Re-draws all progress related widgets
 
-        self.single_progress_bar.setValue(self.single_progress)
-        self.total_progress_bar.setValue(self.total_progress)
-        self.current_speed_number.display(self.current_speed)
-        self.average_speed_number.display(self.average_speed)
+        :return: None
+        """
+        if self.progress is not None:
+            self.single_progress_bar.setValue(self.progress.get_single_progress_percentage())
+            self.total_progress_bar.setValue(self.progress.get_total_percentage())
+            self.current_speed_number.display(int(self.progress.calculate_current_download_speed() / 1000))
+            self.average_speed_number.display(int(self.progress.calculate_average_download_speed() / 1000))
+        else:
+            self.single_progress_bar.setValue(0.0)
+            self.total_progress_bar.setValue(0.0)
+            self.current_speed_number.display(0)
+            self.average_speed_number.display(0)
+
+    @staticmethod
+    def spinner(button: QPushButton, check: bool, normal_text: str, spinner_text: str) -> None:
+        """
+        Indicates that a process is currently by adding dots to a button's text
+
+        :param button:        The button to use
+        :param check:         A check variable to determine if the process is ongoing
+        :param normal_text:   The text normally displayed
+        :param spinner_text:  The text displayed when the process is ongoing
+        :return:              None
+        """
+
+        if check:
+            dots = button.text().count(".")
+            new_dots = (dots % 3) + 1
+            button.setText(spinner_text + new_dots * ".")
+        else:
+            button.setText(normal_text)
+
+    def ui_updater(self, pause_time: float = 0.5) -> None:
+        """
+        Method that updates the UI every x seconds
+
+        :return: None
+        """
+        while self.running:
+            self.download_button.windowTitleChanged.emit("Title")
+            self.search_button.windowTitleChanged.emit("Title")
+            self.single_progress_bar.windowTitleChanged.emit("Title")
+            time.sleep(pause_time)
+
+    def closeEvent(self, close_event: object) -> None:
+        """
+        Overrides the close event to stop the UI Updater thread
+
+        :param close_event: The close event
+        :return:            None
+        """
+        self.running = False
+        super().closeEvent(close_event)
