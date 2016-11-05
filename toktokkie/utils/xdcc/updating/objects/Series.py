@@ -42,6 +42,18 @@ class Series(object):
 
     def __init__(self, destination_directory: str, search_name: str, quality_identifier: str, bot_preference: str,
                  season: int, search_engines: List[str], naming_scheme: str, search_pattern: str) -> None:
+        """
+        Creates a new Series object
+
+        :param destination_directory: The destination directory to which this series points to
+        :param search_name:           The name used to identify the episodes using XDCC search engines
+        :param quality_identifier:    The quality specifier
+        :param bot_preference:        The bot from which to fetch the episodes from
+        :param season:                The season of the series in use
+        :param search_engines:        The search engines to use
+        :param naming_scheme:         The naming scheme to use
+        :param search_pattern:        The search pattern to use
+        """
 
         self.data = {
             "destination_directory": destination_directory,
@@ -110,8 +122,8 @@ class Series(object):
         :param season_dir: The Season directory in which the files will be stored
         :return:           None
         """
-        first_not_existing_episode = len(os.listdir(season_dir)) + 1
-        episode_to_check = first_not_existing_episode
+        first_non_existing_episode = len(os.listdir(season_dir)) + 1
+        episode_to_check = first_non_existing_episode
 
         download_queue = []
         search_result = self.search_for_episode(episode_to_check)
@@ -123,13 +135,14 @@ class Series(object):
 
         for i, pack in enumerate(download_queue):
             pack.set_directory(season_dir)
-            pack.set_filename("xdcc_updater_" + str(i).zfill(int(len(download_queue) / 10) + 1))
+            pack.set_filename("xdcc_updater_" + str(i).zfill(int(len(download_queue) / 10) + 1), override=True)
 
-        MultipleServerDownloader("random", 1).download(download_queue)
+        MultipleServerDownloader("random", 2).download(download_queue)
 
         show_name = os.path.basename(self.data["destination_directory"])
         renaming_scheme = SchemeManager.get_scheme_from_scheme_name(self.data["naming_scheme"])
-        episode_number = first_not_existing_episode
+        episode_number = first_non_existing_episode
+
         for pack in download_queue:
             TVEpisode(pack.get_filepath(), episode_number, self.data["season"], show_name, renaming_scheme).rename()
             episode_number += 1
@@ -154,3 +167,15 @@ class Series(object):
                 return result
 
         return None
+
+
+def from_dict(data: Dict[str, str or int or List[str]]) -> Series:
+    """
+    Creates a Series object from a dictionary
+
+    :param data: The data to turn into a Series object
+    :return:     The Series object
+    """
+    return Series(data["destination_directory"], data["search_name"], data["quality_identifier"],
+                  data["bot_preference"], data["season"], data["search_engines"], data["naming_scheme"],
+                  data["search_pattern"])

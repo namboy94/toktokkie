@@ -24,7 +24,8 @@ LICENSE
 
 # imports
 import json
-from toktokkie.utils.xdcc.updating.objects.Series import Series
+from typing import List
+from toktokkie.utils.xdcc.updating.objects.Series import Series, from_dict as series_generator
 
 
 class JsonHandler(object):
@@ -41,7 +42,8 @@ class JsonHandler(object):
         self.json_data = []
 
         if json_file is not None:
-            self.json_data = json.load(json_file)
+            with open(json_file, 'r') as f:
+                self.json_data = json.load(f)
 
     def store_json(self, destination: str) -> None:
         """
@@ -76,3 +78,14 @@ class JsonHandler(object):
 
         if pop_index is not None:
             self.json_data.pop(pop_index)
+
+    def get_series(self) -> List[Series]:
+        """
+        Generates Series objects from the JSON data
+
+        :return: The List of Series
+        """
+        series = []
+        for data in self.json_data:
+            series.append(series_generator(data))
+        return series
