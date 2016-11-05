@@ -127,7 +127,7 @@ class PypiVariables:
     The list trove classifiers applicable to this project
     """
 
-    install_requires = ['tvdb_api', 'beautifulsoup4', 'typing', 'raven', 'urwid', 'xdcc_dl']  # , "manga_dl"
+    install_requires = ['tvdb_api', 'beautifulsoup4', 'typing', 'raven', 'urwid', 'json', 'xdcc_dl']  # , "manga_dl"
     """
     Python Packaging Index dependencies
     """
