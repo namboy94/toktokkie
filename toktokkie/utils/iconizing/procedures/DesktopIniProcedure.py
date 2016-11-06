@@ -91,7 +91,9 @@ class DesktopIniProcedure(GenericProcedure):
         :param directory: the directory to de-iconize
         :return:          None
         """
-        if os.path.isfile(os.path.join(directory, "desktop.ini")):
+        desktop_ini_file = os.path.join(directory, "desktop.ini")
+        if os.path.isfile(desktop_ini_file):
+            Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
             os.remove(os.path.join(directory, "desktop.ini"))
 
     @staticmethod
@@ -107,9 +109,6 @@ class DesktopIniProcedure(GenericProcedure):
         if not os.path.isfile(desktop_ini_file):
             return None
         else:
-
-            Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
-
             with open(desktop_ini_file, 'r') as ini:
                 desktop_ini = ini.read()
 
