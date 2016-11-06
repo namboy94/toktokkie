@@ -21,25 +21,3 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
-
-# imports
-import unittest
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
-
-
-class ProcedureManagerUnitTests(unittest.TestCase):
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-    def test_procedure_name_passing(self):
-        all_procedures = ProcedureManager.get_all_procedures()
-        procedure_names = ProcedureManager.get_procedure_names(supports_current_platform=False)
-
-        for procedure in all_procedures:
-            self.assertTrue(procedure.get_procedure_name() in procedure_names)
-            self.assertEqual(procedure,
-                             ProcedureManager.get_procedure_from_procedure_name(procedure.get_procedure_name()))

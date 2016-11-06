@@ -39,7 +39,7 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderVi
 
 class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
     """
-    Class that defines the functionality of the Folder Iconizer GUI
+    Class that defines the functionality of the XDCC Downloader GUI
     """
 
     def __init__(self, parent: QMainWindow = None) -> None:

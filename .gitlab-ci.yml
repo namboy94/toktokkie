@@ -137,8 +137,8 @@ generate_sphinx_documentation:
     - make buildsource
     - make latexpdf
     - make html
-    - rsync -av build/latex/toktokkie.pdf /var/www/docs.namibsun.net/public_html/pdf_docs/xdcc_downloader.pdf --delete-before
-    - rsync -av build/html/ /var/www/docs.namibsun.net/public_html/html_docs/xdcc_downloader --delete-before
+    - rsync -av build/latex/toktokkie.pdf /var/www/docs.namibsun.net/public_html/pdf_docs/toktokkie.pdf --delete-before
+    - rsync -av build/html/ /var/www/docs.namibsun.net/public_html/html_docs/toktokkie --delete-before
     - cd ..
     - python3 builder.py documentation-html /var/www/docs.namibsun.net/public_html
   artifacts:
@@ -155,9 +155,9 @@ gitstats:
     - linux
   script:
     - gitstats . gitstats
-    - rsync -av gitstats/ /var/www/gitstats.namibsun.net/public_html/gitstats/xdcc_downloader --delete-before
+    - rsync -av gitstats/ /var/www/gitstats.namibsun.net/public_html/gitstats/toktokkie --delete-before
     - git_stats generate
-    - rsync -av git_stats/ /var/www/gitstats.namibsun.net/public_html/git_stats/xdcc_downloader --delete-before
+    - rsync -av git_stats/ /var/www/gitstats.namibsun.net/public_html/git_stats/toktokkie --delete-before
     - python3 builder.py gitstats-html /var/www/gitstats.namibsun.net/public_html
   artifacts:
     paths:

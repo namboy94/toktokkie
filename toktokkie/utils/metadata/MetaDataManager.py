@@ -82,7 +82,7 @@ class MetaDataManager(object):
         try:
             if ".meta" in os.listdir(directory):
                 if media_type:
-                    with open(os.path.join(directory, ".meta", "type")) as typefile:
+                    with open(os.path.join(directory, ".meta", "type"), 'r') as typefile:
                         stored_media_type = typefile.read().rstrip().lstrip()
                     return stored_media_type == media_type
                 else:
@@ -91,3 +91,21 @@ class MetaDataManager(object):
             pass
 
         return False
+
+    @staticmethod
+    def generate_media_directory(directory: str, media_type: str = "generic") -> None:
+        """
+        Makes sure a directory is a media directory of the given type
+
+        :param directory:  The directory
+        :param media_type: The media type, if not supplied will default to 'generic'
+        :return:           None
+        """
+        if not MetaDataManager.is_media_directory(directory, media_type):
+
+            for path in [directory, os.path.join(directory, ".meta", "icons")]:
+                if not os.path.isdir(path):
+                    os.makedirs(path)
+
+            with open(os.path.join(directory, ".meta", "type"), 'w') as f:
+                f.write(media_type)

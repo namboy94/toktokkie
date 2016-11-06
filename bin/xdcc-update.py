@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 """
 LICENSE:
 Copyright 2015,2016 Hermann Krumrey
@@ -23,23 +26,23 @@ LICENSE
 """
 
 # imports
-import unittest
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
+import os
+import sys
+from toktokkie.utils.xdcc.updating.JsonHandler import JsonHandler
 
 
-class ProcedureManagerUnitTests(unittest.TestCase):
+if __name__ == "__main__":
 
-    def setUp(self):
-        pass
+    if len(sys.argv) != 2:
+        json_file = "series.json"
+    else:
+        json_file = sys.argv[1]
 
-    def tearDown(self):
-        pass
+    if not os.path.isfile(json_file):
+        print(json_file + " does not exist.")
+        sys.exit(1)
 
-    def test_procedure_name_passing(self):
-        all_procedures = ProcedureManager.get_all_procedures()
-        procedure_names = ProcedureManager.get_procedure_names(supports_current_platform=False)
+    handler = JsonHandler(json_file)
 
-        for procedure in all_procedures:
-            self.assertTrue(procedure.get_procedure_name() in procedure_names)
-            self.assertEqual(procedure,
-                             ProcedureManager.get_procedure_from_procedure_name(procedure.get_procedure_name()))
+    for series in handler.get_series():
+        series.update()
