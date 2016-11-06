@@ -24,6 +24,7 @@ LICENSE
 """
 
 # imports
+import sys
 import argparse
 from toktokkie.metadata import SentryLogger
 from toktokkie.ui.qt.StartPageQtGui import start as gui_start
@@ -57,4 +58,6 @@ def main() -> None:
         raise e
 
 if __name__ == '__main__':
+    if sys.platform == "win32":
+        sys.argv.append("-g")
     main()
