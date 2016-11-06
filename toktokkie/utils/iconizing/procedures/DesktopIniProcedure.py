@@ -71,13 +71,13 @@ class DesktopIniProcedure(GenericProcedure):
 
         # Write the folder icon information to the desktop.ini file, deleting all previous content of the file
         with open(desktop_ini_file, 'w') as f:
-            f.writelines(["[.ShellClassInfo]",          # This is a shebang-like construct for Windows metadata
-                          "IconFile=" + relative_path,  # This sets the path to the icon file
-                          "IconIndex=0",                # The rest is just some metadata stuff
-                          "[ViewState]",
-                          "Mode=",
-                          "Vid=",
-                          "FolderType=Videos"])
+            f.write("[.ShellClassInfo]\r\n")               # This is a shebang-like construct for Windows metadata
+            f.write("IconFile=" + relative_path + "\r\n")  # This sets the path to the icon file
+            f.write("IconIndex=0\r\n")                     # The rest is just some metadata stuff
+            f.write("[ViewState]\r\n")
+            f.write("Mode=\r\n")
+            f.write("Vid=\r\n")
+            f.write("FolderType=Videos\r\n")
 
         # Set the attributes of the desktop.ini file to hidden, system file and read-only
         Popen(["attrib", "+s", "+h", "+r", desktop_ini_file]).wait()
@@ -111,7 +111,7 @@ class DesktopIniProcedure(GenericProcedure):
                 desktop_ini = ini.read()
 
             if "IconFile=" in desktop_ini:
-                return desktop_ini.split("IconFile=")[1].split("\n")[0]
+                return desktop_ini.split("IconFile=")[1].split("\r\n")[0]
             else:
                 return None
 
