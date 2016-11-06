@@ -23,9 +23,11 @@ LICENSE
 """
 
 # imports
+import os
 import json
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
+from toktokkie.utils.xdcc.updating.objects.Series import Series
 from toktokkie.utils.xdcc.updating.JsonHandler import JsonHandler
 from toktokkie.utils.xdcc.updating.AutoSearcher import AutoSearcher
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
@@ -56,9 +58,13 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
             self.search_engine_combo_box.addItem(searcher)
 
         self.load_button.clicked.connect(self.browse_for_json_file)
+        self.save_button.clicked.connect(self.save_json)
+        self.new_button.clicked.connect(self.create_new_series)
+        self.confirm_button.clicked.connect(self.store_selected_series)
+        self.delete_button.clicked.connect(self.delete_selected_series)
         self.series_list.selectionModel().selectionChanged.connect(self.load_selected_series)
 
-        self.json_handler = None
+        self.json_handler = JsonHandler()
         self.series = []
 
     def browse_for_json_file(self) -> None:
@@ -68,7 +74,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
         :return: None
         """
         # noinspection PyCallByClass,PyTypeChecker, PyArgumentList
-        selected = QFileDialog.getOpenFileName(self, "Browse")
+        selected = QFileDialog.getOpenFileName(self, "Browse", filter="*.json")
         if selected[0]:
             try:
                 self.json_handler = JsonHandler(selected[0])
@@ -76,6 +82,22 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
                 self.populate_series_list()
             except json.decoder.JSONDecodeError:
                 pass  # TODO Let user know he's a dumm-dumm
+
+    def save_json(self) -> None:
+        """
+        Saves the JSON file, if it already exists, else it asks the user for a place to save it beforehand
+
+        :return: None
+        """
+        if self.file_loaded:
+            self.json_handler.store_json()
+        else:
+            # noinspection PyCallByClass
+            destination = QFileDialog.getSaveFileName(self, "Save", os.getcwd(), filter="*.json",
+                                                      options=QFileDialog.DontConfirmOverwrite)[0]
+            destination_file = destination if destination.endswith(".json") else destination + ".json"
+            self.json_handler.store_json(destination_file)
+            self.file_loaded = True
 
     def populate_series_list(self) -> None:
         """
@@ -95,7 +117,10 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
 
         :return: None
         """
-        selected_series = self.series[self.series_list.selectedIndexes()[0].row()]
+        try:
+            selected_series = self.series[self.series_list.selectedIndexes()[0].row()]
+        except IndexError:
+            return
 
         self.directory_edit.setText(selected_series.get_destination_directory())
         self.search_name_edit.setText(selected_series.get_search_name())
@@ -114,3 +139,51 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
 
         self.pattern_combo_box.setCurrentIndex(
             self.pattern_combo_box.findText(selected_series.get_search_pattern()))
+
+    def store_selected_series(self) -> None:
+        """
+        Stores the currently selected series in the json handler
+
+        :return: None
+        """
+        try:
+            prev_series = self.series[self.series_list.selectedIndexes()[0].row()]
+        except IndexError:
+            return
+
+        series = Series(self.directory_edit.text(),
+                        self.search_name_edit.text(),
+                        self.quality_combo_box.currentText(),
+                        self.bot_edit.text(),
+                        self.season_spin_box.value(),
+                        [self.search_engine_combo_box.currentText()],
+                        self.naming_scheme_combo_box.currentText(),
+                        self.pattern_combo_box.currentText())
+
+        self.json_handler.add_series(series)
+        self.json_handler.remove_series(prev_series)
+        self.populate_series_list()
+
+    def create_new_series(self) -> None:
+        """
+        Creates a new series
+
+        :return: None
+        """
+        series = Series(os.getcwd(), "New Series", "1080p", "Bot", 1, ["nibl"], "Plex (TVDB)", "horriblesubs")
+        self.json_handler.add_series(series)
+
+        self.populate_series_list()
+
+    def delete_selected_series(self) -> None:
+        """
+        Deletes the selected series
+
+        :return: None
+        """
+        try:
+            selected_series = self.series[self.series_list.selectedIndexes()[0].row()]
+            self.json_handler.remove_series(selected_series)
+            self.populate_series_list()
+        except IndexError:
+            pass

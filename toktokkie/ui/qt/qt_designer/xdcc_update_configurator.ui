@@ -136,7 +136,7 @@
      </widget>
     </item>
     <item row="10" column="5">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="confirm_button">
       <property name="text">
        <string>Confirm Changes</string>
       </property>

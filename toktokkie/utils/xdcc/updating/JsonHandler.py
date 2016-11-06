@@ -41,8 +41,10 @@ class JsonHandler(object):
         :param json_file: An optional JSON file location.
         """
         self.json_data = []
+        self.json_location = None
 
         if json_file is not None:
+            self.json_location = json_file
             with open(json_file, 'r') as f:
                 self.json_data = json.load(f)
         self.check_validity()
@@ -70,13 +72,18 @@ class JsonHandler(object):
         except AttributeError:
             raise json.decoder.JSONDecodeError
 
-    def store_json(self, destination: str) -> None:
+    def store_json(self, destination: str = "") -> None:
         """
         Stores the current JSON data in a JSON file
 
-        :param destination: The destination JSON file
+        :param destination: The destination JSON file. If left blank, the loaded file will be used
         :return:            None
         """
+        if not destination:
+            destination = self.json_location
+
+        self.json_location = destination
+
         with open(destination, 'w') as f:
             json.dump(self.json_data, f)
 
