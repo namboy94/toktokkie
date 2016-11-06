@@ -108,6 +108,8 @@ class DesktopIniProcedure(GenericProcedure):
             return None
         else:
 
+            Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
+
             with open(desktop_ini_file, 'r') as ini:
                 desktop_ini = ini.read()
 
