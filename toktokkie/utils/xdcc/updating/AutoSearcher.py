@@ -80,11 +80,11 @@ class AutoSearcher(object):
         :return:             True if it matches, false otherwise
         """
         regex_pattern = AutoSearcher.check_patterns[pattern]
-        regex = re.compile(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality))
+        regex = re.compile(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality, regex=True))
         return bool(re.search(regex, episode_name))
 
     @staticmethod
-    def fill_in_pattern(pattern: str, show: str, episode: int, quality: str) -> str:
+    def fill_in_pattern(pattern: str, show: str, episode: int, quality: str, regex: bool = False) -> str:
         """
         Fills a pattern with the @ replacers
 
@@ -92,8 +92,15 @@ class AutoSearcher(object):
         :param show:    The show to use
         :param episode: The episode to use
         :param quality: The quality to use
+        :param regex:   Replaces any Regex characters in the input through escaped ones
         :return:        The filled in pattern
         """
+        if regex:
+            show = show.replace("[", "\[")
+            show = show.replace("]", "\]")
+            show = show.replace("(", "\(")
+            show = show.replace(")", "\)")
+
         pattern = pattern.replace("@search_name", show)
         pattern = pattern.replace("@episode_zfill_2", str(episode).zfill(2))
         pattern = pattern.replace("@quality_p_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
