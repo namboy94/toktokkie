@@ -111,7 +111,7 @@ class DesktopIniProcedure(GenericProcedure):
                 desktop_ini = ini.read()
 
             if "IconFile=" in desktop_ini:
-                return desktop_ini.split("IconFile=")[1].split("\r\n")[0]
+                return os.path.join(directory, desktop_ini.split("IconFile=")[1].split("\n")[0])
             else:
                 return None
 
