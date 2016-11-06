@@ -95,9 +95,11 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
             # noinspection PyCallByClass
             destination = QFileDialog.getSaveFileName(self, "Save", os.getcwd(), filter="*.json",
                                                       options=QFileDialog.DontConfirmOverwrite)[0]
-            destination_file = destination if destination.endswith(".json") else destination + ".json"
-            self.json_handler.store_json(destination_file)
-            self.file_loaded = True
+
+            if destination:
+                destination_file = destination if destination.endswith(".json") else destination + ".json"
+                self.json_handler.store_json(destination_file)
+                self.file_loaded = True
 
     def populate_series_list(self) -> None:
         """
