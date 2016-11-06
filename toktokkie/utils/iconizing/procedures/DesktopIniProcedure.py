@@ -81,8 +81,6 @@ class DesktopIniProcedure(GenericProcedure):
 
         # Set the attributes of the desktop.ini file to hidden, system file and read-only
         Popen(["attrib", "+s", "+h", "+r", desktop_ini_file]).wait()
-        # Set the directory to read-only? What on earth? Windows is weird.
-        Popen(["attrib", "+r", directory]).wait()
 
     @staticmethod
     def reset_iconization_state(directory: str) -> None:
