@@ -71,7 +71,7 @@ class DesktopIniProcedure(GenericProcedure):
 
         # Write the folder icon information to the desktop.ini file, deleting all previous content of the file
         with open(desktop_ini_file, 'w') as f:
-            f.writelines(["[.ShellClassInfo]",          # This is a shebang-like construct for Windows to know what to do
+            f.writelines(["[.ShellClassInfo]",          # This is a shebang-like construct for Windows metadata
                           "IconFile=" + relative_path,  # This sets the path to the icon file
                           "IconIndex=0",                # The rest is just some metadata stuff
                           "[ViewState]",
@@ -95,18 +95,26 @@ class DesktopIniProcedure(GenericProcedure):
             os.remove(os.path.join(directory, "desktop.ini"))
 
     @staticmethod
-    def get_icon_file(directory: str) -> str:
+    def get_icon_file(directory: str) -> str or None:
         """
         Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
 
         :param directory: The directory to check
         :return:          Either the path to the icon file or None if no icon file exists
         """
-        with open(os.path.join(directory, "desktop.ini"), 'r') as desktop_ini_file:
-            desktop_ini = desktop_ini_file.read()
+        desktop_ini_file = os.path.join(directory, "desktop.ini")
 
-        if "IconFile=" in desktop_ini:
-            return desktop_ini.split("IconFile=")[1].split("\n")[0]
+        if not os.path.isfile(desktop_ini_file):
+            return None
+        else:
+
+            with open(desktop_ini_file, 'r') as ini:
+                desktop_ini = ini.read()
+
+            if "IconFile=" in desktop_ini:
+                return desktop_ini.split("IconFile=")[1].split("\n")[0]
+            else:
+                return None
 
     @staticmethod
     def get_procedure_name() -> str:
