@@ -159,9 +159,11 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         packs = list(self.download_queue_list)
 
         for i, pack in enumerate(packs):
-            name = "xdcc_dl_" + str(i).zfill(int(len(packs) / 10) + 1)
             pack.set_directory(season_directory)
-            pack.set_filename(name, override=True)
+
+            if self.auto_rename_check.checkState():
+                name = "xdcc_dl_" + str(i).zfill(int(len(packs) / 10) + 1)
+                pack.set_filename(name, override=True)
 
         def handle_download() -> None:
 

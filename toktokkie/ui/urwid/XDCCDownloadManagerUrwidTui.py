@@ -228,9 +228,11 @@ class XDCCDownloadManagerUrwidTui(object):
                 selected_packs.append(self.search_results[i])
 
         for i, pack in enumerate(selected_packs):
-            name = "xdcc_dl_" + str(i).zfill(int(len(selected_packs) / 10) + 1)
             pack.set_directory(season_directory)
-            pack.set_filename(name, override=True)
+
+            if self.rename_check.get_state():
+                name = "xdcc_dl_" + str(i).zfill(int(len(selected_packs) / 10) + 1)
+                pack.set_filename(name, override=True)
 
         # noinspection PyShadowingNames
         progress = Progress(len(selected_packs), callback=self.progress_update)
