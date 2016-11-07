@@ -72,6 +72,7 @@ install_on_windows:
     - windows
     - python
   script:
+    - rd /S /Q toktokkie\tests  # To circumvent Windows file path limits, we need to delete our test files
     - python setup.py install
 
 pyinstaller_linux:
@@ -97,6 +98,7 @@ pyinstaller_windows:
     - windows
     - python
   script:
+    - rd /S /Q toktokkie\tests  # To circumvent Windows file path limits, we need to delete our test files
     - python setup.py install
     - python builder.py build pyinstaller_windows
     - pip uninstall toktokkie -y
