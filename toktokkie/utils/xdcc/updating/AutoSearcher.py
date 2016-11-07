@@ -33,17 +33,20 @@ class AutoSearcher(object):
     """
 
     search_patterns = {
-        "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv"
+        "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv",
+        "sakura & c-w 4:3": "@search_name - @episode_zfill_2 @quality_4:3_x_notation [Sakura][C-W]"
     }
 
     check_patterns = {
-        "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$"
+        "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$",
+        "sakura & c-w 4:3": "^@search_name - @episode_zfill_2 \[(x264-AC3-BD)@quality_4:3_x_notation\]\[Sakura\]"
+                            "\[C-W\]\[[0-9A-Z]+\].mkv$"
     }
 
     quality_patterns = {
-        "480p": {"p_notation": "480p", "x_notation": "848x480"},
-        "720p": {"p_notation": "720p", "x_notation": "1280x720"},
-        "1080p": {"p_notation": "1080p", "x_notation": "1920x1080"}
+        "480p": {"p_notation": "480p", "x_notation": "848x480", "4:3_x_notation": "640x480"},
+        "720p": {"p_notation": "720p", "x_notation": "1280x720", "4:3_x_notation": "960x720"},
+        "1080p": {"p_notation": "1080p", "x_notation": "1920x1080", "4:3_x_notation": "1440x1080"}
     }
 
     @staticmethod
@@ -80,6 +83,7 @@ class AutoSearcher(object):
         :return:             True if it matches, false otherwise
         """
         regex_pattern = AutoSearcher.check_patterns[pattern]
+        print(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality, regex=True))
         regex = re.compile(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality, regex=True))
         return bool(re.search(regex, episode_name))
 
@@ -104,4 +108,6 @@ class AutoSearcher(object):
         pattern = pattern.replace("@search_name", show)
         pattern = pattern.replace("@episode_zfill_2", str(episode).zfill(2))
         pattern = pattern.replace("@quality_p_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
+        pattern = pattern.replace("@quality_x_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
+        pattern = pattern.replace("@quality_4:3_x_notation", AutoSearcher.quality_patterns[quality]["4:3_x_notation"])
         return pattern
