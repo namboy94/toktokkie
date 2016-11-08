@@ -42,6 +42,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--tui", action="store_true", help="Starts the program in TUI mode")
     parser.add_argument("-g", "--gui", action="store_true", help="Starts the program in GUI mode")
+    parser.add_argument("--disable-sentry", action="store_true", help="Disables sentry logging")
     args = parser.parse_args()
 
     try:
@@ -54,8 +55,11 @@ def main() -> None:
     except KeyboardInterrupt:
         print("Thanks for using toktokkie!")
     except Exception as e:
-        SentryLogger.sentry.captureException()
-        raise e
+        if not args.disable_sentry:
+            SentryLogger.sentry.captureException()
+            print("Error Logged by Sentry. The Development team will do it's best to address the issue")
+        else:
+            raise e
 
 if __name__ == '__main__':
     if sys.platform == "win32":
