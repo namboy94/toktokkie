@@ -83,7 +83,6 @@ class AutoSearcher(object):
         :return:             True if it matches, false otherwise
         """
         regex_pattern = AutoSearcher.check_patterns[pattern]
-        print(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality, regex=True))
         regex = re.compile(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality, regex=True))
         return bool(re.search(regex, episode_name))
 
@@ -108,6 +107,6 @@ class AutoSearcher(object):
         pattern = pattern.replace("@search_name", show)
         pattern = pattern.replace("@episode_zfill_2", str(episode).zfill(2))
         pattern = pattern.replace("@quality_p_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
-        pattern = pattern.replace("@quality_x_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
+        pattern = pattern.replace("@quality_x_notation", AutoSearcher.quality_patterns[quality]["x_notation"])
         pattern = pattern.replace("@quality_4:3_x_notation", AutoSearcher.quality_patterns[quality]["4:3_x_notation"])
         return pattern

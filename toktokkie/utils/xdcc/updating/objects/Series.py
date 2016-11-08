@@ -159,11 +159,9 @@ class Series(object):
         search_query = AutoSearcher.generate_search_string(
             self.data["search_pattern"], self.data["search_name"], episode, self.data["quality_identifier"])
 
-        print(search_query)
         search = PackSearcher(self.data["search_engines"]).search(search_query)
 
         for result in search:
-            print(result.get_filename())
             if result.get_bot() == self.data["bot_preference"] and AutoSearcher.matches_pattern(
                     self.data["search_pattern"], result.get_filename(),
                     self.data["search_name"], episode, self.data["quality_identifier"]):
