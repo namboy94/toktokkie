@@ -111,10 +111,13 @@ class TVSeriesRenamer(object):
         for episode in episodes:
             # We don't want to rename openings and endings, marked with 'OP' or 'ED' with a space afterwards
             # We also ignore hidden files starting with a '.' and files starting with '_'
-            ignore_flags = ["OP ", "ED ", ".", "_"]
+            ignore_flags = ["OP ", "ED ", "OP-", "ED-", "OP_", "ED_", ".", "_"]
+            ignored = False
             for flag in ignore_flags:
                 if episode.startswith(flag):
-                    continue
+                    ignored = True
+            if ignored:
+                continue
 
             episode_path = os.path.join(season_directory, episode)
             self.episodes.append(TVEpisode(episode_path, episode_number, season_number, show_name, self.naming_scheme))
@@ -132,10 +135,14 @@ class TVSeriesRenamer(object):
 
         for special_season in list_of_special_directories:
             for episode in os.listdir(special_season):
-                ignore_flags = ["OP ", "ED ", ".", "_"]
+                ignore_flags = ["OP ", "ED ", "OP-", "ED-", "OP_", "ED_", ".", "_"]
+                ignored = False
                 for flag in ignore_flags:
                     if episode.startswith(flag):
-                        continue
+                        ignored = True
+                if ignored:
+                    continue
+
                 special_episodes.append(os.path.join(special_season, episode))
 
         # Sort by filename
