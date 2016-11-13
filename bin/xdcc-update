@@ -52,6 +52,8 @@ if __name__ == "__main__":
         for series in handler.get_series():
             series.update(args.verbose)
 
+    except KeyboardInterrupt:
+        print("Thanks for using toktokkie's xdcc updater!")
     except Exception as e:
         if args.disable_sentry:
             raise e
