@@ -51,7 +51,7 @@ class GnomeProcedure(GenericProcedure):
                 gvfs_installed = True
 
         gvfs_check = False
-        if gvfs_installed:
+        if gvfs_installed:  # pragma: no cover
 
             try:
                 gvfs_out = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"])\
@@ -107,12 +107,14 @@ class GnomeProcedure(GenericProcedure):
         if not GnomeProcedure.is_applicable():  # pragma: no cover
             return None
 
-        gvfs_info = check_output(["gvfs-info", directory]).decode()
+        else:  # pragma: no cover
 
-        if "metadata::custom-icon: file://" in gvfs_info:
-            return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
-        else:
-            return None
+            gvfs_info = check_output(["gvfs-info", directory]).decode()
+
+            if "metadata::custom-icon: file://" in gvfs_info:
+                return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
+            else:
+                return None
 
     @staticmethod
     def get_procedure_name() -> str:

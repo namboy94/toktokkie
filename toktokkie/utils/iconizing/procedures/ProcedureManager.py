@@ -72,7 +72,7 @@ class ProcedureManager(object):
         :return:               the procedure's class, or None if the name did not match any implemented procedure
         """
         for procedure in ProcedureManager.implemented_procedures:
-            if procedure_name == procedure.get_procedure_name():
+            if procedure_name == procedure.get_procedure_name():  # pragma: no cover
                 return procedure
         return GenericProcedure
 
@@ -84,6 +84,6 @@ class ProcedureManager(object):
         :return: The iconizing procedure, or None if no applicable procedure was found
         """
         for procedure in ProcedureManager.implemented_procedures:
-            if procedure.is_applicable():
+            if procedure.is_applicable():  # pragma: no cover
                 return procedure
         return GenericProcedure

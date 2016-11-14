@@ -65,9 +65,8 @@ class Iconizer(object):
         """
         icon_directory = os.path.join(directory, ".meta", "icons")
         if os.path.isdir(icon_directory):
-            if self.procedure is not None:
-                self.procedure.iconize(directory, os.path.join(icon_directory, "main"))
-                self.__inner_iconize__(directory, icon_directory)
+            self.procedure.iconize(directory, os.path.join(icon_directory, "main"))
+            self.__inner_iconize__(directory, icon_directory)
 
     def __inner_iconize__(self, directory: str, icon_directory: str) -> None:
         """
@@ -92,9 +91,8 @@ class Iconizer(object):
         :param directory: The directory to de-iconize
         :return:          None
         """
-        if self.procedure is not None:
-            self.procedure.reset_iconization_state(directory)
-            for child in os.listdir(directory):
-                child_dir = os.path.join(directory, child)
-                if os.path.isdir(child_dir):
-                    self.reverse_iconization(child_dir)
+        self.procedure.reset_iconization_state(directory)
+        for child in os.listdir(directory):
+            child_dir = os.path.join(directory, child)
+            if os.path.isdir(child_dir):
+                self.reverse_iconization(child_dir)
