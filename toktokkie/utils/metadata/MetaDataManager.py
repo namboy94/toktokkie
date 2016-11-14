@@ -87,7 +87,7 @@ class MetaDataManager(object):
                     return stored_media_type == media_type
                 else:
                     return True
-        except (PermissionError, FileNotFoundError):
+        except (PermissionError, FileNotFoundError, NotADirectoryError):
             pass
 
         return False
@@ -99,8 +99,15 @@ class MetaDataManager(object):
 
         :param directory:  The directory
         :param media_type: The media type, if not supplied will default to 'generic'
+        :raises:           FileExistsError, if the file exists and is not a directory
         :return:           None
         """
+        if not os.path.isdir(directory):
+            if os.path.isfile(directory):
+                raise FileExistsError
+            else:
+                os.makedirs(directory)
+
         if not MetaDataManager.is_media_directory(directory, media_type):
 
             for path in [directory, os.path.join(directory, ".meta", "icons")]:
@@ -109,3 +116,20 @@ class MetaDataManager(object):
 
             with open(os.path.join(directory, ".meta", "type"), 'w') as f:
                 f.write(media_type)
+
+    @staticmethod
+    def get_media_type(directory: str) -> str:
+        """
+        Determines the media type of a media directory
+
+        :param directory: The directory to check
+        :return:          Either the type identifier string, or an empty string
+                          if the directory is not a media directory
+        """
+        if not MetaDataManager.is_media_directory(directory):
+            return ""
+        else:
+            type_file = os.path.join(directory, ".meta", "type")
+
+            with open(type_file, 'r') as f:
+                return f.read().lstrip().rstrip()

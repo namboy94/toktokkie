@@ -144,4 +144,3 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1", "Episode 01.mkv")))
         self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
                                                      "Game of Thrones - S01E01 - Winter Is Coming")))
-
