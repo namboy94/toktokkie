@@ -90,7 +90,7 @@ class MetaDataManager(object):
                     return stored_media_type == media_type
                 else:
                     return True
-        except (FileNotFoundError, NotADirectoryError, OSError, IOError):  #
+        except (OSError, IOError):  #
             return False
 
     @staticmethod

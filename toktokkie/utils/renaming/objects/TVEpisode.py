@@ -61,7 +61,7 @@ class TVEpisode(object):
         """
         Renames the original file to the new name generated with help of the naming scheme
 
-        :raise FileNotFoundError: if the episode file does not exist, which of course should not happen
+        :raise IOError, OSError:  if the episode file does not exist, which of course should not happen
                                   under normal circumstances
         :return:                  None
         """
