@@ -24,7 +24,6 @@ LICENSE
 
 # imports
 import os
-import json
 import shutil
 import unittest
 from toktokkie.utils.xdcc.updating.JsonHandler import JsonHandler
@@ -54,17 +53,17 @@ class UnitTests(unittest.TestCase):
         try:
             JsonHandler(os.path.join("toktokkie", "tests", "resources", "json", "invalid.json"))
             self.assertTrue(False)
-        except json.JSONDecodeError:
+        except ValueError:
             pass
         try:
             JsonHandler(os.path.join("toktokkie", "tests", "resources", "json", "invalid-updater.json"))
             self.assertTrue(False)
-        except json.JSONDecodeError:
+        except ValueError:
             pass
         try:
             JsonHandler(os.path.join("toktokkie", "tests", "resources", "json", "invalid-types-updater.json"))
             self.assertTrue(False)
-        except json.JSONDecodeError:
+        except ValueError:
             pass
 
     def test_storing_new_json(self):

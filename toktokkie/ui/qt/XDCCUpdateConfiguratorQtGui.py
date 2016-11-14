@@ -80,7 +80,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
                 self.json_handler = JsonHandler(selected[0])
                 self.file_loaded = True
                 self.populate_series_list()
-            except json.decoder.JSONDecodeError:
+            except ValueError:
                 pass  # TODO Let user know he's a dumm-dumm
 
     def save_json(self) -> None:

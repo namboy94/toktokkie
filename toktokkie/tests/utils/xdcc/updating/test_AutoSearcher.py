@@ -24,6 +24,7 @@ LICENSE
 
 # imports
 import unittest
+from toktokkie.utils.xdcc.updating.AutoSearcher import AutoSearcher
 
 
 class UnitTests(unittest.TestCase):
