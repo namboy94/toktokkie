@@ -25,7 +25,7 @@ LICENSE
 # imports
 import os
 import sys
-from subprocess import Popen, check_output
+from subprocess import Popen, check_output, CalledProcessError
 from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
 
 
@@ -53,7 +53,12 @@ class GnomeProcedure(GenericProcedure):
         gvfs_check = False
         if gvfs_installed:
 
-            gvfs_out = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"]).decode()
+            try:
+                gvfs_out = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"])\
+                    .decode()
+            except CalledProcessError:
+                gvfs_out = "Not Supported"
+
             if gvfs_out.rstrip().lstrip() == "":
                 Popen(["gvfs-set-attribute", "-t", "unset", ".", "metadata::custom-icon"]).wait()
                 gvfs_check = True
