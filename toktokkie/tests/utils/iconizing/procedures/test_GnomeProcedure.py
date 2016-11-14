@@ -50,19 +50,29 @@ class GnomeProcedureUnitTests(unittest.TestCase):
 
     def test_iconizing(self):
         GnomeProcedure.iconize(self.game_of_thrones, self.game_of_thrones_icon)
-        self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), self.game_of_thrones_icon)
+        icon_file = GnomeProcedure.get_icon_file(self.game_of_thrones)
         GnomeProcedure.reset_iconization_state(self.game_of_thrones)
+
+        if GnomeProcedure.is_applicable():
+            self.assertEqual(icon_file, self.game_of_thrones_icon)
 
     def test_iconizing_with_no_icon_extension(self):
         GnomeProcedure.iconize(self.game_of_thrones, self.game_of_thrones_icon.rsplit(".png", 1)[0])
-        self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), self.game_of_thrones_icon)
+        icon_file = GnomeProcedure.get_icon_file(self.game_of_thrones)
         GnomeProcedure.reset_iconization_state(self.game_of_thrones)
+
+        if GnomeProcedure.is_applicable():
+            self.assertEqual(icon_file, self.game_of_thrones_icon)
 
     def test_retrieving_icon_file(self):
 
         self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), None)
 
         GnomeProcedure.iconize(self.game_of_thrones, self.game_of_thrones_icon)
-        self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), self.game_of_thrones_icon)
+        icon_file = GnomeProcedure.get_icon_file(self.game_of_thrones)
+
+        if GnomeProcedure.is_applicable():
+            self.assertEqual(icon_file, self.game_of_thrones_icon)
+
         GnomeProcedure.reset_iconization_state(self.game_of_thrones)
         self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), None)
