@@ -28,7 +28,7 @@ from toktokkie.utils.iconizing.Iconizer import Iconizer
 from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
 
 
-class IconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
+class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
     """
     Class that defines the functionality of the Folder Iconizer GUI
     """
