@@ -34,13 +34,15 @@ class AutoSearcher(object):
 
     search_patterns = {
         "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv",
-        "sakura & c-w 4:3": "@search_name - @episode_zfill_2 @quality_4:3_x_notation [Sakura][C-W]"
+        "sakura & c-w 4:3": "@search_name - @episode_zfill_2 @quality_4:3_x_notation [Sakura][C-W]",
+        "namibsun": "@episode_raw_@search_name"
     }
 
     check_patterns = {
         "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$",
         "sakura & c-w 4:3": "^@search_name - @episode_zfill_2 \[(x264-AC3-BD)@quality_4:3_x_notation\]\[Sakura\]"
-                            "\[C-W\]\[[0-9A-Z]+\].mkv$"
+                            "\[C-W\]\[[0-9A-Z]+\].mkv$",
+        "namibsun": "^[0-9]+_test.txt$"
     }
 
     quality_patterns = {
@@ -105,6 +107,7 @@ class AutoSearcher(object):
             show = show.replace(")", "\)")
 
         pattern = pattern.replace("@search_name", show)
+        pattern = pattern.replace("@episode_raw", str(episode))
         pattern = pattern.replace("@episode_zfill_2", str(episode).zfill(2))
         pattern = pattern.replace("@quality_p_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
         pattern = pattern.replace("@quality_x_notation", AutoSearcher.quality_patterns[quality]["x_notation"])
