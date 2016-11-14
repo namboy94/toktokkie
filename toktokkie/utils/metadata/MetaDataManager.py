@@ -53,7 +53,7 @@ class MetaDataManager(object):
 
         try:
             children = os.listdir(directory)
-        except PermissionError:
+        except (PermissionError, OSError, IOError):
             # If we don't have read permissions for this directory, skip this directory
             return []
 

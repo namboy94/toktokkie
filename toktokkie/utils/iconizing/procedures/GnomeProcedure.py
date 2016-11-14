@@ -46,7 +46,7 @@ class GnomeProcedure(GenericProcedure):
         paths = os.environ["PATH"].split(path_divider)
         gvfs_installed = False
         for path in paths:
-            if os.access(os.path.join(path, "gvfs-set_attribute"), os.X_OK) and \
+            if os.access(os.path.join(path, "gvfs-set-attribute"), os.X_OK) and \
                     os.access(os.path.join(path, "gvfs-info"), os.X_OK):
                 gvfs_installed = True
 

@@ -80,7 +80,7 @@ class MetaDataManagerUnitTests(unittest.TestCase):
 
         # noinspection PyUnusedLocal
         def permission_error(directory):
-            raise PermissionError()
+            raise IOError()
 
         backup = os.listdir
         os.listdir = permission_error
