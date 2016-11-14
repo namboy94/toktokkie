@@ -29,16 +29,16 @@ class GenericProcedure(object):
     """
 
     @staticmethod
-    def is_applicable() -> bool:  # pragma: no cover
+    def is_applicable() -> bool:
         """
         Checks if the iconizing procedure is applicable to the current system
 
         :return: True, if the procedure is applicable
         """
-        raise NotImplementedError()
+        return True
 
     @staticmethod
-    def iconize(directory: str, icon_file: str) -> None:  # pragma: no cover
+    def iconize(directory: str, icon_file: str) -> None:
         """
         Iconizes a given directory with a given icon file using the procedure
 
@@ -46,30 +46,30 @@ class GenericProcedure(object):
         :param icon_file: The icon with which to iconize the directory
         :return:          None
         """
-        raise NotImplementedError()
+        return
 
     @staticmethod
-    def reset_iconization_state(directory: str) -> None:  # pragma: no cover
+    def reset_iconization_state(directory: str) -> None:
         """
         Resets the iconization state of the given directory
         :param directory: the directory to de-iconize
         :return:          None
         """
-        raise NotImplementedError()
+        return
 
     @staticmethod
-    def get_icon_file(directory: str) -> str or None:  # pragma: no cover
+    def get_icon_file(directory: str) -> str or None:
         """
         Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
 
         :param directory: The directory to check
         :return:          Either the path to the icon file or None if no icon file exists
         """
-        raise NotImplementedError()
+        return None
 
     @staticmethod
-    def get_procedure_name() -> str:  # pragma: no cover
+    def get_procedure_name() -> str:
         """
         :return: The name of the Procedure
         """
-        raise NotImplementedError()
+        return "generic"

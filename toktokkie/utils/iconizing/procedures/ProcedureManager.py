@@ -74,10 +74,10 @@ class ProcedureManager(object):
         for procedure in ProcedureManager.implemented_procedures:
             if procedure_name == procedure.get_procedure_name():
                 return procedure
-        return None
+        return GenericProcedure
 
     @staticmethod
-    def get_applicable_procedure() -> GenericProcedure or None:
+    def get_applicable_procedure() -> GenericProcedure:
         """
         Gets an applicable iconizing procedure from the list of implemented procedures
 
@@ -86,4 +86,4 @@ class ProcedureManager(object):
         for procedure in ProcedureManager.implemented_procedures:
             if procedure.is_applicable():
                 return procedure
-        return None
+        return GenericProcedure

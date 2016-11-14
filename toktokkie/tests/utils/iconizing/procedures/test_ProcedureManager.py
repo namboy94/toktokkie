@@ -25,6 +25,7 @@ LICENSE
 # imports
 import unittest
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
+from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
 
 
 class ProcedureManagerUnitTests(unittest.TestCase):
@@ -56,11 +57,11 @@ class ProcedureManagerUnitTests(unittest.TestCase):
     def test_no_applicable_procedures(self):
 
         class DummyProcedure(object):
-            # noinspection PyMethodMayBeStatic
-            def is_applicable(self):
+            @staticmethod
+            def is_applicable():
                 return False
 
         backup = ProcedureManager.implemented_procedures
-        ProcedureManager.implemented_procedures = [DummyProcedure()]
-        self.assertEqual(None, ProcedureManager.get_applicable_procedure())
+        ProcedureManager.implemented_procedures = [DummyProcedure]
+        self.assertEqual(GenericProcedure, ProcedureManager.get_applicable_procedure())
         ProcedureManager.implemented_procedures = backup

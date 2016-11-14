@@ -24,11 +24,11 @@ LICENSE
 
 # imports
 import os
-import sys
 import shutil
 import unittest
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
+from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
 
 
 class IconizerUnitTests(unittest.TestCase):
@@ -82,7 +82,7 @@ class IconizerUnitTests(unittest.TestCase):
 
     def test_iconizer_with_none_procedure(self):
         iconizer = Iconizer(procedure_override="SomeNotExistingProcedure")
-        self.assertEqual(iconizer.procedure, None)
+        self.assertEqual(iconizer.procedure, GenericProcedure)
 
         iconizer_target = os.path.join("temp_testing", "Game of Thrones")
 
