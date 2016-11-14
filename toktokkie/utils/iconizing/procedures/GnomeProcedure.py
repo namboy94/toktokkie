@@ -42,8 +42,16 @@ class GnomeProcedure(GenericProcedure):
 
         :return: True, if the procedures is applicable, False otherwise
         """
+        path_divider = ";" if sys.platform == "win32" else ":"
+        paths = os.environ["PATH"].split(path_divider)
+        gvfs_installed = False
+        for path in paths:
+            if os.access(os.path.join(path, "gvfs-set_attribute"), os.X_OK) and \
+                    os.access(os.path.join(path, "gvfs-info"), os.X_OK):
+                gvfs_installed = True
+
         try:
-            return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
+            return sys.platform == "linux" and gvfs_installed
         except KeyError:  # pragma: no cover
             return False
 
