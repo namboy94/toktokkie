@@ -51,7 +51,7 @@ class GnomeProcedure(GenericProcedure):
                 gvfs_installed = True
 
         try:
-            return sys.platform == "linux" and gvfs_installed
+            return sys.platform.startswith("linux") and gvfs_installed
         except KeyError:  # pragma: no cover
             return False
 

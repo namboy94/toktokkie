@@ -24,6 +24,7 @@ LICENSE
 
 # imports
 import os
+import sys
 from typing import List
 
 
@@ -51,9 +52,10 @@ class MetaDataManager(object):
         if not os.path.isdir(directory):
             return []
 
+        # noinspection PyUnboundLocalVariable
         try:
             children = os.listdir(directory)
-        except (PermissionError, OSError, IOError):
+        except (OSError, IOError):  # == PermissionError
             # If we don't have read permissions for this directory, skip this directory
             return []
 
@@ -79,6 +81,7 @@ class MetaDataManager(object):
         :param media_type: The type of media to check for, optional
         :return:           True if the directory is a TV Series directory, False otherwise
         """
+        # noinspection PyUnboundLocalVariable
         try:
             if ".meta" in os.listdir(directory):
                 if media_type:
@@ -87,10 +90,8 @@ class MetaDataManager(object):
                     return stored_media_type == media_type
                 else:
                     return True
-        except (PermissionError, FileNotFoundError, NotADirectoryError):
-            pass
-
-        return False
+        except (FileNotFoundError, NotADirectoryError, OSError, IOError):  #
+            return False
 
     @staticmethod
     def generate_media_directory(directory: str, media_type: str = "generic") -> None:

@@ -42,7 +42,7 @@ class GnomeProcedureUnitTests(unittest.TestCase):
 
     def test_applicability(self):
 
-        if sys.platform == "linux":
+        if sys.platform.startswith("linux"):
             try:
                 self.assertEqual(os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"], GnomeProcedure.is_applicable())
             except KeyError:
