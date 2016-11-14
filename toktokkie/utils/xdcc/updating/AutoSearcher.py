@@ -76,7 +76,7 @@ class AutoSearcher(object):
         Checks if an episode name fits the specified pattern
 
         :param pattern:      The pattern identifier to check
-        :param episode_name: The episode name to check
+        :param episode_name: The episode name to check (The entire file name)
         :param show:         The show to check against
         :param episode:      The episode to check against
         :param quality:      The quality to check against

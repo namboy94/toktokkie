@@ -23,6 +23,7 @@ LICENSE
 """
 
 # imports
+import sys
 import json
 from typing import List
 from toktokkie.utils.xdcc.updating.objects.Series import Series, from_dict as series_generator
@@ -84,7 +85,9 @@ class JsonHandler(object):
 
         self.json_location = destination
 
-        with open(destination, 'w') as f:
+        open_mode = "w" if sys.version_info[0] >= 3 else 'wb'
+
+        with open(destination, open_mode) as f:
             json.dump(self.json_data, f)
 
     def add_series(self, series: Series) -> None:

@@ -35,5 +35,16 @@ class UnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test(self):
-        pass
+    def test_pattern_passing(self):
+        self.assertLess(1, len(AutoSearcher.get_available_patterns()))
+
+    def test_generating_earch_strings(self):
+        self.assertEqual(AutoSearcher.generate_search_string("horriblesubs", "One-Punch Man", 1, "720p"),
+                         "[HorribleSubs] One-Punch Man - 01 [720p].mkv")
+        self.assertEqual(AutoSearcher.generate_search_string("horriblesubs", "One-Punch Man", 11, "1080p"),
+                         "[HorribleSubs] One-Punch Man - 11 [1080p].mkv")
+
+    def test_pattern_matcher(self):
+
+        episode_name = AutoSearcher.generate_search_string("horriblesubs", "One-Punch Man", 5, "480p")
+        self.assertTrue(AutoSearcher.matches_pattern("horriblesubs", episode_name, "One-Punch Man", 5, "480p"))
