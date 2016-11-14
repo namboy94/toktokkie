@@ -24,9 +24,11 @@ LICENSE
 
 # imports
 import os
+import sys
 import shutil
 import unittest
 from toktokkie.utils.iconizing.Iconizer import Iconizer
+from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
 
 
 class IconizerUnitTests(unittest.TestCase):
@@ -63,3 +65,26 @@ class IconizerUnitTests(unittest.TestCase):
         iconizer = Iconizer()
         iconizer.procedure = None
         iconizer.recursive_iconize("temp_testing")  # Just to check that no errors are thrown
+
+    def test_iconizer_override(self):
+
+        procedure = ProcedureManager.get_applicable_procedure()
+
+        if procedure is not None:
+            iconizer = Iconizer(procedure.get_procedure_name())
+            self.native_iconizer = iconizer
+            self.test_native_iconizing()
+
+    def test_iconizing_not_exisiting_directory(self):
+        self.assertFalse(os.path.exists("NotADirectory"))
+        self.native_iconizer.iconize_directory("NotADirectory")
+        self.assertFalse(os.path.exists("NotADirectory"))
+
+    def test_iconizer_with_none_procedure(self):
+        iconizer = Iconizer(procedure_override="SomeNotExistingProcedure")
+        self.assertEqual(iconizer.procedure, None)
+
+        iconizer_target = os.path.join("temp_testing", "Game of Thrones")
+
+        iconizer.iconize_directory(iconizer_target)
+        iconizer.reverse_iconization(iconizer_target)

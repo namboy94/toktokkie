@@ -66,7 +66,7 @@ class DesktopIniProcedure(GenericProcedure):
         # -r : Clears read-only state
         # -s : Clears the system file attribute
         # -h : Clears the hidden state
-        if os.path.isfile(desktop_ini_file):
+        if os.path.isfile(desktop_ini_file) and DesktopIniProcedure.is_applicable(): # pragma: no cover
             Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
 
         # Write the folder icon information to the desktop.ini file, deleting all previous content of the file
@@ -77,7 +77,8 @@ class DesktopIniProcedure(GenericProcedure):
             f.write("IconResource=" + relative_path + ",0\r\n")
 
         # Set the attributes of the desktop.ini file to hidden, system file and read-only
-        Popen(["attrib", "+s", "+h", "+r", desktop_ini_file]).wait()
+        if DesktopIniProcedure.is_applicable():  # pragma: no cover
+            Popen(["attrib", "+s", "+h", "+r", desktop_ini_file]).wait()
 
     @staticmethod
     def reset_iconization_state(directory: str) -> None:
@@ -88,7 +89,8 @@ class DesktopIniProcedure(GenericProcedure):
         """
         desktop_ini_file = os.path.join(directory, "desktop.ini")
         if os.path.isfile(desktop_ini_file):
-            Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
+            if DesktopIniProcedure.is_applicable():  # pragma: no cover
+                Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
             os.remove(os.path.join(directory, "desktop.ini"))
 
     @staticmethod

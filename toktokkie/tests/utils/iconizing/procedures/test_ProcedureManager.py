@@ -43,3 +43,21 @@ class ProcedureManagerUnitTests(unittest.TestCase):
             self.assertTrue(procedure.get_procedure_name() in procedure_names)
             self.assertEqual(procedure,
                              ProcedureManager.get_procedure_from_procedure_name(procedure.get_procedure_name()))
+
+    def test_supported_procedure_name_passing(self):
+        applicable_procedure = ProcedureManager.get_applicable_procedure()
+        applicable_names = ProcedureManager.get_procedure_names(supports_current_platform=True)
+
+        self.assertTrue(applicable_procedure.get_procedure_name() in applicable_names)
+
+    def test_no_applicable_procedures(self):
+
+        class DummyProcedure(object):
+            # noinspection PyMethodMayBeStatic
+            def is_applicable(self):
+                return False
+
+        backup = ProcedureManager.implemented_procedures
+        ProcedureManager.implemented_procedures = [DummyProcedure()]
+        self.assertEqual(None, ProcedureManager.get_applicable_procedure())
+        ProcedureManager.implemented_procedures = backup

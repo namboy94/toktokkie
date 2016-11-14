@@ -44,7 +44,7 @@ class GnomeProcedure(GenericProcedure):
         """
         try:
             return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
-        except KeyError:
+        except KeyError:  # pragma: no cover
             return False
 
     @staticmethod
@@ -61,7 +61,9 @@ class GnomeProcedure(GenericProcedure):
         if not icon_file.endswith(".png"):
             icon_file += ".png"
 
-        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file]).wait()
+        if GnomeProcedure.is_applicable():  # pragma: no cover
+            Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])\
+                .wait()
 
     @staticmethod
     def reset_iconization_state(directory: str) -> None:
@@ -70,7 +72,8 @@ class GnomeProcedure(GenericProcedure):
         :param directory: the directory to de-iconize
         :return:          None
         """
-        Popen(["gvfs-set-attribute", "-t", "unset", directory, "metadata::custom-icon"]).wait()
+        if GnomeProcedure.is_applicable():  # pragma: no cover
+            Popen(["gvfs-set-attribute", "-t", "unset", directory, "metadata::custom-icon"]).wait()
 
     @staticmethod
     def get_icon_file(directory: str) -> str or None:
@@ -80,6 +83,9 @@ class GnomeProcedure(GenericProcedure):
         :param directory: The directory to check
         :return:          Either the path to the icon file or None if no icon file exists
         """
+        if not GnomeProcedure.is_applicable():  # pragma: no cover
+            return None
+
         gvfs_info = check_output(["gvfs-info", directory]).decode()
 
         if "metadata::custom-icon: file://" in gvfs_info:
