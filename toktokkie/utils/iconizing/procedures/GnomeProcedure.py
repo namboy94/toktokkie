@@ -50,17 +50,18 @@ class GnomeProcedure(GenericProcedure):
                     os.access(os.path.join(path, "gvfs-info"), os.X_OK):
                 gvfs_installed = True
 
-        gvfs_check = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"]).decode()
-        if gvfs_check.rstrip().lstrip() != "":
-            gvfs_check = False
-        else:
-            Popen(["gvfs-set-attribute", "-t", "unset", ".", "metadata::custom-icon"]).wait()
-            gvfs_check = True
+        gvfs_check = False
+        if gvfs_installed:
 
-        try:
-            return sys.platform.startswith("linux") and gvfs_installed and gvfs_check
-        except KeyError:  # pragma: no cover
-            return False
+            gvfs_out = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"]).decode()
+            if gvfs_out.rstrip().lstrip() == "":
+                Popen(["gvfs-set-attribute", "-t", "unset", ".", "metadata::custom-icon"]).wait()
+                gvfs_check = True
+
+            try:
+                return sys.platform.startswith("linux") and gvfs_installed and gvfs_check
+            except KeyError:  # pragma: no cover
+                return False
 
     @staticmethod
     def iconize(directory: str, icon_file: str) -> None:
