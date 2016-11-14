@@ -57,7 +57,7 @@ class ProcedureManager(object):
         procedure_names = []
         for procedure in ProcedureManager.implemented_procedures:
             if supports_current_platform:
-                if procedure.is_applicable():
+                if procedure.is_applicable():  # pragma: no cover
                     procedure_names.append(procedure.get_procedure_name())
             else:
                 procedure_names.append(procedure.get_procedure_name())
@@ -72,7 +72,7 @@ class ProcedureManager(object):
         :return:               the procedure's class, or None if the name did not match any implemented procedure
         """
         for procedure in ProcedureManager.implemented_procedures:
-            if procedure_name == procedure.get_procedure_name():  # pragma: no cover
+            if procedure_name == procedure.get_procedure_name():
                 return procedure
         return GenericProcedure
 
