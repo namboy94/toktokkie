@@ -61,7 +61,7 @@ class IconizerUnitTests(unittest.TestCase):
     def test_no_iconizer_available(self):
 
         iconizer = Iconizer()
-        iconizer.procedure = None
+        iconizer.procedure = GenericProcedure
         iconizer.recursive_iconize("temp_testing")  # Just to check that no errors are thrown
 
     def test_iconizer_override(self):
