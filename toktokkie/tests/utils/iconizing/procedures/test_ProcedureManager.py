@@ -48,7 +48,10 @@ class ProcedureManagerUnitTests(unittest.TestCase):
         applicable_procedure = ProcedureManager.get_applicable_procedure()
         applicable_names = ProcedureManager.get_procedure_names(supports_current_platform=True)
 
-        self.assertTrue(applicable_procedure.get_procedure_name() in applicable_names)
+        if applicable_procedure is not None:
+            self.assertTrue(applicable_procedure.get_procedure_name() in applicable_names)
+        else:
+            self.assertEqual(applicable_names, [])
 
     def test_no_applicable_procedures(self):
 

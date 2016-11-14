@@ -24,7 +24,6 @@ LICENSE
 
 # imports
 import os
-import sys
 import shutil
 import unittest
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
@@ -90,7 +89,6 @@ class MetaDataManagerUnitTests(unittest.TestCase):
         self.assertEqual(results, [])
 
         os.listdir = backup
-        print(os.listdir)
 
     def test_search_on_not_exisiting_directory(self):
 
@@ -123,7 +121,7 @@ class MetaDataManagerUnitTests(unittest.TestCase):
         try:
             MetaDataManager.generate_media_directory(target_file)
             self.assertTrue(False)
-        except FileExistsError:
+        except (IOError, OSError):
             pass
 
     def test_media_type_finder(self):
