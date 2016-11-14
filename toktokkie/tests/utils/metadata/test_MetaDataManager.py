@@ -47,10 +47,11 @@ class MetaDataManagerUnitTests(unittest.TestCase):
 
     def test_recursive_tv_series_checker(self):
         directories = MetaDataManager.find_recursive_media_directories("temp_testing", media_type="tv_series")
-        self.assertEqual(len(directories), 4)
+        self.assertEqual(len(directories), 5)
         self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
         self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") in directories)
         self.assertTrue(os.path.join("temp_testing", "Re Zero") in directories)
+        self.assertTrue(os.path.join("temp_testing", "ShowWithoutSeasons") in directories)
         self.assertTrue(os.path.join("temp_testing", "NotExistingShow") in directories)
         self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
         self.assertTrue(os.path.join("temp_testing", "OtherMedia") not in directories)
@@ -62,16 +63,18 @@ class MetaDataManagerUnitTests(unittest.TestCase):
         self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
         self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") not in directories)
         self.assertTrue(os.path.join("temp_testing", "Re Zero") not in directories)
+        self.assertTrue(os.path.join("temp_testing", "ShowWithoutSeasons") not in directories)
         self.assertTrue(os.path.join("temp_testing", "NotExistingShow") not in directories)
         self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
         self.assertTrue(os.path.join("temp_testing", "OtherMedia") not in directories)
 
     def test_generic_recursive_media_checker(self):
         directories = MetaDataManager.find_recursive_media_directories("temp_testing")
-        self.assertEqual(len(directories), 5)
+        self.assertEqual(len(directories), 6)
         self.assertTrue(os.path.join("temp_testing", "Game of Thrones") in directories)
         self.assertTrue(os.path.join("temp_testing", "The Big Bang Theory") in directories)
         self.assertTrue(os.path.join("temp_testing", "Re Zero") in directories)
+        self.assertTrue(os.path.join("temp_testing", "ShowWithoutSeasons") in directories)
         self.assertTrue(os.path.join("temp_testing", "NotExistingShow") in directories)
         self.assertTrue(os.path.join("temp_testing", "NotAShow") not in directories)
         self.assertTrue(os.path.join("temp_testing", "OtherMedia") in directories)
