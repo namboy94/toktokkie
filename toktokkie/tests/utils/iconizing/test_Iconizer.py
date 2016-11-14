@@ -44,20 +44,18 @@ class IconizerUnitTests(unittest.TestCase):
 
     def test_native_iconizing(self):
 
-        if self.native_iconizer.procedure is not None:
-            self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+        self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+        self.native_iconizer.recursive_iconize("temp_testing")
 
-            self.native_iconizer.recursive_iconize("temp_testing")
+        if self.native_iconizer.procedure != GenericProcedure:
 
             self.assertNotEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
             self.assertTrue(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones) in
                             [os.path.join(self.game_of_thrones, ".meta", "icons", "main.png"),
                              os.path.join(self.game_of_thrones, ".meta", "icons", "main.ico")])
 
-            self.native_iconizer.reverse_iconization("temp_testing")
-
-            if self.native_iconizer.procedure is not None:
-                self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+        self.native_iconizer.reverse_iconization("temp_testing")
+        self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
 
     # noinspection PyMethodMayBeStatic
     def test_no_iconizer_available(self):
@@ -69,11 +67,9 @@ class IconizerUnitTests(unittest.TestCase):
     def test_iconizer_override(self):
 
         procedure = ProcedureManager.get_applicable_procedure()
-
-        if procedure is not None:
-            iconizer = Iconizer(procedure.get_procedure_name())
-            self.native_iconizer = iconizer
-            self.test_native_iconizing()
+        iconizer = Iconizer(procedure.get_procedure_name())
+        self.native_iconizer = iconizer
+        self.test_native_iconizing()
 
     def test_iconizing_not_exisiting_directory(self):
         self.assertFalse(os.path.exists("NotADirectory"))
