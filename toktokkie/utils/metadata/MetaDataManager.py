@@ -24,7 +24,6 @@ LICENSE
 
 # imports
 import os
-import sys
 from typing import List
 
 
@@ -100,12 +99,12 @@ class MetaDataManager(object):
 
         :param directory:  The directory
         :param media_type: The media type, if not supplied will default to 'generic'
-        :raises:           FileExistsError, if the file exists and is not a directory
+        :raises:           IOError (FileExistsError), if the file exists and is not a directory
         :return:           None
         """
         if not os.path.isdir(directory):
             if os.path.isfile(directory):
-                raise FileExistsError
+                raise IOError()
             else:
                 os.makedirs(directory)
 
