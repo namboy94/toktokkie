@@ -58,7 +58,7 @@ class GenericScheme(object):
             sanitized = sanitized.replace(illegal_character, "")
         return sanitized
 
-    def apply_scheme(self) -> str:
+    def apply_scheme(self) -> str:  # pragma: no cover
         """
         Applies the scheme to the episode information and returns it as a string
 
@@ -67,7 +67,7 @@ class GenericScheme(object):
         raise NotImplementedError
 
     @staticmethod
-    def get_scheme_name() -> str:
+    def get_scheme_name() -> str:  # pragma: no cover
         """
         :return: The scheme's name
         """

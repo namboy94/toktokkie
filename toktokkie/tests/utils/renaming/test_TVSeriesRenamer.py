@@ -59,11 +59,7 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                          "Game of Thrones - S00E02 - 15-Minute Preview"]}
 
         game_of_thrones = TVSeriesRenamer(os.path.join("temp_testing", "Game of Thrones"), PlexTvdbScheme)
-
         confirmation = game_of_thrones.request_confirmation()
-
-        for x in confirmation:
-            print(x.get_names())
 
         self.assertEqual(len(confirmation), 26)
 
