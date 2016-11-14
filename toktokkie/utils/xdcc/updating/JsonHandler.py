@@ -37,7 +37,7 @@ class JsonHandler(object):
         """
         Creates a new JsonHandler, either from scratch or from an existing JSON file
 
-        :raises:          json.decoder.JSONDecodeError if the loaded JSON file was invalid
+        :raises:          json.decoder.JSONDecodeError if the loaded JSON file was invalid.json
         :param json_file: An optional JSON file location.
         """
         self.json_data = []
@@ -53,7 +53,7 @@ class JsonHandler(object):
         """
         Checks the JSON data for validity. If the file is not valid, an exception is raised
 
-        :raises: json.decoder.JSONDecodeError if the loaded JSON file was invalid
+        :raises: json.decoder.JSONDecodeError if the loaded JSON file was invalid.json
         :return: None
         """
 
@@ -68,9 +68,9 @@ class JsonHandler(object):
                               "naming_scheme",
                               "search_pattern"]:
                     if check not in series.keys():
-                        raise json.decoder.JSONDecodeError
+                        raise json.decoder.JSONDecodeError("Attribute Missing", "json", 0)
         except AttributeError:
-            raise json.decoder.JSONDecodeError
+            raise json.decoder.JSONDecodeError("Attribute Missing", "json", 0)
 
     def store_json(self, destination: str = "") -> None:
         """

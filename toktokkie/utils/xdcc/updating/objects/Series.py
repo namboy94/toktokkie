@@ -87,6 +87,25 @@ class Series(object):
                 equal = False
         return equal
 
+    # noinspection PyUnresolvedReferences
+    def equals(self, series: "__class__") -> bool:
+        """
+        Checks if a series object is equal to this one
+
+        :param series: The series to compare to
+        :return:       True if the two series are the same, False otherwise
+        """
+        equal = True
+        equal = equal and series.get_bot_preference() == self.get_bot_preference()
+        equal = equal and series.get_destination_directory() == self.get_destination_directory()
+        equal = equal and series.get_naming_scheme() == self.get_naming_scheme()
+        equal = equal and series.get_quality_identifier() == self.get_quality_identifier()
+        equal = equal and series.get_season() == self.get_season()
+        equal = equal and series.get_search_pattern() == self.get_search_pattern()
+        equal = equal and series.get_search_name() == self.get_search_name()
+        equal = equal and series.get_naming_scheme() == self.get_naming_scheme()
+        return equal
+
     def update(self, verbose: bool = False) -> None:
         """
         Updates the Series
