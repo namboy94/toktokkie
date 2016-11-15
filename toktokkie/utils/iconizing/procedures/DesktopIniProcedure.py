@@ -60,7 +60,7 @@ class DesktopIniProcedure(GenericProcedure):
             icon_file += ".ico"
 
         desktop_ini_file = os.path.join(directory, "desktop.ini")
-        relative_path = os.path.normpath(os.path.relpath(icon_file, directory))
+        relative_path = os.path.realpath(os.path.relpath(icon_file, directory))
 
         # If the file already exists, set the attributes in a way that the program can edit the file:
         # -r : Clears read-only state
