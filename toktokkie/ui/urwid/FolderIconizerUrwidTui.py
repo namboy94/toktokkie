@@ -45,6 +45,7 @@ class FolderIconizerUrwidTui(object):
 
         self.top = None
         self.loop = None
+        self.body = []
         self.list_walker = None
 
         self.title = urwid.Text("Folder Iconizer")
@@ -57,6 +58,9 @@ class FolderIconizerUrwidTui(object):
 
         self.iconize_button = urwid.Button("Iconize")
         urwid.connect_signal(self.iconize_button, 'click', self.iconize)
+
+        self.pop_up_button = urwid.Button("OK")
+        urwid.connect_signal(self.pop_up_button, 'click', self.reset_ui)
 
         self.lay_out()
 
@@ -71,9 +75,10 @@ class FolderIconizerUrwidTui(object):
         directory_edit = urwid.AttrMap(self.directory_edit, None, focus_map='reversed')
         iconize_button = urwid.AttrMap(self.iconize_button, None, focus_map='reversed')
 
-        body = [self.title, div, self.directory_text, directory_edit, div, self.recursive_check, div, iconize_button]
+        self.body = [self.title, div, self.directory_text, directory_edit,
+                     div, self.recursive_check, div, iconize_button]
 
-        self.list_walker = urwid.SimpleFocusListWalker(body)
+        self.list_walker = urwid.SimpleFocusListWalker(self.body)
         self.top = urwid.Overlay(urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
                                  urwid.SolidFill(u'\N{MEDIUM SHADE}'),
                                  align='center', width=('relative', 80),
@@ -109,6 +114,11 @@ class FolderIconizerUrwidTui(object):
             self.iconizer.iconize_directory(directory)
         self.iconizing = False
 
+        text = urwid.Text("Iconization has completed")
+
+        self.list_walker[:] = [text, self.pop_up_button]
+        self.loop.draw_screen()
+
     def start_spinner(self):
         """
         Starts a little animation on the iconizer button to indicate that the iconization is running
@@ -125,3 +135,14 @@ class FolderIconizerUrwidTui(object):
             self.iconize_button.set_label("Start")
             self.loop.draw_screen()
         Thread(target=spinner).start()
+
+    # noinspection PyUnusedLocal
+    def reset_ui(self, button: urwid.Button) -> None:
+        """
+        Restores the UI after a message popup was shown
+
+        :param button: The button calling this method
+        :return:       None
+        """
+        self.list_walker[:] = self.body
+        self.loop.draw_screen()

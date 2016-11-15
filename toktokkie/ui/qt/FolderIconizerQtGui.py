@@ -23,11 +23,12 @@ LICENSE
 """
 
 # imports
+import sys
 import time
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from toktokkie.utils.iconizing.Iconizer import Iconizer
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
 
 
@@ -52,6 +53,7 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
 
         self.browse_directory_button.clicked.connect(self.browse_for_directory)
         self.start_button.clicked.connect(self.start_iconizing)
+
         self.spinner_update_signal.connect(self.update_spinner)
 
     def browse_for_directory(self) -> None:  # pragma: no cover
@@ -78,6 +80,15 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
         else:
             self.iconizer.iconize_directory(self.directory_path_edit.text())
         self.iconizing = False
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("Complete")
+        msg.setText("The iconization has completed")
+        msg.setStandardButtons(QMessageBox.Ok)
+
+        if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+            msg.exec_()
 
     def start_spinner(self) -> None:
         """

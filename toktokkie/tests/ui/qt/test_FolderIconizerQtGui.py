@@ -73,10 +73,18 @@ class UnitTests(unittest.TestCase):
 
         procedure = ProcedureManager.get_applicable_procedure()
         if procedure != GenericProcedure:
-            self.assertEqual(os.path.abspath(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones"))),
-                             os.path.abspath(os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext)))
-            self.assertEqual(os.path.abspath(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1"))),
-                             os.path.abspath(os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext)))
+            self.assertEqual(
+                os.path.abspath(
+                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones"))),
+                os.path.abspath(
+                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext)))
+
+            self.assertEqual(
+                os.path.abspath(
+                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1"))),
+                os.path.abspath(
+                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext)))
+
             self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory")), None)
 
     def test_recursive_iconizing(self):
@@ -90,12 +98,24 @@ class UnitTests(unittest.TestCase):
 
         procedure = ProcedureManager.get_applicable_procedure()
         if procedure != GenericProcedure:
-            self.assertEqual(os.path.abspath(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones"))),
-                             os.path.abspath(os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext)))
-            self.assertEqual(os.path.abspath(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1"))),
-                             os.path.abspath(os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext)))
-            self.assertEqual(os.path.abspath(procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory"))),
-                             os.path.abspath(os.path.join("temp_testing", "The Big Bang Theory", ".meta", "icons", "main" + icon_ext)))
+
+            self.assertEqual(
+                os.path.abspath(
+                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones"))),
+                os.path.abspath(
+                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext)))
+
+            self.assertEqual(
+                os.path.abspath(
+                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1"))),
+                os.path.abspath(
+                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext)))
+
+            self.assertEqual(
+                os.path.abspath(
+                    procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory"))),
+                os.path.abspath(
+                    os.path.join("temp_testing", "The Big Bang Theory", ".meta", "icons", "main" + icon_ext)))
 
     def test_spinner(self):
 

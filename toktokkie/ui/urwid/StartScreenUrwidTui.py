@@ -58,7 +58,7 @@ class StartScreenUrwidTui(object):
                                  valign='middle', height=('relative', 70),
                                  min_width=20, min_height=10)
 
-    def start(self) -> None:
+    def start(self) -> None:  # pragma: no cover
         """
         Starts the TUI
 
@@ -84,7 +84,7 @@ class StartScreenUrwidTui(object):
         return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
     # noinspection PyUnusedLocal,PyMethodMayBeStatic
-    def start_tui(self, button: urwid.Button, choice: object = None) -> None:
+    def start_tui(self, button: urwid.Button, choice: object = None) -> None:  # pragma: no cover
         """
         Starts the selected TUI option when pressing Enter
 
