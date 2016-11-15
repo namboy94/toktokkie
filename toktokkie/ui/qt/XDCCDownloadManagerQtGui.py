@@ -26,12 +26,13 @@ LICENSE
 import os
 import time
 from threading import Thread
+from PyQt5.QtCore import pyqtSignal
 from xdcc_dl.entities.Progress import Progress
-from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
-from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.utils.iconizing.Iconizer import Iconizer
+from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from toktokkie.utils.xdcc.XDCCDownloadManager import XDCCDownloadManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
+from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
 from toktokkie.ui.qt.pyuic.xdcc_download_manager import Ui_XDCCDownloadManagerWindow
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton
@@ -41,6 +42,10 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
     """
     Class that defines the functionality of the XDCC Downloader GUI
     """
+
+    progress_updater_signal = pyqtSignal(float, float, int, int, name="progress_updater")
+    download_queue_refresh_signal = pyqtSignal(name="download_queue_refresh_signal")
+    spinner_updater_signal = pyqtSignal(str, QPushButton, name="spinner_updater")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -53,7 +58,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.downloading = False
         self.searching = False
-        self.progress = None
 
         self.search_results = []
         self.download_queue_list = []
@@ -64,10 +68,9 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.search_term_edit.returnPressed.connect(self.start_search)
         self.directory_edit.textChanged.connect(self.parse_directory)
 
-        self.download_button.windowTitleChanged.connect(lambda x: self.spinner(self.download_button, self.downloading,
-                                                                               "Download", "Downloading"))
-        self.search_button.windowTitleChanged.connect(lambda x: self.spinner(self.search_button, self.searching,
-                                                                             "Search", "Searching"))
+        self.progress_updater_signal.connect(self.update_progress)
+        self.download_queue_refresh_signal.connect(self.refresh_download_queue)
+        self.spinner_updater_signal.connect(lambda x, y: y.setText(x))
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
@@ -88,10 +91,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.search_result_list.header().setSectionResizeMode(4, QHeaderView.Stretch)
 
-        self.single_progress_bar.windowTitleChanged.connect(self.redraw_progress)  # Updates Progress
-        self.total_progress_bar.windowTitleChanged.connect(self.post_download)  # Post-download handling
-
-        Thread(target=self.ui_updater).start()
         self.directory_edit.setText(os.getcwd())
 
     def browse_for_directory(self) -> None:
@@ -118,6 +117,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         def search():
 
             self.searching = True
+            self.start_spinner("search")
 
             search_term = self.search_term_edit.text()
             search_engine = self.search_engine_combo_box.currentText()
@@ -147,14 +147,17 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         if self.downloading or len(self.download_queue_list) == 0:
             return
 
+        self.downloading = True
+        self.start_spinner("download")
+
         destination_directory, season_directory = XDCCDownloadManager.prepare_directory(self.directory_edit.text(),
                                                                                         self.show_name_edit.text(),
                                                                                         self.season_spin_box.value())
 
         # noinspection PyShadowingNames
-        self.progress = Progress(len(self.download_queue_list),
-                                 callback=lambda a, b, c, d, e, f, g, h:
-                                 self.single_progress_bar.windowTitleChanged.emit("Title"))
+        progress = Progress(len(self.download_queue_list),
+                            callback=lambda a, b, single_progres, d, e, total_progres, current_speed, avg_speed:
+                            self.progress_updater_signal.emit(single_progres, total_progres, current_speed, avg_speed))
 
         packs = list(self.download_queue_list)
 
@@ -167,8 +170,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def handle_download() -> None:
 
-            self.downloading = True
-            MultipleServerDownloader("random").download(packs, self.progress)
+            MultipleServerDownloader("random").download(packs, progress)
 
             if self.auto_rename_check.checkState():
 
@@ -181,19 +183,13 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
 
             self.downloading = False
-            self.total_progress_bar.windowTitleChanged.emit("Title")
+            self.download_queue = []
+
+            self.directory_edit.textChanged.emit("")
+            self.download_queue_refresh_signal.emit()
+            self.progress_updater_signal.emit(0.0, 0.0, 0, 0)
 
         Thread(target=handle_download).start()
-
-    def post_download(self) -> None:
-        """
-        Handles Post-download cleanup
-
-        :return: None
-        """
-        self.progress = None
-        self.parse_directory()
-        self.download_queue.clear()
 
     def parse_directory(self) -> None:
         """
@@ -259,8 +255,13 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
-        for row in reversed(self.download_queue.selectedIndexes()):
-            self.download_queue_list.pop(row.row())
+        rows_to_pop = []
+        for row in self.download_queue.selectedIndexes():
+            rows_to_pop.append(row.row())
+
+        for row in reversed(sorted(rows_to_pop)):
+            self.download_queue_list.pop(row)
+
         self.refresh_download_queue()
 
     def move_queue_item(self, up: bool = False, down: bool = False) -> None:
@@ -286,53 +287,50 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.refresh_download_queue()
 
-    def redraw_progress(self) -> None:
+    def update_progress(self, single_progress: float, total_progress: float, current_speed: int, average_speed: int)\
+            -> None:
         """
-        Re-draws all progress related widgets
+        Updates the progress bars and speed displays
 
-        :return: None
+        :param single_progress: The progress of the current file
+        :param total_progress:  The total progress
+        :param current_speed:   The current download speed
+        :param average_speed:   The average download speed
+        :return:                None
         """
-        if self.progress is not None:
-            self.single_progress_bar.setValue(self.progress.get_single_progress_percentage())
-            self.total_progress_bar.setValue(self.progress.get_total_percentage())
-            self.current_speed_number.display(int(self.progress.calculate_current_download_speed() / 1000))
-            self.average_speed_number.display(int(self.progress.calculate_average_download_speed() / 1000))
-        else:
-            self.single_progress_bar.setValue(0.0)
-            self.total_progress_bar.setValue(0.0)
-            self.current_speed_number.display(0)
-            self.average_speed_number.display(0)
+        self.single_progress_bar.setValue(single_progress)
+        self.total_progress_bar.setValue(total_progress)
+        self.current_speed_number.display(current_speed)
+        self.average_speed_number.display(average_speed)
 
-    @staticmethod
-    def spinner(button: QPushButton, check: bool, normal_text: str, spinner_text: str) -> None:
+    def start_spinner(self, spinner_type: str) -> None:
         """
-        Indicates that a process is currently by adding dots to a button's text
+        Starts a spinner animation while either searching or downloading
 
-        :param button:        The button to use
-        :param check:         A check variable to determine if the process is ongoing
-        :param normal_text:   The text normally displayed
-        :param spinner_text:  The text displayed when the process is ongoing
-        :return:              None
+        :param spinner_type: The type of spinner (a string that's either 'download' or 'search')
+        :return:             None
         """
 
-        if check:
-            dots = button.text().count(".")
-            new_dots = (dots % 3) + 1
-            button.setText(spinner_text + new_dots * ".")
-        else:
-            button.setText(normal_text)
+        search = spinner_type == "search"
+        download = spinner_type == "download"
 
-    def ui_updater(self, pause_time: float = 0.5) -> None:
-        """
-        Method that updates the UI every x seconds
+        def spin():
 
-        :return: None
-        """
-        while self.downloading or self.searching:
-            self.download_button.windowTitleChanged.emit("Title")
-            self.search_button.windowTitleChanged.emit("Title")
-            self.single_progress_bar.windowTitleChanged.emit("Title")
-            time.sleep(pause_time)
-        self.download_button.windowTitleChanged.emit("Title")
-        self.search_button.windowTitleChanged.emit("Title")
-        self.single_progress_bar.windowTitleChanged.emit("Title")
+            while (self.searching and search) or (self.downloading and download):
+
+                if self.searching and search:
+                    new_text = "Searching" + (self.search_button.text().count(".") % 3 + 1) * "."
+                    self.spinner_updater_signal.emit(self.search_button, new_text)
+
+                if self.downloading and download:
+                    new_text = "Downloading" + (self.download_button.text().count(".") % 3 + 1) * "."
+                    self.spinner_updater_signal.emit(self.download_button, new_text)
+
+                time.sleep(0.3)
+
+            if search and not self.searching:
+                self.search_button.setText("Search")
+            if download and not self.downloading:
+                self.download_button.setText("Download")
+
+        Thread(target=spin).start()
