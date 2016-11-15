@@ -264,3 +264,12 @@ class TVSeriesRenamerUrwidTui(object):
             self.loop.draw_screen()
 
         Thread(target=spin).start()
+
+    def quit(self) -> None:
+        """
+        Cleans up any variables that may cause thread to continue executing after the TUI ends
+
+        :return: None
+        """
+        self.renaming = False
+        self.parsing = False

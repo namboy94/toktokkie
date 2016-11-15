@@ -49,6 +49,7 @@ class UnitTests(unittest.TestCase):
 
     def tearDown(self):
         Iconizer().reverse_iconization("temp_testing")
+        self.tui.quit()
         shutil.rmtree("temp_testing")
 
     def test_non_recursive_iconizing(self):

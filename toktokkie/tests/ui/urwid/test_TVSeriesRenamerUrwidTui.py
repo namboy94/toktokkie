@@ -23,6 +23,8 @@ LICENSE
 """
 
 # imports
+import os
+import shutil
 import unittest
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
 
@@ -38,9 +40,11 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         self.tui = TVSeriesRenamerUrwidTui()
         self.tui.loop = LoopDummy()
+        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
 
     def tearDown(self):
-        pass
+        self.tui.quit()
+        shutil.rmtree("temp_testing")
 
     def test(self):
         pass

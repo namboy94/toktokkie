@@ -66,7 +66,9 @@ class StartScreenUrwidTui(object):
         """
         urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')]).run()
         if self.selected is not None:
-            self.selected().start()
+            child = self.selected()
+            child.start()
+            child.quit()
 
     def generate_menu(self, header: str, options: Dict[str, object]) -> urwid.ListBox:
         """

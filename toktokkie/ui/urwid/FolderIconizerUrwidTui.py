@@ -146,3 +146,11 @@ class FolderIconizerUrwidTui(object):
         """
         self.list_walker[:] = self.body
         self.loop.draw_screen()
+
+    def quit(self) -> None:
+        """
+        Cleans up any variables that may cause thread to continue executing after the TUI ends
+
+        :return: None
+        """
+        self.iconizing = False
