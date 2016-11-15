@@ -23,8 +23,15 @@ LICENSE
 """
 
 # imports
+import os
+import sys
+import time
+import shutil
 import unittest
+from toktokkie.utils.iconizing.Iconizer import Iconizer
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
+from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
+from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
 
 
 class LoopDummy(object):
@@ -38,9 +45,52 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         self.tui = FolderIconizerUrwidTui()
         self.tui.loop = LoopDummy()
+        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
 
     def tearDown(self):
-        pass
+        Iconizer().reverse_iconization("temp_testing")
+        shutil.rmtree("temp_testing")
 
-    def test(self):
-        pass
+    def test_non_recursive_iconizing(self):
+        self.tui.recursive_check.set_state(False)
+
+        self.tui.directory_edit.set_edit_text(os.path.join("temp_testing", "Game of Thrones"))
+        self.tui.iconize(None)
+
+        icon_ext = ".ico" if sys.platform == "win32" else ".png"
+
+        procedure = ProcedureManager.get_applicable_procedure()
+        if procedure != GenericProcedure:
+            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")),
+                             os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext))
+            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1")),
+                             os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext))
+            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory")), None)
+
+    def test_recursive_iconizing(self):
+        self.tui.recursive_check.set_state(True)
+
+        self.tui.directory_edit.set_edit_text(os.path.join("temp_testing"))
+        self.tui.iconize(None)
+
+        icon_ext = ".ico" if sys.platform == "win32" else ".png"
+
+        procedure = ProcedureManager.get_applicable_procedure()
+        if procedure != GenericProcedure:
+            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")),
+                             os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext))
+            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1")),
+                             os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext))
+            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory")),
+                             os.path.join("temp_testing", "The Big Bang Theory", ".meta", "icons", "main" + icon_ext))
+
+    def test_spinner(self):
+        self.tui.iconizing = True
+        self.tui.start_spinner()
+        time.sleep(0.5)
+
+        self.assertTrue(self.tui.iconize_button.get_label().startswith("Iconizing"))
+        self.tui.iconizing = False
+        time.sleep(0.5)
+
+        self.assertEqual(self.tui.iconize_button.get_label(), "Start")

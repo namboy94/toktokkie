@@ -24,7 +24,9 @@ LICENSE
 
 # imports
 import os
+import time
 import urwid
+from threading import Thread
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 
 
@@ -39,7 +41,10 @@ class FolderIconizerUrwidTui(object):
         """
         self.iconizer = Iconizer()
 
+        self.iconizing = False
+
         self.top = None
+        self.loop = None
         self.list_walker = None
 
         self.title = urwid.Text("Folder Iconizer")
@@ -75,13 +80,15 @@ class FolderIconizerUrwidTui(object):
                                  valign='middle', height=('relative', 70),
                                  min_width=20, min_height=10)
 
-    def start(self) -> None:
+    def start(self) -> None:  # pragma: no cover
         """
         Starts the TUI
 
         :return: None
         """
-        urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')]).run()
+        self.loop = urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')])
+        self.loop.run()
+        self.iconizing = False
 
     # noinspection PyUnusedLocal
     def iconize(self, iconize_button: urwid.Button, parameters: None = None) -> None:
@@ -92,9 +99,29 @@ class FolderIconizerUrwidTui(object):
         :param parameters:     The parameters given, will not be used
         :return:               None
         """
+        self.iconizing = True
+        self.start_spinner()
         directory = self.directory_edit.get_edit_text()
 
         if self.recursive_check.get_state():
             self.iconizer.recursive_iconize(directory)
         else:
             self.iconizer.iconize_directory(directory)
+        self.iconizing = False
+
+    def start_spinner(self):
+        """
+        Starts a little animation on the iconizer button to indicate that the iconization is running
+
+        :return: None
+        """
+        def spinner():
+            while self.iconizing:
+                new_text = "Iconizing" + (self.iconize_button.get_label().count(".") % 3 + 1) * "."
+                self.iconize_button.set_label(new_text)
+                self.loop.draw_screen()
+                time.sleep(0.3)
+
+            self.iconize_button.set_label("Start")
+            self.loop.draw_screen()
+        Thread(target=spinner).start()

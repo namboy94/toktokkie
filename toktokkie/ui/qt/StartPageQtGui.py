@@ -53,7 +53,7 @@ class StartPageQtGui(QMainWindow, Ui_StartPageWindow):
         self.xdcc_update_configurator.clicked.connect(XDCCUpdateConfiguratorQtGui(self).show)
 
 
-def start():
+def start():  # pragma: no cover
     """
     Starts the Start Page GUI
 

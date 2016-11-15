@@ -23,6 +23,9 @@ LICENSE
 """
 
 # imports
+import time
+from threading import Thread
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 from toktokkie.ui.qt.pyuic.iconizer import Ui_FolderIconizerWindow
@@ -32,6 +35,8 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
     """
     Class that defines the functionality of the Folder Iconizer GUI
     """
+
+    spinner_update_signal = pyqtSignal(str, name="spinner_update")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -43,11 +48,13 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
         self.setupUi(self)
 
         self.iconizer = Iconizer()
+        self.iconizing = False
 
         self.browse_directory_button.clicked.connect(self.browse_for_directory)
         self.start_button.clicked.connect(self.start_iconizing)
+        self.spinner_update_signal.connect(self.update_spinner)
 
-    def browse_for_directory(self) -> None:
+    def browse_for_directory(self) -> None:  # pragma: no cover
         """
         Lets the user browse for a local directory path
 
@@ -64,7 +71,35 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
 
         :return: None
         """
+        self.iconizing = True
+        self.start_spinner()
         if self.recursive_check.checkState():
             self.iconizer.recursive_iconize(self.directory_path_edit.text())
         else:
             self.iconizer.iconize_directory(self.directory_path_edit.text())
+        self.iconizing = False
+
+    def start_spinner(self) -> None:
+        """
+        Starts a little animation on the Start Button to indicate that the iconizer is running
+
+        :return: None
+        """
+        def spinner():
+            while self.iconizing:
+                new_text = "Iconizing" + (self.start_button.text().count(".") % 3 + 1) * "."
+                self.spinner_update_signal.emit(new_text)
+                time.sleep(0.3)
+
+                self.spinner_update_signal.emit("Start")
+
+        Thread(target=spinner).start()
+
+    def update_spinner(self, text: str) -> None:
+        """
+        Updates the text on the Start Button
+
+        :param text: The text to be displayed on the Start button
+        :return:     None
+        """
+        self.start_button.setText(text)
