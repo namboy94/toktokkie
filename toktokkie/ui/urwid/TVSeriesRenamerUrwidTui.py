@@ -27,6 +27,7 @@ import os
 import time
 import urwid
 from threading import Thread
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 
@@ -60,8 +61,7 @@ class TVSeriesRenamerUrwidTui(object):
         for scheme in SchemeManager.get_scheme_names():
             urwid.RadioButton(group=self.renaming_schemes, label=scheme)
 
-        self.dir_entry_text = urwid.Text("Directory:")
-        self.dir_entry = urwid.Edit()
+        self.dir_entry = urwid.Edit(caption="Directory: ")
         self.dir_entry.set_edit_text(os.getcwd())
         self.recursive_check = urwid.CheckBox("Recursive?")
         self.start_search_button = urwid.Button("Start Search")
@@ -89,11 +89,10 @@ class TVSeriesRenamerUrwidTui(object):
         start_search_button = urwid.AttrMap(self.start_search_button, None, focus_map='reversed')
         remove_selection_button = urwid.AttrMap(self.remove_selection_button, None, focus_map='reversed')
 
-        dir_entry_formatted = urwid.AttrMap(self.dir_entry, None, focus_map='reversed')
+        dir_entry = urwid.AttrMap(self.dir_entry, None, focus_map='reversed')
 
         self.upper_body = [self.title, div, self.naming_scheme_text] + self.renaming_schemes + [div]
-        self.upper_body += [self.dir_entry_text, dir_entry_formatted, self.recursive_check, start_search_button]
-        self.upper_body += [div, self.episodes_text, div]
+        self.upper_body += [dir_entry, self.recursive_check, start_search_button, div, self.episodes_text, div]
         self.lower_body = [div, remove_selection_button, div, confirm_button]
 
         self.list_walker = urwid.SimpleFocusListWalker(self.upper_body + self.middle_body + self.lower_body)
@@ -103,7 +102,7 @@ class TVSeriesRenamerUrwidTui(object):
                                  valign='middle', height=('relative', 70),
                                  min_width=20, min_height=10)
 
-    def start(self) -> None:
+    def start(self) -> None:  # pragma: no cover
         """
         Starts the TUI
 
@@ -164,16 +163,21 @@ class TVSeriesRenamerUrwidTui(object):
 
         def parse():
 
-            directory = self.dir_entry.get_edit_text()
             self.renamer = None
             self.confirmation = None
 
-            if os.path.isdir:
+            directory = self.dir_entry.get_edit_text()
+            while directory.endswith(os.path.sep):
+                directory = directory.rsplit(os.path.sep, 1)[0]
+
+            if os.path.isdir(directory) and \
+                    (MetaDataManager.is_media_directory(directory, media_type="tv_series")
+                     or self.recursive_check.get_state()):
 
                 recursive = self.recursive_check.get_state()
                 scheme = ""
                 for radio_button in self.renaming_schemes:
-                    if radio_button.get_state():
+                    if radio_button.get_state():  # pragma: no cover
                         scheme = radio_button.get_label()
 
                 self.renamer = TVSeriesRenamer(directory, SchemeManager.get_scheme_from_scheme_name(scheme), recursive)
