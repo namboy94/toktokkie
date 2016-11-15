@@ -31,7 +31,9 @@ try:
 except ImportError:
     Qt = QTest = TVSeriesRenamerQtGui = QApplication = None
 
+import os
 import sys
+import shutil
 import unittest
 
 
@@ -49,9 +51,50 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         sys.argv = [sys.argv[0], "-platform", "minimal"]
         self.form = TVSeriesRenamerQtGui()
+        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
 
     def tearDown(self):
         self.form.destroy()
+        shutil.rmtree("temp_testing")
 
-    def test(self):
-        pass
+    def test_directory_parsing_non_recursive(self):
+
+        self.assertTrue(self.form.meta_warning_label.isVisibleTo(self.form))
+
+        if self.form.recursive_check.checkState():
+            self.form.recursive_check.nextCheckState()
+
+        self.form.directory_entry.setText("temp_testing")
+        self.assertEqual(self.form.rename_list.topLevelItemCount(), 0)
+        self.assertTrue(self.form.meta_warning_label.isVisibleTo(self.form))
+
+        self.form.directory_entry.setText(os.path.join("temp_testing", "Game of Thrones"))
+        self.assertEqual(self.form.rename_list.topLevelItemCount(), 26)
+        self.assertFalse(self.form.meta_warning_label.isVisibleTo(self.form))
+
+    def test_diectory_parsing_recursive(self):
+
+        self.form.directory_entry.setText("temp_testing")
+
+        if not self.form.recursive_check.checkState():
+            self.form.recursive_check.nextCheckState()
+
+        self.assertLess(26, self.form.rename_list.topLevelItemCount())
+        self.assertFalse(self.form.meta_warning_label.isVisibleTo(self.form))
+
+    def test_remove_selection(self):
+        self.test_directory_parsing_non_recursive()
+        self.form.rename_list.selectAll()
+        QTest.mouseClick(self.form.selection_remover_button, Qt.LeftButton)
+
+        self.assertEqual(0, self.form.rename_list.topLevelItemCount())
+
+    def test_renaming(self):
+        self.test_directory_parsing_non_recursive()
+        previous_item_amount = self.form.rename_list.topLevelItemCount()
+
+        QTest.mouseClick(self.form.confirm_button, Qt.LeftButton)
+
+        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
+                                                    "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
+        self.assertEqual(previous_item_amount, self.form.rename_list.topLevelItemCount())
