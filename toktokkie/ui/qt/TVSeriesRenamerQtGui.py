@@ -24,15 +24,16 @@ LICENSE
 
 # imports
 import os
+import sys
 import time
 import random
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal
-from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_TVSeriesRenamer
 from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
+from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton, QMessageBox
 
 
 class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
@@ -201,6 +202,15 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
             self.renamer.start_rename()
             self.renaming = False
             self.directory_entry.textChanged.emit("")
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Complete")
+            msg.setText("The files where successfully renamed")
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+                msg.exec_()
 
         Thread(target=rename).start()
 
