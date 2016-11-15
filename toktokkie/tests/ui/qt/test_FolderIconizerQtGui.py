@@ -58,6 +58,7 @@ class UnitTests(unittest.TestCase):
         shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
 
     def tearDown(self):
+        self.form.closeEvent(None)
         self.form.destroy()
         Iconizer().reverse_iconization("temp_testing")
         shutil.rmtree("temp_testing")

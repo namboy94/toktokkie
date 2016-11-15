@@ -114,3 +114,11 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
         :return:     None
         """
         self.start_button.setText(text)
+
+    def closeEvent(self, event: object) -> None:
+        """
+        Clean up variables that could keep threads from terminating
+
+        :return: None
+        """
+        self.iconizing = False

@@ -42,7 +42,7 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
 
     spinner_updater_signal = pyqtSignal(str, QPushButton, name="spinner_updater")
     visibility_switcher_signal = pyqtSignal(bool, name="visibility_switcher")
-    item_add_signal = pyqtSignal(str, str, name="item_add")
+    populate_list_signal = pyqtSignal(str, name="populate_list")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -63,8 +63,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
         self.recursive_check.stateChanged.connect(self.parse_directory)
 
         self.spinner_updater_signal.connect(self.update_spinner_text)
-        self.visibility_switcher_signal.connect(lambda x: self.meta_warning_label.setVisible(x))
-        self.item_add_signal.connect(lambda x, y: self.rename_list.addTopLevelItem(QTreeWidgetItem([x, y])))
+        self.visibility_switcher_signal.connect(lambda x: self.meta_warning_label.setVisible(x))  # pragma: no cover
+        self.populate_list_signal.connect(self.populate_list)
 
         for scheme in SchemeManager.get_scheme_names():
             self.scheme_selector.addItem(scheme)
@@ -74,8 +74,11 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
         self.renamer = None
         self.parser_id = 0
 
+        self.parser_thread = None
+
         self.renaming = False
         self.parsing = False
+        self.populating = False
 
     # noinspection PyArgumentList
     def browse_for_directory(self) -> None:
@@ -135,15 +138,30 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
                     self.visibility_switcher_signal.emit(False)
                     self.renamer = renamer
                     self.confirmation = confirmation
+                    self.populate_list_signal.emit("")
 
-                    for item in self.confirmation:
-                        self.item_add_signal.emit(item.get_names()[0], item.get_names()[1])
+                    while self.populating:  # pragma: no cover
+                        pass
 
                     self.parsing = False
             else:
                 self.parsing = False
 
-        Thread(target=parse).start()
+        self.parser_thread = Thread(target=parse)
+        self.parser_thread.start()
+
+    # noinspection PyUnusedLocal
+    def populate_list(self, arg: str = None) -> None:
+        """
+        Populates the Tree Widget with a list of episode's new and old names
+
+        :param arg: Mandatory passed argument
+        :return:    None
+        """
+        self.populating = True
+        for item in self.confirmation:
+            self.rename_list.addTopLevelItem(QTreeWidgetItem([item.get_names()[0], item.get_names()[1]]))
+        self.populating = False
 
     def cancel(self) -> None:
         """
@@ -240,3 +258,13 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
         :return:       None
         """
         button.setText(text)
+
+    def closeEvent(self, event: object) -> None:
+        """
+        Clean up variables that could keep threads from terminating
+
+        :return: None
+        """
+        self.renaming = False
+        self.parsing = False
+        self.populating = False
