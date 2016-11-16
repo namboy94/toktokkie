@@ -25,6 +25,7 @@ LICENSE
 # imports
 import os
 import time
+from typing import List
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal
 from xdcc_dl.entities.Progress import Progress
@@ -46,6 +47,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
     progress_updater_signal = pyqtSignal(float, float, int, int, name="progress_updater")
     download_queue_refresh_signal = pyqtSignal(name="download_queue_refresh_signal")
     spinner_updater_signal = pyqtSignal(QPushButton, str, name="spinner_updater")
+    download_queue_filler_signal = pyqtSignal(list, name="download_queue_filler")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -59,6 +61,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.downloading = False
         self.searching = False
         self.adding_packs = False
+        self.refreshing = False
+        self.fetching_episodes = False
 
         self.search_results = []
         self.download_queue_list = []
@@ -72,6 +76,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.progress_updater_signal.connect(self.update_progress)
         self.download_queue_refresh_signal.connect(self.refresh_download_queue)
         self.spinner_updater_signal.connect(lambda x, y: x.setText(y))
+        self.download_queue_filler_signal.connect(self.fill_download_queue)
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
@@ -217,25 +222,47 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         :return: None
         """
+        self.refreshing = True
 
         if self.auto_rename_check.checkState():
 
-            naming_scheme = SchemeManager.get_scheme_from_scheme_name(self.renaming_scheme_combo_box.currentText())
+            def refresh():
 
-            episodes = XDCCDownloadManager.get_preliminary_renaming_results(naming_scheme,
-                                                                            self.episode_spin_box.value(),
-                                                                            self.download_queue_list,
-                                                                            self.season_spin_box.value(),
-                                                                            self.show_name_edit.text())
+                self.fetching_episodes = True
+                naming_scheme = SchemeManager.get_scheme_from_scheme_name(self.renaming_scheme_combo_box.currentText())
 
-            self.download_queue.clear()
-            for pack in episodes:
-                self.download_queue.addItem(pack)
+                episodes = XDCCDownloadManager.get_preliminary_renaming_results(naming_scheme,
+                                                                                self.episode_spin_box.value(),
+                                                                                self.download_queue_list,
+                                                                                self.season_spin_box.value(),
+                                                                                self.show_name_edit.text())
+                self.fetching_episodes = False
+
+                queue_items = []
+                for episode in episodes:
+                    queue_items.append(episode)
+                self.download_queue_filler_signal.emit(queue_items)
+
+            Thread(target=refresh).start()
 
         else:
-            self.download_queue.clear()
+            items = []
             for pack in self.download_queue_list:
-                self.download_queue.addItem(pack.get_filename())
+                items.append(pack.get_filename())
+            self.fill_download_queue(items)
+
+        self.refreshing = False
+
+    def fill_download_queue(self, elements: List[str]):
+        """
+        Fills the download queue list widget with a list of strings
+
+        :param elements: The elements to fill the queue with
+        :return:         None
+        """
+        self.download_queue.clear()
+        for element in elements:
+            self.download_queue.addItem(element)
 
     def add_to_queue(self) -> None:
         """
@@ -257,7 +284,11 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                     continue
 
                 self.download_queue_list.append(self.search_results[row.row()])
-                self.download_queue_refresh_signal.emit()
+
+            self.refreshing = True
+            self.download_queue_refresh_signal.emit()
+            while self.refreshing:
+                pass
 
             self.adding_packs = False
 
@@ -319,8 +350,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         """
         self.single_progress_bar.setValue(single_progress)
         self.total_progress_bar.setValue(total_progress)
-        self.current_speed_number.display(current_speed)
-        self.average_speed_number.display(average_speed)
+        self.current_speed_number.display(int(current_speed / 1000))
+        self.average_speed_number.display(int(average_speed / 1000))
 
     def start_spinner(self, spinner_type: str) -> None:
         """
@@ -340,7 +371,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
                 if self.searching and search:
                     new_text = "Searching" + (self.search_button.text().count(".") % 3 + 1) * "."
-                    print(new_text)
                     self.spinner_updater_signal.emit(self.search_button, new_text)
 
                 if self.downloading and download:
