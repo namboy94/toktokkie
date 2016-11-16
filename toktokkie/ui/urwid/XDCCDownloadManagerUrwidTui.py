@@ -143,7 +143,7 @@ class XDCCDownloadManagerUrwidTui(object):
 
         self.download_queue_checks = []
         for item in self.download_queue:
-            self.download_queue_checks.append(urwid.CheckBox(item.get_requests_message(full=True)))
+            self.download_queue_checks.append(urwid.CheckBox(item.get_request_message(full=True)))
 
         self.upper_middle_body = self.search_result_checks
         self.lower_middle_body = self.download_queue_checks
@@ -164,7 +164,7 @@ class XDCCDownloadManagerUrwidTui(object):
         urwid.connect_signal(self.add_search_results_button, 'click', self.add_search_result_to_queue)
         urwid.connect_signal(self.remove_queue_items_button, 'click', self.remove_items_from_queue)
 
-    def start(self) -> None:
+    def start(self) -> None:  # pragma: no cover
         """
         Starts the TUI
 
@@ -215,7 +215,7 @@ class XDCCDownloadManagerUrwidTui(object):
         :return:       None
         """
         pop_indexes = []
-        for i, item in self.download_queue_checks:
+        for i, item in enumerate(self.download_queue_checks):
             if item.get_state():
                 pop_indexes.append(i)
 
@@ -231,7 +231,7 @@ class XDCCDownloadManagerUrwidTui(object):
         :param widget: The widget that called this method
         :return:       None
         """
-        if self.searching:
+        if self.searching or self.downloading:
             return
 
         self.searching = True
@@ -277,32 +277,27 @@ class XDCCDownloadManagerUrwidTui(object):
                                                   self.series_name_edit.get_edit_text(),
                                                   season)
 
-        selected_packs = []
-        for i, result in enumerate(self.search_result_checks):
-            if result.get_state():
-                selected_packs.append(self.search_results[i])
-
-        for i, pack in enumerate(selected_packs):
+        for i, pack in enumerate(self.download_queue):
             pack.set_directory(season_directory)
 
             if self.rename_check.get_state():
-                name = "xdcc_dl_" + str(i).zfill(int(len(selected_packs) / 10) + 1)
+                name = "xdcc_dl_" + str(i).zfill(int(len(self.download_queue) / 10) + 1)
                 pack.set_filename(name, override=True)
 
         # noinspection PyShadowingNames
-        progress = Progress(len(selected_packs),
+        progress = Progress(len(self.download_queue),
                             callback=lambda a, b, single_progress, d, e, total_progress, current_speed, average_speed:
                             self.progress_update(single_progress, total_progress, current_speed, average_speed))
 
         def handle_download() -> None:
 
-            MultipleServerDownloader("random").download(selected_packs, progress)
+            MultipleServerDownloader("random").download(self.download_queue, progress)
 
             if self.rename_check.get_state():
                 scheme = SchemeManager.get_scheme_from_scheme_name(
                     list(filter(lambda x: x.get_state(), self.renaming_schemes))[0].get_label())
 
-                XDCCDownloadManager.auto_rename(scheme, episode, selected_packs)
+                XDCCDownloadManager.auto_rename(scheme, episode, self.download_queue)
 
             if self.iconize_check.get_state():
                 iconization_method = list(filter(lambda x: x.get_state(), self.iconizing_procedures))[0].get_label()
@@ -312,6 +307,9 @@ class XDCCDownloadManagerUrwidTui(object):
             self.progress_update(0.0, 0.0, 0, 0)
             self.current_speed.set_text("Current Speed:")
             self.average_speed.set_text("Average Speed:")
+            self.download_queue = []
+            self.parse_directory(self.target_directory_edit, self.target_directory_edit.get_edit_text())
+            self.update_layout()
 
         Thread(target=handle_download).start()
 
@@ -328,7 +326,7 @@ class XDCCDownloadManagerUrwidTui(object):
 
         def spin_thread():
 
-            while self.downloading or self.searching:
+            while (self.downloading and download) or (self.searching and search):
 
                 if self.downloading and download:
                     new_text = "Downloading" + (self.download_button.get_label().count(".") % 3 + 1) * "."
@@ -366,3 +364,12 @@ class XDCCDownloadManagerUrwidTui(object):
         self.current_speed.set_text("Current Speed: " + str(int(current_speed / 1000)) + " kB/s")
         self.average_speed.set_text("Average Speed: " + str(int(average_speed / 1000)) + " kB/s")
         self.loop.draw_screen()
+
+    def quit(self) -> None:
+        """
+        Cleans up any variables that may cause thread to continue executing after the TUI ends
+
+        :return: None
+        """
+        self.downloading = False
+        self.searching = False
