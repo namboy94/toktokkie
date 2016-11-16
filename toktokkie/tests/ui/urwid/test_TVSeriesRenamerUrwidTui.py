@@ -165,9 +165,5 @@ class UnitTests(unittest.TestCase):
         self.tui.confirmation = None
 
         self.tui.confirm(None)
-
-        while self.tui.renaming:
-            pass
-
         self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
                                                      "Game of Thrones - S01E01 - Winter Is Coming.mkv")))

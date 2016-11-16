@@ -77,14 +77,14 @@ class UnitTests(unittest.TestCase):
             os.path.join("temp_testing", "OtherMedia"))
 
         self.assertEqual(season, 1)
-        self.assertEqual(episode, 1)
+        self.assertEqual(episode, 0)
 
     def test_retrieving_max_episode_and_season_numbers_on_non_media_directory(self):
         season, episode = XDCCDownloadManager.get_max_season_and_episode_number(
             os.path.join("temp_testing", "NotAShow"))
 
         self.assertEqual(season, 1)
-        self.assertEqual(episode, 1)
+        self.assertEqual(episode, 0)
 
     def test_retrieving_max_episode_and_season_numbers_on_show_without_seasons(self):
 
@@ -92,7 +92,7 @@ class UnitTests(unittest.TestCase):
             os.path.join("temp_testing", "ShowWithoutSeasons"))
 
         self.assertEqual(season, 1)
-        self.assertEqual(episode, 1)
+        self.assertEqual(episode, 0)
 
     def test_auto_renaming(self):
 

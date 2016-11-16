@@ -171,7 +171,6 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         def handle_download() -> None:
 
             MultipleServerDownloader("random").download(packs, progress)
-
             if self.auto_rename_check.checkState():
 
                 scheme = SchemeManager.get_scheme_from_scheme_name(
