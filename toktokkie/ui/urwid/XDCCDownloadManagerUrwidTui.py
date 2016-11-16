@@ -50,7 +50,9 @@ class XDCCDownloadManagerUrwidTui(object):
         self.downloading = False
 
         self.upper_body = []
+        self.upper_middle_body = []
         self.middle_body = []
+        self.lower_middle_body = []
         self.lower_body = []
 
         self.loop = None
@@ -84,6 +86,14 @@ class XDCCDownloadManagerUrwidTui(object):
         self.search_results = []
         self.search_result_checks = []
 
+        self.add_search_results_button = urwid.Button("Add Selected Packs")
+
+        self.download_queue_label = urwid.Text("Download Queue:")
+        self.download_queue = []
+        self.download_queue_checks = []
+
+        self.remove_queue_items_button = urwid.Button("Remove Selected Packs")
+
         self.download_button = urwid.Button("Download")
 
         self.single_progress_bar = urwid.ProgressBar("Single N", "Single C")
@@ -104,11 +114,13 @@ class XDCCDownloadManagerUrwidTui(object):
 
         self.upper_body = [self.title, div, self.target_directory_edit, self.series_name_edit, self.season_number_edit]
         self.upper_body += [self.episode_number_edit, div] + self.renaming_schemes + [self.rename_check, div]
-        self.upper_body += self.iconizing_procedures + [self.iconize_check, div]
-        self.upper_body += [self.search_term_edit] + self.search_engines + [self.search_button, div]
+        self.upper_body += self.iconizing_procedures + [self.iconize_check, div, self.search_term_edit]
+        self.upper_body += self.search_engines + [self.search_button, div]
 
-        self.lower_body = [div, self.download_button, div, self.single_progress_bar, self.total_progress_bar]
-        self.lower_body += [self.current_speed, self.average_speed]
+        self.middle_body = [self.add_search_results_button, div, self.download_queue_label]
+
+        self.lower_body = [self.remove_queue_items_button, div, self.download_button, div, self.single_progress_bar,
+                           self.total_progress_bar, self.current_speed, self.average_speed]
 
         body = self.upper_body + self.middle_body + self.lower_body
 
@@ -126,12 +138,18 @@ class XDCCDownloadManagerUrwidTui(object):
         :return: None
         """
         self.search_result_checks = []
-
         for result in self.search_results:
             self.search_result_checks.append(urwid.CheckBox(result.get_filename()))
 
-        self.middle_body = self.search_result_checks
-        self.list_walker[:] = self.upper_body + self.middle_body + self.lower_body
+        self.download_queue_checks = []
+        for item in self.download_queue:
+            self.download_queue_checks.append(urwid.CheckBox(item.get_requests_message(full=True)))
+
+        self.upper_middle_body = self.search_result_checks
+        self.lower_middle_body = self.download_queue_checks
+        body = self.upper_body + self.upper_middle_body + self.middle_body + self.lower_middle_body + self.lower_body
+
+        self.list_walker[:] = body
         self.loop.draw_screen()
 
     def connect_widgets(self) -> None:
@@ -143,6 +161,8 @@ class XDCCDownloadManagerUrwidTui(object):
         urwid.connect_signal(self.target_directory_edit, 'change', self.parse_directory)
         urwid.connect_signal(self.search_button, 'click', self.start_search)
         urwid.connect_signal(self.download_button, 'click', self.start_download)
+        urwid.connect_signal(self.add_search_results_button, 'click', self.add_search_result_to_queue)
+        urwid.connect_signal(self.remove_queue_items_button, 'click', self.remove_items_from_queue)
 
     def start(self) -> None:
         """
@@ -173,6 +193,37 @@ class XDCCDownloadManagerUrwidTui(object):
         self.season_number_edit.set_edit_text(str(season))
 
     # noinspection PyUnusedLocal
+    def add_search_result_to_queue(self, button: urwid.Button) -> None:
+        """
+        Add all currently checked search results to the download queue
+
+        :param button: The add results button
+        :return:       None
+        """
+        for i, result in enumerate(self.search_result_checks):
+            if result.get_state():
+                self.download_queue.append(self.search_results[i])
+            result.set_state(False)
+        self.update_layout()
+
+    # noinspection PyUnusedLocal
+    def remove_items_from_queue(self, button: urwid.Button) -> None:
+        """
+        Removes all selected items from the queue
+
+        :param button: The button that called this method
+        :return:       None
+        """
+        pop_indexes = []
+        for i, item in self.download_queue_checks:
+            if item.get_state():
+                pop_indexes.append(i)
+
+        for index in reversed(sorted(pop_indexes)):
+            self.download_queue.pop(index)
+        self.update_layout()
+
+    # noinspection PyUnusedLocal
     def start_search(self, widget: urwid.Button) -> None:
         """
         Starts searching for the XDCC pack specified via the search term and search engines to use
@@ -183,9 +234,10 @@ class XDCCDownloadManagerUrwidTui(object):
         if self.searching:
             return
 
-        def search():
+        self.searching = True
+        self.start_spinner("search")
 
-            self.searching = True
+        def search():
 
             search_term = self.search_term_edit.get_edit_text()
             search_engine = list(filter(lambda x: x.get_state(), self.search_engines))[0].get_label()
@@ -199,7 +251,6 @@ class XDCCDownloadManagerUrwidTui(object):
             self.searching = False
 
         Thread(target=search).start()
-        Thread(target=self.spinner).start()
 
     # noinspection PyUnusedLocal
     def start_download(self, widget: urwid.Button) -> None:
@@ -217,6 +268,9 @@ class XDCCDownloadManagerUrwidTui(object):
             episode = int(self.episode_number_edit.get_edit_text())
         except ValueError:
             return
+
+        self.downloading = True
+        self.start_spinner("download")
 
         destination_directory, season_directory = \
             XDCCDownloadManager.prepare_directory(self.target_directory_edit.get_edit_text(),
@@ -236,11 +290,12 @@ class XDCCDownloadManagerUrwidTui(object):
                 pack.set_filename(name, override=True)
 
         # noinspection PyShadowingNames
-        progress = Progress(len(selected_packs), callback=self.progress_update)
+        progress = Progress(len(selected_packs),
+                            callback=lambda a, b, single_progress, d, e, total_progress, current_speed, average_speed:
+                            self.progress_update(single_progress, total_progress, current_speed, average_speed))
 
         def handle_download() -> None:
 
-            self.downloading = True
             MultipleServerDownloader("random").download(selected_packs, progress)
 
             if self.rename_check.get_state():
@@ -254,55 +309,53 @@ class XDCCDownloadManagerUrwidTui(object):
                 Iconizer(iconization_method).iconize_directory(destination_directory)
 
             self.downloading = False
-            self.progress_update(0, 0, 0.0, 0, 0, 0.0, 0, 0)
+            self.progress_update(0.0, 0.0, 0, 0)
             self.current_speed.set_text("Current Speed:")
             self.average_speed.set_text("Average Speed:")
 
         Thread(target=handle_download).start()
-        Thread(target=self.spinner).start()
 
-    def spinner(self, delay: float = 0.5) -> None:
+    def start_spinner(self, spinner_type: str) -> None:
         """
         Animates the search and download buttons whenever a search or download is running
 
-        :param delay: The delay between animation steps
-        :return:      None
+        :param spinner_type: The type of spinner to use, can be either 'download' or 'search'
+        :return:             None
         """
 
-        while self.downloading or self.searching:
+        download = spinner_type == "download"
+        search = spinner_type == "search"
 
-            def dots(x):
-                return ((x.count(".") % 3) + 1) * "."
+        def spin_thread():
 
-            if self.downloading:
-                self.download_button.set_label("Downloading" + dots(self.download_button.get_label()))
-            else:
+            while self.downloading or self.searching:
+
+                if self.downloading and download:
+                    new_text = "Downloading" + (self.download_button.get_label().count(".") % 3 + 1) * "."
+                    self.download_button.set_label(new_text)
+
+                if self.searching and search:
+                    new_text = "Searching" + (self.search_button.get_label().count(".") % 3 + 1) * "."
+                    self.search_button.set_label(new_text)
+
+                self.loop.draw_screen()
+                time.sleep(0.3)
+
+            if download:
                 self.download_button.set_label("Download")
-
-            if self.searching:
-                self.search_button.set_label("Searching" + dots(self.search_button.get_label()))
-            else:
+            if search:
                 self.search_button.set_label("Search")
-
             self.loop.draw_screen()
-            time.sleep(delay)
 
-        self.download_button.set_label("Download")
-        self.search_button.set_label("Search")
-        self.loop.draw_screen()
+        Thread(target=spin_thread).start()
 
     # noinspection PyUnusedLocal
-    def progress_update(self, single_progress: int, single_total: int, single_percentage: float,
-                        total_progress: int, total_total: int, total_percentage: float,
+    def progress_update(self, single_percentage: float, total_percentage: float,
                         current_speed: int, average_speed: int) -> None:
         """
         Updates the TUI's progress widgets
 
-        :param single_progress:    The Single Progress
-        :param single_total:       The Single Total Size
         :param single_percentage:  The Single Completion Percentage
-        :param total_progress:     The Total Progress
-        :param total_total:        The Total Size
         :param total_percentage:   The Total Completion Percentage
         :param current_speed:      The current speed in Byte/s
         :param average_speed:      The average speed in Byte/s

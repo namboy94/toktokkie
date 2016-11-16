@@ -84,7 +84,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         for scheme in SchemeManager.get_scheme_names():
             self.renaming_scheme_combo_box.addItem(scheme)
-        for procedure in ProcedureManager.get_procedure_names():
+        for procedure in ProcedureManager.get_procedure_names():  # pragma: no cover
             self.iconizing_method_combo_box.addItem(procedure)
         for pack_searcher in ["All"] + PackSearcher.get_available_pack_searchers():
             self.search_engine_combo_box.addItem(pack_searcher)
