@@ -45,7 +45,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
     progress_updater_signal = pyqtSignal(float, float, int, int, name="progress_updater")
     download_queue_refresh_signal = pyqtSignal(name="download_queue_refresh_signal")
-    spinner_updater_signal = pyqtSignal(str, QPushButton, name="spinner_updater")
+    spinner_updater_signal = pyqtSignal(QPushButton, str, name="spinner_updater")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -70,7 +70,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.progress_updater_signal.connect(self.update_progress)
         self.download_queue_refresh_signal.connect(self.refresh_download_queue)
-        self.spinner_updater_signal.connect(lambda x, y: y.setText(x))
+        self.spinner_updater_signal.connect(lambda x, y: x.setText(y))
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
@@ -245,8 +245,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 continue
 
             self.download_queue_list.append(self.search_results[row.row()])
-            self.refresh_download_queue()
 
+        self.refresh_download_queue()
         self.search_result_list.clearSelection()
 
     def remove_from_queue(self) -> None:
@@ -329,8 +329,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 time.sleep(0.3)
 
             if search and not self.searching:
-                self.search_button.setText("Search")
+                self.spinner_updater_signal.emit(self.search_button, "Search")
             if download and not self.downloading:
-                self.download_button.setText("Download")
+                self.spinner_updater_signal.emit(self.download_button, "Download")
 
         Thread(target=spin).start()

@@ -125,6 +125,10 @@ class XDCCDownloadManager(object):
         :param series_name;      The series name currently associated with these packs
         :return:                 A list of the new episode names
         """
+        print(series_name)
+        print(season_number)
+        print(packs)
+        print(starting_episode)
         new_names = []
         episode = starting_episode
 
