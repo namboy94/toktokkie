@@ -68,13 +68,13 @@ class XDCCDownloadManager(object):
         :return:          The maximum season number, The maximum episode number
         """
         if not MetaDataManager.is_media_directory(directory, "tv_series"):
-            return 1, 1
+            return 1, 0
         else:
 
             seasons = list(filter(lambda x: x.startswith("Season "), os.listdir(directory)))
 
             if len(seasons) == 0:
-                return 1, 1
+                return 1, 0
             else:
 
                 max_season = max(seasons, key=lambda x: int(x.split("Season ")[1]))
@@ -125,10 +125,6 @@ class XDCCDownloadManager(object):
         :param series_name;      The series name currently associated with these packs
         :return:                 A list of the new episode names
         """
-        print(series_name)
-        print(season_number)
-        print(packs)
-        print(starting_episode)
         new_names = []
         episode = starting_episode
 

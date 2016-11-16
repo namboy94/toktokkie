@@ -70,12 +70,12 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.progress_updater_signal.connect(self.update_progress)
         self.download_queue_refresh_signal.connect(self.refresh_download_queue)
-        self.spinner_updater_signal.connect(lambda x, y: x.setText(y))
+        self.spinner_updater_signal.connect(lambda x, y: x.setText(y))  # pragma: no cover
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
-        self.move_up_button.clicked.connect(lambda x: self.move_queue_item(up=True))
-        self.move_down_button.clicked.connect(lambda x: self.move_queue_item(down=True))
+        self.move_up_button.clicked.connect(lambda x: self.move_queue_item(up=True))  # pragma: no cover
+        self.move_down_button.clicked.connect(lambda x: self.move_queue_item(down=True))  # pragma: no cover
 
         self.show_name_edit.textChanged.connect(self.refresh_download_queue)
         self.season_spin_box.valueChanged.connect(self.refresh_download_queue)
@@ -93,7 +93,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.directory_edit.setText(os.getcwd())
 
-    def browse_for_directory(self) -> None:
+    def browse_for_directory(self) -> None:  # pragma: no cover
         """
         Lets the user browse for a local directory path
 
@@ -183,7 +183,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
 
             self.downloading = False
-            self.download_queue = []
+            self.download_queue_list = []
 
             self.directory_edit.textChanged.emit("")
             self.download_queue_refresh_signal.emit()
@@ -200,6 +200,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         :return: None
         """
         season, episode = XDCCDownloadManager.get_max_season_and_episode_number(self.directory_edit.text())
+        episode += 1
+
         self.episode_spin_box.setValue(episode)
         self.episode_spin_box.setMinimum(episode)
         self.season_spin_box.setValue(season)
@@ -300,8 +302,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         """
         self.single_progress_bar.setValue(single_progress)
         self.total_progress_bar.setValue(total_progress)
-        self.current_speed_number.display(current_speed)
-        self.average_speed_number.display(average_speed)
+        self.current_speed_number.display(int(current_speed / 1000))
+        self.average_speed_number.display(int(average_speed / 1000))
 
     def start_spinner(self, spinner_type: str) -> None:
         """
@@ -334,3 +336,12 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 self.spinner_updater_signal.emit(self.download_button, "Download")
 
         Thread(target=spin).start()
+
+    def closeEvent(self, event: object) -> None:
+        """
+        Clean up variables that could keep threads from terminating
+
+        :return: None
+        """
+        self.downloading = False
+        self.searching = False
