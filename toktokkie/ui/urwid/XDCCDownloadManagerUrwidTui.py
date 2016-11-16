@@ -165,6 +165,7 @@ class XDCCDownloadManagerUrwidTui(object):
         """
         series_name = os.path.basename(directory)
         season, episode = XDCCDownloadManager.get_max_season_and_episode_number(directory)
+        episode += 1
 
         self.series_name_edit.set_edit_text(series_name)
         self.search_term_edit.set_edit_text(series_name)
