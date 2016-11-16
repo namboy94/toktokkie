@@ -300,8 +300,11 @@ class XDCCDownloadManagerUrwidTui(object):
                 XDCCDownloadManager.auto_rename(scheme, episode, self.download_queue)
 
             if self.iconize_check.get_state():
-                iconization_method = list(filter(lambda x: x.get_state(), self.iconizing_procedures))[0].get_label()
-                Iconizer(iconization_method).iconize_directory(destination_directory)
+                try:
+                    iconization_method = list(filter(lambda x: x.get_state(), self.iconizing_procedures))[0].get_label()
+                    Iconizer(iconization_method).iconize_directory(destination_directory)
+                except IndexError:
+                    pass
 
             self.downloading = False
             self.progress_update(0.0, 0.0, 0, 0)

@@ -179,7 +179,10 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 XDCCDownloadManager.auto_rename(scheme, self.episode_spin_box.value(), packs)
 
             if self.iconize_check.checkState():
-                Iconizer(self.iconizing_method_combo_box.currentText()).iconize_directory(destination_directory)
+
+                iconization_method = self.iconizing_method_combo_box.currentText()
+                if iconization_method != "":
+                    Iconizer().iconize_directory(destination_directory)
 
             self.downloading = False
             self.download_queue_list = []
