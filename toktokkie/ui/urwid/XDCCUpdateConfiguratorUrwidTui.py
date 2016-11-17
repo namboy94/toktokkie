@@ -32,7 +32,7 @@ from toktokkie.utils.xdcc.updating.AutoSearcher import AutoSearcher
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 
 
-class XDCCDownloadManagerUrwidTui(object):
+class XDCCUpdateConfiguratorUrwidTui(object):
     """
     Urwid TUI for the XDCC Download Manager functionality
     """
@@ -79,7 +79,7 @@ class XDCCDownloadManagerUrwidTui(object):
 
         self.naming_scheme_title = urwid.Text("Naming Schemes:")
         self.naming_schemes = []
-        for scheme in SchemeManager.get_scheme_names():
+        for scheme in SchemeManager.get_scheme_names():  # pragma: no cover
             urwid.RadioButton(self.naming_schemes, scheme)
 
         self.naming_pattern_title = urwid.Text("Naming Pattern")
@@ -144,7 +144,7 @@ class XDCCDownloadManagerUrwidTui(object):
         :param button: The button that called this method, if it was called by a button
         :return:       None
         """
-        self.selected_series = self.json_handler.get_series()[0]
+        self.selected_series = None if len(self.json_handler.get_series()) < 1 else self.json_handler.get_series()[0]
         self.middle_body = []
 
         for series in self.json_handler.get_series():
@@ -180,7 +180,7 @@ class XDCCDownloadManagerUrwidTui(object):
             if engine.get_label() == self.selected_series.get_search_engines()[0]:
                 engine.set_state(True)
         for scheme in self.naming_schemes:
-            if scheme.get_label() == self.selected_series.get_naming_scheme():
+            if scheme.get_label() == self.selected_series.get_naming_scheme():  # pragma: no cover
                 scheme.set_state(True)
         for pattern in self.naming_patterns:
             if pattern.get_label() == self.selected_series.get_search_pattern():
@@ -249,6 +249,11 @@ class XDCCDownloadManagerUrwidTui(object):
         )
         self.refresh_ui()
 
+        if self.middle_body[len(self.middle_body) - 1].get_state():
+            self.select_series(self.middle_body[len(self.middle_body) - 1], True)
+        else:
+            self.middle_body[len(self.middle_body) - 1].set_state(True)
+
     # noinspection PyUnusedLocal
     def delete_selected_series(self, button: urwid.Button) -> None:
         """
@@ -258,6 +263,7 @@ class XDCCDownloadManagerUrwidTui(object):
         :return:       None
         """
         self.json_handler.remove_series(self.selected_series)
+        self.refresh_ui()
 
     # noinspection PyUnusedLocal
     def confirm_series_information(self, button: urwid.Button) -> None:

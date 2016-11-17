@@ -29,7 +29,7 @@ from toktokkie.metadata import General
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
 from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import XDCCDownloadManagerUrwidTui
-from toktokkie.ui.urwid.XDCCUpdateConfiguratorUrwidTui import XDCCDownloadManagerUrwidTui
+from toktokkie.ui.urwid.XDCCUpdateConfiguratorUrwidTui import XDCCUpdateConfiguratorUrwidTui
 
 
 class StartScreenUrwidTui(object):
@@ -50,7 +50,7 @@ class StartScreenUrwidTui(object):
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
                    "Folder Iconizer": FolderIconizerUrwidTui,
                    "XDCC Download Manager": XDCCDownloadManagerUrwidTui,
-                   "XDCC Update Configurator": XDCCDownloadManagerUrwidTui}
+                   "XDCC Update Configurator": XDCCUpdateConfiguratorUrwidTui}
 
         self.selected = None
 
