@@ -124,3 +124,9 @@ class JsonHandler(object):
         for data in self.json_data:
             series.append(series_generator(data))
         return series
+
+    def get_json_file_path(self) -> str:
+        """
+        :return: The path to the internal JON file
+        """
+        return self.json_location if self.json_location is not None else ""

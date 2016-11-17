@@ -24,10 +24,10 @@ LICENSE
 
 # imports
 import os
-import json
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+import sys
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from toktokkie.utils.xdcc.updating.objects.Series import Series
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from toktokkie.utils.xdcc.updating.JsonHandler import JsonHandler
 from toktokkie.utils.xdcc.updating.AutoSearcher import AutoSearcher
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
@@ -81,7 +81,14 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
                 self.file_loaded = True
                 self.populate_series_list()
             except ValueError:
-                pass  # TODO Let user know he's a dumm-dumm
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setWindowTitle("Invalid JSON")
+                msg.setText("The specified file is not a valid JSON file.")
+                msg.setStandardButtons(QMessageBox.Ok)
+
+                if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+                    msg.exec_()
 
     def save_json(self) -> None:  # pragma: no cover
         """
@@ -91,6 +98,15 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
         """
         if self.file_loaded:
             self.json_handler.store_json()
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Save Successful")
+            msg.setText("The file has been saved to: " + self.json_handler.get_json_file_path())
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+                msg.exec_()
         else:
             # noinspection PyCallByClass,PyTypeChecker
             destination = QFileDialog.getSaveFileName(self, "Save", os.getcwd(), filter="*.json",
