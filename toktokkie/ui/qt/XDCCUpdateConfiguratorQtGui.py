@@ -67,7 +67,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
         self.json_handler = JsonHandler()
         self.series = []
 
-    def browse_for_json_file(self) -> None:
+    def browse_for_json_file(self) -> None:  # pragma: no cover
         """
         Lets the user browse for the JSON file containing the updater configuration
 
@@ -83,7 +83,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
             except ValueError:
                 pass  # TODO Let user know he's a dumm-dumm
 
-    def save_json(self) -> None:
+    def save_json(self) -> None:  # pragma: no cover
         """
         Saves the JSON file, if it already exists, else it asks the user for a place to save it beforehand
 
@@ -92,7 +92,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
         if self.file_loaded:
             self.json_handler.store_json()
         else:
-            # noinspection PyCallByClass
+            # noinspection PyCallByClass,PyTypeChecker
             destination = QFileDialog.getSaveFileName(self, "Save", os.getcwd(), filter="*.json",
                                                       options=QFileDialog.DontConfirmOverwrite)[0]
 

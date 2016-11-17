@@ -24,10 +24,13 @@ LICENSE
 
 # imports
 import os
+import sys
 import time
+from typing import Dict
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal
 from xdcc_dl.entities.Progress import Progress
+from xdcc_dl.entities.XDCCPack import XDCCPack
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from toktokkie.utils.xdcc.XDCCDownloadManager import XDCCDownloadManager
@@ -35,7 +38,7 @@ from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
 from toktokkie.ui.qt.pyuic.xdcc_download_manager import Ui_XDCCDownloadManagerWindow
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton, QMessageBox
 
 
 class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
@@ -46,6 +49,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
     progress_updater_signal = pyqtSignal(float, float, int, int, name="progress_updater")
     download_queue_refresh_signal = pyqtSignal(name="download_queue_refresh_signal")
     spinner_updater_signal = pyqtSignal(QPushButton, str, name="spinner_updater")
+    show_download_completed_signal = pyqtSignal(dict, name="show_download_completed")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -71,6 +75,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.progress_updater_signal.connect(self.update_progress)
         self.download_queue_refresh_signal.connect(self.refresh_download_queue)
         self.spinner_updater_signal.connect(lambda x, y: x.setText(y))  # pragma: no cover
+        self.show_download_completed_signal.connect(self.show_download_completed_message_box)
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
@@ -170,7 +175,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def handle_download() -> None:
 
-            MultipleServerDownloader("random").download(packs, progress)
+            results = MultipleServerDownloader("random").download(packs, progress)
+
             if self.auto_rename_check.checkState():
 
                 scheme = SchemeManager.get_scheme_from_scheme_name(
@@ -184,6 +190,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 if iconization_method != "":
                     Iconizer().iconize_directory(destination_directory)
 
+            self.show_download_completed_signal.emit(results)
             self.downloading = False
             self.download_queue_list = []
 
@@ -338,6 +345,40 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
                 self.spinner_updater_signal.emit(self.download_button, "Download")
 
         Thread(target=spin).start()
+
+    # noinspection PyMethodMayBeStatic
+    def generate_message(self, icon_type: object, window_title: str, text: str) -> QMessageBox:
+        """
+        Generates a message dialog.
+
+        :param icon_type:    The type of icon to display
+        :param window_title: The title of the dialog box window
+        :param text:         The text to display
+        """
+        msg = QMessageBox()
+        msg.setIcon(icon_type)
+        msg.setWindowTitle(window_title)
+        msg.setText(text)
+        msg.setStandardButtons(QMessageBox.Ok)
+        return msg
+
+    def show_download_completed_message_box(self, packs: Dict[XDCCPack, str]) -> None:
+        """
+        Shows a dialog box that indicates that the download has completed
+
+        :param packs: the packs that were downloaded, and their results, as output by the Downloader
+        :return:      None
+        """
+        message = self.generate_message(QMessageBox.Information, "Download Complete",
+                                        "The following packs were downloaded:")
+
+        details = ""
+        for pack in packs:
+            details += pack.get_filename() + ": " + packs[pack] + "\n"
+        message.setDetailedText(details.rstrip().lstrip())
+
+        if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+            message.exec_()
 
     def closeEvent(self, event: object) -> None:
         """
