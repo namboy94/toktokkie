@@ -279,7 +279,7 @@ class XDCCUpdateConfiguratorUrwidTui(object):
                    self.search_name_edit.get_edit_text(),
                    list(filter(lambda x: x.get_state(), self.quality_selectors))[0].get_label(),
                    self.bot_edit.get_edit_text(),
-                   self.season_edit.get_edit_text(),
+                   int(self.season_edit.get_edit_text()),
                    list(filter(lambda x: x.get_state(), self.search_engines))[0].get_label(),
                    list(filter(lambda x: x.get_state(), self.naming_schemes))[0].get_label(),
                    list(filter(lambda x: x.get_state(), self.naming_patterns))[0].get_label(),
