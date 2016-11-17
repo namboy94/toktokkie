@@ -29,6 +29,7 @@ from toktokkie.metadata import General
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
 from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import XDCCDownloadManagerUrwidTui
+from toktokkie.ui.urwid.XDCCUpdateConfiguratorUrwidTui import XDCCDownloadManagerUrwidTui
 
 
 class StartScreenUrwidTui(object):
@@ -48,7 +49,8 @@ class StartScreenUrwidTui(object):
 
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
                    "Folder Iconizer": FolderIconizerUrwidTui,
-                   "XDCC Download Manager": XDCCDownloadManagerUrwidTui}
+                   "XDCC Download Manager": XDCCDownloadManagerUrwidTui,
+                   "XDCC Update Configurator": XDCCDownloadManagerUrwidTui}
 
         self.selected = None
 
@@ -79,7 +81,7 @@ class StartScreenUrwidTui(object):
         :return:        The Menu, which is a urwid ListBox
         """
         body = [urwid.Text(header), urwid.Divider()]
-        for option in options:
+        for option in sorted(options.keys()):
             button = urwid.Button(option)
             urwid.connect_signal(button, 'click', self.start_tui, user_arg=options[option])
             body.append(urwid.AttrMap(button, None, focus_map='reversed'))

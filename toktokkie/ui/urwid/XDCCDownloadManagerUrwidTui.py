@@ -75,7 +75,7 @@ class XDCCDownloadManagerUrwidTui(object):
         self.rename_check = urwid.CheckBox("Auto-rename", state=True)
 
         self.iconizing_procedures = []
-        for procedure in ProcedureManager.get_procedure_names():
+        for procedure in ProcedureManager.get_procedure_names():  # pragma: no cover
             urwid.RadioButton(self.iconizing_procedures, procedure)
         self.iconize_check = urwid.CheckBox("Iconize", state=True)
 
