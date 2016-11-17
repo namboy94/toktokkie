@@ -87,11 +87,9 @@ class GenericScheme(object):
             tvdb = tvdb_api.Tvdb()
             episode_info = tvdb[series_name][season_number][episode_number]
             episode_name = episode_info['episodename']
-        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError):
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError, KeyError) as e:
             # If not found, or other error, just return generic name
-            episode_name = "Episode " + str(episode_number)
-        except KeyError as e:
-            if str(e) == "cache_location":
+            if str(e) == "cache_location":  # pragma: no cover
                 print("TheTVDB.com is down!")
             episode_name = "Episode " + str(episode_number)
 

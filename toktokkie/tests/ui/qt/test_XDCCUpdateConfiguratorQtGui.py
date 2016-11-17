@@ -68,6 +68,8 @@ class UnitTests(unittest.TestCase):
         self.form.closeEvent(None)
         self.form.destroy()
         shutil.rmtree("json_test")
+        if os.path.isfile("a_json_file.json"):
+            os.remove("a_json_file.json")
 
     def test_loading_json(self):
 

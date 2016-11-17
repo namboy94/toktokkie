@@ -126,3 +126,5 @@ class UnitTests(unittest.TestCase):
         self.json_without_file.remove_series(self.default_series[0])
         self.assertEqual(len(self.json_without_file.get_series()), 0)
 
+    def test_getting_json_file_path(self):
+        self.assertEqual(self.json_with_file.get_json_file_path(), "test.json")
