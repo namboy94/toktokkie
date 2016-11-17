@@ -24,7 +24,7 @@ LICENSE
 
 # imports
 try:
-    from PyQt5.QtCore import Qt, QModelIndex, QItemSelectionModel
+    from PyQt5.QtCore import Qt
     from PyQt5.QtTest import QTest
     from PyQt5.QtWidgets import QApplication, QFileDialog
     from toktokkie.ui.qt.XDCCUpdateConfiguratorQtGui import XDCCUpdateConfiguratorQtGui
@@ -36,6 +36,7 @@ import sys
 import shutil
 import unittest
 from toktokkie.utils.xdcc.updating.objects.Series import Series
+from toktokkie.utils.xdcc.updating.JsonHandler import JsonHandler
 
 
 class DummySignal(object):
@@ -104,8 +105,90 @@ class UnitTests(unittest.TestCase):
         ))
 
     def test_delete_series(self):
-        self.test_adding_new_series()
+        QTest.mouseClick(self.form.new_button, Qt.LeftButton)
         self.form.series_list.setCurrentRow(0)
         QTest.mouseClick(self.form.delete_button, Qt.LeftButton)
 
         self.assertEqual(len(self.form.json_handler.get_series()), 0)
+
+    def test_saving_new_json_file(self):
+
+        # noinspection PyUnusedLocal,PyShadowingBuiltins
+        def save_file_location(a, b, c, filter="", options=""):
+            return ["a_json_file.json"]
+
+        QFileDialog.getSaveFileName = save_file_location
+
+        QTest.mouseClick(self.form.new_button, Qt.LeftButton)
+        QTest.mouseClick(self.form.new_button, Qt.LeftButton)
+        QTest.mouseClick(self.form.new_button, Qt.LeftButton)
+
+        QTest.mouseClick(self.form.save_button, Qt.LeftButton)
+
+        while not self.form.file_loaded:
+            pass
+
+        self.assertTrue(os.path.join("a_json_file.json"))
+        self.assertTrue(self.form.file_loaded)
+        self.assertEqual(self.form.json_handler.get_json_file_path(), "a_json_file.json")
+        self.assertEqual(len(JsonHandler("a_json_file.json").get_series()), len(self.form.json_handler.get_series()))
+
+    def test_saving_to_previous_file(self):
+        self.test_loading_json()
+        self.assertTrue(self.form.file_loaded)
+
+        os.remove(os.path.join("json_test", "updater.json"))
+
+        QTest.mouseClick(self.form.save_button, Qt.LeftButton)
+
+        self.assertTrue(os.path.isfile(os.path.join("json_test", "updater.json")))
+
+    def test_changing_series_info(self):
+        self.test_loading_json()
+        self.form.series_list.setCurrentRow(1)
+
+        self.assertEqual("Drifters", self.form.search_name_edit.text())
+
+        self.form.search_name_edit.setText("Not Drifters")
+        self.assertNotEqual("Drifters", self.form.search_name_edit.text())
+
+        QTest.mouseClick(self.form.confirm_button, Qt.LeftButton)
+
+        self.assertEqual("Not Drifters", self.form.json_handler.get_series()[1].get_search_name())
+
+    def test_deleting_no_selection(self):
+        self.test_adding_new_series()
+        self.form.series_list.clearSelection()
+
+        previous_length = self.form.series_list.count()
+        QTest.mouseClick(self.form.delete_button, Qt.LeftButton)
+        self.assertEqual(previous_length, self.form.series_list.count())
+
+    def test_changing_series_info_no_selection(self):
+        QTest.mouseClick(self.form.confirm_button, Qt.LeftButton)
+
+    def test_loading_invalid_input(self):
+
+        old_handler = self.form.json_handler
+
+        # noinspection PyUnusedLocal,PyUnusedLocal,PyShadowingBuiltins
+        def browse_file(a, b, filter=""):
+            return [""]
+
+        QFileDialog.getOpenFileName = browse_file
+
+        QTest.mouseClick(self.form.load_button, Qt.LeftButton)
+
+        self.assertEqual(old_handler, self.form.json_handler)
+        self.assertEqual(0, self.form.series_list.count())
+
+    def test_saving_to_invalid_json_location(self):
+        # noinspection PyUnusedLocal,PyShadowingBuiltins
+        def save_file_location(a, b, c, filter="", options=""):
+            return [""]
+
+        QFileDialog.getSaveFileName = save_file_location
+        QTest.mouseClick(self.form.new_button, Qt.LeftButton)
+        QTest.mouseClick(self.form.save_button, Qt.LeftButton)
+
+        self.assertFalse(self.form.file_loaded)
