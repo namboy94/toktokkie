@@ -57,7 +57,7 @@ class UnitTests(unittest.TestCase):
     def setUpClass(cls):
 
         if QApplication is None:
-            raise unittest.SkipTest("Skipping on python 2 or import error")
+            raise unittest.SkipTest("Skipping on import error")
 
         sys.argv = [sys.argv[0], "-platform", "minimal"]
         cls.app = QApplication(sys.argv)
@@ -69,6 +69,7 @@ class UnitTests(unittest.TestCase):
         self.form.spinner_updater_signal = DummySignal(lambda x, y: x.setText(y))
         self.form.download_queue_refresh_signal = DummySignal(self.form.refresh_download_queue)
         self.form.progress_updater_signal = DummySignal(self.form.update_progress)
+        self.form.show_download_completed_signal = DummySignal(self.form.show_download_completed_message_box)
 
         shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
 

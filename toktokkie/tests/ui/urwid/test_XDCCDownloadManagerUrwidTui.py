@@ -25,6 +25,7 @@ LICENSE
 # imports
 import os
 import time
+import urwid
 import shutil
 import unittest
 from xdcc_dl.entities.XDCCPack import XDCCPack
@@ -184,3 +185,22 @@ class UnitTests(unittest.TestCase):
         self.tui.start_download(None)
         self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
                                                      "Game of Thrones - S02E11 - Episode 11.txt")))
+
+    def test_download_complete_message(self):
+
+        results = {}
+        for pack in self.namibsun_packs:
+            results[pack] = "OK"
+
+        self.tui.show_download_complete_message(results)
+        self.assertEqual(5, len(self.tui.list_walker))
+
+        self.tui.update_layout()
+        self.assertEqual(5, len(self.tui.list_walker))
+
+        urwid.emit_signal(self.tui.list_walker[4], 'click')
+
+        while len(self.tui.list_walker) == 5:
+            pass
+
+        self.assertLess(5, len(self.tui.list_walker))

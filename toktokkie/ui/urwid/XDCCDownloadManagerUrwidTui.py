@@ -50,7 +50,7 @@ class XDCCDownloadManagerUrwidTui(object):
 
         self.searching = False
         self.downloading = False
-        self.message_layout_showing = False
+        self.message_dialog_showing = False
 
         self.upper_body = []
         self.upper_middle_body = []
@@ -141,7 +141,7 @@ class XDCCDownloadManagerUrwidTui(object):
         :return: None
         """
 
-        if self.message_layout_showing:  # pragma: no cover
+        if self.message_dialog_showing:
             return
 
         self.search_result_checks = []
@@ -298,7 +298,7 @@ class XDCCDownloadManagerUrwidTui(object):
 
         def handle_download() -> None:
 
-            MultipleServerDownloader("random").download(self.download_queue, progress)
+            results = MultipleServerDownloader("random").download(self.download_queue, progress)
 
             if self.rename_check.get_state():
                 scheme = SchemeManager.get_scheme_from_scheme_name(
@@ -307,10 +307,10 @@ class XDCCDownloadManagerUrwidTui(object):
                 XDCCDownloadManager.auto_rename(scheme, episode, self.download_queue)
 
             if self.iconize_check.get_state():
-                try:
+                try:  # pragma: no cover
                     iconization_method = list(filter(lambda x: x.get_state(), self.iconizing_procedures))[0].get_label()
                     Iconizer(iconization_method).iconize_directory(destination_directory)
-                except IndexError:
+                except IndexError:  # pragma: no cover
                     pass
 
             self.downloading = False
@@ -320,6 +320,7 @@ class XDCCDownloadManagerUrwidTui(object):
             self.download_queue = []
             self.parse_directory(self.target_directory_edit, self.target_directory_edit.get_edit_text())
             self.update_layout()
+            self.show_download_complete_message(results)
 
         Thread(target=handle_download).start()
 
@@ -386,7 +387,7 @@ class XDCCDownloadManagerUrwidTui(object):
             self.message_dialog_showing = False
             self.update_layout()
 
-        self.message_layout_showing = True
+        self.message_dialog_showing = True
 
         message = urwid.Text("Download has completed successfully\nDownloaded Packs:")
         div = urwid.Divider()

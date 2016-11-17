@@ -67,7 +67,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
         self.json_handler = JsonHandler()
         self.series = []
 
-    def browse_for_json_file(self) -> None:  # pragma: no cover
+    def browse_for_json_file(self) -> None:
         """
         Lets the user browse for the JSON file containing the updater configuration
 
@@ -90,7 +90,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
                 if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
                     msg.exec_()
 
-    def save_json(self) -> None:  # pragma: no cover
+    def save_json(self) -> None:
         """
         Saves the JSON file, if it already exists, else it asks the user for a place to save it beforehand
 
@@ -205,3 +205,11 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
             self.populate_series_list()
         except IndexError:
             pass
+
+    def closeEvent(self, event: object) -> None:
+        """
+        Clean up variables that could keep threads from terminating
+
+        :return: None
+        """
+        pass

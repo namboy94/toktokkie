@@ -187,7 +187,7 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
             if self.iconize_check.checkState():
 
                 iconization_method = self.iconizing_method_combo_box.currentText()
-                if iconization_method != "":
+                if iconization_method != "":  # pragma: no cover
                     Iconizer().iconize_directory(destination_directory)
 
             self.show_download_completed_signal.emit(results)

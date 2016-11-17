@@ -56,7 +56,7 @@ class UnitTests(unittest.TestCase):
     def setUpClass(cls):
 
         if QApplication is None:
-            raise unittest.SkipTest("Skipping on python 2 or import error")
+            raise unittest.SkipTest("Skipping on import error")
 
         sys.argv = [sys.argv[0], "-platform", "minimal"]
         cls.app = QApplication(sys.argv)
