@@ -58,7 +58,6 @@ class XDCCDownloadManagerUrwidTui(object):
         self.open_button = urwid.Button("Open JSON file")
         self.save_button = urwid.Button("Save JSON file")
 
-        self.series = []
         self.new_series_button = urwid.Button("New Series")
         self.delete_series_button = urwid.Button("Delete selected Series")
 
@@ -137,44 +136,55 @@ class XDCCDownloadManagerUrwidTui(object):
         self.loop = urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')])
         self.loop.run()
 
-    def refresh_ui(self) -> None:
+    # noinspection PyUnusedLocal
+    def refresh_ui(self, button: urwid.Button = None) -> None:
         """
         Refreshes the UI elements
 
-        :return: None
+        :param button: The button that called this method, if it was called by a button
+        :return:       None
         """
+        self.selected_series = self.json_handler.get_series()[0]
         self.middle_body = []
+
         for series in self.json_handler.get_series():
             urwid.RadioButton(self.middle_body, series.get_search_name())
-        self.list_walker[:] = self.upper_body + self.middle_body + self.lower_body
-
-        selected_index = -1
         for i, radio in enumerate(self.middle_body):
-            if radio.get_state():
-                selected_index = i
-                break
+            urwid.connect_signal(radio, 'change', self.select_series)
+            radio.series = self.json_handler.get_series()[i]
 
-        if selected_index >= 0:
-            self.selected_series = self.json_handler.get_series()[selected_index]
-            self.series_directory_edit.set_edit_text(self.selected_series.get_destination_directory())
-            self.search_name_edit.set_edit_text(self.selected_series.get_search_name())
-            self.season_edit.set_edit_text(self.selected_series.get_season())
-            self.bot_edit.set_edit_text(self.selected_series.get_bot_preference())
+        self.list_walker[:] = self.upper_body + self.middle_body + self.lower_body
+        self.loop.draw_screen()
 
-            for quality in self.quality_selectors:
-                if quality.get_label() == self.selected_series.get_quality_identifier():
-                    quality.set_state(True)
-            for engine in self.search_engines:
-                if engine.get_label() == self.selected_series.get_search_engines()[0]:
-                    engine.set_state(True)
-            for scheme in self.naming_schemes:
-                if scheme.get_label() == self.selected_series.get_naming_scheme():
-                    scheme.set_state(True)
-            for pattern in self.naming_patterns:
-                if pattern.get_label() == self.selected_series.get_search_pattern():
-                    pattern.set_state(True)
-        else:
-            self.selected_series = None
+    def select_series(self, radio_button: urwid.RadioButton, state: bool) -> None:
+        """
+        Handles selecting a series. It auto-populates the entries below the list of series.
+
+        :param radio_button: The radio button representing the series
+        :param state:        The state of that radio button
+        :return:             None
+        """
+        if not state:
+            return
+
+        self.selected_series = radio_button.series
+        self.series_directory_edit.set_edit_text(self.selected_series.get_destination_directory())
+        self.search_name_edit.set_edit_text(self.selected_series.get_search_name())
+        self.season_edit.set_edit_text(str(self.selected_series.get_season()))
+        self.bot_edit.set_edit_text(self.selected_series.get_bot_preference())
+
+        for quality in self.quality_selectors:
+            if quality.get_label() == self.selected_series.get_quality_identifier():
+                quality.set_state(True)
+        for engine in self.search_engines:
+            if engine.get_label() == self.selected_series.get_search_engines()[0]:
+                engine.set_state(True)
+        for scheme in self.naming_schemes:
+            if scheme.get_label() == self.selected_series.get_naming_scheme():
+                scheme.set_state(True)
+        for pattern in self.naming_patterns:
+            if pattern.get_label() == self.selected_series.get_search_pattern():
+                pattern.set_state(True)
 
         self.loop.draw_screen()
 
@@ -187,14 +197,16 @@ class XDCCDownloadManagerUrwidTui(object):
         """
         confirm_button = urwid.Button("OK")
         urwid.connect_signal(confirm_button, 'click', self.refresh_ui)
-        self.list_walker[:] = [message, urwid.Divider(), confirm_button]
+        self.list_walker[:] = [urwid.Text(message), urwid.Divider(), confirm_button]
 
-    def load_json_file(self) -> None:
+    # noinspection PyUnusedLocal
+    def load_json_file(self, button: urwid.Button) -> None:
         """
         Tries to load the currently entered json file. If it fails, the user is informed via
         a message dialog
 
-        :return: None
+        :param button: The button that called this method
+        :return:       None
         """
         filepath = self.json_file_location.get_edit_text()
         if not os.path.isfile(filepath):
@@ -207,56 +219,68 @@ class XDCCDownloadManagerUrwidTui(object):
         except ValueError:
             self.show_message("The specified file is either not a valid JSON file or not in the proper format.")
 
-    def save_json_file(self) -> None:
+    # noinspection PyUnusedLocal
+    def save_json_file(self, button: urwid.Button) -> None:
         """
         Saves the current state of the JSON handler to the currently entered file
 
-        :return: None
+        :param button: The button that called this method
+        :return:       None
         """
         filepath = self.json_file_location.get_edit_text()
         if os.path.isdir(filepath):
             self.show_message("The specified path is a directory")
-            return
-        self.json_handler.store_json(filepath)
+        elif filepath == "":
+            self.show_message("Please enter a file path for the JSON file")
+        else:
+            self.json_handler.store_json(filepath)
+            self.show_message("JSON file saved successfully")
 
-    def generate_new_series(self) -> None:
+    # noinspection PyUnusedLocal
+    def generate_new_series(self, button: urwid.Button) -> None:
         """
         Generates a new Series in the JSON Handler
 
-        :return: None
+        :param button: The button that called this method
+        :return:       None
         """
         self.json_handler.add_series(
             Series(os.getcwd(), "New Series", "480p", "Bot", 1, ["nibl"], "Plex (TVDB)", "horriblesubs")
         )
         self.refresh_ui()
 
-    def delete_selected_series(self) -> None:
+    # noinspection PyUnusedLocal
+    def delete_selected_series(self, button: urwid.Button) -> None:
         """
         Deletes the currently selected series
 
-        :return: None
+        :param button: The button that called this method
+        :return:       None
         """
         self.json_handler.remove_series(self.selected_series)
 
-    def confirm_series_information(self) -> None:
+    # noinspection PyUnusedLocal
+    def confirm_series_information(self, button: urwid.Button) -> None:
         """
         Stores the currently entered information in the JSON handler (in-memory)
 
-        :return: None
+        :param button: The button that called this method
+        :return:       None
         """
         self.json_handler.remove_series(self.selected_series)
         self.json_handler.add_series(
             Series(self.series_directory_edit.get_edit_text(),
                    self.search_name_edit.get_edit_text(),
-                   list(filter(lambda x: x.get_state(), self.quality_selectors))[0],
+                   list(filter(lambda x: x.get_state(), self.quality_selectors))[0].get_label(),
                    self.bot_edit.get_edit_text(),
                    self.season_edit.get_edit_text(),
-                   list(filter(lambda x: x.get_state(), self.search_engines))[0],
-                   list(filter(lambda x: x.get_state(), self.naming_schemes))[0],
-                   list(filter(lambda x: x.get_state(), self.naming_patterns))[0],
+                   list(filter(lambda x: x.get_state(), self.search_engines))[0].get_label(),
+                   list(filter(lambda x: x.get_state(), self.naming_schemes))[0].get_label(),
+                   list(filter(lambda x: x.get_state(), self.naming_patterns))[0].get_label(),
                    )
         )
         self.refresh_ui()
+        self.middle_body[len(self.middle_body) - 1].set_state(True)
 
     # noinspection PyMethodMayBeStatic
     def quit(self) -> None:
