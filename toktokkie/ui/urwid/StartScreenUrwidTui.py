@@ -29,6 +29,7 @@ from toktokkie.metadata import General
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
 from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import XDCCDownloadManagerUrwidTui
+from toktokkie.ui.urwid.XDCCUpdateConfiguratorUrwidTui import XDCCUpdateConfiguratorUrwidTui
 
 
 class StartScreenUrwidTui(object):
@@ -48,7 +49,8 @@ class StartScreenUrwidTui(object):
 
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
                    "Folder Iconizer": FolderIconizerUrwidTui,
-                   "XDCC Download Manager": XDCCDownloadManagerUrwidTui}
+                   "XDCC Download Manager": XDCCDownloadManagerUrwidTui,
+                   "XDCC Update Configurator": XDCCUpdateConfiguratorUrwidTui}
 
         self.selected = None
 
@@ -58,7 +60,7 @@ class StartScreenUrwidTui(object):
                                  valign='middle', height=('relative', 70),
                                  min_width=20, min_height=10)
 
-    def start(self) -> None:
+    def start(self) -> None:  # pragma: no cover
         """
         Starts the TUI
 
@@ -66,7 +68,9 @@ class StartScreenUrwidTui(object):
         """
         urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')]).run()
         if self.selected is not None:
-            self.selected().start()
+            child = self.selected()
+            child.start()
+            child.quit()
 
     def generate_menu(self, header: str, options: Dict[str, object]) -> urwid.ListBox:
         """
@@ -77,14 +81,14 @@ class StartScreenUrwidTui(object):
         :return:        The Menu, which is a urwid ListBox
         """
         body = [urwid.Text(header), urwid.Divider()]
-        for option in options:
+        for option in sorted(options.keys()):
             button = urwid.Button(option)
             urwid.connect_signal(button, 'click', self.start_tui, user_arg=options[option])
             body.append(urwid.AttrMap(button, None, focus_map='reversed'))
         return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
     # noinspection PyUnusedLocal,PyMethodMayBeStatic
-    def start_tui(self, button: urwid.Button, choice: object = None) -> None:
+    def start_tui(self, button: urwid.Button, choice: object = None) -> None:  # pragma: no cover
         """
         Starts the selected TUI option when pressing Enter
 

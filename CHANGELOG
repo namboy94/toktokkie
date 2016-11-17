@@ -1,3 +1,6 @@
+V 0.11.0:
+  - Implemented XDCC Updater Configurator TUI
+  - Wrote Unit Tests for 100% coverage
 V 0.10.0:
   - Complete Restructure of the Program
   - GUIs now in QT

@@ -23,6 +23,7 @@ LICENSE
 """
 
 # imports
+import sys
 import json
 from typing import List
 from toktokkie.utils.xdcc.updating.objects.Series import Series, from_dict as series_generator
@@ -37,7 +38,7 @@ class JsonHandler(object):
         """
         Creates a new JsonHandler, either from scratch or from an existing JSON file
 
-        :raises:          json.decoder.JSONDecodeError if the loaded JSON file was invalid
+        :raises:          ValueError if the loaded JSON file was invalid.json
         :param json_file: An optional JSON file location.
         """
         self.json_data = []
@@ -53,7 +54,7 @@ class JsonHandler(object):
         """
         Checks the JSON data for validity. If the file is not valid, an exception is raised
 
-        :raises: json.decoder.JSONDecodeError if the loaded JSON file was invalid
+        :raises: ValueError if the loaded JSON file was invalid.json
         :return: None
         """
 
@@ -68,9 +69,9 @@ class JsonHandler(object):
                               "naming_scheme",
                               "search_pattern"]:
                     if check not in series.keys():
-                        raise json.decoder.JSONDecodeError
+                        raise ValueError()
         except AttributeError:
-            raise json.decoder.JSONDecodeError
+            raise ValueError()
 
     def store_json(self, destination: str = "") -> None:
         """
@@ -84,7 +85,9 @@ class JsonHandler(object):
 
         self.json_location = destination
 
-        with open(destination, 'w') as f:
+        open_mode = "w" if sys.version_info[0] >= 3 else 'wb'
+
+        with open(destination, open_mode) as f:
             json.dump(self.json_data, f)
 
     def add_series(self, series: Series) -> None:
@@ -121,3 +124,9 @@ class JsonHandler(object):
         for data in self.json_data:
             series.append(series_generator(data))
         return series
+
+    def get_json_file_path(self) -> str:
+        """
+        :return: The path to the internal JON file
+        """
+        return self.json_location if self.json_location is not None else ""

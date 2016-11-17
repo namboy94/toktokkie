@@ -25,7 +25,7 @@ LICENSE
 # imports
 import os
 import sys
-from subprocess import Popen, check_output
+from subprocess import Popen, check_output, CalledProcessError
 from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
 
 
@@ -42,10 +42,31 @@ class GnomeProcedure(GenericProcedure):
 
         :return: True, if the procedures is applicable, False otherwise
         """
-        try:
-            return sys.platform == "linux" and os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"]
-        except KeyError:
-            return False
+        path_divider = ";" if sys.platform == "win32" else ":"
+        paths = os.environ["PATH"].split(path_divider)
+        gvfs_installed = False
+        for path in paths:
+            if os.access(os.path.join(path, "gvfs-set-attribute"), os.X_OK) and \
+                    os.access(os.path.join(path, "gvfs-info"), os.X_OK):
+                gvfs_installed = True
+
+        gvfs_check = False
+        if gvfs_installed:  # pragma: no cover
+
+            try:
+                gvfs_out = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"])\
+                    .decode()
+            except CalledProcessError:
+                gvfs_out = "Not Supported"
+
+            if gvfs_out.rstrip().lstrip() == "":
+                Popen(["gvfs-set-attribute", "-t", "unset", ".", "metadata::custom-icon"]).wait()
+                gvfs_check = True
+
+            try:
+                return sys.platform.startswith("linux") and gvfs_installed and gvfs_check
+            except KeyError:  # pragma: no cover
+                return False
 
     @staticmethod
     def iconize(directory: str, icon_file: str) -> None:
@@ -61,7 +82,9 @@ class GnomeProcedure(GenericProcedure):
         if not icon_file.endswith(".png"):
             icon_file += ".png"
 
-        Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file]).wait()
+        if GnomeProcedure.is_applicable():  # pragma: no cover
+            Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])\
+                .wait()
 
     @staticmethod
     def reset_iconization_state(directory: str) -> None:
@@ -70,7 +93,8 @@ class GnomeProcedure(GenericProcedure):
         :param directory: the directory to de-iconize
         :return:          None
         """
-        Popen(["gvfs-set-attribute", "-t", "unset", directory, "metadata::custom-icon"]).wait()
+        if GnomeProcedure.is_applicable():  # pragma: no cover
+            Popen(["gvfs-set-attribute", "-t", "unset", directory, "metadata::custom-icon"]).wait()
 
     @staticmethod
     def get_icon_file(directory: str) -> str or None:
@@ -80,12 +104,17 @@ class GnomeProcedure(GenericProcedure):
         :param directory: The directory to check
         :return:          Either the path to the icon file or None if no icon file exists
         """
-        gvfs_info = check_output(["gvfs-info", directory]).decode()
-
-        if "metadata::custom-icon: file://" in gvfs_info:
-            return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
-        else:
+        if not GnomeProcedure.is_applicable():  # pragma: no cover
             return None
+
+        else:  # pragma: no cover
+
+            gvfs_info = check_output(["gvfs-info", directory]).decode()
+
+            if "metadata::custom-icon: file://" in gvfs_info:
+                return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
+            else:
+                return None
 
     @staticmethod
     def get_procedure_name() -> str:

@@ -51,9 +51,10 @@ class MetaDataManager(object):
         if not os.path.isdir(directory):
             return []
 
+        # noinspection PyUnboundLocalVariable
         try:
             children = os.listdir(directory)
-        except PermissionError:
+        except (OSError, IOError):  # == PermissionError
             # If we don't have read permissions for this directory, skip this directory
             return []
 
@@ -79,6 +80,7 @@ class MetaDataManager(object):
         :param media_type: The type of media to check for, optional
         :return:           True if the directory is a TV Series directory, False otherwise
         """
+        # noinspection PyUnboundLocalVariable
         try:
             if ".meta" in os.listdir(directory):
                 if media_type:
@@ -87,10 +89,8 @@ class MetaDataManager(object):
                     return stored_media_type == media_type
                 else:
                     return True
-        except (PermissionError, FileNotFoundError):
-            pass
-
-        return False
+        except (OSError, IOError):  #
+            return False
 
     @staticmethod
     def generate_media_directory(directory: str, media_type: str = "generic") -> None:
@@ -99,8 +99,15 @@ class MetaDataManager(object):
 
         :param directory:  The directory
         :param media_type: The media type, if not supplied will default to 'generic'
+        :raises:           IOError (FileExistsError), if the file exists and is not a directory
         :return:           None
         """
+        if not os.path.isdir(directory):
+            if os.path.isfile(directory):
+                raise IOError()
+            else:
+                os.makedirs(directory)
+
         if not MetaDataManager.is_media_directory(directory, media_type):
 
             for path in [directory, os.path.join(directory, ".meta", "icons")]:
@@ -109,3 +116,20 @@ class MetaDataManager(object):
 
             with open(os.path.join(directory, ".meta", "type"), 'w') as f:
                 f.write(media_type)
+
+    @staticmethod
+    def get_media_type(directory: str) -> str:
+        """
+        Determines the media type of a media directory
+
+        :param directory: The directory to check
+        :return:          Either the type identifier string, or an empty string
+                          if the directory is not a media directory
+        """
+        if not MetaDataManager.is_media_directory(directory):
+            return ""
+        else:
+            type_file = os.path.join(directory, ".meta", "type")
+
+            with open(type_file, 'r') as f:
+                return f.read().lstrip().rstrip()

@@ -58,7 +58,7 @@ class GenericScheme(object):
             sanitized = sanitized.replace(illegal_character, "")
         return sanitized
 
-    def apply_scheme(self) -> str:
+    def apply_scheme(self) -> str:  # pragma: no cover
         """
         Applies the scheme to the episode information and returns it as a string
 
@@ -67,7 +67,7 @@ class GenericScheme(object):
         raise NotImplementedError
 
     @staticmethod
-    def get_scheme_name() -> str:
+    def get_scheme_name() -> str:  # pragma: no cover
         """
         :return: The scheme's name
         """
@@ -87,8 +87,10 @@ class GenericScheme(object):
             tvdb = tvdb_api.Tvdb()
             episode_info = tvdb[series_name][season_number][episode_number]
             episode_name = episode_info['episodename']
-        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError):
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError, KeyError) as e:
             # If not found, or other error, just return generic name
+            if str(e) == "cache_location":  # pragma: no cover
+                print("TheTVDB.com is down!")
             episode_name = "Episode " + str(episode_number)
 
         return episode_name

@@ -68,17 +68,27 @@ class XDCCDownloadManager(object):
         :return:          The maximum season number, The maximum episode number
         """
         if not MetaDataManager.is_media_directory(directory, "tv_series"):
-            return 1, 1
+            return 1, 0
         else:
 
             seasons = list(filter(lambda x: x.startswith("Season "), os.listdir(directory)))
 
             if len(seasons) == 0:
-                return 1, 1
+                return 1, 0
             else:
 
                 max_season = max(seasons, key=lambda x: int(x.split("Season ")[1]))
-                max_episodes = len(os.listdir(os.path.join(directory, max_season))) + 1
+                max_episodes = 0
+
+                ignore_flags = ["OP ", "ED ", "OP-", "ED-", "OP_", "ED_", ".", "_"]
+                for episode in os.listdir(os.path.join(directory, max_season)):
+                    ignored = False
+                    for flag in ignore_flags:
+                        if episode.startswith(flag):
+                            ignored = True
+
+                    if not ignored:
+                        max_episodes += 1
 
                 return int(max_season.rsplit("Season ", 1)[1]), max_episodes
 

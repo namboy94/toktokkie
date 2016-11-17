@@ -57,7 +57,7 @@ class ProcedureManager(object):
         procedure_names = []
         for procedure in ProcedureManager.implemented_procedures:
             if supports_current_platform:
-                if procedure.is_applicable():
+                if procedure.is_applicable():  # pragma: no cover
                     procedure_names.append(procedure.get_procedure_name())
             else:
                 procedure_names.append(procedure.get_procedure_name())
@@ -74,16 +74,16 @@ class ProcedureManager(object):
         for procedure in ProcedureManager.implemented_procedures:
             if procedure_name == procedure.get_procedure_name():
                 return procedure
-        return None
+        return GenericProcedure
 
     @staticmethod
-    def get_applicable_procedure() -> GenericProcedure or None:
+    def get_applicable_procedure() -> GenericProcedure:
         """
         Gets an applicable iconizing procedure from the list of implemented procedures
 
         :return: The iconizing procedure, or None if no applicable procedure was found
         """
         for procedure in ProcedureManager.implemented_procedures:
-            if procedure.is_applicable():
+            if procedure.is_applicable():  # pragma: no cover
                 return procedure
-        return None
+        return GenericProcedure

@@ -35,9 +35,8 @@ class GenericProcedureUnitTests(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_is_abstract_class(self):
-        try:
-            GenericProcedure.iconize("", "")
-            self.assertTrue(False)
-        except NotImplementedError:
-            pass
+    def test_standard_values(self):
+        self.assertEqual(GenericProcedure.get_icon_file("AnyDir"), None)
+        self.assertTrue(GenericProcedure.is_applicable())
+        GenericProcedure.iconize("Something", "Some Icon")
+        self.assertEqual(GenericProcedure.get_procedure_name(), "generic")

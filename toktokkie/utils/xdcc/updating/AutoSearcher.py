@@ -33,17 +33,22 @@ class AutoSearcher(object):
     """
 
     search_patterns = {
-        "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv"
+        "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv",
+        "sakura & c-w 4:3": "@search_name - @episode_zfill_2 @quality_4:3_x_notation [Sakura][C-W]",
+        "namibsun": "@episode_raw_@search_name"
     }
 
     check_patterns = {
-        "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$"
+        "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$",
+        "sakura & c-w 4:3": "^@search_name - @episode_zfill_2 \[(x264-AC3-BD)@quality_4:3_x_notation\]\[Sakura\]"
+                            "\[C-W\]\[[0-9A-Z]+\].mkv$",
+        "namibsun": "^[0-9]+_test.txt$"
     }
 
     quality_patterns = {
-        "480p": {"p_notation": "480p", "x_notation": "848x480"},
-        "720p": {"p_notation": "720p", "x_notation": "1280x720"},
-        "1080p": {"p_notation": "1080p", "x_notation": "1920x1080"}
+        "480p": {"p_notation": "480p", "x_notation": "848x480", "4:3_x_notation": "640x480"},
+        "720p": {"p_notation": "720p", "x_notation": "1280x720", "4:3_x_notation": "960x720"},
+        "1080p": {"p_notation": "1080p", "x_notation": "1920x1080", "4:3_x_notation": "1440x1080"}
     }
 
     @staticmethod
@@ -73,7 +78,7 @@ class AutoSearcher(object):
         Checks if an episode name fits the specified pattern
 
         :param pattern:      The pattern identifier to check
-        :param episode_name: The episode name to check
+        :param episode_name: The episode name to check (The entire file name)
         :param show:         The show to check against
         :param episode:      The episode to check against
         :param quality:      The quality to check against
@@ -102,6 +107,9 @@ class AutoSearcher(object):
             show = show.replace(")", "\)")
 
         pattern = pattern.replace("@search_name", show)
+        pattern = pattern.replace("@episode_raw", str(episode))
         pattern = pattern.replace("@episode_zfill_2", str(episode).zfill(2))
         pattern = pattern.replace("@quality_p_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
+        pattern = pattern.replace("@quality_x_notation", AutoSearcher.quality_patterns[quality]["x_notation"])
+        pattern = pattern.replace("@quality_4:3_x_notation", AutoSearcher.quality_patterns[quality]["4:3_x_notation"])
         return pattern

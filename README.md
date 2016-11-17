@@ -1,60 +1,57 @@
 # Tok Tokkie Media Manager
 
-This is a program which allows convenient managing of various Media collections, with a focus
-on TV Shows.
+![Logo](toktokkie/resources/logo/logo_256.png)
 
-
-## Main features
-
-[**Renaming Episodes**](doc/extra/main_features/renaming.md)
-
-[**Iconizing Directories**](doc/extra/main_features/iconizing.md)
-
-[**Batch Download Manager**](doc/extra/main_features/bdlm.md)
-
-[**Show Manager**](doc/extra/main_features/showmanager.md)
-
-
-## Standalone Scripts
-
-The Program also offers a few standalone CLI tools:
-
-[**xdcc-dl**](doc/extra/xdcc-dl.md)
-    
-[**anime-updater**](doc/extra/anime-updater.md)
-
+An multi-purpose media manager
 
 ## Installation
 
-To install the program, either download the source and run
+### Via Pip (Preferred):
 
-    # python setup.py install
+**As User (Preferred)**
+
+    $ pip install toktokkie --user
     
-or install using pip:
+**Systemwide**
 
     # pip install toktokkie
+    or
+    $ sudo pip install toktokkie
+    
+### Via setup.py
 
-Windows Builds are available [here](http://gitlab.namibsun.net/namboy94/toktokkie/wikis/windows-builds)
+**As User (Preferred)**
 
-[Changelog](http://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
- 
-## Contributing
+    $ python setup.py install --user
+    
+**Systemwide**
 
-This project is automatically mirrored to [github](https://github.com/namboy94/toktokkie), however all development
-is conducted at a privately hosted [Gitlab instance](http://gitlab.namibsun.net/namboy94/toktokkie). Issues
-on both services are taken unto consideration.
+    # python setup.py install
+    or
+    $ sudo python setup.py install
+    
+### Binaries
 
-We're also tracking bugs using a [self-hosted Sentry instance](http://85.214.124.204:9000/sentry/toktokkie/)
+The supplied binaries at the [Github Releases](https://github.com/namboy94/toktokkie/releases) page
+do not require installation nor any dependencies. They can simply be executed.
 
-## Documentation
+### Screenshots
 
-Sphinx Documentation can be found [here](http://krumreyh.eu/toktokkie/documentation/html/index.html).
-A [PDF version](http://krumreyh.eu/toktokkie/documentation/documentation.pdf) is also available
+### Functionality
 
-## Statistics
+* [Folder Iconizer](doc/markdown/folder_iconizer.md)
+* [TV Episode Renamer](doc/markdown/tv_episode_renamer.md)
+* [XDCC Download Manager](doc/markdown/xdcc_download_manager.md)
+* [XDCC Update Configurator](doc/markdown/xdcc_update_configurator.md)
 
-Automatically generated git statistics can be found [here](http://krumreyh.eu/toktokkie/git_stats/index.html)
+## Further Information
 
-## Disclaimer:
-
-The developer(s) of this software is/are not liable for any unlawful use of the provided software.
+* [Changelog](https://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
+* [Gitlab](https://gitlab.namibsun.net/namboy94/toktokkie)
+* [Github](https://github.com/namboy94/toktokkie)
+* [Python Package Index Site](https://pypi.python.org/pypi/toktokkie)
+* [Documentation(HTML)](https://docs.namibsun.net/html_docs/toktokkie/index.html)
+* [Documentation(PDF)](https://docs.namibsun.net/pdf_docs/toktokkie.pdf)
+* [Git Statistics (gitstats)](https://gitstats.namibsun.net/gitstats/toktokkieindex.html)
+* [Git Statistics (git_stats)](https://gitstats.namibsun.net/git_stats/toktokkie/index.html)
+* [Test Coverage](https://coverage.namibsun.net/toktokkie/index.html)

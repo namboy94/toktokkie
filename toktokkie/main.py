@@ -32,7 +32,7 @@ from toktokkie.ui.urwid.StartScreenUrwidTui import StartScreenUrwidTui
 
 
 # noinspection PyTypeChecker
-def main() -> None:
+def main() -> None:  # pragma: no cover
     """
     Main method that runs the program.
     The UI is determined by the arguments passed. '-g' will start the QT GUI, '-t' will start the Urwid TUI
@@ -57,7 +57,7 @@ def main() -> None:
         SentryLogger.sentry.captureException()
         raise e
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     if sys.platform == "win32":
         sys.argv.append("-g")
     main()

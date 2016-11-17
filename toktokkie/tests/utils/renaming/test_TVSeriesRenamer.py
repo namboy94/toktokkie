@@ -59,8 +59,8 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
                                          "Game of Thrones - S00E02 - 15-Minute Preview"]}
 
         game_of_thrones = TVSeriesRenamer(os.path.join("temp_testing", "Game of Thrones"), PlexTvdbScheme)
-
         confirmation = game_of_thrones.request_confirmation()
+
         self.assertEqual(len(confirmation), 26)
 
         try:
@@ -134,3 +134,13 @@ class TVSeriesRenamerUnitTests(unittest.TestCase):
             for episode in expected_big_bang_theory_results[result]:
                 self.assertTrue(os.path.isfile(os.path.join(
                     "temp_testing", "The Big Bang Theory", result, episode) + ".mkv"))
+
+    def test_unconfirmed_renaming(self):
+        renamer = TVSeriesRenamer(os.path.join("temp_testing", "Game of Thrones"), PlexTvdbScheme)
+        confirmation = renamer.request_confirmation()
+        renamer.confirm(confirmation)
+        renamer.start_rename()
+
+        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1", "Episode 01.mkv")))
+        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
+                                                     "Game of Thrones - S01E01 - Winter Is Coming")))
