@@ -26,6 +26,7 @@ LICENSE
 import urwid
 from typing import Dict
 from toktokkie.metadata import General
+from xdcc_dl.tui.XDCCDownloaderTui import XDCCDownloaderTui
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
 from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import XDCCDownloadManagerUrwidTui
@@ -49,6 +50,7 @@ class StartScreenUrwidTui(object):
 
         options = {"TV Series Renamer": TVSeriesRenamerUrwidTui,
                    "Folder Iconizer": FolderIconizerUrwidTui,
+                   "XDCC Downloader": XDCCDownloaderTui,
                    "XDCC Download Manager": XDCCDownloadManagerUrwidTui,
                    "XDCC Update Configurator": XDCCUpdateConfiguratorUrwidTui}
 

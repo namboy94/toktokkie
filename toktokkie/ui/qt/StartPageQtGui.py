@@ -25,6 +25,7 @@ LICENSE
 # imports
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
+from xdcc_dl.gui.XDCCDownloaderGui import XDCCDownloaderGui
 from toktokkie.ui.qt.pyuic.start_page import Ui_StartPageWindow
 from toktokkie.ui.qt.FolderIconizerQtGui import FolderIconizerQtGui
 from toktokkie.ui.qt.TVSeriesRenamerQtGui import TVSeriesRenamerQtGui
@@ -49,6 +50,7 @@ class StartPageQtGui(QMainWindow, Ui_StartPageWindow):
         # Initialize UI elements
         self.tv_series_renamer.clicked.connect(TVSeriesRenamerQtGui(self).show)
         self.folder_iconizer.clicked.connect(FolderIconizerQtGui(self).show)
+        self.xdcc_downloader.clicked.connect(XDCCDownloaderGui(self).show)
         self.xdcc_download_manager.clicked.connect(XDCCDownloadManagerQtGui(self).show)
         self.xdcc_update_configurator.clicked.connect(XDCCUpdateConfiguratorQtGui(self).show)
 

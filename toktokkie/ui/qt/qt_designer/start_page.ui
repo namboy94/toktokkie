@@ -29,17 +29,24 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="4" column="0">
      <widget class="QPushButton" name="xdcc_download_manager">
       <property name="text">
        <string>XDCC Download Manager</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="5" column="0">
      <widget class="QPushButton" name="xdcc_update_configurator">
       <property name="text">
        <string>XDCC Update Configurator</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QPushButton" name="xdcc_downloader">
+      <property name="text">
+       <string>XDCC Downloader</string>
       </property>
      </widget>
     </item>
