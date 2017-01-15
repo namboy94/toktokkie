@@ -77,7 +77,7 @@ class GenericScheme(object):
     def get_tvdb_episode_name(series_name: str, season_number: int, episode_number: int) -> str:
         """
         Finds the TVDB episode name for a specified episode
-        
+
         :param series_name:    the episode's series name
         :param season_number:  the episode's season number
         :param episode_number: the episode's episode number

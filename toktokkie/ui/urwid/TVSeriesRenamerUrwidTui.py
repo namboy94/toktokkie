@@ -171,8 +171,8 @@ class TVSeriesRenamerUrwidTui(object):
                 directory = directory.rsplit(os.path.sep, 1)[0]
 
             if os.path.isdir(directory) and \
-                    (MetaDataManager.is_media_directory(directory, media_type="tv_series")
-                     or self.recursive_check.get_state()):
+                    (MetaDataManager.is_media_directory(directory, media_type="tv_series") or
+                     self.recursive_check.get_state()):
 
                 recursive = self.recursive_check.get_state()
                 scheme = ""

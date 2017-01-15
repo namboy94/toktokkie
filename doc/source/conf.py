@@ -7,8 +7,9 @@ import sphinx_rtd_theme
 # noinspection PyPackageRequirements
 from sphinx.ext.autodoc import between
 
+General = None
 sys.path.insert(0, os.path.abspath("../.."))
-from toktokkie.metadata import General
+exec("from toktokkie.metadata import General")
 
 extensions = [
     'sphinx.ext.autodoc',
