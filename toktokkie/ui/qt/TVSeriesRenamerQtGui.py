@@ -125,8 +125,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
                 directory = directory.rsplit(os.path.sep, 1)[0]
 
             if os.path.isdir(directory) and \
-                    (MetaDataManager.is_media_directory(directory, media_type="tv_series")
-                     or self.recursive_check.checkState()):
+                    (MetaDataManager.is_media_directory(directory, media_type="tv_series") or
+                     self.recursive_check.checkState()):
 
                 renaming_scheme = self.scheme_selector.currentText()
                 renaming_scheme = SchemeManager.get_scheme_from_scheme_name(renaming_scheme)
