@@ -66,7 +66,7 @@ class DesktopIniProcedure(GenericProcedure):
         # -r : Clears read-only state
         # -s : Clears the system file attribute
         # -h : Clears the hidden state
-        if os.path.isfile(desktop_ini_file) and DesktopIniProcedure.is_applicable(): # pragma: no cover
+        if os.path.isfile(desktop_ini_file) and DesktopIniProcedure.is_applicable():  # pragma: no cover
             Popen(["attrib", "-s", "-h", "-r", desktop_ini_file]).wait()
 
         # Write the folder icon information to the desktop.ini file, deleting all previous content of the file

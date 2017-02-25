@@ -29,7 +29,8 @@ stylecheck:
   tags:
     - buildserver_linux
   script:
-    - pep8 . --max-line-length 120
+    - pep8 . --max-line-length 120 --exclude
+      tv_series_renamer.py,xdcc_download_manager.py,xdcc_update_configurator.py,iconizer.py,start_page.py
 
 run_unit_tests_python_2:
   stage: test
