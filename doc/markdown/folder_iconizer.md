@@ -20,6 +20,8 @@ not supported.
 
 **GUI**
 
-
+![GUI](screenshots/folder_iconizer_gui.png)
 
 **TUI**
+
+![TUI](screenshots/folder_iconizer_tui.png)
