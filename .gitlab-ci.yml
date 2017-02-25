@@ -17,7 +17,12 @@ github_mirror:
   tags:
     - buildserver_linux
   script:
-    - git push --mirror -f git@github.com:namboy94/xdcc-downloader.git
+    - git checkout master
+    - git pull
+    - git push git@github.com:namboy94/toktokkie.git master -f
+    - git checkout develop
+    - git pull
+    - git push git@github.com:namboy94/toktokkie.git develop -f
 
 stylecheck:
   stage: test
