@@ -26,7 +26,8 @@ LICENSE
 # imports
 import sys
 import argparse
-from toktokkie.metadata import SentryLogger
+from raven import Client
+from toktokkie.metadata import version, sentry_dsn
 from toktokkie.ui.qt.StartPageQtGui import start as gui_start
 from toktokkie.ui.urwid.StartScreenUrwidTui import StartScreenUrwidTui
 
@@ -54,7 +55,8 @@ def main() -> None:  # pragma: no cover
     except KeyboardInterrupt:
         print("Thanks for using toktokkie!")
     except Exception as e:
-        SentryLogger.sentry.captureException()
+        sentry = Client(dsn=sentry_dsn, release=version)
+        sentry.captureException()
         raise e
 
 if __name__ == '__main__':  # pragma: no cover

@@ -25,7 +25,7 @@ LICENSE
 # imports
 import urwid
 from typing import Dict
-from toktokkie.metadata import General
+from toktokkie.metadata import version
 from xdcc_dl.tui.XDCCDownloaderTui import XDCCDownloaderTui
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
@@ -42,7 +42,7 @@ class StartScreenUrwidTui(object):
         """
         Initializes the CLI's local variables
         """
-        gpl_notice = "Tok Tokkie Media Manager V" + General.version_number + "\n"\
+        gpl_notice = "Tok Tokkie Media Manager V" + version + "\n"\
                      "Copyright (C) 2015,2016 Hermann Krumrey\n\n"\
                      "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"\
                      "This is free software, and you are welcome to redistribute it\n"\

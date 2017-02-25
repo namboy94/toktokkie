@@ -82,13 +82,6 @@ def classifiers():
     ]
 
 
-def dependencies():
-    """
-    :return: A list of dependencies
-    """
-    return ['tvdb_api', 'beautifulsoup4', 'typing', 'raven', 'urwid', 'xdcc_dl']
-
-
 setup(name="toktokkie",
       version=version,
       description="A personal media manager program",
@@ -100,7 +93,7 @@ setup(name="toktokkie",
       author_email="hermann@krumreyh.com",
       license="GNU GPL3",
       packages=find_packages(),
-      install_requires=dependencies(),
+      install_requires=['tvdb_api', 'beautifulsoup4', 'typing', 'raven', 'urwid', 'xdcc_dl'],
       test_suite='nose.collector',
       tests_require=['nose'],
       scripts=find_scripts(),

@@ -7,9 +7,9 @@ import sphinx_rtd_theme
 # noinspection PyPackageRequirements
 from sphinx.ext.autodoc import between
 
-General = None
+project_version = ""
 sys.path.insert(0, os.path.abspath("../.."))
-exec("from toktokkie.metadata import General")
+exec("from toktokkie.metadata import version as project_version")
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -24,8 +24,8 @@ copyright = '2016, Hermann Krumrey'
 author = 'Hermann Krumrey'
 project = 'toktokkie'
 
-version = General.version_number
-release = General.version_number
+version = project_version
+release = project_version
 
 language = None
 exclude_patterns = []
