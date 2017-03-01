@@ -113,8 +113,7 @@ class Series(object):
         :param verbose: Sets the verbosity of the update process
         :return: None
         """
-        if verbose:
-            print(self.get_search_name())
+        print(self.get_search_name())
 
         MetaDataManager.generate_media_directory(self.data["destination_directory"], media_type="tv_series")
         season_dir = os.path.join(self.data["destination_directory"], "Season " + str(self.data["season"]))

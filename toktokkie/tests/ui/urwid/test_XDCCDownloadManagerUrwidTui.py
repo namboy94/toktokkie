@@ -49,9 +49,9 @@ class UnitTests(unittest.TestCase):
         self.tui.loop = LoopDummy()
         shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
 
-        self.namibsun_packs = [XDCCPack(IrcServer("namibsun.net"), "xdcc_servbot", 1),
-                               XDCCPack(IrcServer("namibsun.net"), "xdcc_servbot", 2),
-                               XDCCPack(IrcServer("namibsun.net"), "xdcc_servbot", 3)]
+        self.namibsun_packs = [XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 1),
+                               XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 2),
+                               XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 3)]
 
     def tearDown(self):
         Iconizer().reverse_iconization("temp_testing")

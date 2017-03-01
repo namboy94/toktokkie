@@ -24,7 +24,7 @@ LICENSE
 
 # imports
 import os
-from toktokkie.metadata import PypiVariables
+from toktokkie.metadata import version
 from setuptools import setup, find_packages
 
 
@@ -64,18 +64,36 @@ def find_scripts():
     except OSError:
         return []
 
-setup(name=PypiVariables.name,
-      version=PypiVariables.version,
-      description=PypiVariables.description,
+
+def classifiers():
+    """
+    :return: The list of classifiers applicable to this project
+    """
+    return [
+        "Environment :: Other Environment",
+        "Natural Language :: English",
+        "Intended Audience :: End Users/Desktop",
+        "Development Status :: 4 - Beta",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 2",
+        "Topic :: Utilities",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
+    ]
+
+
+setup(name="toktokkie",
+      version=version,
+      description="A personal media manager program",
       long_description=readme(),
-      classifiers=PypiVariables.classifiers,
-      url=PypiVariables.url,
-      download_url=PypiVariables.download_url,
-      author=PypiVariables.author,
-      author_email=PypiVariables.author_email,
-      license=PypiVariables.license,
+      classifiers=classifiers(),
+      url="https://gitlab.namibsun.net/namboy94/toktokkie",
+      download_url="https://gitlab.namibsun.net/namboy94/toktokkie/repository/archive.zip?ref=master",
+      author="Hermann Krumrey",
+      author_email="hermann@krumreyh.com",
+      license="GNU GPL3",
       packages=find_packages(),
-      install_requires=PypiVariables.install_requires,
+      install_requires=['tvdb_api', 'beautifulsoup4', 'typing', 'raven', 'urwid', 'xdcc_dl'],
       test_suite='nose.collector',
       tests_require=['nose'],
       scripts=find_scripts(),

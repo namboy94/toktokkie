@@ -1,3 +1,7 @@
+V 0.14.0:
+  - Fixed unit tests
+  - Removed unnecessarily complicated metadata structure
+  - Fix build process
 V 0.13.0:
   - Made xdcc-update script JSON file argument optional. It now defaults to *series.json*
 V 0.12.0:
