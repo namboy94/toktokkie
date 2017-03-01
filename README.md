@@ -1,5 +1,9 @@
 # Tok Tokkie Media Manager
 
+|master|develop|
+|:----:|:-----:|
+|[![build status](https://gitlab.namibsun.net/namboy94/toktokkie/badges/master/build.svg)](https://gitlab.namibsun.net/namboy94/toktokkie/commits/master)|[![build status](https://gitlab.namibsun.net/namboy94/toktokkie/badges/develop/build.svg)](https://gitlab.namibsun.net/namboy94/toktokkie/commits/develop)|
+
 ![Logo](toktokkie/resources/logo/logo_256.png)
 
 An multi-purpose media manager
