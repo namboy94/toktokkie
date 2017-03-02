@@ -65,11 +65,11 @@ def find_scripts():
         return []
 
 
-def classifiers():
-    """
-    :return: The list of classifiers applicable to this project
-    """
-    return [
+setup(name="toktokkie",
+      version=version,
+      description="A personal media manager program",
+      long_description=readme(),
+      classifiers=[
         "Environment :: Other Environment",
         "Natural Language :: English",
         "Intended Audience :: End Users/Desktop",
@@ -79,14 +79,7 @@ def classifiers():
         "Programming Language :: Python :: 2",
         "Topic :: Utilities",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
-    ]
-
-
-setup(name="toktokkie",
-      version=version,
-      description="A personal media manager program",
-      long_description=readme(),
-      classifiers=classifiers(),
+      ],
       url="https://gitlab.namibsun.net/namboy94/toktokkie",
       download_url="https://gitlab.namibsun.net/namboy94/toktokkie/repository/archive.zip?ref=master",
       author="Hermann Krumrey",
