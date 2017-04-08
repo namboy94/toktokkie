@@ -55,8 +55,7 @@ def main() -> None:  # pragma: no cover
     except KeyboardInterrupt:
         print("Thanks for using toktokkie!")
     except Exception as e:
-        sentry = Client(dsn=sentry_dsn, release=version)
-        sentry.captureException()
+        Client(dsn=sentry_dsn, release=version).captureException()
         raise e
 
 if __name__ == '__main__':  # pragma: no cover
