@@ -162,7 +162,7 @@ class Series(object):
             pack.set_directory(season_dir)
             pack.set_filename("xdcc_updater_" + str(i).zfill(int(len(download_queue) / 10) + 1), override=True)
 
-        verbosity = 2 if verbose else 0
+        verbosity = 2 if verbose else 1
         MultipleServerDownloader("random", verbosity).download(download_queue)
 
         show_name = os.path.basename(self.data["destination_directory"])
