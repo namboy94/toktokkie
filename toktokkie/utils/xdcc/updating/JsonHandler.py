@@ -88,7 +88,7 @@ class JsonHandler(object):
         open_mode = "w" if sys.version_info[0] >= 3 else 'wb'
 
         with open(destination, open_mode) as f:
-            json.dump(self.json_data, f)
+            json.dump(self.json_data, f, sort_keys=True, indent=2, separators=(',', ': '))
 
     def add_series(self, series: Series) -> None:
         """
