@@ -47,7 +47,7 @@ class AutoSearcher(object):
                             "\[C-W\]\[[0-9A-Z]+\].mkv$",
         "amazon": "^@search_name - @episode_zfill_2 \(Amazon\).mkv$",
         "doki_h264": "\[Doki\] @search_name - @episode_zfill_2 \(@quality_x_notation h264 AAC\) \[[0-9A-Z]+\].mkv",
-        "doki_hevc": "\[Doki\] @search_name - @episode_zfill_2 \(@quality_x_notation h264 HEVC\) \[[0-9A-Z]+\].mkv",
+        "doki_hevc": "\[Doki\] @search_name - @episode_zfill_2 \(@quality_x_notation HEVC AAC\) \[[0-9A-Z]+\].mkv",
         "namibsun": "^[0-9]+_test.txt$"
     }
 
