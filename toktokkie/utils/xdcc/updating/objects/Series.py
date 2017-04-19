@@ -140,7 +140,7 @@ class Series(object):
 
         for i, episode in enumerate(sorted(os.listdir(season_dir))):
             episode_file = os.path.join(season_dir, episode)
-            episode_number = i + 1 + self.data["episode_offset"]
+            episode_number = i + 1  # + self.data["episode_offset"]  I think this is actually wrong
             tv_episode = TVEpisode(episode_file, episode_number, self.data["season"], show_name,
                                    SchemeManager.get_scheme_from_scheme_name(self.data["naming_scheme"]))
             tv_episode.rename()

@@ -35,7 +35,8 @@ class AutoSearcher(object):
     search_patterns = {
         "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv",
         "sakura & c-w 4:3": "@search_name - @episode_zfill_2 @quality_4:3_x_notation [Sakura][C-W]",
-        "amazon": "@search_name - @episode_zfill_2 (Amazon)",
+        "amazon": "@search_name - @episode_zfill_2 (Amazon).mkv",
+        "doki_h264": "[Doki] @search_name - @episode_zfill_2 (@quality_x_notation h264 AAC)",
         "namibsun": "@episode_raw_@search_name"
     }
 
@@ -43,7 +44,8 @@ class AutoSearcher(object):
         "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$",
         "sakura & c-w 4:3": "^@search_name - @episode_zfill_2 \[(x264-AC3-BD)@quality_4:3_x_notation\]\[Sakura\]"
                             "\[C-W\]\[[0-9A-Z]+\].mkv$",
-        "amazon": "@search_name - @episode_zfill_2 (Amazon)",
+        "amazon": "^@search_name - @episode_zfill_2 \(Amazon\).mkv$",
+        "doki_h264": "\[Doki\] @search_name - @episode_zfill_2 \(@quality_x_notation h264 AAC\)\[[0-9A-Z]+\].mkv",
         "namibsun": "^[0-9]+_test.txt$"
     }
 
