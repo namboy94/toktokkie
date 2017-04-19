@@ -41,7 +41,8 @@ class Series(object):
     """
 
     def __init__(self, destination_directory: str, search_name: str, quality_identifier: str, bot_preference: str,
-                 season: int, search_engines: List[str], naming_scheme: str, search_pattern: str) -> None:
+                 season: int, search_engines: List[str], naming_scheme: str, search_pattern: str,
+                 episode_offset: int = 0) -> None:
         """
         Creates a new Series object
 
@@ -53,6 +54,8 @@ class Series(object):
         :param search_engines:        The search engines to use
         :param naming_scheme:         The naming scheme to use
         :param search_pattern:        The search pattern to use
+        :param episode_offset:        An offset for the episode counter,
+                                      for seasons that start with an episode other than 1
         """
 
         self.data = {
@@ -63,7 +66,8 @@ class Series(object):
             "season": season,
             "search_engines": search_engines,
             "naming_scheme": naming_scheme,
-            "search_pattern": search_pattern
+            "search_pattern": search_pattern,
+            "episode_offset": episode_offset
         }
 
     def to_dict(self) -> Dict[str, str or int or List[str]]:
@@ -104,6 +108,7 @@ class Series(object):
         equal = equal and series.get_search_pattern() == self.get_search_pattern()
         equal = equal and series.get_search_name() == self.get_search_name()
         equal = equal and series.get_naming_scheme() == self.get_naming_scheme()
+        equal = equal and series.get_episode_offset() == self.get_episode_offset()
         return equal
 
     def update(self, verbose: bool = False) -> None:
@@ -135,7 +140,8 @@ class Series(object):
 
         for i, episode in enumerate(sorted(os.listdir(season_dir))):
             episode_file = os.path.join(season_dir, episode)
-            tv_episode = TVEpisode(episode_file, i + 1, self.data["season"], show_name,
+            episode_number = i + 1 + self.data["episode_offset"]
+            tv_episode = TVEpisode(episode_file, episode_number, self.data["season"], show_name,
                                    SchemeManager.get_scheme_from_scheme_name(self.data["naming_scheme"]))
             tv_episode.rename()
 
@@ -147,7 +153,7 @@ class Series(object):
         :param verbose:    Sets the verbosity of the download output
         :return:           None
         """
-        first_non_existing_episode = len(os.listdir(season_dir)) + 1
+        first_non_existing_episode = len(os.listdir(season_dir)) + 1 + self.data["episode_offset"]
         episode_to_check = first_non_existing_episode
 
         download_queue = []
@@ -242,6 +248,12 @@ class Series(object):
         """
         return self.data["search_pattern"]
 
+    def get_episode_offset(self) -> int:
+        """
+        :return: The episode offset
+        """
+        return self.data["episode_offset"]
+
     def set_destination_directory(self, directory: str) -> None:
         """
         :param directory: The destination directory
@@ -298,6 +310,13 @@ class Series(object):
         """
         self.data["search_pattern"] = pattern
 
+    def set_episode_offset(self, episode_offset: int) -> None:
+        """
+        :param episode_offset: The episode offset
+        :return: None
+        """
+        self.data["episode_offset"] = episode_offset
+
 
 def from_dict(data: Dict[str, str or int or List[str]]) -> Series:
     """
@@ -306,6 +325,7 @@ def from_dict(data: Dict[str, str or int or List[str]]) -> Series:
     :param data: The data to turn into a Series object
     :return:     The Series object
     """
+    episode_offset = 0 if "episode_offset" not in data.keys() else data["episode_offset"]
     return Series(data["destination_directory"], data["search_name"], data["quality_identifier"],
                   data["bot_preference"], data["season"], data["search_engines"], data["naming_scheme"],
-                  data["search_pattern"])
+                  data["search_pattern"], episode_offset)
