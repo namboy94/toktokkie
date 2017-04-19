@@ -38,7 +38,7 @@ class UnitTests(unittest.TestCase):
     def test_pattern_passing(self):
         self.assertLess(1, len(AutoSearcher.get_available_patterns()))
 
-    def test_generating_earch_strings(self):
+    def test_generating_search_strings(self):
         self.assertEqual(AutoSearcher.generate_search_string("horriblesubs", "One-Punch Man", 1, "720p"),
                          "[HorribleSubs] One-Punch Man - 01 [720p].mkv")
         self.assertEqual(AutoSearcher.generate_search_string("horriblesubs", "One-Punch Man", 11, "1080p"),
@@ -48,3 +48,12 @@ class UnitTests(unittest.TestCase):
 
         episode_name = AutoSearcher.generate_search_string("horriblesubs", "One-Punch Man", 5, "480p")
         self.assertTrue(AutoSearcher.matches_pattern("horriblesubs", episode_name, "One-Punch Man", 5, "480p"))
+
+    def test_doki_search_string(self):
+
+        search = "[Doki] Saenai Heroine no Sodatekata Flat - 01 (1280x720 h264 AAC) [07EE0E22].mkv"
+        show = "Saenai Heroine no Sodatekata Flat"
+        generated = AutoSearcher.generate_search_string("doki_h264", show, 1, "720p")
+
+        self.assertTrue(search.startswith(generated))
+        self.assertTrue(AutoSearcher.matches_pattern("doki_h264", search, show, 1, "720p"))
