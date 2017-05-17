@@ -36,7 +36,8 @@ def parse_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", help="The directory whose contents to rename")
-    parser.add_argument("-n", "--noconfirm", help="Renames without confirming with the user first")
+    parser.add_argument("-n", "--noconfirm", action="store_true", help="Renames without confirming with the user first")
+    parser.add_argument("-r", "--recursive", action="store_true", help="Renames recursively")
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -44,25 +45,29 @@ if __name__ == '__main__':
     args = parse_args()
 
     directory = args.directory
-    if os.path.isdir(directory):
+    if not os.path.isdir(directory):
         print("Not a valid directory")
         sys.exit(1)
 
-    renamer = TVSeriesRenamer(args.directory, SchemeManager.get_scheme_from_scheme_name("Plex (TVDB)"))
+    renamer = TVSeriesRenamer(args.directory, SchemeManager.get_scheme_from_scheme_name("Plex (TVDB)"), args.recursive)
 
     if not args.noconfirm:
         confirmation = renamer.request_confirmation()
 
         print("Renaming:")
         for episode in confirmation:
-            print(episode.episode.get_old_name().ljust(50) + " -> " + episode.episode.get_new_name().rjust(50))
+            print(episode.episode.get_old_name().ljust(50) + " -> ".ljust(5).rjust(5) + episode.episode.get_new_name())
 
         confirmed = input("Is this OK? (y/n)")
 
         if confirmed.lower() == "y":
+            print("Starting Renaming...")
             renamer.start_rename(True)
+            print("Done")
 
     else:
+        print("Starting Renaming...")
         renamer.start_rename(True)
+        print("Done")
 
     print("Bye")
