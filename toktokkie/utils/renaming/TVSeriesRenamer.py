@@ -71,6 +71,9 @@ class TVSeriesRenamer(object):
         for directory in directories:
 
             show_name = os.path.basename(directory)
+            if not show_name:
+                show_name = os.path.dirname(directory)
+
             seasons = os.listdir(directory)
             specials = []
 
