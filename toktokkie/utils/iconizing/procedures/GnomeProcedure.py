@@ -46,21 +46,20 @@ class GnomeProcedure(GenericProcedure):
         paths = os.environ["PATH"].split(path_divider)
         gvfs_installed = False
         for path in paths:
-            if os.access(os.path.join(path, "gvfs-set-attribute"), os.X_OK) and \
-                    os.access(os.path.join(path, "gvfs-info"), os.X_OK):
+            if os.access(os.path.join(path, "gio"), os.X_OK):
                 gvfs_installed = True
 
         gvfs_check = False
         if gvfs_installed:  # pragma: no cover
 
             try:
-                gvfs_out = check_output(["gvfs-set-attribute", "-t", "string", ".", "metadata::custom-icon", "a"])\
+                gvfs_out = check_output(["gio", "set", "-t", "string", ".", "metadata::custom-icon", "a"])\
                     .decode()
             except CalledProcessError:
                 gvfs_out = "Not Supported"
 
             if gvfs_out.rstrip().lstrip() == "":
-                Popen(["gvfs-set-attribute", "-t", "unset", ".", "metadata::custom-icon"]).wait()
+                Popen(["gio", "set", "-t", "unset", ".", "metadata::custom-icon"]).wait()
                 gvfs_check = True
 
             try:
@@ -83,7 +82,7 @@ class GnomeProcedure(GenericProcedure):
             icon_file += ".png"
 
         if GnomeProcedure.is_applicable():  # pragma: no cover
-            Popen(["gvfs-set-attribute", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])\
+            Popen(["gio", "set", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])\
                 .wait()
 
     @staticmethod
@@ -94,7 +93,7 @@ class GnomeProcedure(GenericProcedure):
         :return:          None
         """
         if GnomeProcedure.is_applicable():  # pragma: no cover
-            Popen(["gvfs-set-attribute", "-t", "unset", directory, "metadata::custom-icon"]).wait()
+            Popen(["gio", "set", "-t", "unset", directory, "metadata::custom-icon"]).wait()
 
     @staticmethod
     def get_icon_file(directory: str) -> str or None:
@@ -109,7 +108,7 @@ class GnomeProcedure(GenericProcedure):
 
         else:  # pragma: no cover
 
-            gvfs_info = check_output(["gvfs-info", directory]).decode()
+            gvfs_info = check_output(["gio", "info", directory]).decode()
 
             if "metadata::custom-icon: file://" in gvfs_info:
                 return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
