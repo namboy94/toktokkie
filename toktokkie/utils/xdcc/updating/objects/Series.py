@@ -167,6 +167,7 @@ class Series(object):
         for i, pack in enumerate(download_queue):
             pack.set_directory(season_dir)
             pack.set_filename("xdcc_updater_" + str(i).zfill(int(len(download_queue) / 10) + 1), override=True)
+            pack.set_original_filename(pack.original_filename.replace("'", "_"))  # Fix for incorrect file names
 
         verbosity = 2 if verbose else 1
         MultipleServerDownloader("random", verbosity).download(download_queue)
