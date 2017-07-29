@@ -24,7 +24,8 @@ LICENSE
 
 # imports
 import os
-from typing import List
+import json
+from typing import List, Dict
 
 
 class MetaDataManager(object):
@@ -73,23 +74,28 @@ class MetaDataManager(object):
     def is_media_directory(directory: str, media_type: str = "") -> bool:
         """
         Checks if a given directory is a Media directory.
-        A directory is a Media directory when it contains a .meta directory. It may also contain a file
-        called 'type', which contains information about the type of media it contains.
+        A directory is a Media directory when it contains a .meta directory. It will also contain
+        a info.json file which specifies the type of the media as well as other metadata
 
         :param directory:  The directory to check
         :param media_type: The type of media to check for, optional
-        :return:           True if the directory is a TV Series directory, False otherwise
+        :return:           True if the directory is a Media directory, False otherwise
         """
         # noinspection PyUnboundLocalVariable
         try:
             if ".meta" in os.listdir(directory):
+
                 if media_type:
-                    with open(os.path.join(directory, ".meta", "type"), 'r') as typefile:
-                        stored_media_type = typefile.read().rstrip().lstrip()
-                    return stored_media_type == media_type
+                    info = MetaDataManager.get_media_info(directory)
+                    return info["type"] == media_type
+
                 else:
                     return True
-        except (OSError, IOError):  #
+
+            else:
+                return False
+
+        except (OSError, IOError, KeyError):  # Permission Errors or Missing type in info.json (if type specified)
             return False
 
     @staticmethod
@@ -114,8 +120,7 @@ class MetaDataManager(object):
                 if not os.path.isdir(path):
                     os.makedirs(path)
 
-            with open(os.path.join(directory, ".meta", "type"), 'w') as f:
-                f.write(media_type)
+            MetaDataManager.set_media_info(directory, {"type": media_type})
 
     @staticmethod
     def get_media_type(directory: str) -> str:
@@ -126,10 +131,37 @@ class MetaDataManager(object):
         :return:          Either the type identifier string, or an empty string
                           if the directory is not a media directory
         """
-        if not MetaDataManager.is_media_directory(directory):
+        try:
+            return str(MetaDataManager.get_media_info(directory)["type"])
+        except KeyError:
             return ""
-        else:
-            type_file = os.path.join(directory, ".meta", "type")
 
-            with open(type_file, 'r') as f:
-                return f.read().lstrip().rstrip()
+    @staticmethod
+    def get_media_info(directory: str) -> Dict[str, object]:
+        """
+        Retrieves the stored information in a media directory's info.json file
+        
+        :param directory: The media directory to check
+        :return: The JSON data of that file. Guaranteed to have a 'type' attribute
+        """
+
+        info_file = os.path.join(directory, ".meta", "info.json")
+
+        if not os.path.isfile(info_file):
+            return {}
+        else:
+            with open(info_file, 'r') as json_file:
+                return json.loads(json_file.read())
+
+    @staticmethod
+    def set_media_info(directory: str, data: Dict[str, object]) -> None:
+        """
+        Sets the info.json data for a media directory. Overwrites the old data!
+        
+        :param directory: The media directory for which to write the info data
+        :param data: The data to write to the info.json file
+        :return: None
+        """
+        with open(os.path.join(directory, ".meta", "info.json"), "w") as info_file:
+            json_data = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+            info_file.write(json_data)
