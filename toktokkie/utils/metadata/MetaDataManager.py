@@ -140,7 +140,7 @@ class MetaDataManager(object):
     def get_media_info(directory: str) -> Dict[str, object]:
         """
         Retrieves the stored information in a media directory's info.json file
-        
+
         :param directory: The media directory to check
         :return: The JSON data of that file. Guaranteed to have a 'type' attribute
         """
@@ -157,7 +157,7 @@ class MetaDataManager(object):
     def set_media_info(directory: str, data: Dict[str, object]) -> None:
         """
         Sets the info.json data for a media directory. Overwrites the old data!
-        
+
         :param directory: The media directory for which to write the info data
         :param data: The data to write to the info.json file
         :return: None
