@@ -26,6 +26,7 @@ LICENSE
 import os
 import json
 from typing import List, Dict
+from toktokkie.utils.metadata.MediaTypes import MediaTypes
 
 
 class MetaDataManager(object):
@@ -86,9 +87,7 @@ class MetaDataManager(object):
             if ".meta" in os.listdir(directory):
 
                 if media_type:
-                    info = MetaDataManager.get_media_info(directory)
-                    return info["type"] == media_type
-
+                    return MetaDataManager.is_media_subtype(directory, media_type)
                 else:
                     return True
 
@@ -110,7 +109,7 @@ class MetaDataManager(object):
         """
         if not os.path.isdir(directory):
             if os.path.isfile(directory):
-                raise IOError()
+                raise IOError("Directory already exists and is a File?")
             else:
                 os.makedirs(directory)
 
@@ -120,7 +119,8 @@ class MetaDataManager(object):
                 if not os.path.isdir(path):
                     os.makedirs(path)
 
-            MetaDataManager.set_media_info(directory, {"type": media_type})
+            info_data = MediaTypes.generate_basic_info_data(media_type)
+            MetaDataManager.set_media_info(directory, info_data)
 
     @staticmethod
     def get_media_type(directory: str) -> str:
@@ -135,6 +135,19 @@ class MetaDataManager(object):
             return str(MetaDataManager.get_media_info(directory)["type"])
         except KeyError:
             return ""
+
+    @staticmethod
+    def is_media_subtype(directory: str, media_type: str) -> bool:
+        """
+        Checks if a directory is of a specific media type of subtype.
+        
+        Example of a subtype: anime_series is a subtype of tv_series
+        
+        :param directory: The directory to check
+        :param media_type: The media type/subtype to check
+        :return: True if the media directory corresponds to the given type
+        """
+        return MediaTypes.is_subtype_of(MetaDataManager.get_media_type(directory), media_type)
 
     @staticmethod
     def get_media_info(directory: str) -> Dict[str, object]:
