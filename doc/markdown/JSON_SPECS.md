@@ -12,15 +12,16 @@ represented after the colon(`:`). Parent media types are indicated using `<=`.
         + tags: List[str]  # A list of tags for this media
     
     tv_series <= media:
-        + resolutions: List[Tuple[int, int]]  # A list of resoultions contained within this tv series directory
-        + audio_langs: List[str]              # A list of audio languages, denoted as 3-character capital terms
-                                              # (i.e. ENG, GER, JAP, etc.)
-        + subtitle_langs: List[str]           # A list of subtitle languages, denoted as 3-character capital terms
-                                              # (i.e. ENG, GER, JAP, etc.)
-        * tvdb_url: str                       # Link to the series' thetvdb.com page
-        * seasons: Dict[str, Dict[str, any]]  # Can be used to overwrite any of the series' data for one particular
-                                              # season. Seasons inherit all traits from the series implicitly,
-                                              # differences have to be provided here explicitly
+        + resolutions: List[Dict[string, int]]  # A list of resoultions contained within this tv series directory
+                                                # Resolution is provided as dictionary with 'x' and 'y' keys.
+        + audio_langs: List[str]                # A list of audio languages, denoted as 3-character capital terms
+                                                # (i.e. ENG, GER, JAP, etc.)
+        + subtitle_langs: List[str]             # A list of subtitle languages, denoted as 3-character capital terms
+                                                # (i.e. ENG, GER, JAP, etc.)
+        * tvdb_url: str                         # Link to the series' thetvdb.com page
+        * seasons: Dict[str, Dict[str, any]]    # Can be used to overwrite any of the series' data for one particular
+                                                # season. Seasons inherit all traits from the series implicitly,
+                                                # differences have to be provided here explicitly
     
     anime_series <= tv_series:
         * myanimelist_url  # An URL to the anime's myanimelist.net page. Can also be overridden using seasons
