@@ -76,18 +76,29 @@ class Base(object):
         # Check if any optional attributes have the correct type
         for optional in attrs["optional"]:
             if optional in self.info and type(self.info[optional]) is not attrs["optional"][optional]:
-                raise AttributeError("Invalid JSON")
+                raise AttributeError("Invalid optional attribute: " + optional)
 
         # Check that all extender attributes are valid parent attributes
-        for extender in attrs["extenders"]:
-            if extender in self.info:
-                if type(self.info[extender]) is not attrs["extenders"][extender]:  # == is not dict
-                    raise AttributeError("Invalid JSON")
-                for extender_attr in self.info[extender]:
-                    if extender_attr not in self.info:
-                        raise AttributeError("Invalid JSON")
-                    if type(self.info[extender][extender_attr]) is not type(self.info[extender_attr]):
-                        raise AttributeError("Invalid JSON")
+        for extender_type in attrs["extenders"]:
+            if extender_type in self.info:
+
+                if type(self.info[extender_type]) is not dict:
+                    raise AttributeError("Extender Type is not a dictionary: " + extender_type)
+
+                for extender in self.info[extender_type]:  # extender ~ 'Season 1'
+
+                    if type(self.info[extender_type][extender]) is not attrs["extenders"][extender_type]:
+                        raise AttributeError("Extender is not a dictionary: " + extender)
+
+                    for extender_attr in self.info[extender_type][extender]:
+
+                        if extender_attr not in self.info:
+                            raise AttributeError("Invalid attribute defined in extender: " + extender_attr)
+
+                        if not isinstance(
+                                self.info[extender_type][extender][extender_attr],
+                                type(self.info[extender_attr])):
+                            raise AttributeError("Invalid type for extender attribute: " + extender_attr)
 
     def write_changes(self):
         """
@@ -109,7 +120,7 @@ class Base(object):
         :return: None
         """
         if value is not None:
-            self.info["key"] = value
+            self.info[key] = value
         elif key in self.info:
             self.info.pop(key)
 
