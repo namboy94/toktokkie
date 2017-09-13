@@ -30,6 +30,11 @@ class TvSeries(Base):
     Models the tv_series media type
     """
 
+    identifier = "tv_series"
+    """
+    An identifier string that indicates the type
+    """
+
     def __init__(self, path: str):
         """
         Initializes the Media Type object
@@ -64,7 +69,7 @@ class TvSeries(Base):
         """
         additional.append({
             "required": {"resolutions": list, "audio_langs": list, "subtitle_langs": list},
-            "optional": {"tvdb_url"},
+            "optional": {"tvdb_url": str},
             "extenders": {"seasons": dict}
         })
-        return super().define_attributes(additional)
+        return super(TvSeries, TvSeries).define_attributes(additional)

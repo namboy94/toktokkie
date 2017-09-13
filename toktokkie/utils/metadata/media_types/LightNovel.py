@@ -25,9 +25,14 @@ from typing import Dict, List
 from toktokkie.utils.metadata.media_types.Ebook import Ebook
 
 
-class TvSeries(Ebook):
+class LightNovel(Ebook):
     """
     Models the light_novel media type
+    """
+
+    identifier = "light_novel"
+    """
+    An identifier string that indicates the type
     """
 
     def __init__(self, path: str):
@@ -63,4 +68,4 @@ class TvSeries(Ebook):
             "optional": {"myanimelist_url": str, "novelupdates_url": str},
             "extenders": {}
         })
-        return super().define_attributes(additional)
+        return super(LightNovel, LightNovel).define_attributes(additional)

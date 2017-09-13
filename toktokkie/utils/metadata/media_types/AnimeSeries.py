@@ -31,6 +31,11 @@ class AnimeSeries(TvSeries):
     Models the anime_series media type
     """
 
+    identifier = "anime_series"
+    """
+    An identifier string that indicates the type
+    """
+
     def __init__(self, path: str):
         """
         Initializes the Media Type object
@@ -57,7 +62,7 @@ class AnimeSeries(TvSeries):
         """
         additional.append({
             "required": {},
-            "optional": {"myanimelist_url"},
+            "optional": {"myanimelist_url": str},
             "extenders": {}
         })
-        return super().define_attributes(additional)
+        return super(AnimeSeries, AnimeSeries).define_attributes(additional)

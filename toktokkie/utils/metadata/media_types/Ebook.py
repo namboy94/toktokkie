@@ -30,6 +30,11 @@ class Ebook(Base):
     Models the ebook media type
     """
 
+    identifier = "ebook"
+    """
+    An identifier string that indicates the type
+    """
+
     def __init__(self, path: str):
         """
         Initializes the Media Type object
@@ -37,7 +42,7 @@ class Ebook(Base):
         """
         super().__init__(path)
         self.author = self.info["author"]
-        self.isbn = self.info["isbn"] if self.isbn is not "N/A" else None
+        self.isbn = self.info["isbn"] if self.info["isbn"] is not "N/A" else None
 
     def write_changes(self):
         """
@@ -61,4 +66,4 @@ class Ebook(Base):
             "optional": {},
             "extenders": {}
         })
-        return super().define_attributes(additional)
+        return super(Ebook, Ebook).define_attributes(additional)

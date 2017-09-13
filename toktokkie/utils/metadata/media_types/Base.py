@@ -32,6 +32,11 @@ class Base(object):
     The base Media Type class. Implements common functions, JSON schema framework and automatic checks
     """
 
+    identifier = "base"
+    """
+    An identifier string that indicates the type
+    """
+
     def __init__(self, path: str):
         """
         Initializes a new Media Type object from a directory path
@@ -43,8 +48,7 @@ class Base(object):
         with open(self.info_file, 'r') as info:
             self.info = json.loads(info.read())
 
-        if not self.check_if_valid():
-            raise AttributeError("Invalid JSON")
+        self.check_if_valid()
 
         # Media Type specific attributes
         # Child Constructors should generally also have some here
@@ -52,35 +56,38 @@ class Base(object):
         self.name = self.info["name"]
         self.tags = self.info["tags"]
 
-    def check_if_valid(self) -> bool:
+        if self.type != self.identifier:
+            raise AttributeError("Media Type Mismatch")
+
+    def check_if_valid(self):
         """
         Checks if the loaded JSON information is valid for the specified Media Type
-        :return: True if the JSON is valid, False otherwise
+        If not, raise a descriptive AttributeError
         """
         attrs = self.define_attributes()
 
         # Check if all required attributes exist and have the correct type
         for required in attrs["required"]:
             if required not in self.info:
-                return False
+                raise AttributeError("Required Attribute " + required + " missing.")
             if type(self.info[required]) is not attrs["required"][required]:
-                return False
+                raise AttributeError("Attribute " + required + " has wrong type: " + str(type(self.info[required])))
 
         # Check if any optional attributes have the correct type
         for optional in attrs["optional"]:
-            if type(self.info[optional]) is not attrs["required"][optional]:
-                return False
+            if optional in self.info and type(self.info[optional]) is not attrs["optional"][optional]:
+                raise AttributeError("Invalid JSON")
 
         # Check that all extender attributes are valid parent attributes
         for extender in attrs["extenders"]:
             if extender in self.info:
                 if type(self.info[extender]) is not attrs["extenders"][extender]:  # == is not dict
-                    return False
+                    raise AttributeError("Invalid JSON")
                 for extender_attr in self.info[extender]:
                     if extender_attr not in self.info:
-                        return False
+                        raise AttributeError("Invalid JSON")
                     if type(self.info[extender][extender_attr]) is not type(self.info[extender_attr]):
-                        return False
+                        raise AttributeError("Invalid JSON")
 
     def write_changes(self):
         """
