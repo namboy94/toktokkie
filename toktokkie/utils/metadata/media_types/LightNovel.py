@@ -57,7 +57,7 @@ class LightNovel(Ebook):
 
     # noinspection PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]] = []) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
         """
         Defines additional attributes for this media type
         :param additional: Further additional parameters for use with child classes

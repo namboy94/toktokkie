@@ -56,6 +56,7 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests if valid JSON files are read correctly
         :return: None
         """
+        totalcount = 0
         json_dir = "toktokkie/tests/resources/json/media_types/valid"
         for media_type in self.media_types:
             count = 0
@@ -66,12 +67,15 @@ class MediaTypesUnitTests(unittest.TestCase):
                     media_type("test_media_type")
                     shutil.rmtree("test_media_type")
             self.assertTrue(count > 0)  # Just make sure at least 1 test per media type
+            totalcount += count
+        self.assertEqual(totalcount, len(os.listdir(json_dir)))
 
     def test_invalid_json(self):
         """
         Tests if incorrect JSON is detected correctly
         :return: None
         """
+        totalcount = 0
         json_dir = "toktokkie/tests/resources/json/media_types/invalid"
         for media_type in self.media_types:
             count = 0
@@ -83,11 +87,13 @@ class MediaTypesUnitTests(unittest.TestCase):
                     try:
                         media_type("test_media_type")
                         self.fail()
-                    except AttributeError:
+                    except AttributeError as e:
                         pass
 
                     shutil.rmtree("test_media_type")
             self.assertTrue(count > 0)  # Just make sure at least 1 test per media type
+            totalcount += count
+        self.assertEqual(totalcount, len(os.listdir(json_dir)))
 
     def test_modifying_base(self):
         """
@@ -179,6 +185,24 @@ class MediaTypesUnitTests(unittest.TestCase):
 
         new_ln = LightNovel("test_media_type")
         self.assertEqual(new_ln.novelupdates_url, "N")
+        shutil.rmtree("test_media_type")
+
+    def test_removing_optional_attribute(self):
+        """
+        Tests removing an optional attribute from a JSON file
+        :return: None
+        """
+        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/tv_series_complete.json")
+        tv = TvSeries("test_media_type")
+        tv.tvdb_url = None
+
+        new_tv = TvSeries("test_media_type")
+        self.assertNotEqual(new_tv.tvdb_url, None)
+
+        tv.write_changes()
+
+        new_tv = TvSeries("test_media_type")
+        self.assertEqual(new_tv.tvdb_url, None)
         shutil.rmtree("test_media_type")
 
     @staticmethod

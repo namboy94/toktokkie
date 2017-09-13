@@ -93,7 +93,7 @@ class MediaTypes(object):
 
     # noinspection PyDefaultArgument
     @staticmethod
-    def generate_basic_info_data(media_type: str, existing_data: Dict[str, object] = None) -> Dict[str, object]:
+    def generate_basic_info_data(media_type: str, existing_data: Dict[str, object]=None) -> Dict[str, object]:
         """
         Generates a dictionary containing the contents of a barebones
         info.json file for the specified media type

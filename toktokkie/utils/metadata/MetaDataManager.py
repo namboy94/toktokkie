@@ -140,9 +140,9 @@ class MetaDataManager(object):
     def is_media_subtype(directory: str, media_type: str) -> bool:
         """
         Checks if a directory is of a specific media type of subtype.
-        
+
         Example of a subtype: anime_series is a subtype of tv_series
-        
+
         :param directory: The directory to check
         :param media_type: The media type/subtype to check
         :return: True if the media directory corresponds to the given type

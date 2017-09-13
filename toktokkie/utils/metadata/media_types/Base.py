@@ -126,7 +126,7 @@ class Base(object):
 
     # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]] = []) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
         """
         Defines the attributes for a media type
         :param additional: Can be used (together with super) by child classes to add more attributes
