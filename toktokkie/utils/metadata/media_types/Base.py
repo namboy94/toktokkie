@@ -24,7 +24,7 @@ LICENSE
 
 import os
 import json
-from typing import Dict
+from typing import Dict, List
 
 
 class Base(object):
@@ -94,9 +94,21 @@ class Base(object):
         with open(self.info_file, 'w') as j:
             j.write(json.dumps(self.info, sort_keys=True, indent=4, separators=(',', ': ')))
 
-    # noinspection PyTypeChecker
+    def add_noneable_to_info(self, key: str, value: None or object):
+        """
+        Small helper method that makes it easier to update a None-able value in the info dictionary
+        :param key: The key to update
+        :param value: The value to update with
+        :return: None
+        """
+        if value is not None:
+            self.info["key"] = value
+        elif key in self.info:
+            self.info.pop(key)
+
+    # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: Dict[str, dict] = None) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]] = []) -> Dict[str, Dict[str, type]]:
         """
         Defines the attributes for a media type
         :param additional: Can be used (together with super) by child classes to add more attributes
@@ -107,9 +119,9 @@ class Base(object):
             "optional": {},
             "extenders": {}
         }
-        if additional is not None:
-            attributes["required"].update(additional["required"])
-            attributes["optional"].update(additional["optional"])
-            attributes["extenders"].update(additional["extenders"])
+        for extra in additional:
+            attributes["required"].update(extra["required"])
+            attributes["optional"].update(extra["optional"])
+            attributes["extenders"].update(extra["extenders"])
 
         return attributes

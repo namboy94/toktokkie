@@ -21,3 +21,50 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+from typing import Dict, List
+from toktokkie.utils.metadata.media_types.Base import Base
+
+
+class TvSeries(Base):
+    """
+    Models the tv_series media type
+    """
+
+    def __init__(self, path: str):
+        """
+        Initializes the Media Type object
+        :param path: The path to the media directory
+        """
+        super().__init__(path)
+        self.resolutions = self.info["resolutions"]
+        self.audio_langs = self.info["audio_langs"]
+        self.subtitle_langs = self.info["subtitle_langs"]
+        self.tvdb_url = None if "tvdb_url" not in self.info else self.info["tvdb_url"]
+        self.seasons = None if "seasons" not in self.info else self.info["seasons"]
+
+    def write_changes(self):
+        """
+        Writes the changes in JSON data to the JSON info file
+        :return: None
+        """
+        self.info["resolutions"] = self.resolutions
+        self.info["audio_langs"] = self.audio_langs
+        self.info["subtitle_langs"] = self.subtitle_langs
+        self.add_noneable_to_info("tvdb_url", self.tvdb_url)
+        self.add_noneable_to_info("seasons", self.seasons)
+        super().write_changes()
+
+    # noinspection PyDefaultArgument
+    @staticmethod
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]] = []) -> Dict[str, Dict[str, type]]:
+        """
+        Defines additional attributes for this media type
+        :param additional: Further additional parameters for use with child classes
+        :return: The attributes of the Media Type
+        """
+        additional.append({
+            "required": {"resolutions": list, "audio_langs": list, "subtitle_langs": list},
+            "optional": {"tvdb_url"},
+            "extenders": {"seasons": dict}
+        })
+        return super().define_attributes(additional)

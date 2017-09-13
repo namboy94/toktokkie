@@ -70,14 +70,6 @@ class MediaTypes(object):
         }
     }
 
-    types = {
-
-        "media": {
-            "required": {"type": str, "name": str, "tags": List[str]}
-        }
-
-    }
-
     @staticmethod
     def is_subtype_of(media_type: str, target: str) -> bool:
         """

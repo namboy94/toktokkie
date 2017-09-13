@@ -21,3 +21,44 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+from typing import Dict, List
+from toktokkie.utils.metadata.media_types.Base import Base
+
+
+class Ebook(Base):
+    """
+    Models the ebook media type
+    """
+
+    def __init__(self, path: str):
+        """
+        Initializes the Media Type object
+        :param path: The path to the media directory
+        """
+        super().__init__(path)
+        self.author = self.info["author"]
+        self.isbn = self.info["isbn"] if self.isbn is not "N/A" else None
+
+    def write_changes(self):
+        """
+        Writes the changes in JSON data to the JSON info file
+        :return: None
+        """
+        self.info["author"] = self.author
+        self.info["isbn"] = self.isbn if self.isbn is not None else "N/A"
+        super().write_changes()
+
+    # noinspection PyDefaultArgument
+    @staticmethod
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]] = []) -> Dict[str, Dict[str, type]]:
+        """
+        Defines additional attributes for this media type
+        :param additional: Further additional parameters for use with child classes
+        :return: The attributes of the Media Type
+        """
+        additional.append({
+            "required": {"author": str, "isbn": str},
+            "optional": {},
+            "extenders": {}
+        })
+        return super().define_attributes(additional)
