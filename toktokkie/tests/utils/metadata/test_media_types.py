@@ -230,8 +230,6 @@ class MediaTypesUnitTests(unittest.TestCase):
             self.assertEqual(media_type.identifier, x.name)
             shutil.rmtree(media_type.identifier)
 
-
-
     @staticmethod
     def prepare_json_directory(json_file: str):
         """
