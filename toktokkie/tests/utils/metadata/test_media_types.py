@@ -205,6 +205,33 @@ class MediaTypesUnitTests(unittest.TestCase):
         self.assertEqual(new_tv.tvdb_url, None)
         shutil.rmtree("test_media_type")
 
+    def test_generating_media_type_directories(self):
+        """
+        Tests generating new media type directories
+        :return: None
+        """
+
+        for media_type in self.media_types:
+            if os.path.isdir(media_type.identifier):
+                shutil.rmtree(media_type.identifier)
+            x = media_type(media_type.identifier, True)
+            self.assertEqual(media_type.identifier, x.name)
+            x.name = "X"
+            x.write_changes()
+
+        for media_type in self.media_types:
+            x = media_type(media_type.identifier, True)
+            self.assertNotEqual(media_type.identifier, x.name)
+            self.assertEqual("X", x.name)
+            shutil.rmtree(media_type.identifier)
+
+        for media_type in self.media_types:
+            x = media_type(media_type.identifier, True, True)
+            self.assertEqual(media_type.identifier, x.name)
+            shutil.rmtree(media_type.identifier)
+
+
+
     @staticmethod
     def prepare_json_directory(json_file: str):
         """

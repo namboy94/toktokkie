@@ -35,12 +35,14 @@ class LightNovel(Ebook):
     An identifier string that indicates the type
     """
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
         """
         Initializes the Media Type object
         :param path: The path to the media directory
+        :param generate: Can be set to True to generate the directory and a basic info.json file.
+        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
         """
-        super().__init__(path)
+        super().__init__(path, generate, overwrite_with_generated)
         self.official_translation = self.info["official_translation"]
         self.myanimelist_url = None if "myanimelist_url" not in self.info else self.info["myanimelist_url"]
         self.novelupdates_url = None if "novelupdates_url" not in self.info else self.info["novelupdates_url"]

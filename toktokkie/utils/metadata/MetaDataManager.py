@@ -25,8 +25,12 @@ LICENSE
 # imports
 import os
 import json
-from typing import List, Dict
-from toktokkie.utils.metadata.MediaTypes import MediaTypes
+from typing import List
+from toktokkie.utils.metadata.media_types.Base import Base
+from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
+from toktokkie.utils.metadata.media_types.AnimeSeries import AnimeSeries
+from toktokkie.utils.metadata.media_types.Ebook import Ebook
+from toktokkie.utils.metadata.media_types.LightNovel import LightNovel
 
 
 class MetaDataManager(object):
@@ -34,10 +38,18 @@ class MetaDataManager(object):
     Class that handles the metadata for Media files
     """
 
+    media_types = [Base, TvSeries, AnimeSeries, Ebook, LightNovel]
+    """
+    The various media types that are supported
+    """
+    media_type_map = {}
+    for m in media_types:
+        media_type_map[m.identifier] = m
+
     @staticmethod
     def find_recursive_media_directories(directory: str, media_type: str = "") -> List[str]:
         """
-        Finds all directories that include a .meta directory below a given
+        Finds all directories that include a .meta directory and info.json file below a given
         directory. If a media_type is specified, only those directories containing a .meta/type file
         with the media_type as content are considered
 
@@ -84,26 +96,20 @@ class MetaDataManager(object):
         """
         # noinspection PyUnboundLocalVariable
         try:
-            if ".meta" in os.listdir(directory):
-
-                if media_type:
-                    return MetaDataManager.is_media_subtype(directory, media_type)
-                else:
-                    return True
-
-            else:
+            if not os.path.isfile(os.path.join(directory, ".meta", "info.json")):
                 return False
+            return True if not media_type else MetaDataManager.is_media_subtype(directory, media_type)
 
         except (OSError, IOError, KeyError):  # Permission Errors or Missing type in info.json (if type specified)
             return False
 
     @staticmethod
-    def generate_media_directory(directory: str, media_type: str = "generic") -> None:
+    def generate_media_directory(directory: str, media_type: str = "base") -> None:
         """
         Makes sure a directory is a media directory of the given type
 
         :param directory:  The directory
-        :param media_type: The media type, if not supplied will default to 'generic'
+        :param media_type: The media type, if not supplied will default to 'base'
         :raises:           IOError (FileExistsError), if the file exists and is not a directory
         :return:           None
         """
@@ -115,12 +121,10 @@ class MetaDataManager(object):
 
         if not MetaDataManager.is_media_directory(directory, media_type):
 
-            for path in [directory, os.path.join(directory, ".meta", "icons")]:
-                if not os.path.isdir(path):
-                    os.makedirs(path)
+            if not os.path.isdir(os.path.join(directory, ".meta", "icons")):
+                os.makedirs(os.path.join(directory, ".meta", "icons"))
 
-            info_data = MediaTypes.generate_basic_info_data(media_type)
-            MetaDataManager.set_media_info(directory, info_data)
+            MetaDataManager.media_type_map[media_type](directory, True)
 
     @staticmethod
     def get_media_type(directory: str) -> str:
@@ -132,14 +136,20 @@ class MetaDataManager(object):
                           if the directory is not a media directory
         """
         try:
-            return str(MetaDataManager.get_media_info(directory)["type"])
+            info_file = os.path.join(directory, ".meta", "info.json")
+
+            if not os.path.isfile(info_file):
+                return ""
+            else:
+                with open(info_file, 'r') as json_file:
+                    return json.loads(json_file.read())["type"]
         except KeyError:
             return ""
 
     @staticmethod
     def is_media_subtype(directory: str, media_type: str) -> bool:
         """
-        Checks if a directory is of a specific media type of subtype.
+        Checks if a directory is of a specific media type or subtype.
 
         Example of a subtype: anime_series is a subtype of tv_series
 
@@ -147,34 +157,16 @@ class MetaDataManager(object):
         :param media_type: The media type/subtype to check
         :return: True if the media directory corresponds to the given type
         """
-        return MediaTypes.is_subtype_of(MetaDataManager.get_media_type(directory), media_type)
+        try:
+            dir_media_type = MetaDataManager.get_media_type(directory)
+            dir_media_type_class = MetaDataManager.media_type_map[dir_media_type]
+            check_media_type_class = MetaDataManager.media_type_map[media_type]
+            print(issubclass(dir_media_type_class, check_media_type_class))
+            if issubclass(dir_media_type_class, check_media_type_class):
+                dir_media_type_class(directory)  # Check if valid JSON
+                return True
 
-    @staticmethod
-    def get_media_info(directory: str) -> Dict[str, object]:
-        """
-        Retrieves the stored information in a media directory's info.json file
-
-        :param directory: The media directory to check
-        :return: The JSON data of that file. Guaranteed to have a 'type' attribute
-        """
-
-        info_file = os.path.join(directory, ".meta", "info.json")
-
-        if not os.path.isfile(info_file):
-            return {}
-        else:
-            with open(info_file, 'r') as json_file:
-                return json.loads(json_file.read())
-
-    @staticmethod
-    def set_media_info(directory: str, data: Dict[str, object]) -> None:
-        """
-        Sets the info.json data for a media directory. Overwrites the old data!
-
-        :param directory: The media directory for which to write the info data
-        :param data: The data to write to the info.json file
-        :return: None
-        """
-        with open(os.path.join(directory, ".meta", "info.json"), "w") as info_file:
-            json_data = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-            info_file.write(json_data)
+        except KeyError:
+            return False
+        except AttributeError:
+            return False

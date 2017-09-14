@@ -37,14 +37,24 @@ class Base(object):
     An identifier string that indicates the type
     """
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
         """
         Initializes a new Media Type object from a directory path
         :param path: The path for which to create the Media Type object
+        :param generate: Can be set to True to generate the directory and a basic info.json file.
+        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
         """
 
         self.path = path
         self.info_file = os.path.join(path, ".meta", "info.json")
+
+        if generate:
+            metadir = os.path.join(self.path, ".meta")
+            if not os.path.isdir(metadir):
+                os.makedirs(metadir)
+            if not os.path.isfile(self.info_file) or overwrite_with_generated:
+                self.generate_info_file()
+
         with open(self.info_file, 'r') as info:
             self.info = json.loads(info.read())
 
@@ -58,6 +68,20 @@ class Base(object):
 
         if self.type != self.identifier:
             raise AttributeError("Media Type Mismatch")
+
+    def generate_info_file(self):
+        """
+        Generates a skeleton info.json file
+        :return: None
+        """
+        data = {}
+        attrs = self.define_attributes()
+        for required in attrs["required"]:
+            data[required] = attrs["required"][required]()
+        data["type"] = self.identifier
+        data["name"] = os.path.basename(self.path)
+        with open(self.info_file, 'w') as f:
+            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def check_if_valid(self):
         """
