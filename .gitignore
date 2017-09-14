@@ -51,3 +51,4 @@ ENV/
 .idea
 doc/build
 .idea/
+cover/
