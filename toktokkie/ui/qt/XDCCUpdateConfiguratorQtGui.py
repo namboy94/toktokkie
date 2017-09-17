@@ -148,6 +148,7 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
 
         self.bot_edit.setText(selected_series.get_bot_preference())
         self.season_spin_box.setValue(selected_series.get_season())
+        self.episode_offset_spinbox.setValue(selected_series.get_episode_offset())
 
         self.search_engine_combo_box.setCurrentIndex(
             self.search_engine_combo_box.findText(selected_series.get_search_engines()[0]))
@@ -176,7 +177,8 @@ class XDCCUpdateConfiguratorQtGui(QMainWindow, Ui_XDCCUpdateConfiguratorWindow):
                         self.season_spin_box.value(),
                         [self.search_engine_combo_box.currentText()],
                         self.naming_scheme_combo_box.currentText(),
-                        self.pattern_combo_box.currentText())
+                        self.pattern_combo_box.currentText(),
+                        self.episode_offset_spinbox.value())
 
         self.json_handler.add_series(series)
         self.json_handler.remove_series(prev_series)
