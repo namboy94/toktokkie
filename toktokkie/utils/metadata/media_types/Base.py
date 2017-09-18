@@ -39,7 +39,7 @@ class Base(object):
 
     # Getters
     @property
-    def type(self) -> str:
+    def media_type(self) -> str:
         return self.info["type"]
 
     @property
@@ -52,8 +52,8 @@ class Base(object):
         return self.resolve_inner_attribute("tags")
 
     # Setters
-    @type.setter
-    def type(self, value: str):
+    @media_type.setter
+    def media_type(self, value: str):
         self.info["type"] = value
 
     @name.setter
@@ -110,10 +110,13 @@ class Base(object):
         :param attribute: The attribute to check for
         :return: the attribute value.
         """
-        if not self.extender_key or not self.child_key:
-            return self.info[attribute]
-        else:
-            return self.info[self.extender_key][self.child_key][attribute]
+        try:
+            if not self.extender_key or not self.child_key:
+                return self.info[attribute]
+            else:
+                return self.info[self.extender_key][self.child_key][attribute]
+        except KeyError:
+            return None
 
     def store_inner_attribute(self, attribute: str, value: object):
         """
@@ -123,11 +126,21 @@ class Base(object):
         :return: None
         """
         if not self.extender_key or not self.child_key:
-            self.info[attribute] = value
+            if value is not None:
+                self.info[attribute] = value
+            elif attribute in self.info:
+                self.info.pop(attribute)
+
         elif self.info[attribute] != value:
-            self.info[self.extender_key][self.child_key][attribute] = value
-        else:
-            self.info[self.extender_key][self.child_key].pop(attribute)
+            if value is not None:
+                self.info[self.extender_key][self.child_key][attribute] = value
+            elif attribute in self.info[self.extender_key][self.child_key]:
+                self.info[self.extender_key][self.child_key].pop(attribute)
+
+        else:  # If the value is the same as the parents' we don't need to update
+            # But we have to remove any existing values
+            if attribute in self.info[self.extender_key][self.child_key]:
+                self.info[self.extender_key][self.child_key].pop(attribute)
 
     def generate_info_file(self):
         """
@@ -185,7 +198,7 @@ class Base(object):
                                 type(self.info[extender_attr])):
                             raise AttributeError("Invalid type for extender attribute: " + extender_attr)
 
-        if self.type != self.identifier:
+        if self.media_type != self.identifier:
             raise AttributeError("Media Type Mismatch")
 
     def write_changes(self):
@@ -195,18 +208,6 @@ class Base(object):
         """
         with open(self.info_file, 'w') as j:
             j.write(json.dumps(self.info, sort_keys=True, indent=4, separators=(',', ': ')))
-
-    def add_noneable_to_info(self, key: str, value: None or object):
-        """
-        Small helper method that makes it easier to update a None-able value in the info dictionary
-        :param key: The key to update
-        :param value: The value to update with
-        :return: None
-        """
-        if value is not None:
-            self.info[key] = value
-        elif key in self.info:
-            self.info.pop(key)
 
     # noinspection PyMethodMayBeStatic
     def get_child_names(self) -> List[str]:

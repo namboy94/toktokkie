@@ -36,23 +36,15 @@ class AnimeSeries(TvSeries):
     An identifier string that indicates the type
     """
 
-    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
-        """
-        Initializes the Media Type object
-        :param path: The path to the media directory
-        :param generate: Can be set to True to generate the directory and a basic info.json file.
-        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
-        """
-        super().__init__(path, generate, overwrite_with_generated)
-        self.myanimelist_url = None if "myanimelist_url" not in self.info else self.info["myanimelist_url"]
+    @property
+    def myanimelist_url(self) -> str:
+        url = self.resolve_inner_attribute("myanimelist_url")
+        return url if url is not None else ""
 
-    def write_changes(self):
-        """
-        Writes the changes in JSON data to the JSON info file
-        :return: None
-        """
-        self.add_noneable_to_info("myanimelist_url", self.myanimelist_url)
-        super().write_changes()
+    @myanimelist_url.setter
+    def myanimelist_url(self, value: str):
+        url = None if value == "" else value
+        self.store_inner_attribute("myanimelist_url", url)
 
     # noinspection PyDefaultArgument
     @staticmethod

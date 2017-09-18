@@ -99,51 +99,6 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
         :return: None
         """
         self.metadata = metadata
-        self.child_id = child_id
-
-        # noinspection PyTypeChecker
-        self.display_data(
-            metadata.get_season_value(child_id, "name"),
-            metadata.get_season_value(child_id, "tags"),
-            metadata.get_season_value(child_id, "tvdb_url"),
-            metadata.get_season_value(child_id, "audio_langs"),
-            metadata.get_season_value(child_id, "subtitle_langs"),
-            metadata.get_season_value(child_id, "resolutions")
-        )
-
-        # Not configurable for individual children
-        self.folder_icon_label.setPixmap(QPixmap(os.path.join(metadata.path, ".meta/icons/" + child_id + ".png")))
-        self.media_type_combo_box.setCurrentIndex(self.media_type_combo_box.findText(metadata.type))
-
-        name_text = metadata.name if "name" not in child_data else child_data["name"]
-        self.series_name_edit.setText(name_text)
-
-        tags = metadata.tags if "tags" not in child_data else child_data["tags"]
-        self.tags_edit.setText(", ".join(tags))
-
-        tvdb_url = metadata.tvdb_url if "tvdb_url" not in child_data else child_data["tvdb_url"]
-        if tvdb_url is not None:
-            self.tvdb_url_edit.setText(tvdb_url)
-
-        audio_langs = metadata.audio_langs if "audio_langs" not in child_data else child_data["audio_langs"]
-        self.audio_language_edit.setText(", ".join(audio_langs))
-
-        subtitle_langs = metadata.subtitle_langs if "subtitle_langs" not in child_data else child_data["subtitle_langs"]
-        self.subtitle_language_edit.setText(", ".join(subtitle_langs))
-
-        resolutions = metadata.resolutions if "resolutions" not in child_data else:
-        for i, widgets in enumerate([
-            [self.resolution_one_edit_x, self.resolution_one_edit_y],
-            [self.resolution_two_edit_x, self.resolution_two_edit_y],
-            [self.resolution_three_edit_x, self.resolution_three_edit_y]
-        ]):
-            if len(metadata.resolutions) > i:
-                widgets[0].setText(str(metadata.resolutions[i]["x"]))
-                widgets[1].setText(str(metadata.resolutions[i]["y"]))
-            else:
-                widgets[0].setText("")
-                widgets[1].setText("")
-
 
     def save_data(self):
         """

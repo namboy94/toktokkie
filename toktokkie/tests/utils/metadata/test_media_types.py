@@ -87,7 +87,7 @@ class MediaTypesUnitTests(unittest.TestCase):
                     try:
                         media_type("test_media_type")
                         self.fail()
-                    except AttributeError as e:
+                    except AttributeError:
                         pass
 
                     shutil.rmtree("test_media_type")
@@ -142,7 +142,7 @@ class MediaTypesUnitTests(unittest.TestCase):
 
         new_anime = AnimeSeries("test_media_type")
         self.assertNotEqual(new_anime.myanimelist_url, "M@L")
-        self.assertEqual(new_anime.myanimelist_url, None)
+        self.assertEqual(new_anime.myanimelist_url, "")
 
         anime.write_changes()
 
@@ -197,12 +197,12 @@ class MediaTypesUnitTests(unittest.TestCase):
         tv.tvdb_url = None
 
         new_tv = TvSeries("test_media_type")
-        self.assertNotEqual(new_tv.tvdb_url, None)
+        self.assertNotEqual(new_tv.tvdb_url, "")
 
         tv.write_changes()
 
         new_tv = TvSeries("test_media_type")
-        self.assertEqual(new_tv.tvdb_url, None)
+        self.assertEqual(new_tv.tvdb_url, "")
         shutil.rmtree("test_media_type")
 
     def test_generating_media_type_directories(self):

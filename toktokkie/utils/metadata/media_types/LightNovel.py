@@ -35,27 +35,33 @@ class LightNovel(Ebook):
     An identifier string that indicates the type
     """
 
-    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
-        """
-        Initializes the Media Type object
-        :param path: The path to the media directory
-        :param generate: Can be set to True to generate the directory and a basic info.json file.
-        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
-        """
-        super().__init__(path, generate, overwrite_with_generated)
-        self.official_translation = self.info["official_translation"]
-        self.myanimelist_url = None if "myanimelist_url" not in self.info else self.info["myanimelist_url"]
-        self.novelupdates_url = None if "novelupdates_url" not in self.info else self.info["novelupdates_url"]
+    @property
+    def official_translation(self) -> bool:
+        return bool(self.resolve_inner_attribute("official_translation"))
 
-    def write_changes(self):
-        """
-        Writes the changes in JSON data to the JSON info file
-        :return: None
-        """
-        self.info["official_translation"] = self.official_translation
-        self.add_noneable_to_info("myanimelist_url", self.myanimelist_url)
-        self.add_noneable_to_info("novelupdates_url", self.novelupdates_url)
-        super().write_changes()
+    @property
+    def myanimelist_url(self) -> str:
+        url = self.resolve_inner_attribute("myanimelist_url")
+        return url if url is not None else ""
+
+    @property
+    def novelupdates_url(self) -> str:
+        url = self.resolve_inner_attribute("novelupdates_url")
+        return url if url is not None else ""
+
+    @official_translation.setter
+    def official_translation(self, value: bool):
+        self.store_inner_attribute("official_translation", value)
+
+    @myanimelist_url.setter
+    def myanimelist_url(self, value: str):
+        url = None if value == "" else value
+        self.store_inner_attribute("myanimelist_url", url)
+
+    @novelupdates_url.setter
+    def novelupdates_url(self, value: str):
+        url = None if value == "" else value
+        self.store_inner_attribute("novelupdates_url", url)
 
     # noinspection PyDefaultArgument
     @staticmethod

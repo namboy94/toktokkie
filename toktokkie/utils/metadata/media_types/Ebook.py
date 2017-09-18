@@ -35,25 +35,23 @@ class Ebook(Base):
     An identifier string that indicates the type
     """
 
-    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
-        """
-        Initializes the Media Type object
-        :param path: The path to the media directory
-        :param generate: Can be set to True to generate the directory and a basic info.json file.
-        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
-        """
-        super().__init__(path, generate, overwrite_with_generated)
-        self.author = self.info["author"]
-        self.isbn = self.info["isbn"] if self.info["isbn"] is not "N/A" else None
+    # Getters
+    @property
+    def author(self) -> str:
+        return str(self.resolve_inner_attribute("author"))
 
-    def write_changes(self):
-        """
-        Writes the changes in JSON data to the JSON info file
-        :return: None
-        """
-        self.info["author"] = self.author
-        self.info["isbn"] = self.isbn if self.isbn is not None else "N/A"
-        super().write_changes()
+    @property
+    def isbn(self) -> str:
+        return str(self.resolve_inner_attribute("isbn"))
+
+    # Setters
+    @author.setter
+    def author(self, value: str):
+        self.store_inner_attribute("author", value)
+
+    @isbn.setter
+    def isbn(self, value: str):
+        self.store_inner_attribute("isbn", value)
 
     # noinspection PyDefaultArgument
     @staticmethod

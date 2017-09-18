@@ -37,35 +37,55 @@ class TvSeries(Base):
     An identifier string that indicates the type
     """
 
-    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
-        """
-        Initializes the Media Type object
-        :param path: The path to the media directory
-        :param generate: Can be set to True to generate the directory and a basic info.json file.
-        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
-        """
-        super().__init__(path, generate, overwrite_with_generated)
-        self.resolutions = self.info["resolutions"]
-        self.audio_langs = self.info["audio_langs"]
-        self.subtitle_langs = self.info["subtitle_langs"]
-        self.tvdb_url = None if "tvdb_url" not in self.info else self.info["tvdb_url"]
-        self.seasons = None if "seasons" not in self.info else self.info["seasons"]
+    # Getters
+    @property
+    def resolutions(self) -> List[Dict[str, int]]:
+        # noinspection PyTypeChecker
+        return self.resolve_inner_attribute("resolutions")
 
-    def write_changes(self):
-        """
-        Writes the changes in JSON data to the JSON info file
-        :return: None
-        """
-        self.info["resolutions"] = self.resolutions
-        self.info["audio_langs"] = self.audio_langs
-        self.info["subtitle_langs"] = self.subtitle_langs
-        self.add_noneable_to_info("tvdb_url", self.tvdb_url)
-        self.add_noneable_to_info("seasons", self.seasons)
-        super().write_changes()
+    @property
+    def audio_langs(self) -> List[str]:
+        # noinspection PyTypeChecker
+        return self.resolve_inner_attribute("audio_langs")
+
+    @property
+    def subtitle_langs(self) -> List[str]:
+        # noinspection PyTypeChecker
+        return self.resolve_inner_attribute("subtitle_langs")
+
+    @property
+    def tvdb_url(self) -> str:
+        url = self.resolve_inner_attribute("tvdb_url")
+        return url if url is not None else ""
+
+    @property  # Doesn't get a setter
+    def seasons(self) -> Dict[str, Dict[str, object]] or None:
+        if self.child_key and self.extender_key:
+            return None
+        else:
+            return self.resolve_inner_attribute("seasons")
+
+    # Setters
+    @resolutions.setter
+    def resolutions(self, value: List[Dict[str, int]]):
+        self.store_inner_attribute("resolutions", value)
+
+    @audio_langs.setter
+    def audio_langs(self, value: List[str]):
+        self.store_inner_attribute("audio_langs", value)
+
+    @subtitle_langs.setter
+    def subtitle_langs(self, value: List[str]):
+        self.store_inner_attribute("subtitle_langs", value)
+
+    @tvdb_url.setter
+    def tvdb_url(self, value: str):
+        url = None if value == "" else value
+        self.store_inner_attribute("tvdb_url", url)
 
     def get_child_names(self) -> List[str]:
         """
-        Method that fetches all children items (like Seasons, for example)
+        Method that fetches all children items (The seasons, in this case)
         :return: A list of children names
         """
         children = os.listdir(self.path)
@@ -74,22 +94,6 @@ class TvSeries(Base):
             children
         ))
         return children
-
-    def get_season_value(self, child_key: str, attribute_key: str) -> object:
-        """
-        Retrieves the value for a season attribute
-        :param child_key: The child season's identifying key
-        :param attribute_key: The attribute to fetch
-        :return: The value for the child's attribute. Will return the parent's data if the child key is 'main'
-                 or no matching data was found
-        """
-        if child_key == "main"\
-                or self.seasons is None \
-                or child_key not in self.seasons \
-                or attribute_key not in self.seasons[child_key]:
-            exec("return self." + attribute_key)  # SORRY!
-        else:
-            return self.seasons[child_key][attribute_key]
 
     # noinspection PyDefaultArgument
     @staticmethod
