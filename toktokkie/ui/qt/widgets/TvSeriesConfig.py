@@ -1,22 +1,132 @@
+"""
+LICENSE:
+Copyright 2015,2016 Hermann Krumrey
+
+This file is part of toktokkie.
+
+    toktokkie is a program that allows convenient managing of various
+    local media collections, mostly focused on video.
+
+    toktokkie is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    toktokkie is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
+LICENSE
+"""
+
 import os
-from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget
 from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.ui.qt.pyuic.tv_series_config import Ui_TvSeriesConfig
 
 
 class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
+    """
+    Widget for a TV Series
+    """
+
     def __init__(self, parent):
+        """
+        Initializes the widget
+        
+        :param parent: The window in which to display the widget
+        """
         super().__init__(parent)
         self.setupUi(self)
-        self.tv_series = None
+        self.metadata = None
+        self.child_id = "main"
 
-    def set_data(self, tv_series: TvSeries, child: str = "main"):
-        self.series_name_edit.setText(tv_series.name)
-        self.folder_icon_label.setPixmap(QPixmap(os.path.join(tv_series.path, ".meta/icons/main.png")))
+        self.confirm_changes_button.clicked.connect(self.save_data)
 
-    def store_data(self):
-        pass
+        for media_type in MetaDataManager.media_type_map:
+            self.media_type_combo_box.addItem(media_type)
 
-    def load_tvdb_data(self):
-        pass
+    def set_data(self, metadata: TvSeries, child_id: str):
+        """
+        Sets the data to be displayed here
+        
+        :param tv_series: The TvSeries metadata object to be displayed here
+        :param child_id: Specifies which subdirectory should be displayed
+        
+        :return: None
+        """
+        self.metadata = metadata
+        self.child_id = child_id
+
+        has_child_data = child_id != "main" and metadata.seasons is not None and child_id in metadata.seasons
+        child_data = {} if not has_child_data else metadata.seasons[child_id]
+
+        # Not configurable for individual children
+        self.folder_icon_label.setPixmap(QPixmap(os.path.join(metadata.path, ".meta/icons/" + child_id + ".png")))
+        self.media_type_combo_box.setCurrentIndex(self.media_type_combo_box.findText(metadata.type))
+
+        name_text = metadata.name if "name" not in child_data else child_data["name"]
+        self.series_name_edit.setText(name_text)
+
+        tags = metadata.tags if "tags" not in child_data else child_data["tags"]
+        self.tags_edit.setText(", ".join(tags))
+
+        tvdb_url = metadata.tvdb_url if "tvdb_url" not in child_data else child_data["tvdb_url"]
+        if tvdb_url is not None:
+            self.tvdb_url_edit.setText(tvdb_url)
+
+        audio_langs = metadata.audio_langs if "audio_langs" not in child_data else child_data["audio_langs"]
+        self.audio_language_edit.setText(", ".join(audio_langs))
+
+        subtitle_langs = metadata.subtitle_langs if "subtitle_langs" not in child_data else child_data["subtitle_langs"]
+        self.subtitle_language_edit.setText(", ".join(subtitle_langs))
+
+        resolutions = metadata.resolutions if "resolutions" not in child_data else:
+        for i, widgets in enumerate([
+            [self.resolution_one_edit_x, self.resolution_one_edit_y],
+            [self.resolution_two_edit_x, self.resolution_two_edit_y],
+            [self.resolution_three_edit_x, self.resolution_three_edit_y]
+        ]):
+            if len(metadata.resolutions) > i:
+                widgets[0].setText(str(metadata.resolutions[i]["x"]))
+                widgets[1].setText(str(metadata.resolutions[i]["y"]))
+            else:
+                widgets[0].setText("")
+                widgets[1].setText("")
+
+
+    def save_data(self):
+        """
+        Saves the data currently stored in the UI elements to the info.json file
+        :return: None
+        """
+
+        self.metadata.name = self.series_name_edit.text()
+        self.metadata.type = self.media_type_combo_box.currentText()
+        self.metadata.tags = self.tags_edit.text().split(",")
+        self.metadata.tvdb_url = self.tvdb_url_edit.text()
+        self.metadata.audio_langs = self.audio_language_edit.text().split(",")
+        self.metadata.subtitle_langs = self.subtitle_language_edit.text().split(",")
+
+        self.metadata.resolutions = []
+        for i, widgets in enumerate([
+            [self.resolution_one_edit_x, self.resolution_one_edit_y],
+            [self.resolution_two_edit_x, self.resolution_two_edit_y],
+            [self.resolution_three_edit_x, self.resolution_three_edit_y]
+        ]):
+            if widgets[0].text() and widgets[1].text():
+                try:
+                    self.metadata.resolutions.append({
+                        "x": int(widgets[0].text()),
+                        "y": int(widgets[1].text())
+                    })
+                except ValueError:
+                    pass
+
+        self.metadata.write_changes()
+        self.set_data(self.metadata, self.child_id)

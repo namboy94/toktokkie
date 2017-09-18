@@ -166,6 +166,9 @@ class Base(object):
         iconfile = os.path.join(self.path, ".meta", "icons", identifier + ".png")
         return iconfile if os.path.isfile(iconfile) else None
 
+    def get_extender_value(self, extender_key: str, child_key: str, attribute_key):
+        if
+
     # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod
     def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:

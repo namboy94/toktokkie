@@ -32,8 +32,15 @@ from toktokkie.ui.qt.widgets.TvSeriesConfig import TvSeriesConfig
 
 
 class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
+    """
+    A QT GUI that displays media folders and lets the user modify the stored metadata
+    """
 
     def __init__(self, parent: QMainWindow = None) -> None:
+        """
+        Initializes the GUI
+        :param parent: the parent Window
+        """
         super().__init__(parent)
         self.setupUi(self)
 
@@ -60,6 +67,12 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
         self.media_type_widgets["anime_series"] = self.media_type_widgets["tv_series"]
 
     def parse_media_directories(self):
+        """
+        Parses the directories in the metadata_config.json file and fills the UI elements with any
+        found media files
+        
+        :return: None
+        """
         self.media_metadata_items = {}
         for directory in self.config_data["media_directories"]:
 
@@ -91,18 +104,35 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
             self.add_new_edit.setText(directory)
 
     def add_media_directory(self) -> None:
+        """
+        Adds a media directory to the metadata_config.json file
+        
+        :return: None 
+        """
         entry = self.add_new_edit.text()
         if entry:
             self.config_data["media_directories"].append(entry)
             self.update_config()
 
     def remove_media_directory(self) -> None:
+        """
+        Removes a media directory to the metadata_config.json file
+
+        :return: None 
+        """
         selected = self.media_directory_list.selectedItems()
         for item in selected:
             self.config_data["media_directories"].remove(item.data(0, 0))
         self.update_config()
 
     def update_config(self) -> None:
+        """
+        Updates the list of directories that get parsed and parses those directories afterwards
+        Also saves the current config to metadata_config.json
+        
+        :return: None
+        """
+
         with open(self.config_file, 'w') as f:
             f.write(json.dumps(self.config_data))
         self.media_directory_list.clear()
@@ -111,15 +141,21 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
         self.parse_media_directories()
 
     def load_widget_data(self, widget: QTreeWidgetItem) -> None:
+        """
+        Loads the data for the selected widget
+        
+        :param widget: The newly selected tree item 
+        :return: None
+        """
 
         if widget.parent() is None:
             metadata = self.media_metadata_items[widget.data(0, 0)]
-            widget = self.media_type_widgets[metadata.type]
-            widget.set_data(metadata)
-            self.widget_stack.setCurrentWidget(widget)
-
+            metadata_id = "main"
         else:
             metadata = self.media_metadata_items[widget.parent().data(0, 0)]
-            widget = self.media_type_widgets[metadata.type]
-            widget.set_data(metadata, widget.data(0, 0))
-            self.widget_stack.setCurrentWidget(widget)
+            metadata_id = widget.data(0, 0)
+
+        metadata_widget = self.media_type_widgets[metadata.type]
+        metadata_widget.set_data(metadata, metadata_id)
+
+        self.widget_stack.setCurrentWidget(metadata_widget)
