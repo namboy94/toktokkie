@@ -21,6 +21,8 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+import os
 from typing import Dict, List
 from toktokkie.utils.metadata.media_types.Base import Base
 
@@ -60,6 +62,18 @@ class TvSeries(Base):
         self.add_noneable_to_info("tvdb_url", self.tvdb_url)
         self.add_noneable_to_info("seasons", self.seasons)
         super().write_changes()
+
+    def get_child_names(self) -> List[str]:
+        """
+        Method that fetches all children items (like Seasons, for example)
+        :return: A list of children names
+        """
+        children = os.listdir(self.path)
+        children = list(filter(
+            lambda x: not x.startswith(".") or not os.path.isdir(os.path.join(self.path, x)),
+            children
+        ))
+        return children
 
     # noinspection PyDefaultArgument
     @staticmethod

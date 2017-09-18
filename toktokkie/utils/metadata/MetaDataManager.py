@@ -170,3 +170,17 @@ class MetaDataManager(object):
             return False
         except AttributeError:
             return False
+
+    @staticmethod
+    def autoresolve_directory(directory: str) -> Base or None:
+        """
+        Automatically resolves the type of a directory
+        
+        :param directory: The directory for which to resolve the metadata type
+        :return: The Metadata Object OR None if the directory is not a valid metadata directory
+        """
+        the_type = MetaDataManager.get_media_type(directory)
+        if the_type in MetaDataManager.media_type_map:
+            return MetaDataManager.media_type_map[the_type](directory)
+        else:
+            return None

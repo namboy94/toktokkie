@@ -148,6 +148,24 @@ class Base(object):
         elif key in self.info:
             self.info.pop(key)
 
+    # noinspection PyMethodMayBeStatic
+    def get_child_names(self) -> List[str]:
+        """
+        Method that fetches all children items (like Seasons, for example)
+        :return: A list of children names
+        """
+        return []
+
+    def get_icon_path(self, identifier: str = "main") -> str or None:
+        """
+        Fetches the path to an icon file
+        
+        :param identifier: The identifier for the icon. Defaults to 'main'
+        :return: The path to the icon file, or None if there does not exist such a file
+        """
+        iconfile = os.path.join(self.path, ".meta", "icons", identifier + ".png")
+        return iconfile if os.path.isfile(iconfile) else None
+
     # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod
     def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:

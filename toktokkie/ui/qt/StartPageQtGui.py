@@ -30,6 +30,7 @@ from toktokkie.ui.qt.pyuic.start_page import Ui_StartPageWindow
 from toktokkie.ui.qt.FolderIconizerQtGui import FolderIconizerQtGui
 from toktokkie.ui.qt.TVSeriesRenamerQtGui import TVSeriesRenamerQtGui
 from toktokkie.ui.qt.XDCCDownloadManagerQtGui import XDCCDownloadManagerQtGui
+from toktokkie.ui.qt.MetadataConfiguratorQtGui import MetadataConfiguratorQtGui
 from toktokkie.ui.qt.XDCCUpdateConfiguratorQtGui import XDCCUpdateConfiguratorQtGui
 
 
@@ -53,6 +54,7 @@ class StartPageQtGui(QMainWindow, Ui_StartPageWindow):
         self.xdcc_downloader.clicked.connect(XDCCDownloaderGui(self).show)
         self.xdcc_download_manager.clicked.connect(XDCCDownloadManagerQtGui(self).show)
         self.xdcc_update_configurator.clicked.connect(XDCCUpdateConfiguratorQtGui(self).show)
+        self.metadata_configurator.clicked.connect(MetadataConfiguratorQtGui(self).show)
 
 
 def start():  # pragma: no cover

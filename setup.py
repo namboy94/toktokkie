@@ -24,6 +24,7 @@ LICENSE
 
 # imports
 import os
+import json
 from toktokkie.metadata import version
 from setuptools import setup, find_packages
 
@@ -65,6 +66,23 @@ def find_scripts():
         return []
 
 
+def create_local_config_dir():
+    """
+    Creates alocal configuration directory with default values if none exist yet
+    
+    :return: None
+    """
+    toktokkie_dir = os.path.join(os.path.expanduser("~"), ".toktokkie")
+    if not os.path.isdir(toktokkie_dir):
+        os.makedirs(toktokkie_dir)
+
+    metadata_config_file = os.path.join(toktokkie_dir, "metadata_config.json")
+    if not os.path.isfile(metadata_config_file):
+        with open(metadata_config_file, 'w') as f:
+            f.write(json.dumps({"media_directories": []}))
+
+
+create_local_config_dir()
 setup(name="toktokkie",
       version=version,
       description="A personal media manager program",

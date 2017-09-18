@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
-    <height>178</height>
+    <width>360</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,10 +15,10 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QPushButton" name="tv_series_renamer">
+    <item row="4" column="0">
+     <widget class="QPushButton" name="xdcc_download_manager">
       <property name="text">
-       <string>TV Series Renamer</string>
+       <string>XDCC Download Manager</string>
       </property>
      </widget>
     </item>
@@ -29,10 +29,10 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
-     <widget class="QPushButton" name="xdcc_download_manager">
+    <item row="3" column="0">
+     <widget class="QPushButton" name="xdcc_downloader">
       <property name="text">
-       <string>XDCC Download Manager</string>
+       <string>XDCC Downloader</string>
       </property>
      </widget>
     </item>
@@ -43,10 +43,17 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="xdcc_downloader">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="tv_series_renamer">
       <property name="text">
-       <string>XDCC Downloader</string>
+       <string>TV Series Renamer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QPushButton" name="metadata_configurator">
+      <property name="text">
+       <string>Metadata Configurator</string>
       </property>
      </widget>
     </item>
