@@ -37,6 +37,33 @@ class Base(object):
     An identifier string that indicates the type
     """
 
+    # Getters
+    @property
+    def type(self) -> str:
+        return self.info["type"]
+
+    @property
+    def name(self) -> str:
+        return str(self.resolve_inner_attribute("name"))
+
+    @property
+    def tags(self) -> List[str]:
+        # noinspection PyTypeChecker
+        return self.resolve_inner_attribute("tags")
+
+    # Setters
+    @type.setter
+    def type(self, value: str):
+        self.info["type"] = value
+
+    @name.setter
+    def name(self, value: str):
+        self.store_inner_attribute("name", value)
+
+    @tags.setter
+    def tags(self, value: List[str]):
+        self.store_inner_attribute("tags", value)
+
     def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
         """
         Initializes a new Media Type object from a directory path
@@ -44,6 +71,8 @@ class Base(object):
         :param generate: Can be set to True to generate the directory and a basic info.json file.
         :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
         """
+        self.extender_key = ""
+        self.child_key = ""
 
         self.path = path
         self.info_file = os.path.join(path, ".meta", "info.json")
@@ -60,14 +89,45 @@ class Base(object):
 
         self.check_if_valid()
 
-        # Media Type specific attributes
-        # Child Constructors should generally also have some here
-        self.type = self.info["type"]
-        self.name = self.info["name"]
-        self.tags = self.info["tags"]
+    def set_child_extender(self, extender_key: str, child_key: str):
+        """
+        Sets the extender_key and child_key attributes to handle this metadata object as if it were
+        a child of it. Mostly affects getters and setters, as well as the saving procedure
+        :param extender_key: The extender key. Example: 'seasons'
+        :param child_key: The child key. Example: 'Season 2'
+        :return: None
+        """
+        if self.extender_key not in self.define_attributes()["extenders"] or child_key not in self.info[extender_key]:
+            raise AttributeError("Invalid Extender/Child pair")
+        else:
+            self.extender_key = extender_key
+            self.child_key = child_key
 
-        if self.type != self.identifier:
-            raise AttributeError("Media Type Mismatch")
+    def resolve_inner_attribute(self, attribute: str) -> object:
+        """
+        Resolves an attribute. Helper method for the getters and setters.
+        The purpose of this method is to make handling children metadata objects easier
+        :param attribute: The attribute to check for
+        :return: the attribute value.
+        """
+        if not self.extender_key or not self.child_key:
+            return self.info[attribute]
+        else:
+            return self.info[self.extender_key][self.child_key][attribute]
+
+    def store_inner_attribute(self, attribute: str, value: object):
+        """
+        Stores an attribute. Helper method for the setters that makes it easier to handle child metadata
+        :param attribute: The attribute to set
+        :param value: The value of the attribute to set
+        :return: None
+        """
+        if not self.extender_key or not self.child_key:
+            self.info[attribute] = value
+        elif self.info[attribute] != value:
+            self.info[self.extender_key][self.child_key][attribute] = value
+        else:
+            self.info[self.extender_key][self.child_key].pop(attribute)
 
     def generate_info_file(self):
         """
@@ -77,6 +137,7 @@ class Base(object):
         data = {}
         attrs = self.define_attributes()
         for required in attrs["required"]:
+            # noinspection PyCallingNonCallable
             data[required] = attrs["required"][required]()
         data["type"] = self.identifier
         data["name"] = os.path.basename(self.path)
@@ -124,15 +185,14 @@ class Base(object):
                                 type(self.info[extender_attr])):
                             raise AttributeError("Invalid type for extender attribute: " + extender_attr)
 
+        if self.type != self.identifier:
+            raise AttributeError("Media Type Mismatch")
+
     def write_changes(self):
         """
         Writes the current class/instance variables to the JSON file
         :return: None
         """
-        # Child classes will probably need to do this for all class/instance variables and call this method using super
-        self.info["type"] = self.type
-        self.info["name"] = self.name
-        self.info["tags"] = self.tags
         with open(self.info_file, 'w') as j:
             j.write(json.dumps(self.info, sort_keys=True, indent=4, separators=(',', ': ')))
 
@@ -165,9 +225,6 @@ class Base(object):
         """
         iconfile = os.path.join(self.path, ".meta", "icons", identifier + ".png")
         return iconfile if os.path.isfile(iconfile) else None
-
-    def get_extender_value(self, extender_key: str, child_key: str, attribute_key):
-        if
 
     # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod

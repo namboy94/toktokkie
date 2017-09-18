@@ -75,6 +75,22 @@ class TvSeries(Base):
         ))
         return children
 
+    def get_season_value(self, child_key: str, attribute_key: str) -> object:
+        """
+        Retrieves the value for a season attribute
+        :param child_key: The child season's identifying key
+        :param attribute_key: The attribute to fetch
+        :return: The value for the child's attribute. Will return the parent's data if the child key is 'main'
+                 or no matching data was found
+        """
+        if child_key == "main"\
+                or self.seasons is None \
+                or child_key not in self.seasons \
+                or attribute_key not in self.seasons[child_key]:
+            exec("return self." + attribute_key)  # SORRY!
+        else:
+            return self.seasons[child_key][attribute_key]
+
     # noinspection PyDefaultArgument
     @staticmethod
     def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:

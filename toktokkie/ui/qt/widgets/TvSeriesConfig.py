@@ -23,6 +23,7 @@ LICENSE
 """
 
 import os
+from typing import List, Dict
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget
 from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
@@ -51,6 +52,43 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
         for media_type in MetaDataManager.media_type_map:
             self.media_type_combo_box.addItem(media_type)
 
+    def display_data(self, name: str, tags: List[str], tvdb_url: str or None,
+                     audio_langs: List[str], subtitle_langs: List[str],
+                     resolutions: List[Dict[str, int]]):
+        """
+        Displays the editable data of a TvSeriesConfig
+        :param name: The name of the series
+        :param tags: The tags of the series
+        :param tvdb_url: The TVDB URL
+        :param audio_langs: The audio languages
+        :param subtitle_langs: The subtitle languages
+        :param resolutions: The resolutions
+        :return: None
+        """
+
+        # Derived directly from metadata
+        icon_path = os.path.join(self.metadata.path, ".meta/icons/" + self.child_id + ".png")
+        self.folder_icon_label.setPixmap(QPixmap(icon_path))
+        self.media_type_combo_box.setCurrentIndex(self.media_type_combo_box.findText(self.metadata.type))
+
+        self.series_name_edit.setText(name)
+        self.tags_edit.setText(", ".join(tags))
+        self.tvdb_url_edit.setText("" if tvdb_url is None else tvdb_url)
+        self.audio_language_edit.setText(", ".join(audio_langs))
+        self.subtitle_language_edit.setText(", ".join(subtitle_langs))
+
+        for i, widgets in enumerate([
+            [self.resolution_one_edit_x, self.resolution_one_edit_y],
+            [self.resolution_two_edit_x, self.resolution_two_edit_y],
+            [self.resolution_three_edit_x, self.resolution_three_edit_y]
+        ]):
+            if len(resolutions) > i:
+                widgets[0].setText(str(resolutions[i]["x"]))
+                widgets[1].setText(str(resolutions[i]["y"]))
+            else:
+                widgets[0].setText("")
+                widgets[1].setText("")
+
     def set_data(self, metadata: TvSeries, child_id: str):
         """
         Sets the data to be displayed here
@@ -63,8 +101,15 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
         self.metadata = metadata
         self.child_id = child_id
 
-        has_child_data = child_id != "main" and metadata.seasons is not None and child_id in metadata.seasons
-        child_data = {} if not has_child_data else metadata.seasons[child_id]
+        # noinspection PyTypeChecker
+        self.display_data(
+            metadata.get_season_value(child_id, "name"),
+            metadata.get_season_value(child_id, "tags"),
+            metadata.get_season_value(child_id, "tvdb_url"),
+            metadata.get_season_value(child_id, "audio_langs"),
+            metadata.get_season_value(child_id, "subtitle_langs"),
+            metadata.get_season_value(child_id, "resolutions")
+        )
 
         # Not configurable for individual children
         self.folder_icon_label.setPixmap(QPixmap(os.path.join(metadata.path, ".meta/icons/" + child_id + ".png")))
@@ -130,3 +175,5 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
 
         self.metadata.write_changes()
         self.set_data(self.metadata, self.child_id)
+
+
