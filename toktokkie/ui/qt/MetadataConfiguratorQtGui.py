@@ -155,7 +155,7 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
             metadata = self.media_metadata_items[widget.parent().data(0, 0)]
             metadata_id = widget.data(0, 0)
 
-        metadata_widget = self.media_type_widgets[metadata.type]
+        metadata_widget = self.media_type_widgets[metadata.media_type]
         metadata_widget.set_data(metadata, metadata_id)
 
         self.widget_stack.setCurrentWidget(metadata_widget)

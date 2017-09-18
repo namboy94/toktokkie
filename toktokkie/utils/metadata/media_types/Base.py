@@ -62,7 +62,7 @@ class Base(object):
 
     @tags.setter
     def tags(self, value: List[str]):
-        self.store_inner_attribute("tags", value)
+        self.store_inner_attribute("tags", list(map(lambda x: x.strip(), value)))
 
     def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
         """
@@ -97,7 +97,7 @@ class Base(object):
         :param child_key: The child key. Example: 'Season 2'
         :return: None
         """
-        if self.extender_key not in self.define_attributes()["extenders"] or child_key not in self.info[extender_key]:
+        if extender_key not in self.define_attributes()["extenders"] or child_key not in self.info[extender_key]:
             raise AttributeError("Invalid Extender/Child pair")
         else:
             self.extender_key = extender_key
@@ -111,18 +111,20 @@ class Base(object):
         :return: the attribute value.
         """
         try:
-            if not self.extender_key or not self.child_key:
-                return self.info[attribute]
-            else:
+            if self.extender_key and self.child_key and attribute in self.info[self.extender_key][self.child_key]:
                 return self.info[self.extender_key][self.child_key][attribute]
+            else:
+                return self.info[attribute]
+
         except KeyError:
             return None
 
-    def store_inner_attribute(self, attribute: str, value: object):
+    def store_inner_attribute(self, attribute: str, value: object, equality_check=lambda x, y: x == y):
         """
         Stores an attribute. Helper method for the setters that makes it easier to handle child metadata
         :param attribute: The attribute to set
         :param value: The value of the attribute to set
+        :param equality_check: Lambda that checks for equality. Defaults to ==
         :return: None
         """
         if not self.extender_key or not self.child_key:
@@ -131,7 +133,7 @@ class Base(object):
             elif attribute in self.info:
                 self.info.pop(attribute)
 
-        elif self.info[attribute] != value:
+        elif not equality_check(self.info[attribute], value):
             if value is not None:
                 self.info[self.extender_key][self.child_key][attribute] = value
             elif attribute in self.info[self.extender_key][self.child_key]:
@@ -217,13 +219,14 @@ class Base(object):
         """
         return []
 
-    def get_icon_path(self, identifier: str = "main") -> str or None:
+    def get_icon_path(self, identifier: str = "") -> str or None:
         """
         Fetches the path to an icon file
         
         :param identifier: The identifier for the icon. Defaults to 'main'
         :return: The path to the icon file, or None if there does not exist such a file
         """
+        identifier = identifier if identifier != "" else self.child_key if self.child_key != "" else "main"
         iconfile = os.path.join(self.path, ".meta", "icons", identifier + ".png")
         return iconfile if os.path.isfile(iconfile) else None
 

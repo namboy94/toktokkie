@@ -68,15 +68,26 @@ class TvSeries(Base):
     # Setters
     @resolutions.setter
     def resolutions(self, value: List[Dict[str, int]]):
-        self.store_inner_attribute("resolutions", value)
+
+        # Custom equality checker
+        def equals(x: List[Dict[str, int]], y: List[Dict[str, int]]):
+            if len(x) != len(y):
+                return False
+            else:
+                for i, item in enumerate(x):
+                    if item["x"] != y[i]["x"] or item["y"] != y[i]["y"]:
+                        return False
+            return True
+
+        self.store_inner_attribute("resolutions", value, equals)
 
     @audio_langs.setter
     def audio_langs(self, value: List[str]):
-        self.store_inner_attribute("audio_langs", value)
+        self.store_inner_attribute("audio_langs", list(map(lambda x: x.strip(), value)))
 
     @subtitle_langs.setter
     def subtitle_langs(self, value: List[str]):
-        self.store_inner_attribute("subtitle_langs", value)
+        self.store_inner_attribute("subtitle_langs", list(map(lambda x: x.strip(), value)))
 
     @tvdb_url.setter
     def tvdb_url(self, value: str):

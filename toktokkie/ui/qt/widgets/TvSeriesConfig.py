@@ -22,8 +22,7 @@ This file is part of toktokkie.
 LICENSE
 """
 
-import os
-from typing import List, Dict
+from copy import copy
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget
 from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
@@ -45,75 +44,39 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
         super().__init__(parent)
         self.setupUi(self)
         self.metadata = None
-        self.child_id = "main"
 
         self.confirm_changes_button.clicked.connect(self.save_data)
 
         for media_type in MetaDataManager.media_type_map:
             self.media_type_combo_box.addItem(media_type)
 
-    def display_data(self, name: str, tags: List[str], tvdb_url: str or None,
-                     audio_langs: List[str], subtitle_langs: List[str],
-                     resolutions: List[Dict[str, int]]):
-        """
-        Displays the editable data of a TvSeriesConfig
-        :param name: The name of the series
-        :param tags: The tags of the series
-        :param tvdb_url: The TVDB URL
-        :param audio_langs: The audio languages
-        :param subtitle_langs: The subtitle languages
-        :param resolutions: The resolutions
-        :return: None
-        """
-
-        # Derived directly from metadata
-        icon_path = os.path.join(self.metadata.path, ".meta/icons/" + self.child_id + ".png")
-        self.folder_icon_label.setPixmap(QPixmap(icon_path))
-        self.media_type_combo_box.setCurrentIndex(self.media_type_combo_box.findText(self.metadata.type))
-
-        self.series_name_edit.setText(name)
-        self.tags_edit.setText(", ".join(tags))
-        self.tvdb_url_edit.setText("" if tvdb_url is None else tvdb_url)
-        self.audio_language_edit.setText(", ".join(audio_langs))
-        self.subtitle_language_edit.setText(", ".join(subtitle_langs))
-
-        for i, widgets in enumerate([
-            [self.resolution_one_edit_x, self.resolution_one_edit_y],
-            [self.resolution_two_edit_x, self.resolution_two_edit_y],
-            [self.resolution_three_edit_x, self.resolution_three_edit_y]
-        ]):
-            if len(resolutions) > i:
-                widgets[0].setText(str(resolutions[i]["x"]))
-                widgets[1].setText(str(resolutions[i]["y"]))
-            else:
-                widgets[0].setText("")
-                widgets[1].setText("")
-
     def set_data(self, metadata: TvSeries, child_id: str):
         """
         Sets the data to be displayed here
         
-        :param tv_series: The TvSeries metadata object to be displayed here
+        :param metadata: The TvSeries metadata object to be displayed here
         :param child_id: Specifies which subdirectory should be displayed
         
         :return: None
         """
-        self.metadata = metadata
+        self.metadata = copy(metadata)
+        if child_id != "main":
+            self.metadata.set_child_extender("seasons", child_id)
+        self.display_data()
 
     def save_data(self):
         """
         Saves the data currently stored in the UI elements to the info.json file
         :return: None
         """
-
         self.metadata.name = self.series_name_edit.text()
-        self.metadata.type = self.media_type_combo_box.currentText()
+        self.metadata.media_type = self.media_type_combo_box.currentText()
         self.metadata.tags = self.tags_edit.text().split(",")
         self.metadata.tvdb_url = self.tvdb_url_edit.text()
         self.metadata.audio_langs = self.audio_language_edit.text().split(",")
         self.metadata.subtitle_langs = self.subtitle_language_edit.text().split(",")
 
-        self.metadata.resolutions = []
+        resolutions = []
         for i, widgets in enumerate([
             [self.resolution_one_edit_x, self.resolution_one_edit_y],
             [self.resolution_two_edit_x, self.resolution_two_edit_y],
@@ -121,14 +84,39 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
         ]):
             if widgets[0].text() and widgets[1].text():
                 try:
-                    self.metadata.resolutions.append({
+                    resolutions.append({
                         "x": int(widgets[0].text()),
                         "y": int(widgets[1].text())
                     })
                 except ValueError:
                     pass
+        self.metadata.resolutions = resolutions  # Must be set here due to the setter method
 
         self.metadata.write_changes()
-        self.set_data(self.metadata, self.child_id)
+        self.display_data()
 
+    def display_data(self):
+        """
+        Displays the data of a TvSeriesConfig
+        :return: None
+        """
+        self.media_type_combo_box.setCurrentIndex(self.media_type_combo_box.findText(self.metadata.media_type))
+        self.series_name_edit.setText(self.metadata.name)
+        self.folder_icon_label.setPixmap(QPixmap(self.metadata.get_icon_path()))
 
+        self.tags_edit.setText(", ".join(self.metadata.tags))
+        self.tvdb_url_edit.setText(self.metadata.tvdb_url)
+        self.audio_language_edit.setText(", ".join(self.metadata.audio_langs))
+        self.subtitle_language_edit.setText(", ".join(self.metadata.subtitle_langs))
+
+        for i, widgets in enumerate([
+            [self.resolution_one_edit_x, self.resolution_one_edit_y],
+            [self.resolution_two_edit_x, self.resolution_two_edit_y],
+            [self.resolution_three_edit_x, self.resolution_three_edit_y]
+        ]):
+            if len(self.metadata.resolutions) > i:
+                widgets[0].setText(str(self.metadata.resolutions[i]["x"]))
+                widgets[1].setText(str(self.metadata.resolutions[i]["y"]))
+            else:
+                widgets[0].setText("")
+                widgets[1].setText("")
