@@ -57,7 +57,7 @@ class GenericConfig(QWidget):
         # noinspection PyAttributeOutsideInit
         self.metadata = copy(metadata)
 
-        if self.metadata in ["tv_series", "anime_series"] and child_key != "main":
+        if self.metadata.media_type in ["tv_series", "anime_series"] and child_key != "main":
             self.metadata.set_child_extender("seasons", child_key)
 
         self.display()
@@ -70,7 +70,9 @@ class GenericConfig(QWidget):
         {
             "base": store_base_info,
             "tv_series": store_tv_series_info,
-            "anime_series": store_anime_series_info
+            "anime_series": store_anime_series_info,
+            "ebook": store_ebook_info,
+            "light_novel": store_light_novel_info
         }[self.metadata.media_type](self)
         self.metadata.write_changes()
         self.display()
@@ -83,7 +85,9 @@ class GenericConfig(QWidget):
         {
             "base": display_base_info,
             "tv_series": display_tv_series_info,
-            "anime_series": display_anime_series_info
+            "anime_series": display_anime_series_info,
+            "ebook": display_ebook_info,
+            "light_novel": display_light_novel_info
         }[self.metadata.media_type](self)
         Thread(target=self.load_online_data).start()
 
@@ -147,13 +151,38 @@ def display_tv_series_info(widget: GenericConfig):
 
 def display_anime_series_info(widget: GenericConfig):
     """
-    Displays the information in a AnimeSeries metadata object
+    Displays the information in an AnimeSeries metadata object
 
     :param widget: The widget in which to display the information 
     :return: None
     """
     display_tv_series_info(widget)
     widget.myanimelist_url_edit.setText(widget.metadata.myanimelist_url)
+
+
+def display_ebook_info(widget: GenericConfig):
+    """
+    Displays the information in an Ebook metadata object
+
+    :param widget: The widget in which to display the information 
+    :return: None
+    """
+    display_base_info(widget)
+    widget.author_edit.setText(widget.metadata.author)
+    widget.isbn_edit.setText(widget.metadata.isbn)
+
+
+def display_light_novel_info(widget: GenericConfig):
+    """
+    Displays the information in an LightNovel metadata object
+
+    :param widget: The widget in which to display the information 
+    :return: None
+    """
+    display_ebook_info(widget)
+    widget.official_translation_check.setChecked(widget.metadata.official_translation)
+    widget.myanimelist_url_edit.setText(widget.metadata.myanimelist_url)
+    widget.novelupdates_url_edit.setText(widget.metadata.novelupdates_url)
 
 
 def store_base_info(widget: GenericConfig):
@@ -204,3 +233,26 @@ def store_anime_series_info(widget: GenericConfig):
     """
     store_tv_series_info(widget)
     widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text()
+
+
+def store_ebook_info(widget: GenericConfig):
+    """
+    Stores the Ebook metadata info from the UI elements into the metadata object
+    :param widget: The widget from which to retrieve the data
+    :return: None
+    """
+    store_base_info(widget)
+    widget.metadata.author = widget.author_edit.text()
+    widget.metadata.isbn = widget.isbn_edit.text()
+
+
+def store_light_novel_info(widget: GenericConfig):
+    """
+    Stores the LightNovel metadata info from the UI elements into the metadata object
+    :param widget: The widget from which to retrieve the data
+    :return: None
+    """
+    store_ebook_info(widget)
+    widget.metadata.official_translation = widget.official_translation_check.text()
+    widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text()
+    widget.metadata.novelupdates_url = widget.novelupdates_url_edit.text()

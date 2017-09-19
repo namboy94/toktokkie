@@ -29,6 +29,7 @@ represented after the colon(`:`). Parent media types are indicated using `<=`.
     ebook <= media:
         + author: string  # The book's author
         + isbn: string    # The book's ISBN. Not all ebooks have ISBNs though, in which case this value will be "N/A"
+                          # ISBNs should ideally be ISBN-13s
     
     light_novel <= ebook:
         * myanimelist_url: string        # A URL to the novel's myanimelist page

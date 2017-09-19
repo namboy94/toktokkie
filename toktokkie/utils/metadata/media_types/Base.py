@@ -231,8 +231,11 @@ class Base(object):
         :return: The path to the icon file, or None if there does not exist such a file
         """
         identifier = identifier if identifier != "" else self.child_key if self.child_key != "" else "main"
-        iconfile = os.path.join(self.root_path, ".meta", "icons", identifier + ".png")
-        return iconfile if os.path.isfile(iconfile) else None
+        for ext in [".png", ".jpg"]:
+            iconfile = os.path.join(self.root_path, ".meta", "icons", identifier + ext)
+            if os.path.isfile(iconfile):
+                return iconfile
+        return None
 
     # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod

@@ -25,10 +25,12 @@ LICENSE
 # imports
 import os
 import json
-from copy import copy
+from toktokkie.ui.qt.widgets.BaseConfig import BaseConfig
+from toktokkie.ui.qt.widgets.EbookConfig import EbookConfig
 from toktokkie.ui.qt.widgets.TvSeriesConfig import TvSeriesConfig
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem
+from toktokkie.ui.qt.widgets.LightNovelConfig import LightNovelConfig
 from toktokkie.ui.qt.widgets.AnimeSeriesConfig import AnimeSeriesConfig
 from toktokkie.ui.qt.pyuic.metadata_configurator import Ui_MetadataConfigurator
 
@@ -60,7 +62,10 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
 
         self.media_type_widgets = {
             "tv_series": TvSeriesConfig(self),
-            "anime_series": AnimeSeriesConfig(self)
+            "anime_series": AnimeSeriesConfig(self),
+            "base": BaseConfig(self),
+            "ebook": EbookConfig(self),
+            "light_novel": LightNovelConfig(self)
         }
 
         for widget_type in self.media_type_widgets:
@@ -147,6 +152,8 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
         :param widget: The newly selected tree item 
         :return: None
         """
+        if widget is None:
+            self.widget_stack.setCurrentWidget(None)
 
         if widget.parent() is None:
             metadata = self.media_metadata_items[widget.data(0, 0)]

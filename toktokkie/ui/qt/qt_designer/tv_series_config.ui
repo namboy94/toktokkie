@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1036</width>
-    <height>612</height>
+    <width>1214</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,8 +52,8 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>5120</width>
-       <height>5120</height>
+       <width>512</width>
+       <height>512</height>
       </size>
      </property>
      <property name="text">
@@ -63,7 +63,7 @@
       <pixmap>../../../../../../../Downloads/pokemon_folder_icon_by_mikromike-d8mldi8.png</pixmap>
      </property>
      <property name="scaledContents">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

@@ -41,7 +41,7 @@ class Ebook(Base):
         return str(self.resolve_inner_attribute("author"))
 
     @property
-    def isbn(self) -> str:
+    def isbn(self) -> str:  # ISBN-13
         return str(self.resolve_inner_attribute("isbn"))
 
     # Setters

@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_TvSeriesConfig(object):
     def setupUi(self, TvSeriesConfig):
         TvSeriesConfig.setObjectName("TvSeriesConfig")
-        TvSeriesConfig.resize(1036, 612)
+        TvSeriesConfig.resize(1214, 706)
         self.gridLayout = QtWidgets.QGridLayout(TvSeriesConfig)
         self.gridLayout.setObjectName("gridLayout")
         self.series_name_edit = QtWidgets.QLineEdit(TvSeriesConfig)
@@ -32,10 +32,10 @@ class Ui_TvSeriesConfig(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.folder_icon_label.sizePolicy().hasHeightForWidth())
         self.folder_icon_label.setSizePolicy(sizePolicy)
-        self.folder_icon_label.setMaximumSize(QtCore.QSize(5120, 5120))
+        self.folder_icon_label.setMaximumSize(QtCore.QSize(512, 512))
         self.folder_icon_label.setText("")
         self.folder_icon_label.setPixmap(QtGui.QPixmap("../../../../../../../Downloads/pokemon_folder_icon_by_mikromike-d8mldi8.png"))
-        self.folder_icon_label.setScaledContents(False)
+        self.folder_icon_label.setScaledContents(True)
         self.folder_icon_label.setAlignment(QtCore.Qt.AlignCenter)
         self.folder_icon_label.setObjectName("folder_icon_label")
         self.gridLayout.addWidget(self.folder_icon_label, 3, 0, 1, 1)
