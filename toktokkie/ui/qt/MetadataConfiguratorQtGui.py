@@ -25,10 +25,11 @@ LICENSE
 # imports
 import os
 import json
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem
-from toktokkie.ui.qt.pyuic.metadata_configurator import Ui_MetadataConfigurator
-from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.ui.qt.widgets.TvSeriesConfig import TvSeriesConfig
+from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem
+from toktokkie.ui.qt.widgets.AnimeSeriesConfig import AnimeSeriesConfig
+from toktokkie.ui.qt.pyuic.metadata_configurator import Ui_MetadataConfigurator
 
 
 class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
@@ -57,14 +58,12 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
         self.media_tree.currentItemChanged.connect(self.load_widget_data)
 
         self.media_type_widgets = {
-            "tv_series": TvSeriesConfig(self)
+            "tv_series": TvSeriesConfig(self),
+            "anime_series": AnimeSeriesConfig(self)
         }
 
         for widget_type in self.media_type_widgets:
             self.widget_stack.addWidget(self.media_type_widgets[widget_type])
-
-        # TODO implement widgets for others
-        self.media_type_widgets["anime_series"] = self.media_type_widgets["tv_series"]
 
     def parse_media_directories(self):
         """

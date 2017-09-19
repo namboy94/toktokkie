@@ -22,6 +22,8 @@ This file is part of toktokkie.
 LICENSE
 """
 
+import requests
+from bs4 import BeautifulSoup
 from typing import Dict, List
 from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
 
@@ -45,6 +47,52 @@ class AnimeSeries(TvSeries):
     def myanimelist_url(self, value: str):
         url = None if value == "" else value
         self.store_inner_attribute("myanimelist_url", url)
+
+    def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
+
+        data = {
+            "type": "?",
+            "episodes": -1,
+            "status": "?",
+            "aired": "?",
+            "studios": [],
+            "source": "?",
+            "genres": [],
+            "runtime": "?",
+            "score": "?",
+            "rank": "?"
+        }
+
+        soup = BeautifulSoup(requests.get(self.myanimelist_url).text, "html.parser")
+        sidebar = soup.find_all("div", "js-scrollfix-bottom")
+        divs = sidebar[0].find_all("div")
+
+        for div in divs:
+            text = div.text.replace("\n", "").strip()
+
+            if text.startswith("Type:"):
+                data["type"] = text.split(":")[1].strip()
+            elif text.startswith("Episodes:"):
+                data["episodes"] = int(text.split(":", 1)[1].strip())
+            elif text.startswith("Status:"):
+                data["status"] = text.split(":", 1)[1].strip()
+            elif text.startswith("Aired:"):
+                data["aired"] = text.split(":", 1)[1].strip()
+            elif text.startswith("Studios:"):
+                data["studios"] = text.split(":", 1)[1].strip().split(",")
+            elif text.startswith("Source:"):
+                data["source"] = text.split(":", 1)[1].strip()
+            elif text.startswith("Genres:"):
+                data["genres"] = text.split(":", 1)[1].strip().split(",")
+            elif text.startswith("Duration:"):
+                data["runtime"] = text.split(":", 1)[1].strip()
+            elif text.startswith("Score:"):
+                data["score"] = text.split(":", 1)[1].split("(")[0].strip()
+            elif text.startswith("Ranked:"):
+                print(text)
+                data["rank"] = text.split(":", 1)[1].strip().split(" ")[0].strip()
+
+        return data
 
     # noinspection PyDefaultArgument
     @staticmethod

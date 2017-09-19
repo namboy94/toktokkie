@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_TvSeriesConfig(object):
     def setupUi(self, TvSeriesConfig):
         TvSeriesConfig.setObjectName("TvSeriesConfig")
-        TvSeriesConfig.resize(970, 612)
+        TvSeriesConfig.resize(1036, 612)
         self.gridLayout = QtWidgets.QGridLayout(TvSeriesConfig)
         self.gridLayout.setObjectName("gridLayout")
         self.series_name_edit = QtWidgets.QLineEdit(TvSeriesConfig)
@@ -116,6 +116,7 @@ class Ui_TvSeriesConfig(object):
         self.gridLayout_3.addWidget(self.label_14, 4, 0, 1, 1)
         self.gridLayout_2.addWidget(self.frame_2, 9, 0, 1, 4)
         self.resolution_three_edit_y = QtWidgets.QLineEdit(self.frame)
+        self.resolution_three_edit_y.setMinimumSize(QtCore.QSize(146, 0))
         self.resolution_three_edit_y.setText("")
         self.resolution_three_edit_y.setObjectName("resolution_three_edit_y")
         self.gridLayout_2.addWidget(self.resolution_three_edit_y, 5, 3, 1, 1)
@@ -141,6 +142,7 @@ class Ui_TvSeriesConfig(object):
         self.resolution_three_edit_x.setObjectName("resolution_three_edit_x")
         self.gridLayout_2.addWidget(self.resolution_three_edit_x, 5, 1, 1, 1)
         self.resolution_one_edit_y = QtWidgets.QLineEdit(self.frame)
+        self.resolution_one_edit_y.setMinimumSize(QtCore.QSize(146, 0))
         self.resolution_one_edit_y.setText("")
         self.resolution_one_edit_y.setObjectName("resolution_one_edit_y")
         self.gridLayout_2.addWidget(self.resolution_one_edit_y, 3, 3, 1, 1)
@@ -153,6 +155,7 @@ class Ui_TvSeriesConfig(object):
         self.media_type_combo_box.setObjectName("media_type_combo_box")
         self.gridLayout_2.addWidget(self.media_type_combo_box, 0, 1, 1, 3)
         self.resolution_two_edit_y = QtWidgets.QLineEdit(self.frame)
+        self.resolution_two_edit_y.setMinimumSize(QtCore.QSize(146, 0))
         self.resolution_two_edit_y.setText("")
         self.resolution_two_edit_y.setObjectName("resolution_two_edit_y")
         self.gridLayout_2.addWidget(self.resolution_two_edit_y, 4, 3, 1, 1)
