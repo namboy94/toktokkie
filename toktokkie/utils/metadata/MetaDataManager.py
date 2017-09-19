@@ -1,6 +1,6 @@
 """
 LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
@@ -161,7 +161,6 @@ class MetaDataManager(object):
             dir_media_type = MetaDataManager.get_media_type(directory)
             dir_media_type_class = MetaDataManager.media_type_map[dir_media_type]
             check_media_type_class = MetaDataManager.media_type_map[media_type]
-            print(issubclass(dir_media_type_class, check_media_type_class))
             if issubclass(dir_media_type_class, check_media_type_class):
                 dir_media_type_class(directory)  # Check if valid JSON
                 return True
