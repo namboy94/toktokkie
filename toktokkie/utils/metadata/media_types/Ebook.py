@@ -21,6 +21,8 @@ This file is part of toktokkie.
     along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE
 """
+
+import os
 from typing import Dict, List
 from toktokkie.utils.metadata.media_types.Base import Base
 
@@ -44,6 +46,13 @@ class Ebook(Base):
     def isbn(self) -> str:  # ISBN-13
         return str(self.resolve_inner_attribute("isbn"))
 
+    @property  # Doesn't get a setter
+    def books(self) -> Dict[str, Dict[str, object]] or None:
+        if self.child_key and self.extender_key:
+            return None
+        else:
+            return self.resolve_inner_attribute("books")
+
     # Setters
     @author.setter
     def author(self, value: str):
@@ -52,6 +61,18 @@ class Ebook(Base):
     @isbn.setter
     def isbn(self, value: str):
         self.store_inner_attribute("isbn", value)
+
+    def get_child_names(self) -> List[str]:
+        """
+        Method that fetches all children items (The individual books, in this case)
+        :return: A list of children names
+        """
+        children = os.listdir(self.path)
+        children = list(filter(
+            lambda x: not x.startswith(".") and os.path.isfile(os.path.join(self.path, x)) and x.endswith(".epub"),
+            children
+        ))
+        return list(map(lambda x: x.rsplit(".epub")[0], children))
 
     # noinspection PyDefaultArgument
     @staticmethod
@@ -64,6 +85,6 @@ class Ebook(Base):
         additional.append({
             "required": {"author": str, "isbn": str},
             "optional": {},
-            "extenders": {}
+            "extenders": {"books": dict}
         })
         return super(Ebook, Ebook).define_attributes(additional)

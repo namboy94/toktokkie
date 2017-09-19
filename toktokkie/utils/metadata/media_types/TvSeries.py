@@ -103,7 +103,7 @@ class TvSeries(Base):
         """
         children = os.listdir(self.path)
         children = list(filter(
-            lambda x: not x.startswith(".") or not os.path.isdir(os.path.join(self.path, x)),
+            lambda x: not x.startswith(".") and os.path.isdir(os.path.join(self.path, x)),
             children
         ))
         return children

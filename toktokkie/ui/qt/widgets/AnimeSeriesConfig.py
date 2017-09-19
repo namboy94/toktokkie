@@ -73,7 +73,7 @@ class AnimeSeriesConfig(GenericConfig, Ui_AnimeSeriesConfig):
 
         if metadata_name == self.metadata.name:  # Make sure that the same metadata object is still being displayed
             self.mal_type_label.setText(mal_data["type"])
-            self.mal_episodes_label.setText(str(mal_data["episodes"]))
+            self.mal_episodes_label.setText(str(mal_data["episodes"]) if mal_data["episodes"] != -1 else "?")
             self.mal_status_label.setText(mal_data["status"])
             self.mal_aired_label.setText(mal_data["aired"])
             self.mal_studios_label.setText(", ".join(mal_data["studios"]))

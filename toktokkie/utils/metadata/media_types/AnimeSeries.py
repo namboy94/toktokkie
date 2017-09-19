@@ -22,13 +22,9 @@ This file is part of toktokkie.
 LICENSE
 """
 
-import os
-import json
-import time
-import requests
-from bs4 import BeautifulSoup
 from typing import Dict, List
 from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
+from toktokkie.utils.parsing.myanimelist import parse_myanimelist_url
 
 
 class AnimeSeries(TvSeries):
@@ -58,59 +54,21 @@ class AnimeSeries(TvSeries):
                  case any values were not found
         """
 
-        data = {
-            "type": "?",
-            "episodes": -1,
-            "status": "?",
-            "aired": "?",
-            "studios": [],
-            "source": "?",
-            "genres": [],
-            "runtime": "?",
-            "score": "?",
-            "rank": "?"
+        params = {
+            "type": ("Type", "str", "?"),
+            "episodes": ("Episodes", "int", -1),
+            "status": ("Status", "str", "?"),
+            "aired": ("Aired", "str", "?"),
+            "studios": ("Studios", "List[str]", []),
+            "source": ("Source", "str", "?"),
+            "genres": ("Genres", "List[str]", []),
+            "runtime": ("Duration", "str", "?"),
+            "score": ("Score", "SCORE", "?"),
+            "rank": ("Ranked", "RANK", "?")
         }
 
-        html = requests.get(self.myanimelist_url)
-        retries = 0
-        while html.status_code != 200 and retries < 10:
-            time.sleep(1)
-            retries += 1
-            html = requests.get(self.myanimelist_url)
-
-        soup = BeautifulSoup("" if html.status_code != 200 else html.text, "html.parser")
-        sidebar = soup.find_all("div", "js-scrollfix-bottom")
-
-        if len(sidebar) == 0:
-            return data
-
-        divs = sidebar[0].find_all("div")
-
-        for div in divs:
-            text = div.text.replace("\n", "").strip()
-
-            if text.startswith("Type:"):
-                data["type"] = text.split(":")[1].strip()
-            elif text.startswith("Episodes:"):
-                data["episodes"] = int(text.split(":", 1)[1].strip())
-            elif text.startswith("Status:"):
-                data["status"] = text.split(":", 1)[1].strip()
-            elif text.startswith("Aired:"):
-                data["aired"] = text.split(":", 1)[1].strip()
-            elif text.startswith("Studios:"):
-                data["studios"] = text.split(":", 1)[1].strip().split(",")
-            elif text.startswith("Source:"):
-                data["source"] = text.split(":", 1)[1].strip()
-            elif text.startswith("Genres:"):
-                data["genres"] = text.split(":", 1)[1].strip().split(",")
-            elif text.startswith("Duration:"):
-                data["runtime"] = text.split(":", 1)[1].strip()
-            elif text.startswith("Score:"):
-                data["score"] = text.split(":", 1)[1].split("(")[0].strip()
-            elif text.startswith("Ranked:"):
-                data["rank"] = text.split(":", 1)[1].strip().split(" ")[0].strip()
-
-        return data
+        # noinspection PyTypeChecker
+        return parse_myanimelist_url(self.myanimelist_url, params)
 
     # noinspection PyDefaultArgument
     @staticmethod

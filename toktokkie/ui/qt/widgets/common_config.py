@@ -22,12 +22,13 @@ This file is part of toktokkie.
 LICENSE
 """
 
+import os
 import sys
 from copy import copy
 from subprocess import Popen
 from threading import Thread
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QCheckBox
 from toktokkie.utils.metadata.media_types import Base
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 
@@ -59,6 +60,8 @@ class GenericConfig(QWidget):
 
         if self.metadata.media_type in ["tv_series", "anime_series"] and child_key != "main":
             self.metadata.set_child_extender("seasons", child_key)
+        elif self.metadata.media_type in ["ebook", "light_novel"] and child_key != "main":
+            self.metadata.set_child_extender("books", child_key)
 
         self.display()
     
@@ -103,10 +106,12 @@ class GenericConfig(QWidget):
         Opens the currently displayed directory in the system's default file browser
         :return: None
         """
+        path = self.metadata.path if os.path.isdir(self.metadata.path) else os.path.dirname(self.metadata.path)
+
         if sys.platform.startswith("linux"):
-            Popen(["xdg-open", self.metadata.path]).wait()
+            Popen(["xdg-open", path]).wait()
         elif sys.platform == "win32":
-            Popen(["explorer", self.metadata.path]).wait()
+            Popen(["explorer", path]).wait()
 
 
 def display_base_info(widget: GenericConfig):
@@ -180,6 +185,7 @@ def display_light_novel_info(widget: GenericConfig):
     :return: None
     """
     display_ebook_info(widget)
+    widget.illustrator_edit.setText(widget.metadata.illustrator)
     widget.official_translation_check.setChecked(widget.metadata.official_translation)
     widget.myanimelist_url_edit.setText(widget.metadata.myanimelist_url)
     widget.novelupdates_url_edit.setText(widget.metadata.novelupdates_url)
@@ -253,6 +259,7 @@ def store_light_novel_info(widget: GenericConfig):
     :return: None
     """
     store_ebook_info(widget)
-    widget.metadata.official_translation = widget.official_translation_check.text()
+    widget.metadata.illustrator = widget.illustrator_edit.text()
+    widget.metadata.official_translation = bool(widget.official_translation_check.checkState())
     widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text()
     widget.metadata.novelupdates_url = widget.novelupdates_url_edit.text()

@@ -32,6 +32,7 @@ represented after the colon(`:`). Parent media types are indicated using `<=`.
                           # ISBNs should ideally be ISBN-13s
     
     light_novel <= ebook:
+        * illustrator: string                 # The artist responsible for the illustrations
         * myanimelist_url: string        # A URL to the novel's myanimelist page
         * novelupdates_url: string       # A URL to the novel's novelupdates page
         + official_translation: boolean  # Indicates if this is the offical translation or not
