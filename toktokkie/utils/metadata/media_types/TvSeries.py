@@ -23,8 +23,10 @@ LICENSE
 """
 
 import os
+import tvdb_api
 from typing import Dict, List
 from toktokkie.utils.metadata.media_types.Base import Base
+from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
 
 
 class TvSeries(Base):
@@ -105,6 +107,42 @@ class TvSeries(Base):
             children
         ))
         return children
+
+    def load_tvdb_data(self) -> Dict[str, str or int or List[str]]:
+        """
+        Loads a series' TVDB info
+        :return: The TVDB info, consisting of a dictionary with the values
+                 `firstaired`, `runtime`, `episode_count`, `season_count` and `genres`
+        """
+
+        try:
+            tvdb_client = tvdb_api.Tvdb()
+            data = tvdb_client[self.name]
+
+            episode_count = 0
+            for key, season in data.items():
+                if key < 1:
+                    continue
+                else:
+                    episode_count += len(season)
+
+            return {
+                "firstaired": data["firstaired"],
+                "runtime": data["runtime"],
+                "episode_count": episode_count,
+                "season_count": max([len(data) - 1, 1]),
+                "genres": list(filter(lambda x: x != "", data["genre"].split("|")))
+            }
+
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError, KeyError) as e:
+            # If not found, or other error, just return empty dict
+            return {
+                "firstaired": "?",
+                "runtime": "?",
+                "episode_count": -1,
+                "season_count": -1,
+                "genres": []
+            }
 
     # noinspection PyDefaultArgument
     @staticmethod

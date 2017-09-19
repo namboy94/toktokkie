@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MetadataConfigurator(object):
     def setupUi(self, MetadataConfigurator):
         MetadataConfigurator.setObjectName("MetadataConfigurator")
-        MetadataConfigurator.resize(901, 585)
+        MetadataConfigurator.resize(988, 543)
         self.centralwidget = QtWidgets.QWidget(MetadataConfigurator)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -28,6 +28,7 @@ class Ui_MetadataConfigurator(object):
         self.widget_stack.addWidget(self.page_2)
         self.gridLayout.addWidget(self.widget_stack, 1, 3, 3, 1)
         self.media_tree = QtWidgets.QTreeWidget(self.centralwidget)
+        self.media_tree.setMaximumSize(QtCore.QSize(350, 16777215))
         self.media_tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.media_tree.setAcceptDrops(False)
         self.media_tree.setObjectName("media_tree")
@@ -38,6 +39,7 @@ class Ui_MetadataConfigurator(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
+        self.frame.setMaximumSize(QtCore.QSize(350, 16777215))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
@@ -76,7 +78,7 @@ class Ui_MetadataConfigurator(object):
 
     def retranslateUi(self, MetadataConfigurator):
         _translate = QtCore.QCoreApplication.translate
-        MetadataConfigurator.setWindowTitle(_translate("MetadataConfigurator", "MainWindow"))
+        MetadataConfigurator.setWindowTitle(_translate("MetadataConfigurator", "toktokkie"))
         self.media_tree.headerItem().setText(0, _translate("MetadataConfigurator", "Media"))
         self.add_new_button.setText(_translate("MetadataConfigurator", "Add New"))
         self.browse_button.setText(_translate("MetadataConfigurator", "Browse"))

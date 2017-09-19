@@ -22,7 +22,11 @@ This file is part of toktokkie.
 LICENSE
 """
 
+import sys
+import webbrowser
 from copy import copy
+from threading import Thread
+from subprocess import Popen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget
 from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
@@ -46,6 +50,8 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
         self.metadata = None
 
         self.confirm_changes_button.clicked.connect(self.save_data)
+        self.tvdb_url_button.clicked.connect(self.open_tvdb_url)
+        self.open_directory_button.clicked.connect(self.open_directory)
 
         for media_type in MetaDataManager.media_type_map:
             self.media_type_combo_box.addItem(media_type)
@@ -120,3 +126,36 @@ class TvSeriesConfig(QWidget, Ui_TvSeriesConfig):
             else:
                 widgets[0].setText("")
                 widgets[1].setText("")
+
+        self.first_aired_label.setText("")
+        self.episode_length_label.setText("")
+        self.amount_of_episodes_label.setText("")
+        self.amount_of_seasons_label.setText("")
+        self.genres_label.setText("")
+
+        def load_data():
+            tvdb_data = self.metadata.load_tvdb_data()
+            self.first_aired_label.setText(tvdb_data["firstaired"])
+            self.episode_length_label.setText(tvdb_data["runtime"])
+            self.amount_of_episodes_label.setText(str(tvdb_data["episode_count"]))
+            self.amount_of_seasons_label.setText(str(tvdb_data["season_count"]))
+            self.genres_label.setText(", ".join(tvdb_data["genres"]))
+
+        Thread(target=load_data).start()
+
+    def open_directory(self):
+        """
+        Opens the currently displayed directory in the system's default file browser
+        :return: 
+        """
+        if sys.platform.startswith("linux"):
+            Popen(["xdg-open", self.metadata.path]).wait()
+        elif sys.platform == "win32":
+            Popen(["explorer", self.metadata.path]).wait()
+
+    def open_tvdb_url(self):
+        """
+        Opens the TVDB URL in the user's default browser
+        :return: 
+        """
+        webbrowser.open(self.metadata.tvdb_url, new=2)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1044</width>
-    <height>579</height>
+    <width>970</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,10 +44,16 @@
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="folder_icon_label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="maximumSize">
       <size>
-       <width>512</width>
-       <height>512</height>
+       <width>5120</width>
+       <height>5120</height>
       </size>
      </property>
      <property name="text">
@@ -57,7 +63,10 @@
       <pixmap>../../../../../../../Downloads/pokemon_folder_icon_by_mikromike-d8mldi8.png</pixmap>
      </property>
      <property name="scaledContents">
-      <bool>true</bool>
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -74,10 +83,16 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="1" rowspan="5">
+   <item row="0" column="1" rowspan="7">
     <widget class="QFrame" name="frame">
      <property name="enabled">
       <bool>true</bool>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
      </property>
      <property name="frameShape">
       <enum>QFrame::Box</enum>
@@ -330,7 +345,7 @@
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="tvdb_url_button">
         <property name="text">
          <string>Go</string>
         </property>
@@ -442,6 +457,13 @@
      </layout>
     </widget>
    </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="open_directory_button">
+     <property name="text">
+      <string>Open Directory</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0">
     <spacer name="verticalSpacer_3">
      <property name="orientation">
@@ -462,7 +484,7 @@
   <tabstop>media_type_combo_box</tabstop>
   <tabstop>tags_edit</tabstop>
   <tabstop>tvdb_url_edit</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>tvdb_url_button</tabstop>
   <tabstop>resolution_one_edit_x</tabstop>
   <tabstop>resolution_one_edit_y</tabstop>
   <tabstop>resolution_two_edit_x</tabstop>

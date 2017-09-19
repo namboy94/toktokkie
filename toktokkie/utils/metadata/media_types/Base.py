@@ -51,6 +51,10 @@ class Base(object):
         # noinspection PyTypeChecker
         return self.resolve_inner_attribute("tags")
 
+    @property
+    def path(self) -> str:
+        return os.path.join(self.root_path, self.child_key)
+
     # Setters
     @media_type.setter
     def media_type(self, value: str):
@@ -74,11 +78,11 @@ class Base(object):
         self.extender_key = ""
         self.child_key = ""
 
-        self.path = path
+        self.root_path = path
         self.info_file = os.path.join(path, ".meta", "info.json")
 
         if generate:
-            metadir = os.path.join(self.path, ".meta")
+            metadir = os.path.join(path, ".meta")
             if not os.path.isdir(metadir):
                 os.makedirs(metadir)
             if not os.path.isfile(self.info_file) or overwrite_with_generated:
@@ -155,7 +159,7 @@ class Base(object):
             # noinspection PyCallingNonCallable
             data[required] = attrs["required"][required]()
         data["type"] = self.identifier
-        data["name"] = os.path.basename(self.path)
+        data["name"] = os.path.basename(self.root_path)
         with open(self.info_file, 'w') as f:
             f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
 
@@ -227,7 +231,7 @@ class Base(object):
         :return: The path to the icon file, or None if there does not exist such a file
         """
         identifier = identifier if identifier != "" else self.child_key if self.child_key != "" else "main"
-        iconfile = os.path.join(self.path, ".meta", "icons", identifier + ".png")
+        iconfile = os.path.join(self.root_path, ".meta", "icons", identifier + ".png")
         return iconfile if os.path.isfile(iconfile) else None
 
     # noinspection PyTypeChecker,PyDefaultArgument
