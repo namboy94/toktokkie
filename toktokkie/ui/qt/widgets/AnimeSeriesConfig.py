@@ -22,110 +22,36 @@ This file is part of toktokkie.
 LICENSE
 """
 
-import sys
+import time
 import webbrowser
-from copy import copy
-from threading import Thread
-from subprocess import Popen
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget
-from toktokkie.utils.metadata.media_types.TvSeries import TvSeries
-from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
+from toktokkie.ui.qt.widgets.common_config import GenericConfig
 from toktokkie.ui.qt.pyuic.anime_series_config import Ui_AnimeSeriesConfig
 
 
-class AnimeSeriesConfig(QWidget, Ui_AnimeSeriesConfig):
+class AnimeSeriesConfig(GenericConfig, Ui_AnimeSeriesConfig):
+
     """
-    Widget for a TV Series
+    Widget for a Anime Series
     """
 
     def __init__(self, parent):
         """
         Initializes the widget
-
         :param parent: The window in which to display the widget
         """
         super().__init__(parent)
         self.setupUi(self)
         self.metadata = None
+        self.initialize()
+        self.tvdb_url_button.clicked.connect(lambda x: webbrowser.open(self.metadata.tvdb_url, new=2))
+        self.myanimelist_url_button.clicked.connect(lambda x: webbrowser.open(self.metadata.myanimelist_url, new=2))
 
-        self.confirm_changes_button.clicked.connect(self.save_data)
-        self.tvdb_url_button.clicked.connect(self.open_tvdb_url)
-        self.open_directory_button.clicked.connect(self.open_directory)
-
-        for media_type in MetaDataManager.media_type_map:
-            self.media_type_combo_box.addItem(media_type)
-
-    def set_data(self, metadata: TvSeries, child_id: str):
+    def load_online_data(self):
         """
-        Sets the data to be displayed here
-
-        :param metadata: The TvSeries metadata object to be displayed here
-        :param child_id: Specifies which subdirectory should be displayed
-
+        Downloads data from myanimelist.net and displays the data afterwards
         :return: None
         """
-        self.metadata = copy(metadata)
-        if child_id != "main":
-            self.metadata.set_child_extender("seasons", child_id)
-        self.display_data()
-
-    def save_data(self):
-        """
-        Saves the data currently stored in the UI elements to the info.json file
-        :return: None
-        """
-        self.metadata.name = self.series_name_edit.text()
-        self.metadata.media_type = self.media_type_combo_box.currentText()
-        self.metadata.tags = self.tags_edit.text().split(",")
-        self.metadata.tvdb_url = self.tvdb_url_edit.text()
-        self.metadata.audio_langs = self.audio_language_edit.text().split(",")
-        self.metadata.subtitle_langs = self.subtitle_language_edit.text().split(",")
-
-        resolutions = []
-        for i, widgets in enumerate([
-            [self.resolution_one_edit_x, self.resolution_one_edit_y],
-            [self.resolution_two_edit_x, self.resolution_two_edit_y],
-            [self.resolution_three_edit_x, self.resolution_three_edit_y]
-        ]):
-            if widgets[0].text() and widgets[1].text():
-                try:
-                    resolutions.append({
-                        "x": int(widgets[0].text()),
-                        "y": int(widgets[1].text())
-                    })
-                except ValueError:
-                    pass
-        self.metadata.resolutions = resolutions  # Must be set here due to the setter method
-
-        self.metadata.write_changes()
-        self.display_data()
-
-    def display_data(self):
-        """
-        Displays the data of a TvSeriesConfig
-        :return: None
-        """
-        self.media_type_combo_box.setCurrentIndex(self.media_type_combo_box.findText(self.metadata.media_type))
-        self.series_name_edit.setText(self.metadata.name)
-        self.folder_icon_label.setPixmap(QPixmap(self.metadata.get_icon_path()))
-
-        self.tags_edit.setText(", ".join(self.metadata.tags))
-        self.tvdb_url_edit.setText(self.metadata.tvdb_url)
-        self.audio_language_edit.setText(", ".join(self.metadata.audio_langs))
-        self.subtitle_language_edit.setText(", ".join(self.metadata.subtitle_langs))
-
-        for i, widgets in enumerate([
-            [self.resolution_one_edit_x, self.resolution_one_edit_y],
-            [self.resolution_two_edit_x, self.resolution_two_edit_y],
-            [self.resolution_three_edit_x, self.resolution_three_edit_y]
-        ]):
-            if len(self.metadata.resolutions) > i:
-                widgets[0].setText(str(self.metadata.resolutions[i]["x"]))
-                widgets[1].setText(str(self.metadata.resolutions[i]["y"]))
-            else:
-                widgets[0].setText("")
-                widgets[1].setText("")
+        metadata_name = self.metadata.name
 
         self.mal_type_label.setText("")
         self.mal_episodes_label.setText("")
@@ -138,8 +64,14 @@ class AnimeSeriesConfig(QWidget, Ui_AnimeSeriesConfig):
         self.mal_score_label.setText("")
         self.mal_ranking_label.setText("")
 
-        def load_data():
-            mal_data = self.metadata.load_myanimelist_data()
+        # Wait for 0.2 seconds before downloading data, stop thread if metadata has changed before doing so
+        time.sleep(0.2)
+        if metadata_name != self.metadata.name:
+            return
+
+        mal_data = self.metadata.load_myanimelist_data()
+
+        if metadata_name == self.metadata.name:  # Make sure that the same metadata object is still being displayed
             self.mal_type_label.setText(mal_data["type"])
             self.mal_episodes_label.setText(str(mal_data["episodes"]))
             self.mal_status_label.setText(mal_data["status"])
@@ -150,22 +82,3 @@ class AnimeSeriesConfig(QWidget, Ui_AnimeSeriesConfig):
             self.mal_runtime_label.setText(mal_data["runtime"])
             self.mal_score_label.setText(mal_data["score"])
             self.mal_ranking_label.setText(mal_data["rank"])
-
-        Thread(target=load_data).start()
-
-    def open_directory(self):
-        """
-        Opens the currently displayed directory in the system's default file browser
-        :return: 
-        """
-        if sys.platform.startswith("linux"):
-            Popen(["xdg-open", self.metadata.path]).wait()
-        elif sys.platform == "win32":
-            Popen(["explorer", self.metadata.path]).wait()
-
-    def open_tvdb_url(self):
-        """
-        Opens the TVDB URL in the user's default browser
-        :return: 
-        """
-        webbrowser.open(self.metadata.tvdb_url, new=2)

@@ -25,6 +25,7 @@ LICENSE
 # imports
 import os
 import json
+from copy import copy
 from toktokkie.ui.qt.widgets.TvSeriesConfig import TvSeriesConfig
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem
@@ -155,6 +156,6 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
             metadata_id = widget.data(0, 0)
 
         metadata_widget = self.media_type_widgets[metadata.media_type]
-        metadata_widget.set_data(metadata, metadata_id)
+        metadata_widget.set_metadata(metadata, metadata_id)
 
         self.widget_stack.setCurrentWidget(metadata_widget)

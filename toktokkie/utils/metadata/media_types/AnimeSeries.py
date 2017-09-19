@@ -22,6 +22,9 @@ This file is part of toktokkie.
 LICENSE
 """
 
+import os
+import json
+import time
 import requests
 from bs4 import BeautifulSoup
 from typing import Dict, List
@@ -49,6 +52,11 @@ class AnimeSeries(TvSeries):
         self.store_inner_attribute("myanimelist_url", url)
 
     def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
+        """
+        Fetches information from myanimelist.net for this metadata object
+        :return: A dictionary with information from myanimelist.net with chosen default values in
+                 case any values were not found
+        """
 
         data = {
             "type": "?",
@@ -63,8 +71,19 @@ class AnimeSeries(TvSeries):
             "rank": "?"
         }
 
-        soup = BeautifulSoup(requests.get(self.myanimelist_url).text, "html.parser")
+        html = requests.get(self.myanimelist_url)
+        retries = 0
+        while html.status_code != 200 and retries < 10:
+            time.sleep(1)
+            retries += 1
+            html = requests.get(self.myanimelist_url)
+
+        soup = BeautifulSoup("" if html.status_code != 200 else html.text, "html.parser")
         sidebar = soup.find_all("div", "js-scrollfix-bottom")
+
+        if len(sidebar) == 0:
+            return data
+
         divs = sidebar[0].find_all("div")
 
         for div in divs:
@@ -89,7 +108,6 @@ class AnimeSeries(TvSeries):
             elif text.startswith("Score:"):
                 data["score"] = text.split(":", 1)[1].split("(")[0].strip()
             elif text.startswith("Ranked:"):
-                print(text)
                 data["rank"] = text.split(":", 1)[1].strip().split(" ")[0].strip()
 
         return data

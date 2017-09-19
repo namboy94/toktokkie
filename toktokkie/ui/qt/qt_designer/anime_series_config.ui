@@ -168,7 +168,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="wordWrap">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -339,6 +339,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item row="8" column="1">
@@ -377,6 +380,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -603,7 +609,7 @@
        </widget>
       </item>
       <item row="3" column="3">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="myanimelist_url_button">
         <property name="text">
          <string>Go</string>
         </property>
@@ -623,7 +629,7 @@
        </widget>
       </item>
       <item row="3" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="myanimelist_url_edit"/>
       </item>
      </layout>
     </widget>
