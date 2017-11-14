@@ -8,21 +8,21 @@ directory programmatically. This functionality has been replaced by
 
 There are 3 separate projects included in this directory:
 
-## folder-icon-changer
+## [folder-icon-changer](folder-icon-changer)
 
 A Java program that enables a user to iconize directories using PNG or ICO files.
 
-## nautilus-folder-iconizer
+## [nautilus-folder-iconizer](nautilus-folder-iconizer)
 
 A python program that enables the iconization of directories in nautilus and
 nautilus-based file managers.
 
-## nautilus-foldericons
+## [nautilus-foldericons](nautilus-foldericons)
 
 The precursor to nautilus-folder-iconizer.
 
 
-## Further Information
+## [Further Information]
 
 * [Changelog](https://gitlab.namibsun.net/namboy94/folder-iconizer/raw/master/CHANGELOG)
 * [License (GPLv3)](https://gitlab.namibsun.net/namboy94/folder-iconizer/raw/master/LICENSE)
