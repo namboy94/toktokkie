@@ -1,3 +1,23 @@
+"""
+Copyright 2015-2017 Hermann Krumrey
+
+This file is part of nautilus-folder-iconizer.
+
+nautilus-folder-iconizer is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+nautilus-folder-iconizer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with nautilus-folder-iconizer.
+If not, see <http://www.gnu.org/licenses/>.
+"""
+
 '''
 ParserCollection
 collection of parsing methods.
@@ -66,7 +86,7 @@ def directoryChangeParser(configFileLocation):
 """
 iconParser
 parses through the parent folder of the folders whose icons should be changed and changes all their icons according
-to conventions set by the author of this program.
+to conventions set by the author of this nautilus-foldericons.
 @param rootDirectory - the parent directory to be parsed
 @param warningFile - the location of a file that contains warnings that occur during parsing
 """

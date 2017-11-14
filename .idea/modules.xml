@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Folder Icon Changer.iml" filepath="$PROJECT_DIR$/.idea/Folder Icon Changer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/folder-iconizer.iml" filepath="$PROJECT_DIR$/.idea/folder-iconizer.iml" />
     </modules>
   </component>
 </project>
