@@ -22,7 +22,7 @@ nautilus-based file managers.
 The precursor to nautilus-folder-iconizer.
 
 
-## [Further Information]
+## Further Information
 
 * [Changelog](https://gitlab.namibsun.net/namboy94/folder-iconizer/raw/master/CHANGELOG)
 * [License (GPLv3)](https://gitlab.namibsun.net/namboy94/folder-iconizer/raw/master/LICENSE)
