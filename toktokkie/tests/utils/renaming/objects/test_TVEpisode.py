@@ -36,16 +36,35 @@ class TVEpisodeUnitTests(unittest.TestCase):
         shutil.rmtree("temp_testing")
 
     def test_renaming(self):
-        episode = TVEpisode(os.path.join("temp_testing", "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "episode_file")))
+        episode = TVEpisode(
+            os.path.join("temp_testing", "episode_file"),
+            1, 1, "Game of Thrones", PlexTvdbScheme
+        )
+        self.assertTrue(os.path.isfile(
+            os.path.join("temp_testing", "episode_file"))
+        )
         episode.rename()
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "episode_file")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones - S01E01 - Winter Is Coming")))
+        self.assertFalse(os.path.isfile(
+            os.path.join("temp_testing", "episode_file"))
+        )
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones - S01E01 - Winter Is Coming"
+        )))
 
     def test_already_correct_name(self):
         self.test_renaming()
-        episode = TVEpisode(os.path.join("temp_testing", "Game of Thrones - S01E01 - Winter Is Coming"), 1, 1,
-                            "Game of Thrones", PlexTvdbScheme)
+        episode = TVEpisode(
+            os.path.join(
+                "temp_testing", "Game of Thrones - S01E01 - Winter Is Coming"
+            ),
+            1, 1, "Game of Thrones", PlexTvdbScheme
+        )
         episode.rename()
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "episode_file")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones - S01E01 - Winter Is Coming")))
+        self.assertFalse(os.path.isfile(
+            os.path.join("temp_testing", "episode_file")
+        ))
+        self.assertTrue(os.path.isfile(
+            os.path.join(
+                "temp_testing", "Game of Thrones - S01E01 - Winter Is Coming"
+            )
+        ))

@@ -26,9 +26,12 @@ import unittest
 from xdcc_dl.entities.XDCCPack import XDCCPack
 from xdcc_dl.entities.XDCCPack import IrcServer
 from toktokkie.utils.iconizing.Iconizer import Iconizer
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
-from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import XDCCDownloadManagerUrwidTui
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager
+from toktokkie.ui.urwid.XDCCDownloadManagerUrwidTui import \
+    XDCCDownloadManagerUrwidTui
 
 
 class LoopDummy(object):
@@ -42,11 +45,16 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         self.tui = XDCCDownloadManagerUrwidTui()
         self.tui.loop = LoopDummy()
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(
+            os.path.join("toktokkie", "tests", "resources", "directories"),
+            "temp_testing"
+        )
 
-        self.namibsun_packs = [XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 1),
-                               XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 2),
-                               XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 3)]
+        self.namibsun_packs = [
+            XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 1),
+            XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 2),
+            XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 3)
+        ]
 
     def tearDown(self):
         Iconizer().reverse_iconization("temp_testing")
@@ -96,8 +104,10 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(self.tui.download_queue[0], self.namibsun_packs[2])
 
     def test_parsing_directory(self):
-        self.tui.target_directory_edit.set_edit_text(os.path.join("temp_testing", "Game of Thrones"))
-        self.assertEqual(self.tui.series_name_edit.get_edit_text(), "Game of Thrones")
+        self.tui.target_directory_edit.set_edit_text(
+            os.path.join("temp_testing", "Game of Thrones"))
+        self.assertEqual(self.tui.series_name_edit.get_edit_text(),
+                         "Game of Thrones")
         self.assertEqual(self.tui.season_number_edit.get_edit_text(), "2")
         self.assertEqual(self.tui.episode_number_edit.get_edit_text(), "11")
 
@@ -111,16 +121,20 @@ class UnitTests(unittest.TestCase):
         while self.tui.downloading:
             pass
 
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                    "Game of Thrones - S02E11 - Episode 11.txt")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                    "Game of Thrones - S02E12 - Episode 12.txt")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                    "Game of Thrones - S02E13 - Episode 13.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E11 - Episode 11.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E12 - Episode 12.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E13 - Episode 13.txt")))
         procedure = ProcedureManager.get_applicable_procedure()
 
         if procedure != GenericProcedure:
-            self.assertNotEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")), None)
+            self.assertNotEqual(procedure.get_icon_file(os.path.join(
+                "temp_testing", "Game of Thrones")), None)
 
     def test_downloading_without_iconizing_and_renaming(self):
         self.test_parsing_directory()
@@ -135,20 +149,27 @@ class UnitTests(unittest.TestCase):
         while self.tui.downloading:
             pass
 
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                     "Game of Thrones - S02E11 - Episode 11.txt")))
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                     "Game of Thrones - S02E12 - Episode 12.txt")))
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                     "Game of Thrones - S02E13 - Episode 13.txt")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2", "1_test.txt")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2", "2_test.txt")))
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2", "3_test.txt")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E11 - Episode 11.txt")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E12 - Episode 12.txt")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E13 - Episode 13.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2", "1_test.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2", "2_test.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2", "3_test.txt")))
 
         procedure = ProcedureManager.get_applicable_procedure()
 
         if procedure != GenericProcedure:
-            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")), None)
+            self.assertEqual(procedure.get_icon_file(os.path.join(
+                "temp_testing", "Game of Thrones")), None)
 
     def test_search_while_searching(self):
 
@@ -163,23 +184,28 @@ class UnitTests(unittest.TestCase):
             pass
 
         self.assertEqual(len(self.tui.search_results), 1)
-        self.assertEqual(self.tui.search_results[0].get_filename(), "1_test.txt")
+        self.assertEqual(
+            self.tui.search_results[0].get_filename(),
+            "1_test.txt"
+        )
 
     def test_download_while_downloading(self):
         self.test_parsing_directory()
         self.test_adding_and_removing_search_results_to_queue()
         self.tui.downloading = True
         self.tui.start_download(None)
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                     "Game of Thrones - S02E11 - Episode 11.txt")))
+        self.assertFalse(os.path.isfile(
+            os.path.join("temp_testing", "Game of Thrones", "Season 2",
+                         "Game of Thrones - S02E11 - Episode 11.txt")))
 
     def test_download_with_invalid_input(self):
         self.test_parsing_directory()
         self.test_adding_and_removing_search_results_to_queue()
         self.tui.episode_number_edit.set_edit_text("Not A Number")
         self.tui.start_download(None)
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                     "Game of Thrones - S02E11 - Episode 11.txt")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E11 - Episode 11.txt")))
 
     def test_download_complete_message(self):
 

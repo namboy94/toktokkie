@@ -27,14 +27,24 @@ from toktokkie.utils.xdcc.updating.objects.Series import Series
 
 class UnitTests(unittest.TestCase):
 
-    default_series = [Series("3-gatsu no Lion", "3-gatsu no Lion", "1080p", "CR-HOLLAND|NEW", 1,
-                             ["nibl"], "Plex (TVDB)", "horriblesubs"),
-                      Series("Drifters", "Drifters", "1080p", "CR-HOLLAND|NEW", 1,
-                             ["nibl"], "Plex (TVDB)", "horriblesubs")]
+    default_series = [
+        Series(
+            "3-gatsu no Lion", "3-gatsu no Lion", "1080p", "CR-HOLLAND|NEW", 1,
+            ["nibl"], "Plex (TVDB)", "horriblesubs"),
+        Series(
+            "Drifters", "Drifters", "1080p", "CR-HOLLAND|NEW", 1,
+            ["nibl"], "Plex (TVDB)", "horriblesubs"
+        )
+    ]
 
     def setUp(self):
 
-        shutil.copy(os.path.join("toktokkie", "tests", "resources", "json", "updater.json"), "test.json")
+        shutil.copy(
+            os.path.join(
+                "toktokkie", "tests", "resources", "json", "updater.json"
+            ),
+            "test.json"
+        )
         self.json_without_file = JsonHandler()
         self.json_with_file = JsonHandler("test.json")
 
@@ -46,17 +56,20 @@ class UnitTests(unittest.TestCase):
 
     def test_loading_invalid_json(self):
         try:
-            JsonHandler(os.path.join("toktokkie", "tests", "resources", "json", "invalid.json"))
+            JsonHandler(os.path.join("toktokkie", "tests", "resources", "json",
+                                     "invalid.json"))
             self.assertTrue(False)
         except ValueError:
             pass
         try:
-            JsonHandler(os.path.join("toktokkie", "tests", "resources", "json", "invalid-updater.json"))
+            JsonHandler(os.path.join("toktokkie", "tests", "resources", "json",
+                                     "invalid-updater.json"))
             self.assertTrue(False)
         except ValueError:
             pass
         try:
-            JsonHandler(os.path.join("toktokkie", "tests", "resources", "json", "invalid-types-updater.json"))
+            JsonHandler(os.path.join("toktokkie", "tests", "resources", "json",
+                                     "invalid-types-updater.json"))
             self.assertTrue(False)
         except ValueError:
             pass
@@ -83,7 +96,9 @@ class UnitTests(unittest.TestCase):
 
         load_handler = JsonHandler("test.json")
         self.assertEqual(len(load_handler.get_series()), 1)
-        self.assertTrue(self.default_series[0].equals(load_handler.get_series()[0]))
+        self.assertTrue(
+            self.default_series[0].equals(load_handler.get_series()[0])
+        )
 
     def test_handler_without_file(self):
         self.assertEqual(self.json_without_file.get_series(), [])
@@ -102,17 +117,25 @@ class UnitTests(unittest.TestCase):
     def test_adding_series(self):
         self.json_without_file.add_series(self.default_series[0])
         self.assertEqual(len(self.json_without_file.get_series()), 1)
-        self.assertTrue(self.json_without_file.get_series()[0].equals(self.default_series[0]))
+        self.assertTrue(self.json_without_file.get_series()[0].equals(
+            self.default_series[0])
+        )
         self.json_without_file.add_series(self.default_series[1])
         self.assertEqual(len(self.json_without_file.get_series()), 2)
-        self.assertTrue(self.json_without_file.get_series()[0].equals(self.default_series[0]))
-        self.assertTrue(self.json_without_file.get_series()[1].equals(self.default_series[1]))
+        self.assertTrue(self.json_without_file.get_series()[0].equals(
+            self.default_series[0])
+        )
+        self.assertTrue(self.json_without_file.get_series()[1].equals(
+            self.default_series[1])
+        )
 
     def test_removing_series(self):
         self.test_adding_series()
 
         self.json_without_file.remove_series(self.default_series[0])
-        self.assertTrue(self.json_without_file.get_series()[0].equals(self.default_series[1]))
+        self.assertTrue(self.json_without_file.get_series()[0].equals(
+            self.default_series[1])
+        )
         self.assertEqual(len(self.json_without_file.get_series()), 1)
 
         self.json_without_file.remove_series(self.default_series[1])

@@ -22,14 +22,19 @@ import os
 import shutil
 import unittest
 from toktokkie.utils.iconizing.Iconizer import Iconizer
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
 
 
 class IconizerUnitTests(unittest.TestCase):
 
     def setUp(self):
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(
+            os.path.join("toktokkie", "tests", "resources", "directories"),
+            "temp_testing"
+        )
         self.game_of_thrones = os.path.join("temp_testing", "Game of Thrones")
         self.native_iconizer = Iconizer()
 
@@ -39,25 +44,46 @@ class IconizerUnitTests(unittest.TestCase):
 
     def test_native_iconizing(self):
 
-        self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+        self.assertEqual(
+            self.native_iconizer.procedure.get_icon_file(self.game_of_thrones),
+            None
+        )
         self.native_iconizer.recursive_iconize("temp_testing")
 
         if self.native_iconizer.procedure != GenericProcedure:
 
-            self.assertNotEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
-            self.assertTrue(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones) in
-                            [os.path.join(self.game_of_thrones, ".meta", "icons", "main.png"),
-                             os.path.join(self.game_of_thrones, ".meta", "icons", "main.ico")])
+            self.assertNotEqual(
+                self.native_iconizer.procedure.get_icon_file(
+                    self.game_of_thrones
+                ),
+                None
+            )
+            self.assertTrue(
+                self.native_iconizer.procedure.get_icon_file(
+                    self.game_of_thrones) in [
+                    os.path.join(
+                        self.game_of_thrones,
+                        ".meta", "icons", "main.png"),
+                    os.path.join(
+                        self.game_of_thrones,
+                        ".meta", "icons", "main.ico")
+                ]
+            )
 
         self.native_iconizer.reverse_iconization("temp_testing")
-        self.assertEqual(self.native_iconizer.procedure.get_icon_file(self.game_of_thrones), None)
+        self.assertEqual(
+            self.native_iconizer.procedure.get_icon_file(self.game_of_thrones),
+            None
+        )
 
     # noinspection PyMethodMayBeStatic
     def test_no_iconizer_available(self):
 
         iconizer = Iconizer()
         iconizer.procedure = GenericProcedure
-        iconizer.recursive_iconize("temp_testing")  # Just to check that no errors are thrown
+
+        # Just to check that no errors are thrown
+        iconizer.recursive_iconize("temp_testing")
 
     def test_iconizer_override(self):
 

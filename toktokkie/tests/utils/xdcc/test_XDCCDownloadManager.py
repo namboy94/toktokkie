@@ -31,7 +31,10 @@ from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 class UnitTests(unittest.TestCase):
 
     def setUp(self):
-        shutil.copytree("toktokkie/tests/resources/directories", "temp_testing")
+        shutil.copytree(
+            "toktokkie/tests/resources/directories",
+            "temp_testing"
+        )
         self.game_of_thrones = os.path.join("temp_testing", "Game of Thrones")
 
     def tearDown(self):
@@ -39,52 +42,74 @@ class UnitTests(unittest.TestCase):
 
     def test_download_preparer(self):
 
-        destination_dir, season_dir = XDCCDownloadManager.prepare_directory(self.game_of_thrones, "Game of Thrones", 1)
+        destination_dir, season_dir = XDCCDownloadManager.prepare_directory(
+            self.game_of_thrones, "Game of Thrones", 1)
         self.assertEqual(destination_dir, self.game_of_thrones)
-        self.assertEqual(season_dir, os.path.join(self.game_of_thrones, "Season 1"))
-        self.assertTrue(MetaDataManager.is_media_directory(self.game_of_thrones, "tv_series"))
+        self.assertEqual(
+            season_dir,
+            os.path.join(self.game_of_thrones, "Season 1")
+        )
+        self.assertTrue(MetaDataManager.is_media_directory(
+            self.game_of_thrones, "tv_series"))
 
     def test_download_preparer_with_non_matching_show_name(self):
 
-        self.assertFalse(MetaDataManager.is_media_directory(os.path.join(self.game_of_thrones, "Not Game of Thrones")))
+        self.assertFalse(MetaDataManager.is_media_directory(
+            os.path.join(self.game_of_thrones, "Not Game of Thrones")))
         destination_dir, season_dir = XDCCDownloadManager.prepare_directory(
             self.game_of_thrones, "Not Game of Thrones", 1)
 
-        self.assertEqual(destination_dir, os.path.join(self.game_of_thrones, "Not Game of Thrones"))
+        self.assertEqual(
+            destination_dir,
+            os.path.join(self.game_of_thrones, "Not Game of Thrones")
+        )
         self.assertEqual(season_dir, os.path.join(destination_dir, "Season 1"))
-        self.assertTrue(MetaDataManager.is_media_directory(destination_dir, "tv_series"))
+        self.assertTrue(MetaDataManager.is_media_directory(
+            destination_dir, "tv_series"))
 
     def test_retrieving_max_episode_and_season_numbers(self):
 
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(self.game_of_thrones)
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(
+                self.game_of_thrones
+            )
         self.assertEqual(season, 2)
         self.assertEqual(episode, 10)
 
         shutil.rmtree(os.path.join(self.game_of_thrones, "Season 2"))
 
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(self.game_of_thrones)
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(
+                self.game_of_thrones
+            )
         self.assertEqual(season, 1)
         self.assertEqual(episode, 11)
 
-    def test_retrieving_max_episode_and_season_numbers_on_non_tv_series_directory(self):
+    def test_retrieving_max_epi_and_season_numbers_on_non_tv_series_dir(self):
 
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(
-            os.path.join("temp_testing", "OtherMedia"))
-
-        self.assertEqual(season, 1)
-        self.assertEqual(episode, 0)
-
-    def test_retrieving_max_episode_and_season_numbers_on_non_media_directory(self):
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(
-            os.path.join("temp_testing", "NotAShow"))
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(
+                os.path.join("temp_testing", "OtherMedia")
+            )
 
         self.assertEqual(season, 1)
         self.assertEqual(episode, 0)
 
-    def test_retrieving_max_episode_and_season_numbers_on_show_without_seasons(self):
+    def test_retrieving_max_epi_and_season_numbers_on_non_media_dir(self):
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(
+                os.path.join("temp_testing", "NotAShow")
+            )
 
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(
-            os.path.join("temp_testing", "ShowWithoutSeasons"))
+        self.assertEqual(season, 1)
+        self.assertEqual(episode, 0)
+
+    def test_retrieving_max_epi_and_season_numbers_on_show_without_seas(self):
+
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(
+                os.path.join("temp_testing", "ShowWithoutSeasons")
+            )
 
         self.assertEqual(season, 1)
         self.assertEqual(episode, 0)
@@ -104,12 +129,18 @@ class UnitTests(unittest.TestCase):
 
         XDCCDownloadManager.auto_rename(PlexTvdbScheme, 1, packs)
 
-        self.assertTrue(os.path.isfile(os.path.join(self.game_of_thrones, "Season 1",
-                                                    "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
-        self.assertTrue(os.path.isfile(os.path.join(self.game_of_thrones, "Season 1",
-                                                    "Game of Thrones - S01E02 - The Kingsroad.mkv")))
-        self.assertTrue(os.path.isfile(os.path.join(self.game_of_thrones, "Season 1",
-                                                    "Game of Thrones - S01E03 - Lord Snow.mkv")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            self.game_of_thrones, "Season 1",
+            "Game of Thrones - S01E01 - Winter Is Coming.mkv"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            self.game_of_thrones, "Season 1",
+            "Game of Thrones - S01E02 - The Kingsroad.mkv"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            self.game_of_thrones, "Season 1",
+            "Game of Thrones - S01E03 - Lord Snow.mkv"
+        )))
 
     def test_preliminary_auto_renaming_results(self):
 
@@ -117,8 +148,12 @@ class UnitTests(unittest.TestCase):
                  XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 2),
                  XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 3)]
 
-        results = XDCCDownloadManager.get_preliminary_renaming_results(PlexTvdbScheme, 1, packs, 1, "Game of Thrones")
+        results = XDCCDownloadManager.get_preliminary_renaming_results(
+            PlexTvdbScheme, 1, packs, 1, "Game of Thrones")
 
-        self.assertEqual(results[0], "Game of Thrones - S01E01 - Winter Is Coming")
-        self.assertEqual(results[1], "Game of Thrones - S01E02 - The Kingsroad")
-        self.assertEqual(results[2], "Game of Thrones - S01E03 - Lord Snow")
+        self.assertEqual(results[0],
+                         "Game of Thrones - S01E01 - Winter Is Coming")
+        self.assertEqual(results[1],
+                         "Game of Thrones - S01E02 - The Kingsroad")
+        self.assertEqual(results[2],
+                         "Game of Thrones - S01E03 - Lord Snow")

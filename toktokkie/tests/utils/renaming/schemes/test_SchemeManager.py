@@ -36,7 +36,10 @@ class SchemeManagerUnitTests(unittest.TestCase):
 
         for scheme in all_schemes:
             self.assertTrue(scheme.get_scheme_name() in scheme_names)
-            self.assertEqual(scheme, SchemeManager.get_scheme_from_scheme_name(scheme.get_scheme_name()))
+            self.assertEqual(scheme, SchemeManager.get_scheme_from_scheme_name(
+                scheme.get_scheme_name()))
 
     def test_invalid_scheme_name(self):
-        self.assertEqual(SchemeManager.get_scheme_from_scheme_name("SomeInvalidName"), None)
+        self.assertEqual(
+            SchemeManager.get_scheme_from_scheme_name("SomeInvalidName"), None
+        )

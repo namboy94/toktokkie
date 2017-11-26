@@ -36,7 +36,8 @@ class PlexTvdbSchemeUnitTests(unittest.TestCase):
                          "Game of Thrones - S01E01 - Winter Is Coming")
         scheme = PlexTvdbScheme("Game of Thrones", 0, 10)
         self.assertEqual(scheme.generate_episode_name(),
-                         "Game of Thrones - S00E10 - The Politics of Power A Look Back at Season 3")
+                         "Game of Thrones - S00E10 - "
+                         "The Politics of Power A Look Back at Season 3")
         scheme = PlexTvdbScheme("Game of Thrones", 1, -1)
         self.assertEqual(scheme.generate_episode_name(),
                          "Game of Thrones - S01E-01 - Episode -1")

@@ -24,7 +24,8 @@ import unittest
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
 from toktokkie.ui.urwid.TVSeriesRenamerUrwidTui import TVSeriesRenamerUrwidTui
-from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
+from toktokkie.utils.renaming.objects.RenamerConfirmation import \
+    RenamerConfirmation
 
 
 class LoopDummy(object):
@@ -38,7 +39,8 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         self.tui = TVSeriesRenamerUrwidTui()
         self.tui.loop = LoopDummy()
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(os.path.join(
+            "toktokkie", "tests", "resources", "directories"), "temp_testing")
 
     def tearDown(self):
         self.tui.quit()
@@ -56,7 +58,8 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(self.tui.confirmation, None)
 
     def test_parsing_media_directory_non_recursive(self):
-        self.tui.dir_entry.set_edit_text(os.path.join("temp_testing", "Game of Thrones"))
+        self.tui.dir_entry.set_edit_text(os.path.join(
+            "temp_testing", "Game of Thrones"))
 
         self.assertFalse(self.tui.recursive_check.get_state())
         self.tui.search(None)
@@ -86,7 +89,8 @@ class UnitTests(unittest.TestCase):
 
     def test_parsing_while_renaming(self):
 
-        self.tui.dir_entry.set_edit_text(os.path.join("temp_testing", "Game of Thrones"))
+        self.tui.dir_entry.set_edit_text(os.path.join(
+            "temp_testing", "Game of Thrones"))
 
         self.tui.renaming = True
         self.tui.search(None)
@@ -98,7 +102,9 @@ class UnitTests(unittest.TestCase):
 
     def test_parsing_directory_with_extra_slashes(self):
 
-        self.tui.dir_entry.set_edit_text(os.path.join("temp_testing", "Game of Thrones") + os.path.sep + os.path.sep)
+        self.tui.dir_entry.set_edit_text(
+            os.path.join("temp_testing", "Game of Thrones") +
+            os.path.sep + os.path.sep)
         self.tui.search(None)
 
         while self.tui.parsing:
@@ -108,7 +114,9 @@ class UnitTests(unittest.TestCase):
 
     def test_parsing_directory_without_episodes(self):
 
-        self.tui.dir_entry.set_edit_text(os.path.join("temp_testing", "ShowWithoutSeasons") + os.path.sep + os.path.sep)
+        self.tui.dir_entry.set_edit_text(
+            os.path.join("temp_testing", "ShowWithoutSeasons") +
+            os.path.sep + os.path.sep)
         self.tui.search(None)
 
         while self.tui.parsing:
@@ -118,9 +126,13 @@ class UnitTests(unittest.TestCase):
 
     def test_removing_selection(self):
 
-        self.tui.confirmation = [RenamerConfirmation(TVEpisode("test", 1, 1, "Test", PlexTvdbScheme)),
-                                 RenamerConfirmation(TVEpisode("test2", 2, 1, "Test", PlexTvdbScheme)),
-                                 RenamerConfirmation(TVEpisode("test", 3, 1, "Test", PlexTvdbScheme))]
+        self.tui.confirmation = [
+            RenamerConfirmation(TVEpisode(
+                "test", 1, 1, "Test", PlexTvdbScheme)),
+            RenamerConfirmation(TVEpisode(
+                "test2", 2, 1, "Test", PlexTvdbScheme)),
+            RenamerConfirmation(TVEpisode(
+                "test", 3, 1, "Test", PlexTvdbScheme))]
         self.tui.refresh()
         self.assertEqual(len(self.tui.confirmation), 3)
 
@@ -142,8 +154,9 @@ class UnitTests(unittest.TestCase):
         while self.tui.renaming:
             pass
 
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
-                                                    "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 1",
+            "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
         self.assertEqual(self.tui.confirmation, None)
         self.assertEqual(self.tui.renamer, None)
 
@@ -152,13 +165,15 @@ class UnitTests(unittest.TestCase):
         self.tui.renaming = True
         self.tui.confirm(None)
 
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
-                                                     "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 1",
+            "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
 
         self.tui.renaming = False
         self.tui.renamer = None
         self.tui.confirmation = None
 
         self.tui.confirm(None)
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
-                                                     "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 1",
+            "Game of Thrones - S01E01 - Winter Is Coming.mkv")))

@@ -19,7 +19,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 # imports
 import unittest
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
 
 
 class GenericProcedureUnitTests(unittest.TestCase):

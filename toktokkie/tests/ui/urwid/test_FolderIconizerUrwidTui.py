@@ -25,8 +25,10 @@ import shutil
 import unittest
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 from toktokkie.ui.urwid.FolderIconizerUrwidTui import FolderIconizerUrwidTui
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
 
 
 class LoopDummy(object):
@@ -40,7 +42,10 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         self.tui = FolderIconizerUrwidTui()
         self.tui.loop = LoopDummy()
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(
+            os.path.join("toktokkie", "tests", "resources", "directories"),
+            "temp_testing"
+        )
 
     def tearDown(self):
         Iconizer().reverse_iconization("temp_testing")
@@ -50,7 +55,9 @@ class UnitTests(unittest.TestCase):
     def test_non_recursive_iconizing(self):
         self.tui.recursive_check.set_state(False)
 
-        self.tui.directory_edit.set_edit_text(os.path.join("temp_testing", "Game of Thrones"))
+        self.tui.directory_edit.set_edit_text(os.path.join(
+            "temp_testing", "Game of Thrones")
+        )
         self.tui.iconize(None)
 
         icon_ext = ".ico" if sys.platform == "win32" else ".png"
@@ -59,18 +66,21 @@ class UnitTests(unittest.TestCase):
         if procedure != GenericProcedure:
 
             self.assertEqual(
-                os.path.abspath(
-                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones"))),
-                os.path.abspath(
-                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext)))
+                os.path.abspath(procedure.get_icon_file(os.path.join(
+                    "temp_testing", "Game of Thrones"))),
+                os.path.abspath(os.path.join(
+                    "temp_testing", "Game of Thrones",
+                    ".meta", "icons", "main" + icon_ext)))
 
             self.assertEqual(
-                os.path.abspath(
-                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1"))),
-                os.path.abspath(
-                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext)))
+                os.path.abspath(procedure.get_icon_file(os.path.join(
+                    "temp_testing", "Game of Thrones", "Season 1"))),
+                os.path.abspath(os.path.join(
+                    "temp_testing", "Game of Thrones", ".meta", "icons",
+                    "Season 1" + icon_ext)))
 
-            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory")), None)
+            self.assertEqual(procedure.get_icon_file(os.path.join(
+                "temp_testing", "The Big Bang Theory")), None)
 
     def test_recursive_iconizing(self):
         self.tui.recursive_check.set_state(True)
@@ -84,29 +94,34 @@ class UnitTests(unittest.TestCase):
         if procedure != GenericProcedure:
 
             self.assertEqual(
-                os.path.abspath(
-                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones"))),
-                os.path.abspath(
-                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "main" + icon_ext)))
+                os.path.abspath(procedure.get_icon_file(os.path.join(
+                    "temp_testing", "Game of Thrones"))),
+                os.path.abspath(os.path.join(
+                    "temp_testing", "Game of Thrones", ".meta",
+                    "icons", "main" + icon_ext)))
 
             self.assertEqual(
-                os.path.abspath(
-                    procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones", "Season 1"))),
-                os.path.abspath(
-                    os.path.join("temp_testing", "Game of Thrones", ".meta", "icons", "Season 1" + icon_ext)))
+                os.path.abspath(procedure.get_icon_file(os.path.join(
+                    "temp_testing", "Game of Thrones", "Season 1"))),
+                os.path.abspath(os.path.join(
+                    "temp_testing", "Game of Thrones", ".meta",
+                    "icons", "Season 1" + icon_ext)))
 
             self.assertEqual(
-                os.path.abspath(
-                    procedure.get_icon_file(os.path.join("temp_testing", "The Big Bang Theory"))),
-                os.path.abspath(
-                    os.path.join("temp_testing", "The Big Bang Theory", ".meta", "icons", "main" + icon_ext)))
+                os.path.abspath(procedure.get_icon_file(os.path.join(
+                    "temp_testing", "The Big Bang Theory"))),
+                os.path.abspath(os.path.join(
+                    "temp_testing", "The Big Bang Theory", ".meta",
+                    "icons", "main" + icon_ext)))
 
     def test_spinner(self):
         self.tui.iconizing = True
         self.tui.start_spinner()
         time.sleep(0.5)
 
-        self.assertTrue(self.tui.iconize_button.get_label().startswith("Iconizing"))
+        self.assertTrue(
+            self.tui.iconize_button.get_label().startswith("Iconizing")
+        )
         self.tui.iconizing = False
         time.sleep(0.5)
 

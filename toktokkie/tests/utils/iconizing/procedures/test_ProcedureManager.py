@@ -19,8 +19,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 # imports
 import unittest
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
 
 
 class ProcedureManagerUnitTests(unittest.TestCase):
@@ -33,19 +35,29 @@ class ProcedureManagerUnitTests(unittest.TestCase):
 
     def test_procedure_name_passing(self):
         all_procedures = ProcedureManager.get_all_procedures()
-        procedure_names = ProcedureManager.get_procedure_names(supports_current_platform=False)
+        procedure_names = ProcedureManager.get_procedure_names(
+            supports_current_platform=False
+        )
 
         for procedure in all_procedures:
             self.assertTrue(procedure.get_procedure_name() in procedure_names)
-            self.assertEqual(procedure,
-                             ProcedureManager.get_procedure_from_procedure_name(procedure.get_procedure_name()))
+            self.assertEqual(
+                procedure,
+                ProcedureManager.get_procedure_from_procedure_name(
+                    procedure.get_procedure_name()
+                )
+            )
 
     def test_supported_procedure_name_passing(self):
         applicable_procedure = ProcedureManager.get_applicable_procedure()
-        applicable_names = ProcedureManager.get_procedure_names(supports_current_platform=True)
+        applicable_names = ProcedureManager.get_procedure_names(
+            supports_current_platform=True
+        )
 
         if applicable_procedure != GenericProcedure:
-            self.assertTrue(applicable_procedure.get_procedure_name() in applicable_names)
+            self.assertTrue(
+                applicable_procedure.get_procedure_name() in applicable_names
+            )
         else:
             self.assertEqual(applicable_names, [])
 
@@ -58,5 +70,7 @@ class ProcedureManagerUnitTests(unittest.TestCase):
 
         backup = ProcedureManager.implemented_procedures
         ProcedureManager.implemented_procedures = [DummyProcedure]
-        self.assertEqual(GenericProcedure, ProcedureManager.get_applicable_procedure())
+        self.assertEqual(
+            GenericProcedure, ProcedureManager.get_applicable_procedure()
+        )
         ProcedureManager.implemented_procedures = backup

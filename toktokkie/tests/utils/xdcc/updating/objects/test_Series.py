@@ -28,8 +28,10 @@ from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 class UnitTests(unittest.TestCase):
 
     def setUp(self):
-        self.test_series = Series("Updater Test Series", "test.txt", "1080p", "xdcc_servbot", 1, ["namibsun"],
-                                  "Plex (TVDB)", "namibsun")
+        self.test_series = Series(
+            "Updater Test Series", "test.txt", "1080p", "xdcc_servbot", 1,
+            ["namibsun"], "Plex (TVDB)", "namibsun"
+        )
 
     def tearDown(self):
         if os.path.isdir("Updater Test Series"):
@@ -62,19 +64,34 @@ class UnitTests(unittest.TestCase):
 
         season_directory = os.path.join("Updater Test Series", "Season 1")
 
-        self.assertTrue(MetaDataManager.is_media_directory("Updater Test Series"))
+        self.assertTrue(
+            MetaDataManager.is_media_directory("Updater Test Series"))
         self.assertTrue(os.path.isdir(season_directory))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E01 - Episode 1.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E02 - Episode 2.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E03 - Episode 3.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory,
+            "Updater Test Series - S01E01 - Episode 1.txt"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory,
+            "Updater Test Series - S01E02 - Episode 2.txt"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory,
+            "Updater Test Series - S01E03 - Episode 3.txt"
+        )))
 
         self.test_series.update(verbose=True)
 
-        self.assertTrue(MetaDataManager.is_media_directory("Updater Test Series"))
+        self.assertTrue(MetaDataManager.is_media_directory(
+            "Updater Test Series"
+        ))
         self.assertTrue(os.path.isdir(season_directory))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E01 - Episode 1.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E02 - Episode 2.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E03 - Episode 3.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory, "Updater Test Series - S01E01 - Episode 1.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory, "Updater Test Series - S01E02 - Episode 2.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory, "Updater Test Series - S01E03 - Episode 3.txt")))
 
     def test_search_for_episodes_where_bot_does_not_match(self):
         self.test_series.set_bot_preference("Not A Bot")

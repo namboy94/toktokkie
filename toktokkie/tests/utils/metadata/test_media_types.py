@@ -58,10 +58,13 @@ class MediaTypesUnitTests(unittest.TestCase):
             for json_file in os.listdir(json_dir):
                 if json_file.startswith(media_type.identifier):
                     count += 1
-                    self.prepare_json_directory(os.path.join(json_dir, json_file))
+                    self.prepare_json_directory(
+                        os.path.join(json_dir, json_file)
+                    )
                     media_type("test_media_type")
                     shutil.rmtree("test_media_type")
-            self.assertTrue(count > 0)  # Just make sure at least 1 test per media type
+            # Just make sure at least 1 test per media type
+            self.assertTrue(count > 0)
             totalcount += count
         self.assertEqual(totalcount, len(os.listdir(json_dir)))
 
@@ -77,7 +80,9 @@ class MediaTypesUnitTests(unittest.TestCase):
             for json_file in os.listdir(json_dir):
                 if json_file.startswith(media_type.identifier):
                     count += 1
-                    self.prepare_json_directory(os.path.join(json_dir, json_file))
+                    self.prepare_json_directory(
+                        os.path.join(json_dir, json_file)
+                    )
 
                     try:
                         media_type("test_media_type")
@@ -86,7 +91,7 @@ class MediaTypesUnitTests(unittest.TestCase):
                         pass
 
                     shutil.rmtree("test_media_type")
-            self.assertTrue(count > 0)  # Just make sure at least 1 test per media type
+            self.assertTrue(count > 0)  # Make sure 1+ tests per media type
             totalcount += count
         self.assertEqual(totalcount, len(os.listdir(json_dir)))
 
@@ -95,7 +100,9 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests modifying an existing Base JSON file
         :return: None
         """
-        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/base.json")
+        self.prepare_json_directory(
+            "toktokkie/tests/resources/json/media_types/valid/base.json"
+        )
         base = Base("test_media_type")
         base.name = "New"
 
@@ -113,7 +120,10 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests modifying an existing TvSeries JSON file
         :return: None
         """
-        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/tv_series_minimal.json")
+        self.prepare_json_directory(
+            "toktokkie/tests/resources/json/media_types/"
+            "valid/tv_series_minimal.json"
+        )
         tv = TvSeries("test_media_type")
         tv.audio_langs = ["ENG", "JAP"]
 
@@ -131,7 +141,10 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests modifying an existing AnimeSeries JSON file
         :return: None
         """
-        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/anime_series_minimal.json")
+        self.prepare_json_directory(
+            "toktokkie/tests/resources/json/media_types/valid/"
+            "anime_series_minimal.json"
+        )
         anime = AnimeSeries("test_media_type")
         anime.myanimelist_url = "M@L"
 
@@ -150,7 +163,9 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests modifying an existing Ebook JSON file
         :return: None
         """
-        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/ebook.json")
+        self.prepare_json_directory(
+            "toktokkie/tests/resources/json/media_types/valid/ebook.json"
+        )
         ebook = Ebook("test_media_type")
         ebook.isbn = "AAAAAA"
 
@@ -168,7 +183,10 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests modifying an existing LightNovel JSON file
         :return: None
         """
-        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/light_novel_minimal.json")
+        self.prepare_json_directory(
+            "toktokkie/tests/resources/json/media_types"
+            "/valid/light_novel_minimal.json"
+        )
 
         ln = LightNovel("test_media_type")
         ln.novelupdates_url = "N"
@@ -187,7 +205,10 @@ class MediaTypesUnitTests(unittest.TestCase):
         Tests removing an optional attribute from a JSON file
         :return: None
         """
-        self.prepare_json_directory("toktokkie/tests/resources/json/media_types/valid/tv_series_complete.json")
+        self.prepare_json_directory(
+            "toktokkie/tests/resources/json/media_types/valid/"
+            "tv_series_complete.json"
+        )
         tv = TvSeries("test_media_type")
         tv.tvdb_url = None
 

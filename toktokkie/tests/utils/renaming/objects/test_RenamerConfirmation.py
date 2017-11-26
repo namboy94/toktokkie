@@ -23,7 +23,8 @@ import shutil
 import unittest
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
-from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
+from toktokkie.utils.renaming.objects.RenamerConfirmation import \
+    RenamerConfirmation
 
 
 class RenamerConfirmationUnitTests(unittest.TestCase):
@@ -32,7 +33,10 @@ class RenamerConfirmationUnitTests(unittest.TestCase):
         os.makedirs("temp_testing")
         with open(os.path.join("temp_testing", "episode_file"), 'w'):
             pass
-        self.episode = TVEpisode(os.path.join("temp_testing", "episode_file"), 1, 1, "Game of Thrones", PlexTvdbScheme)
+        self.episode = TVEpisode(
+            os.path.join("temp_testing", "episode_file"), 1, 1,
+            "Game of Thrones", PlexTvdbScheme
+        )
 
     def tearDown(self):
         shutil.rmtree("temp_testing")
@@ -42,7 +46,10 @@ class RenamerConfirmationUnitTests(unittest.TestCase):
         self.assertEqual(confirmer.get_episode(), self.episode)
         self.assertEqual(confirmer.get_names()[0], self.episode.get_old_name())
         self.assertEqual(confirmer.get_names()[1], self.episode.get_new_name())
-        self.assertEqual(confirmer.get_names(), ("episode_file", "Game of Thrones - S01E01 - Winter Is Coming"))
+        self.assertEqual(
+            confirmer.get_names(),
+            ("episode_file", "Game of Thrones - S01E01 - Winter Is Coming")
+        )
 
     def test_confirming(self):
         confirmer = RenamerConfirmation(self.episode)

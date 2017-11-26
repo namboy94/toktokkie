@@ -22,7 +22,8 @@ try:
     from PyQt5.QtCore import Qt
     from PyQt5.QtTest import QTest
     from PyQt5.QtWidgets import QApplication
-    from toktokkie.ui.qt.XDCCDownloadManagerQtGui import XDCCDownloadManagerQtGui
+    from toktokkie.ui.qt.XDCCDownloadManagerQtGui import \
+        XDCCDownloadManagerQtGui
 except ImportError:
     Qt = QTest = XDCCDownloadManagerQtGui = QApplication = None
 
@@ -34,7 +35,8 @@ import unittest
 from xdcc_dl.entities.XDCCPack import XDCCPack
 from xdcc_dl.entities.IrcServer import IrcServer
 from toktokkie.utils.iconizing.Iconizer import Iconizer
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager, GenericProcedure
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager, GenericProcedure
 
 
 class DummySignal(object):
@@ -61,12 +63,19 @@ class UnitTests(unittest.TestCase):
         sys.argv = [sys.argv[0], "-platform", "minimal"]
         self.form = XDCCDownloadManagerQtGui()
 
-        self.form.spinner_updater_signal = DummySignal(lambda x, y: x.setText(y))
-        self.form.download_queue_refresh_signal = DummySignal(self.form.refresh_download_queue)
-        self.form.progress_updater_signal = DummySignal(self.form.update_progress)
-        self.form.show_download_completed_signal = DummySignal(self.form.show_download_completed_message_box)
+        self.form.spinner_updater_signal = \
+            DummySignal(lambda x, y: x.setText(y))
+        self.form.download_queue_refresh_signal = \
+            DummySignal(self.form.refresh_download_queue)
+        self.form.progress_updater_signal = \
+            DummySignal(self.form.update_progress)
+        self.form.show_download_completed_signal = \
+            DummySignal(self.form.show_download_completed_message_box)
 
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(
+            os.path.join("toktokkie", "tests", "resources", "directories"),
+            "temp_testing"
+        )
 
     def tearDown(self):
         self.form.closeEvent(None)
@@ -84,7 +93,8 @@ class UnitTests(unittest.TestCase):
 
         self.assertEqual(1, self.form.search_result_list.topLevelItemCount())
         self.form.search_result_list.selectAll()
-        name = self.form.search_result_list.itemFromIndex(self.form.search_result_list.selectedIndexes()[0]).text(4)
+        name = self.form.search_result_list.itemFromIndex(
+            self.form.search_result_list.selectedIndexes()[0]).text(4)
         self.assertEqual(name, "1_test.txt")
 
     def test_search_while_searching(self):
@@ -104,14 +114,25 @@ class UnitTests(unittest.TestCase):
 
         self.assertEqual(1, self.form.search_result_list.topLevelItemCount())
         self.form.search_result_list.selectAll()
-        name = self.form.search_result_list.itemFromIndex(self.form.search_result_list.selectedIndexes()[0]).text(4)
+        name = self.form.search_result_list.itemFromIndex(
+            self.form.search_result_list.selectedIndexes()[0]).text(4)
         self.assertEqual(name, "1_test.txt")
 
     def test_setting_directory(self):
-        self.form.directory_edit.setText(os.path.join("temp_testing", "Game of Thrones"))
-        self.assertEqual(self.form.directory_edit.text(), os.path.join("temp_testing", "Game of Thrones"))
-        self.assertEqual(self.form.show_name_edit.text(), "Game of Thrones")
-        self.assertEqual(self.form.episode_spin_box.value(), 11)
+        self.form.directory_edit.setText(
+            os.path.join("temp_testing", "Game of Thrones"))
+        self.assertEqual(
+            self.form.directory_edit.text(),
+            os.path.join("temp_testing", "Game of Thrones")
+        )
+        self.assertEqual(
+            self.form.show_name_edit.text(),
+            "Game of Thrones"
+        )
+        self.assertEqual(
+            self.form.episode_spin_box.value(),
+            11
+        )
         self.assertEqual(self.form.season_spin_box.value(), 2)
 
     def test_adding_episode_to_queue(self):
@@ -121,12 +142,19 @@ class UnitTests(unittest.TestCase):
         self.form.search_result_list.selectAll()
         QTest.mouseClick(self.form.add_to_queue_button, Qt.LeftButton)
 
-        self.assertEqual(0, len(self.form.search_result_list.selectedIndexes()))
+        self.assertEqual(
+            0,
+            len(self.form.search_result_list.selectedIndexes())
+        )
         self.assertEqual(1, self.form.download_queue.count())
-        self.assertEqual(self.form.download_queue_list[0].get_filename(), "1_test.txt")
+        self.assertEqual(
+            self.form.download_queue_list[0].get_filename(),
+            "1_test.txt"
+        )
 
         self.form.download_queue.selectAll()
-        episode_name = self.form.download_queue.itemFromIndex(self.form.download_queue.selectedIndexes()[0]).text()
+        episode_name = self.form.download_queue.itemFromIndex(
+            self.form.download_queue.selectedIndexes()[0]).text()
         self.assertEqual("Game of Thrones - S02E11 - Episode 11", episode_name)
 
     def test_removing_packs_from_queue(self):
@@ -140,7 +168,8 @@ class UnitTests(unittest.TestCase):
         QTest.mouseClick(self.form.auto_rename_check, Qt.LeftButton)
 
         self.form.download_queue.selectAll()
-        episode_name = self.form.download_queue.itemFromIndex(self.form.download_queue.selectedIndexes()[0]).text()
+        episode_name = self.form.download_queue.itemFromIndex(
+            self.form.download_queue.selectedIndexes()[0]).text()
         self.assertEqual("1_test.txt", episode_name)
 
     def test_download_with_iconizing_and_auto_renaming(self):
@@ -151,11 +180,15 @@ class UnitTests(unittest.TestCase):
         while self.form.downloading:
             pass
 
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                    "Game of Thrones - S02E11 - Episode 11.txt")))
+        self.assertTrue(os.path.isfile(
+            os.path.join("temp_testing", "Game of Thrones", "Season 2",
+                         "Game of Thrones - S02E11 - Episode 11.txt")
+        ))
         procedure = ProcedureManager.get_applicable_procedure()
         if procedure != GenericProcedure:
-            self.assertNotEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")), None)
+            self.assertNotEqual(procedure.get_icon_file(os.path.join(
+                "temp_testing", "Game of Thrones"
+            )), None)
 
     def test_download_without_iconizing_and_auto_renaming(self):
         self.test_adding_episode_to_queue()
@@ -172,10 +205,12 @@ class UnitTests(unittest.TestCase):
         while self.form.downloading:
             pass
 
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2", "1_test.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2", "1_test.txt")))
         procedure = ProcedureManager.get_applicable_procedure()
         if procedure != GenericProcedure:
-            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")), None)
+            self.assertEqual(procedure.get_icon_file(os.path.join(
+                "temp_testing", "Game of Thrones")), None)
 
     def test_download_while_downloading(self):
         self.test_adding_episode_to_queue()
@@ -184,16 +219,21 @@ class UnitTests(unittest.TestCase):
         self.form.downloading = True
         QTest.mouseClick(self.form.download_button, Qt.LeftButton)
 
-        self.assertFalse(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 2",
-                                                     "Game of Thrones - S02E11 - Episode 11.txt")))
+        self.assertFalse(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 2",
+            "Game of Thrones - S02E11 - Episode 11.txt"
+        )))
         procedure = ProcedureManager.get_applicable_procedure()
         if procedure != GenericProcedure:
-            self.assertEqual(procedure.get_icon_file(os.path.join("temp_testing", "Game of Thrones")), None)
+            self.assertEqual(procedure.get_icon_file(os.path.join(
+                "temp_testing", "Game of Thrones")), None)
 
     def test_moving_queue_items(self):
-        self.form.download_queue_list = [XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 1),
-                                         XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 2),
-                                         XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 3)]
+        self.form.download_queue_list = [
+            XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 1),
+            XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 2),
+            XDCCPack(IrcServer("irc.namibsun.net"), "xdcc_servbot", 3)
+        ]
 
         self.form.refresh_download_queue()
         self.assertEqual(self.form.download_queue.count(), 3)

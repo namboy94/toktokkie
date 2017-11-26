@@ -31,11 +31,21 @@ class GenericSchemeUnitTests(unittest.TestCase):
         pass
 
     def test_get_tvdb_episode_name(self):
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 1), "Winter Is Coming")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 11), "Episode 11")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Show does not exist", 1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", -1, 1), "Episode 1")
-        self.assertEqual(GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, -1), "Episode -1")
+        self.assertEqual(
+            GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 1),
+            "Winter Is Coming")
+        self.assertEqual(
+            GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, 11),
+            "Episode 11")
+        self.assertEqual(
+            GenericScheme.get_tvdb_episode_name("Show does not exist", 1, 1),
+            "Episode 1")
+        self.assertEqual(
+            GenericScheme.get_tvdb_episode_name("Game of Thrones", -1, 1),
+            "Episode 1")
+        self.assertEqual(
+            GenericScheme.get_tvdb_episode_name("Game of Thrones", 1, -1),
+            "Episode -1")
 
     def abstract_method(self):
         try:
