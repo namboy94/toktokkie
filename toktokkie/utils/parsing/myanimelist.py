@@ -23,15 +23,18 @@ from bs4 import BeautifulSoup
 from typing import Dict, List, Tuple
 
 
-def parse_myanimelist_url(url: str, params: Dict[str, Tuple[str, type, object]]) \
+def parse_myanimelist_url(url: str,
+                          params: Dict[str, Tuple[str, type, object]]) \
         -> Dict[str, str or int or List[str]]:
     """
-    Fetches information from myanimelist.net for a myanimelist URL and a set of attributes
+    Fetches information from myanimelist.net for a myanimelist URL
+    and a set of attributes
     :param url: The myanimelist URL to parse
-    :param params: A set of parameters to find in the myanimelist.net data. Consists of tuple with the
-                   values: identifier, type, default value
-    :return: A dictionary with information from myanimelist.net with chosen default values in
-             case any values were not found
+    :param params: A set of parameters to find in the myanimelist.net data.
+                   Consists of tuple with the values:
+                   identifier, type, default value
+    :return: A dictionary with information from myanimelist.net
+             with chosen default values in case any values were not found
     """
     data = {}
     for key, item in params.items():
@@ -44,7 +47,9 @@ def parse_myanimelist_url(url: str, params: Dict[str, Tuple[str, type, object]])
         retries += 1
         html = requests.get(url)
 
-    soup = BeautifulSoup("" if html.status_code != 200 else html.text, "html.parser")
+    soup = BeautifulSoup(
+        "" if html.status_code != 200 else html.text, "html.parser"
+    )
     sidebar = soup.find_all("div", "js-scrollfix-bottom")
 
     if len(sidebar) == 0:

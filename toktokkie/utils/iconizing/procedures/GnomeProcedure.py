@@ -21,19 +21,21 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 from subprocess import Popen, check_output, CalledProcessError
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
 
 
 class GnomeProcedure(GenericProcedure):
     """
-    Iconizing Procedure used on Linux system using Gnome and Gnome-derivative desktop environments
+    Iconizing Procedure used on Linux system using Gnome and Gnome-derivative
+    desktop environments
     """
 
     @staticmethod
     def is_applicable() -> bool:
         """
-        The Gnome procedure is applicable if the system is running Linux as well as a Gnome environment,
-        like the Gnome DE or Cinnamon
+        The Gnome procedure is applicable if the system is running Linux
+        as well as a Gnome environment, like the Gnome DE or Cinnamon
 
         :return: True, if the procedures is applicable, False otherwise
         """
@@ -48,17 +50,20 @@ class GnomeProcedure(GenericProcedure):
         if gvfs_installed:  # pragma: no cover
 
             try:
-                gvfs_out = check_output(["gio", "set", "-t", "string", ".", "metadata::custom-icon", "a"])\
-                    .decode()
+                gvfs_out = check_output([
+                    "gio", "set", "-t", "string", ".",
+                    "metadata::custom-icon", "a"]).decode()
             except CalledProcessError:
                 gvfs_out = "Not Supported"
 
             if gvfs_out.rstrip().lstrip() == "":
-                Popen(["gio", "set", "-t", "unset", ".", "metadata::custom-icon"]).wait()
+                Popen(["gio", "set", "-t", "unset", ".",
+                       "metadata::custom-icon"]).wait()
                 gvfs_check = True
 
             try:
-                return sys.platform.startswith("linux") and gvfs_installed and gvfs_check
+                return sys.platform.startswith("linux") \
+                       and gvfs_installed and gvfs_check
             except KeyError:  # pragma: no cover
                 return False
 
@@ -77,26 +82,32 @@ class GnomeProcedure(GenericProcedure):
             icon_file += ".png"
 
         if GnomeProcedure.is_applicable():  # pragma: no cover
-            Popen(["gio", "set", "-t", "string", directory, "metadata::custom-icon", "file://" + icon_file])\
+            Popen(["gio", "set", "-t", "string", directory,
+                   "metadata::custom-icon", "file://" + icon_file])\
                 .wait()
 
     @staticmethod
     def reset_iconization_state(directory: str) -> None:
         """
-        Resets the iconization state of the given directory using the unset option of gvfs-set-attribute
+        Resets the iconization state of the given directory using the unset
+        option of gvfs-set-attribute
         :param directory: the directory to de-iconize
         :return:          None
         """
         if GnomeProcedure.is_applicable():  # pragma: no cover
-            Popen(["gio", "set", "-t", "unset", directory, "metadata::custom-icon"]).wait()
+            Popen([
+                "gio", "set", "-t", "unset",
+                directory, "metadata::custom-icon"]).wait()
 
     @staticmethod
     def get_icon_file(directory: str) -> str or None:
         """
-        Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
+        Returns the path to the given directory's icon file, if it is iconized.
+         If not, None is returned
 
         :param directory: The directory to check
-        :return:          Either the path to the icon file or None if no icon file exists
+        :return:          Either the path to the icon file or None
+                          if no icon file exists
         """
         if not GnomeProcedure.is_applicable():  # pragma: no cover
             return None
@@ -106,7 +117,8 @@ class GnomeProcedure(GenericProcedure):
             gvfs_info = check_output(["gio", "info", directory]).decode()
 
             if "metadata::custom-icon: file://" in gvfs_info:
-                return gvfs_info.split("metadata::custom-icon: file://")[1].split("\n")[0]
+                return gvfs_info.split(
+                    "metadata::custom-icon: file://")[1].split("\n")[0]
             else:
                 return None
 

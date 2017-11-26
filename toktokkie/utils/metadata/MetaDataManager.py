@@ -42,18 +42,21 @@ class MetaDataManager(object):
         media_type_map[m.identifier] = m
 
     @staticmethod
-    def find_recursive_media_directories(directory: str, media_type: str = "") -> List[str]:
+    def find_recursive_media_directories(directory: str, media_type: str = "")\
+            -> List[str]:
         """
-        Finds all directories that include a .meta directory and info.json file below a given
-        directory. If a media_type is specified, only those directories containing a .meta/type file
-        with the media_type as content are considered
+        Finds all directories that include a .meta directory and
+        info.json file below a given directory.
+        If a media_type is specified, only those directories containing a
+        .meta/type file with the media_type as content are considered
 
-        In case the given directory does not exist or the current user has no read access,
-        an empty list is returned
+        In case the given directory does not exist or the current user
+        has no read access, an empty list is returned
 
         :param directory:  The directory to check
         :param media_type: The media type to check for
-        :return:           A list of directories that are identified as TV Series
+        :return:           A list of directories that are
+                           identified as TV Series
         """
         directories = []
 
@@ -64,7 +67,8 @@ class MetaDataManager(object):
         try:
             children = os.listdir(directory)
         except (OSError, IOError):  # == PermissionError
-            # If we don't have read permissions for this directory, skip this directory
+            # If we don't have read permissions for this directory,
+            # skip this directory
             return []
 
         if MetaDataManager.is_media_directory(directory, media_type):
@@ -74,7 +78,10 @@ class MetaDataManager(object):
             for child in children:
                 child_path = os.path.join(directory, child)
                 if os.path.isdir(child_path):
-                    directories += MetaDataManager.find_recursive_media_directories(child_path, media_type)
+                    directories += \
+                        MetaDataManager.find_recursive_media_directories(
+                            child_path, media_type
+                        )
 
         return directories
 
@@ -82,30 +89,40 @@ class MetaDataManager(object):
     def is_media_directory(directory: str, media_type: str = "") -> bool:
         """
         Checks if a given directory is a Media directory.
-        A directory is a Media directory when it contains a .meta directory. It will also contain
-        a info.json file which specifies the type of the media as well as other metadata
+        A directory is a Media directory when it contains a .meta directory.
+        It will also contain a info.json file which specifies the type of the
+        media as well as other metadata
 
         :param directory:  The directory to check
         :param media_type: The type of media to check for, optional
-        :return:           True if the directory is a Media directory, False otherwise
+        :return:           True if the directory is a Media directory,
+                           False otherwise
         """
         # noinspection PyUnboundLocalVariable
         try:
-            if not os.path.isfile(os.path.join(directory, ".meta", "info.json")):
+            if not os.path.isfile(os.path.join(
+                    directory, ".meta", "info.json"
+            )):
                 return False
-            return True if not media_type else MetaDataManager.is_media_subtype(directory, media_type)
+            return True \
+                if not media_type \
+                else MetaDataManager.is_media_subtype(directory, media_type)
 
-        except (OSError, IOError, KeyError):  # Permission Errors or Missing type in info.json (if type specified)
+        # Permission Errors or Missing type in info.json (if type specified)
+        except (OSError, IOError, KeyError):
             return False
 
     @staticmethod
-    def generate_media_directory(directory: str, media_type: str = "base") -> None:
+    def generate_media_directory(directory: str, media_type: str = "base") \
+            -> None:
         """
         Makes sure a directory is a media directory of the given type
 
         :param directory:  The directory
-        :param media_type: The media type, if not supplied will default to 'base'
-        :raises:           IOError (FileExistsError), if the file exists and is not a directory
+        :param media_type: The media type, if not supplied will default
+                           to 'base'
+        :raises:           IOError (FileExistsError), if the file exists
+                           and is not a directory
         :return:           None
         """
         if not os.path.isdir(directory):
@@ -154,7 +171,8 @@ class MetaDataManager(object):
         """
         try:
             dir_media_type = MetaDataManager.get_media_type(directory)
-            dir_media_type_class = MetaDataManager.media_type_map[dir_media_type]
+            dir_media_type_class = \
+                MetaDataManager.media_type_map[dir_media_type]
             check_media_type_class = MetaDataManager.media_type_map[media_type]
             if issubclass(dir_media_type_class, check_media_type_class):
                 dir_media_type_class(directory)  # Check if valid JSON
@@ -169,9 +187,10 @@ class MetaDataManager(object):
     def autoresolve_directory(directory: str) -> Base or None:
         """
         Automatically resolves the type of a directory
-        
+
         :param directory: The directory for which to resolve the metadata type
-        :return: The Metadata Object OR None if the directory is not a valid metadata directory
+        :return: The Metadata Object OR None if the directory is not a valid
+                 metadata directory
         """
         the_type = MetaDataManager.get_media_type(directory)
         if the_type in MetaDataManager.media_type_map:

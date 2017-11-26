@@ -29,7 +29,8 @@ class RenamerConfirmation(object):
 
     def __init__(self, episode: TVEpisode) -> None:
         """
-        Initializes A new RenamerConfirmation episode based on a provided Episode object
+        Initializes A new RenamerConfirmation episode based
+        on a provided Episode object
 
         :param episode: the episode to act as base for this object
         """

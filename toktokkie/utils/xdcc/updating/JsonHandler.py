@@ -21,7 +21,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import json
 from typing import List
-from toktokkie.utils.xdcc.updating.objects.Series import Series, from_dict as series_generator
+from toktokkie.utils.xdcc.updating.objects.Series import Series, \
+    from_dict as series_generator
 
 
 class JsonHandler(object):
@@ -31,7 +32,8 @@ class JsonHandler(object):
 
     def __init__(self, json_file: str = None) -> None:
         """
-        Creates a new JsonHandler, either from scratch or from an existing JSON file
+        Creates a new JsonHandler, either from scratch or
+        from an existing JSON file
 
         :raises:          ValueError if the loaded JSON file was invalid.json
         :param json_file: An optional JSON file location.
@@ -47,7 +49,8 @@ class JsonHandler(object):
 
     def check_validity(self) -> None:
         """
-        Checks the JSON data for validity. If the file is not valid, an exception is raised
+        Checks the JSON data for validity. If the file is not valid,
+        an exception is raised
 
         :raises: ValueError if the loaded JSON file was invalid.json
         :return: None
@@ -72,7 +75,8 @@ class JsonHandler(object):
         """
         Stores the current JSON data in a JSON file
 
-        :param destination: The destination JSON file. If left blank, the loaded file will be used
+        :param destination: The destination JSON file. If left blank,
+        the loaded file will be used
         :return:            None
         """
         if not destination:
@@ -83,7 +87,13 @@ class JsonHandler(object):
         open_mode = "w" if sys.version_info[0] >= 3 else 'wb'
 
         with open(destination, open_mode) as f:
-            json.dump(self.json_data, f, sort_keys=True, indent=2, separators=(',', ': '))
+            json.dump(
+                self.json_data,
+                f,
+                sort_keys=True,
+                indent=2,
+                separators=(',', ': ')
+            )
 
     def add_series(self, series: Series) -> None:
         """

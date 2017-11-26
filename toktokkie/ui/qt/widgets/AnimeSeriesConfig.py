@@ -38,8 +38,12 @@ class AnimeSeriesConfig(GenericConfig, Ui_AnimeSeriesConfig):
         self.setupUi(self)
         self.metadata = None
         self.initialize()
-        self.tvdb_url_button.clicked.connect(lambda x: webbrowser.open(self.metadata.tvdb_url, new=2))
-        self.myanimelist_url_button.clicked.connect(lambda x: webbrowser.open(self.metadata.myanimelist_url, new=2))
+        self.tvdb_url_button.clicked.connect(
+            lambda x: webbrowser.open(self.metadata.tvdb_url, new=2)
+        )
+        self.myanimelist_url_button.clicked.connect(
+            lambda x: webbrowser.open(self.metadata.myanimelist_url, new=2)
+        )
 
     def load_online_data(self):
         """
@@ -59,16 +63,20 @@ class AnimeSeriesConfig(GenericConfig, Ui_AnimeSeriesConfig):
         self.mal_score_label.setText("")
         self.mal_ranking_label.setText("")
 
-        # Wait for 0.2 seconds before downloading data, stop thread if metadata has changed before doing so
+        # Wait for 0.2 seconds before downloading data,
+        # stop thread if metadata has changed before doing so
         time.sleep(0.2)
         if metadata_name != self.metadata.name:
             return
 
         mal_data = self.metadata.load_myanimelist_data()
 
-        if metadata_name == self.metadata.name:  # Make sure that the same metadata object is still being displayed
+        # Make sure that the same metadata object is still being displayed
+        if metadata_name == self.metadata.name:
             self.mal_type_label.setText(mal_data["type"])
-            self.mal_episodes_label.setText(str(mal_data["episodes"]) if mal_data["episodes"] != -1 else "?")
+            self.mal_episodes_label.setText(str(mal_data["episodes"])
+                                            if mal_data["episodes"] != -1
+                                            else "?")
             self.mal_status_label.setText(mal_data["status"])
             self.mal_aired_label.setText(mal_data["aired"])
             self.mal_studios_label.setText(", ".join(mal_data["studios"]))

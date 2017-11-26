@@ -82,18 +82,21 @@ class FolderIconizerQtGui(QMainWindow, Ui_FolderIconizerWindow):
         msg.setText("The iconization has completed")
         msg.setStandardButtons(QMessageBox.Ok)
 
-        if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+        # pragma: no cover
+        if not sys.argv == [sys.argv[0], "-platform", "minimal"]:
             msg.exec_()
 
     def start_spinner(self) -> None:
         """
-        Starts a little animation on the Start Button to indicate that the iconizer is running
+        Starts a little animation on the Start Button to indicate
+        that the iconizer is running
 
         :return: None
         """
         def spinner():
             while self.iconizing:
-                new_text = "Iconizing" + (self.start_button.text().count(".") % 3 + 1) * "."
+                new_text = "Iconizing" + \
+                           (self.start_button.text().count(".") % 3 + 1) * "."
                 self.spinner_update_signal.emit(new_text)
                 time.sleep(0.3)
 

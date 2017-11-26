@@ -30,7 +30,8 @@ from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from toktokkie.utils.xdcc.XDCCDownloadManager import XDCCDownloadManager
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager
 
 
 class XDCCDownloadManagerUrwidTui(object):
@@ -70,7 +71,9 @@ class XDCCDownloadManagerUrwidTui(object):
         self.rename_check = urwid.CheckBox("Auto-rename", state=True)
 
         self.iconizing_procedures = []
-        for procedure in ProcedureManager.get_procedure_names():  # pragma: no cover
+
+        # pragma: no cover
+        for procedure in ProcedureManager.get_procedure_names():
             urwid.RadioButton(self.iconizing_procedures, procedure)
         self.iconize_check = urwid.CheckBox("Iconize", state=True)
 
@@ -110,24 +113,36 @@ class XDCCDownloadManagerUrwidTui(object):
         """
         div = urwid.Divider()
 
-        self.upper_body = [self.title, div, self.target_directory_edit, self.series_name_edit, self.season_number_edit]
-        self.upper_body += [self.episode_number_edit, div] + self.renaming_schemes + [self.rename_check, div]
-        self.upper_body += self.iconizing_procedures + [self.iconize_check, div, self.search_term_edit]
+        self.upper_body = [
+            self.title, div, self.target_directory_edit, self.series_name_edit,
+            self.season_number_edit
+        ]
+        self.upper_body += [self.episode_number_edit, div] + \
+            self.renaming_schemes + [self.rename_check, div]
+        self.upper_body += self.iconizing_procedures + \
+            [self.iconize_check, div, self.search_term_edit]
         self.upper_body += self.search_engines + [self.search_button, div]
 
-        self.middle_body = [self.add_search_results_button, div, self.download_queue_label]
+        self.middle_body = [
+            self.add_search_results_button, div, self.download_queue_label
+        ]
 
-        self.lower_body = [self.remove_queue_items_button, div, self.download_button, div, self.single_progress_bar,
-                           self.total_progress_bar, self.current_speed, self.average_speed]
+        self.lower_body = [
+            self.remove_queue_items_button, div, self.download_button, div,
+            self.single_progress_bar, self.total_progress_bar,
+            self.current_speed, self.average_speed
+        ]
 
         body = self.upper_body + self.middle_body + self.lower_body
 
         self.list_walker = urwid.SimpleFocusListWalker(body)
-        self.top = urwid.Overlay(urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
-                                 urwid.SolidFill(u'\N{MEDIUM SHADE}'),
-                                 align='center', width=('relative', 80),
-                                 valign='middle', height=('relative', 70),
-                                 min_width=20, min_height=10)
+        self.top = urwid.Overlay(
+            urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
+            urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+            align='center', width=('relative', 80),
+            valign='middle', height=('relative', 70),
+            min_width=20, min_height=10
+        )
 
     def update_layout(self) -> None:
         """
@@ -141,15 +156,20 @@ class XDCCDownloadManagerUrwidTui(object):
 
         self.search_result_checks = []
         for result in self.search_results:
-            self.search_result_checks.append(urwid.CheckBox(result.get_filename()))
+            self.search_result_checks.append(
+                urwid.CheckBox(result.get_filename())
+            )
 
         self.download_queue_checks = []
         for item in self.download_queue:
-            self.download_queue_checks.append(urwid.CheckBox(item.get_request_message(full=True)))
+            self.download_queue_checks.append(urwid.CheckBox(
+                item.get_request_message(full=True))
+            )
 
         self.upper_middle_body = self.search_result_checks
         self.lower_middle_body = self.download_queue_checks
-        body = self.upper_body + self.upper_middle_body + self.middle_body + self.lower_middle_body + self.lower_body
+        body = self.upper_body + self.upper_middle_body + self.middle_body + \
+            self.lower_middle_body + self.lower_body
 
         self.list_walker[:] = body
         self.loop.draw_screen()
@@ -160,11 +180,18 @@ class XDCCDownloadManagerUrwidTui(object):
 
         :return: None
         """
-        urwid.connect_signal(self.target_directory_edit, 'change', self.parse_directory)
-        urwid.connect_signal(self.search_button, 'click', self.start_search)
-        urwid.connect_signal(self.download_button, 'click', self.start_download)
-        urwid.connect_signal(self.add_search_results_button, 'click', self.add_search_result_to_queue)
-        urwid.connect_signal(self.remove_queue_items_button, 'click', self.remove_items_from_queue)
+        urwid.connect_signal(
+            self.target_directory_edit, 'change', self.parse_directory)
+        urwid.connect_signal(
+            self.search_button, 'click', self.start_search)
+        urwid.connect_signal(
+            self.download_button, 'click', self.start_download)
+        urwid.connect_signal(
+            self.add_search_results_button, 'click',
+            self.add_search_result_to_queue)
+        urwid.connect_signal(
+            self.remove_queue_items_button, 'click',
+            self.remove_items_from_queue)
 
     def start(self) -> None:  # pragma: no cover
         """
@@ -172,21 +199,24 @@ class XDCCDownloadManagerUrwidTui(object):
 
         :return: None
         """
-        self.loop = urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')])
+        self.loop = urwid.MainLoop(
+            self.top, palette=[('reversed', 'standout', '')]
+        )
         self.loop.run()
 
     # noinspection PyUnusedLocal
     def parse_directory(self, widget: urwid.Edit, directory: str) -> None:
         """
-        Parses the currently entered directory, and fills in the information it can gather from that into the
-        relevant UI elements
+        Parses the currently entered directory, and fills in the information
+        it can gather from that into the relevant UI elements
 
         :param widget:    The widget that did the method call
         :param directory: The new content of the widget's edit text
         :return:          None
         """
         series_name = os.path.basename(directory)
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(directory)
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(directory)
         episode += 1
 
         self.series_name_edit.set_edit_text(series_name)
@@ -228,7 +258,8 @@ class XDCCDownloadManagerUrwidTui(object):
     # noinspection PyUnusedLocal
     def start_search(self, widget: urwid.Button) -> None:
         """
-        Starts searching for the XDCC pack specified via the search term and search engines to use
+        Starts searching for the XDCC pack specified via the search term
+        and search engines to use
 
         :param widget: The widget that called this method
         :return:       None
@@ -242,12 +273,17 @@ class XDCCDownloadManagerUrwidTui(object):
         def search():
 
             search_term = self.search_term_edit.get_edit_text()
-            search_engine = list(filter(lambda x: x.get_state(), self.search_engines))[0].get_label()
+            search_engine = list(filter(
+                lambda x: x.get_state(), self.search_engines)
+            )[0].get_label()
 
             if search_engine == "All":
-                self.search_results = PackSearcher(PackSearcher.get_available_pack_searchers()).search(search_term)
+                self.search_results = \
+                    PackSearcher(PackSearcher.get_available_pack_searchers())\
+                    .search(search_term)
             else:
-                self.search_results = PackSearcher([search_engine]).search(search_term)
+                self.search_results = \
+                    PackSearcher([search_engine]).search(search_term)
 
             self.update_layout()
             self.searching = False
@@ -275,36 +311,54 @@ class XDCCDownloadManagerUrwidTui(object):
         self.start_spinner("download")
 
         destination_directory, season_directory = \
-            XDCCDownloadManager.prepare_directory(self.target_directory_edit.get_edit_text(),
-                                                  self.series_name_edit.get_edit_text(),
-                                                  season)
+            XDCCDownloadManager.prepare_directory(
+                self.target_directory_edit.get_edit_text(),
+                self.series_name_edit.get_edit_text(),
+                season
+            )
 
         for i, pack in enumerate(self.download_queue):
             pack.set_directory(season_directory)
 
             if self.rename_check.get_state():
-                name = "xdcc_dl_" + str(i).zfill(int(len(self.download_queue) / 10) + 1)
+                name = "xdcc_dl_" + \
+                       str(i).zfill(int(len(self.download_queue) / 10) + 1)
                 pack.set_filename(name, override=True)
 
         # noinspection PyShadowingNames
-        progress = Progress(len(self.download_queue),
-                            callback=lambda a, b, single_progress, d, e, total_progress, current_speed, average_speed:
-                            self.progress_update(single_progress, total_progress, current_speed, average_speed))
+        progress = Progress(
+            len(self.download_queue),
+            callback=lambda a, b, single_progress, d, e, total_progress,
+            current_speed, average_speed:
+            self.progress_update(
+                single_progress, total_progress, current_speed, average_speed)
+        )
 
         def handle_download() -> None:
 
-            results = MultipleServerDownloader("random").download(self.download_queue, progress)
+            results = MultipleServerDownloader("random").\
+                download(self.download_queue, progress)
 
             if self.rename_check.get_state():
                 scheme = SchemeManager.get_scheme_from_scheme_name(
-                    list(filter(lambda x: x.get_state(), self.renaming_schemes))[0].get_label())
+                    list(filter(
+                        lambda x: x.get_state(),
+                        self.renaming_schemes)
+                    )[0].get_label())
 
-                XDCCDownloadManager.auto_rename(scheme, episode, self.download_queue)
+                XDCCDownloadManager.auto_rename(
+                    scheme, episode, self.download_queue
+                )
 
             if self.iconize_check.get_state():
                 try:  # pragma: no cover
-                    iconization_method = list(filter(lambda x: x.get_state(), self.iconizing_procedures))[0].get_label()
-                    Iconizer(iconization_method).iconize_directory(destination_directory)
+                    iconization_method = list(filter(
+                        lambda x: x.get_state(),
+                        self.iconizing_procedures
+                    ))[0].get_label()
+                    Iconizer(iconization_method).iconize_directory(
+                        destination_directory
+                    )
                 except IndexError:  # pragma: no cover
                     pass
 
@@ -313,7 +367,10 @@ class XDCCDownloadManagerUrwidTui(object):
             self.current_speed.set_text("Current Speed:")
             self.average_speed.set_text("Average Speed:")
             self.download_queue = []
-            self.parse_directory(self.target_directory_edit, self.target_directory_edit.get_edit_text())
+            self.parse_directory(
+                self.target_directory_edit,
+                self.target_directory_edit.get_edit_text()
+            )
             self.update_layout()
             self.show_download_complete_message(results)
 
@@ -321,9 +378,11 @@ class XDCCDownloadManagerUrwidTui(object):
 
     def start_spinner(self, spinner_type: str) -> None:
         """
-        Animates the search and download buttons whenever a search or download is running
+        Animates the search and download buttons whenever
+        a search or download is running
 
-        :param spinner_type: The type of spinner to use, can be either 'download' or 'search'
+        :param spinner_type: The type of spinner to use,
+                             can be either 'download' or 'search'
         :return:             None
         """
 
@@ -332,14 +391,19 @@ class XDCCDownloadManagerUrwidTui(object):
 
         def spin_thread():
 
-            while (self.downloading and download) or (self.searching and search):
+            while (self.downloading and download) or \
+                    (self.searching and search):
 
                 if self.downloading and download:
-                    new_text = "Downloading" + (self.download_button.get_label().count(".") % 3 + 1) * "."
+                    new_text = "Downloading" + \
+                               (self.download_button.get_label().count(".") % 3
+                                + 1) * "."
                     self.download_button.set_label(new_text)
 
                 if self.searching and search:
-                    new_text = "Searching" + (self.search_button.get_label().count(".") % 3 + 1) * "."
+                    new_text = "Searching" + \
+                               (self.search_button.get_label().count(".") % 3
+                                + 1) * "."
                     self.search_button.set_label(new_text)
 
                 self.loop.draw_screen()
@@ -354,8 +418,9 @@ class XDCCDownloadManagerUrwidTui(object):
         Thread(target=spin_thread).start()
 
     # noinspection PyUnusedLocal
-    def progress_update(self, single_percentage: float, total_percentage: float,
-                        current_speed: int, average_speed: int) -> None:
+    def progress_update(self, single_percentage: float,
+                        total_percentage: float, current_speed: int,
+                        average_speed: int) -> None:
         """
         Updates the TUI's progress widgets
 
@@ -367,11 +432,14 @@ class XDCCDownloadManagerUrwidTui(object):
         """
         self.single_progress_bar.set_completion(int(single_percentage))
         self.total_progress_bar.set_completion(int(total_percentage))
-        self.current_speed.set_text("Current Speed: " + str(int(current_speed / 1000)) + " kB/s")
-        self.average_speed.set_text("Average Speed: " + str(int(average_speed / 1000)) + " kB/s")
+        self.current_speed.set_text("Current Speed: " +
+                                    str(int(current_speed / 1000)) + " kB/s")
+        self.average_speed.set_text("Average Speed: " +
+                                    str(int(average_speed / 1000)) + " kB/s")
         self.loop.draw_screen()
 
-    def show_download_complete_message(self, packs: Dict[XDCCPack, str]) -> None:
+    def show_download_complete_message(self, packs: Dict[XDCCPack, str]) \
+            -> None:
         """
         Shows a message dialog when the download is completed
 
@@ -384,7 +452,9 @@ class XDCCDownloadManagerUrwidTui(object):
 
         self.message_dialog_showing = True
 
-        message = urwid.Text("Download has completed successfully\nDownloaded Packs:")
+        message = urwid.Text(
+            "Download has completed successfully\nDownloaded Packs:"
+        )
         div = urwid.Divider()
 
         details = ""
@@ -399,7 +469,8 @@ class XDCCDownloadManagerUrwidTui(object):
 
     def quit(self) -> None:
         """
-        Cleans up any variables that may cause thread to continue executing after the TUI ends
+        Cleans up any variables that may cause thread to continue
+        executing after the TUI ends
 
         :return: None
         """

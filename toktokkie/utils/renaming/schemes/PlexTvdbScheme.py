@@ -23,7 +23,8 @@ from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
 
 class PlexTvdbScheme(GenericScheme):
     """
-    Renaming Scheme class that generates an episode name in the following format:
+    Renaming Scheme class that generates an episode name
+    in the following format:
 
         Show Name - SXXEXX - Episode Name
 
@@ -36,13 +37,21 @@ class PlexTvdbScheme(GenericScheme):
 
         :return: the generated name
         """
-        episode_name = self.get_tvdb_episode_name(self.series_name, self.season_number, self.episode_number)
-        episode_number = str(self.episode_number).zfill(2) if self.episode_number >= 0 \
+        episode_name = self.get_tvdb_episode_name(
+            self.series_name,
+            self.season_number,
+            self.episode_number
+        )
+
+        episode_number = str(self.episode_number).zfill(2) \
+            if self.episode_number >= 0 \
             else str(self.episode_number).zfill(3)
-        season_number = str(self.season_number).zfill(2) if self.season_number >= 0 \
+        season_number = str(self.season_number).zfill(2) \
+            if self.season_number >= 0 \
             else str(self.season_number).zfill(3)
 
-        return self.series_name + " - S" + season_number + "E" + episode_number + " - " + episode_name
+        return self.series_name + " - S" + season_number + \
+            "E" + episode_number + " - " + episode_name
 
     @staticmethod
     def get_scheme_name() -> str:

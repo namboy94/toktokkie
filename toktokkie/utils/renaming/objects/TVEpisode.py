@@ -24,21 +24,25 @@ from toktokkie.utils.renaming.schemes.GenericScheme import GenericScheme
 
 class TVEpisode(object):
     """
-    TV Episode Object, containing important episode info used for renaming an episode file
+    TV Episode Object, containing important episode info used
+    for renaming an episode file
     """
 
-    def __init__(self, episode_file: str, episode_number: int, season_number: int, show_name: str,
+    def __init__(self, episode_file: str, episode_number: int,
+                 season_number: int, show_name: str,
                  naming_scheme: GenericScheme) -> None:
         """
-        Constructor for the TVEpisode class, getting information about the Episode
-        via the method parameters and generating the new episode name using a provided
-        naming scheme
+        Constructor for the TVEpisode class,
+        getting information about the Episode
+        via the method parameters and generating
+        the new episode name using a provided naming scheme
 
         :param episode_file:   the current episode file path
         :param episode_number: the episode number
         :param season_number:  the season number
         :param show_name: the  show name
-        :param naming_scheme:  the naming scheme with which the new episode name is generated
+        :param naming_scheme:  the naming scheme with which the new episode
+                               name is generated
         """
 
         # Store data about the episode in class variables
@@ -49,14 +53,18 @@ class TVEpisode(object):
         self.old_name = os.path.basename(episode_file).rsplit(".", 1)[0]
 
         # noinspection PyCallingNonCallable
-        renamer = naming_scheme(self.show_name, self.season_number, self.episode_number)
+        renamer = naming_scheme(
+            self.show_name, self.season_number, self.episode_number
+        )
         self.new_name = renamer.generate_episode_name()
 
     def rename(self) -> None:
         """
-        Renames the original file to the new name generated with help of the naming scheme
+        Renames the original file to the new name generated
+        with help of the naming scheme
 
-        :raise IOError, OSError:  if the episode file does not exist, which of course should not happen
+        :raise IOError, OSError:  if the episode file does not exist,
+                                  which of course should not happen
                                   under normal circumstances
         :return:                  None
         """
@@ -64,7 +72,10 @@ class TVEpisode(object):
 
             original_file_name = os.path.basename(self.episode_file)
             extension = os.path.splitext(original_file_name)[1]
-            new_file = os.path.join(os.path.dirname(self.episode_file), self.new_name + extension)
+            new_file = os.path.join(
+                os.path.dirname(self.episode_file),
+                self.new_name + extension
+            )
 
             shutil.move(self.episode_file, new_file)
 

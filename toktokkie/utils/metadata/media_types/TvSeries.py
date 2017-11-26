@@ -21,7 +21,8 @@ import os
 import tvdb_api
 from typing import Dict, List
 from toktokkie.utils.metadata.media_types.Base import Base
-from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
+from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound,\
+    tvdb_shownotfound
 
 
 class TvSeries(Base):
@@ -80,11 +81,13 @@ class TvSeries(Base):
 
     @audio_langs.setter
     def audio_langs(self, value: List[str]):
-        self.store_inner_attribute("audio_langs", list(map(lambda x: x.strip(), value)))
+        self.store_inner_attribute("audio_langs",
+                                   list(map(lambda x: x.strip(), value)))
 
     @subtitle_langs.setter
     def subtitle_langs(self, value: List[str]):
-        self.store_inner_attribute("subtitle_langs", list(map(lambda x: x.strip(), value)))
+        self.store_inner_attribute("subtitle_langs",
+                                   list(map(lambda x: x.strip(), value)))
 
     @tvdb_url.setter
     def tvdb_url(self, value: str):
@@ -98,7 +101,9 @@ class TvSeries(Base):
         """
         children = os.listdir(self.path)
         children = list(filter(
-            lambda x: not x.startswith(".") and os.path.isdir(os.path.join(self.path, x)),
+            lambda x:
+            not x.startswith(".") and
+            os.path.isdir(os.path.join(self.path, x)),
             children
         ))
         return children
@@ -107,7 +112,8 @@ class TvSeries(Base):
         """
         Loads a series' TVDB info
         :return: The TVDB info, consisting of a dictionary with the values
-                 `firstaired`, `runtime`, `episode_count`, `season_count` and `genres`
+                 `firstaired`, `runtime`, `episode_count`,
+                 `season_count` and `genres`
         """
 
         try:
@@ -126,10 +132,13 @@ class TvSeries(Base):
                 "runtime": data["runtime"],
                 "episode_count": episode_count,
                 "season_count": max([len(data) - 1, 1]),
-                "genres": list(filter(lambda x: x != "", data["genre"].split("|")))
+                "genres": list(filter(
+                    lambda x: x != "", data["genre"].split("|")
+                ))
             }
 
-        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError, KeyError) as e:
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound,
+                ConnectionError, KeyError):
             # If not found, or other error, just return empty dict
             return {
                 "firstaired": "?",
@@ -141,14 +150,20 @@ class TvSeries(Base):
 
     # noinspection PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) \
+            -> Dict[str, Dict[str, type]]:
         """
         Defines additional attributes for this media type
-        :param additional: Further additional parameters for use with child classes
+        :param additional: Further additional parameters
+                           for use with child classes
         :return: The attributes of the Media Type
         """
         additional.append({
-            "required": {"resolutions": list, "audio_langs": list, "subtitle_langs": list},
+            "required": {
+                "resolutions": list,
+                "audio_langs": list,
+                "subtitle_langs": list
+            },
             "optional": {"tvdb_url": str},
             "extenders": {"seasons": dict}
         })

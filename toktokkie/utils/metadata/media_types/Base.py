@@ -24,7 +24,8 @@ from typing import Dict, List
 
 class Base(object):
     """
-    The base Media Type class. Implements common functions, JSON schema framework and automatic checks
+    The base Media Type class.
+    Implements common functions, JSON schema framework and automatic checks
     """
 
     identifier = "base"
@@ -61,14 +62,20 @@ class Base(object):
 
     @tags.setter
     def tags(self, value: List[str]):
-        self.store_inner_attribute("tags", list(map(lambda x: x.strip(), value)))
+        self.store_inner_attribute(
+            "tags", list(map(lambda x: x.strip(), value))
+        )
 
-    def __init__(self, path: str, generate: bool = False, overwrite_with_generated: bool = False):
+    def __init__(self, path: str, generate: bool = False,
+                 overwrite_with_generated: bool = False):
         """
         Initializes a new Media Type object from a directory path
         :param path: The path for which to create the Media Type object
-        :param generate: Can be set to True to generate the directory and a basic info.json file.
-        :param overwrite_with_generated: Can be set to True to overwrite any existing info.json file while generating.
+        :param generate: Can be set to True to generate the directory
+                         and a basic info.json file.
+        :param overwrite_with_generated: Can be set to True to overwrite any
+                                         existing info.json file
+                                         while generating.
         """
         self.extender_key = ""
         self.child_key = ""
@@ -90,13 +97,15 @@ class Base(object):
 
     def set_child_extender(self, extender_key: str, child_key: str):
         """
-        Sets the extender_key and child_key attributes to handle this metadata object as if it were
-        a child of it. Mostly affects getters and setters, as well as the saving procedure
+        Sets the extender_key and child_key attributes to handle this metadata
+        object as if it were a child of it. Mostly affects getters and setters,
+        as well as the saving procedure
         :param extender_key: The extender key. Example: 'seasons'
         :param child_key: The child key. Example: 'Season 2'
         :return: None
         """
-        if extender_key not in self.define_attributes()["extenders"] or child_key not in self.info[extender_key]:
+        if extender_key not in self.define_attributes()["extenders"] \
+                or child_key not in self.info[extender_key]:
             raise AttributeError("Invalid Extender/Child pair")
         else:
             self.extender_key = extender_key
@@ -105,12 +114,16 @@ class Base(object):
     def resolve_inner_attribute(self, attribute: str) -> object:
         """
         Resolves an attribute. Helper method for the getters and setters.
-        The purpose of this method is to make handling children metadata objects easier
+        The purpose of this method is to make handling children metadata
+        objects easier
         :param attribute: The attribute to check for
         :return: the attribute value.
         """
         try:
-            if self.extender_key and self.child_key and attribute in self.info[self.extender_key][self.child_key]:
+            if self.extender_key\
+                    and self.child_key\
+                    and attribute \
+                    in self.info[self.extender_key][self.child_key]:
                 return self.info[self.extender_key][self.child_key][attribute]
             else:
                 return self.info[attribute]
@@ -118,9 +131,11 @@ class Base(object):
         except KeyError:
             return None
 
-    def store_inner_attribute(self, attribute: str, value: object, equality_check=lambda x, y: x == y):
+    def store_inner_attribute(self, attribute: str, value: object,
+                              equality_check=lambda x, y: x == y):
         """
-        Stores an attribute. Helper method for the setters that makes it easier to handle child metadata
+        Stores an attribute. Helper method for the setters that makes it easier
+        to handle child metadata
         :param attribute: The attribute to set
         :param value: The value of the attribute to set
         :param equality_check: Lambda that checks for equality. Defaults to ==
@@ -138,7 +153,8 @@ class Base(object):
             elif attribute in self.info[self.extender_key][self.child_key]:
                 self.info[self.extender_key][self.child_key].pop(attribute)
 
-        else:  # If the value is the same as the parents' we don't need to update
+        # If the value is the same as the parents' we don't need to update
+        else:
             # But we have to remove any existing values
             if attribute in self.info[self.extender_key][self.child_key]:
                 self.info[self.extender_key][self.child_key].pop(attribute)
@@ -156,11 +172,17 @@ class Base(object):
         data["type"] = self.identifier
         data["name"] = os.path.basename(self.root_path)
         with open(self.info_file, 'w') as f:
-            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+            f.write(json.dumps(
+                data,
+                sort_keys=True,
+                indent=4,
+                separators=(',', ': ')
+            ))
 
     def check_if_valid(self):
         """
-        Checks if the loaded JSON information is valid for the specified Media Type
+        Checks if the loaded JSON information is valid
+        for the specified Media Type
         If not, raise a descriptive AttributeError
         """
         attrs = self.define_attributes()
@@ -168,13 +190,20 @@ class Base(object):
         # Check if all required attributes exist and have the correct type
         for required in attrs["required"]:
             if required not in self.info:
-                raise AttributeError("Required Attribute " + required + " missing.")
+                raise AttributeError(
+                    "Required Attribute " + required + " missing."
+                )
             if type(self.info[required]) is not attrs["required"][required]:
-                raise AttributeError("Attribute " + required + " has wrong type: " + str(type(self.info[required])))
+                raise AttributeError(
+                    "Attribute " + required + " has wrong type: " +
+                    str(type(self.info[required]))
+                )
 
         # Check if any optional attributes have the correct type
         for optional in attrs["optional"]:
-            if optional in self.info and type(self.info[optional]) is not attrs["optional"][optional]:
+            if optional in self.info \
+                    and type(self.info[optional]) is \
+                    not attrs["optional"][optional]:
                 raise AttributeError("Invalid optional attribute: " + optional)
 
         # Check that all extender attributes are valid parent attributes
@@ -182,22 +211,34 @@ class Base(object):
             if extender_type in self.info:
 
                 if type(self.info[extender_type]) is not dict:
-                    raise AttributeError("Extender Type is not a dictionary: " + extender_type)
+                    raise AttributeError("Extender Type is not a dictionary: "
+                                         + extender_type)
 
-                for extender in self.info[extender_type]:  # extender ~ 'Season 1'
+                # extender ~ 'Season 1'
+                for extender in self.info[extender_type]:
 
-                    if type(self.info[extender_type][extender]) is not attrs["extenders"][extender_type]:
-                        raise AttributeError("Extender is not a dictionary: " + extender)
+                    if type(self.info[extender_type][extender]) \
+                            is not attrs["extenders"][extender_type]:
+                        raise AttributeError(
+                            "Extender is not a dictionary: " + extender
+                        )
 
                     for extender_attr in self.info[extender_type][extender]:
 
                         if extender_attr not in self.info:
-                            raise AttributeError("Invalid attribute defined in extender: " + extender_attr)
+                            raise AttributeError(
+                                "Invalid attribute defined in extender: "
+                                + extender_attr
+                            )
 
                         if not isinstance(
-                                self.info[extender_type][extender][extender_attr],
+                                self.info[extender_type][extender]
+                                [extender_attr],
                                 type(self.info[extender_attr])):
-                            raise AttributeError("Invalid type for extender attribute: " + extender_attr)
+                            raise AttributeError(
+                                "Invalid type for extender attribute: " +
+                                extender_attr
+                            )
 
         if self.media_type != self.identifier:
             raise AttributeError("Media Type Mismatch")
@@ -208,7 +249,12 @@ class Base(object):
         :return: None
         """
         with open(self.info_file, 'w') as j:
-            j.write(json.dumps(self.info, sort_keys=True, indent=4, separators=(',', ': ')))
+            j.write(json.dumps(
+                self.info,
+                sort_keys=True,
+                indent=4,
+                separators=(',', ': ')
+            ))
 
     # noinspection PyMethodMayBeStatic
     def get_child_names(self) -> List[str]:
@@ -221,24 +267,31 @@ class Base(object):
     def get_icon_path(self, identifier: str = "") -> str or None:
         """
         Fetches the path to an icon file
-        
+
         :param identifier: The identifier for the icon. Defaults to 'main'
-        :return: The path to the icon file, or None if there does not exist such a file
+        :return: The path to the icon file,
+                 or None if there does not exist such a file
         """
-        identifier = identifier if identifier != "" else self.child_key if self.child_key != "" else "main"
+        identifier = identifier \
+            if identifier != "" \
+            else self.child_key if self.child_key != "" else "main"
         for ext in [".png", ".jpg"]:
-            iconfile = os.path.join(self.root_path, ".meta", "icons", identifier + ext)
+            iconfile = os.path.join(
+                self.root_path, ".meta", "icons", identifier + ext)
             if os.path.isfile(iconfile):
                 return iconfile
         return None
 
     # noinspection PyTypeChecker,PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) \
+            -> Dict[str, Dict[str, type]]:
         """
         Defines the attributes for a media type
-        :param additional: Can be used (together with super) by child classes to add more attributes
-        :return: A dictionary of required and optional attributes, as well as identifiers for extenders
+        :param additional: Can be used (together with super) by child classes
+                           to add more attributes
+        :return: A dictionary of required and optional attributes,
+                 as well as identifiers for extenders
         """
         attributes = {
             "required": {"type": str, "name": str, "tags": list},

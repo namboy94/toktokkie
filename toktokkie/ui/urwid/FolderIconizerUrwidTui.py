@@ -67,18 +67,22 @@ class FolderIconizerUrwidTui(object):
         """
         div = urwid.Divider()
 
-        directory_edit = urwid.AttrMap(self.directory_edit, None, focus_map='reversed')
-        iconize_button = urwid.AttrMap(self.iconize_button, None, focus_map='reversed')
+        directory_edit = urwid.AttrMap(self.directory_edit, None,
+                                       focus_map='reversed')
+        iconize_button = urwid.AttrMap(self.iconize_button, None,
+                                       focus_map='reversed')
 
         self.body = [self.title, div, self.directory_text, directory_edit,
                      div, self.recursive_check, div, iconize_button]
 
         self.list_walker = urwid.SimpleFocusListWalker(self.body)
-        self.top = urwid.Overlay(urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
-                                 urwid.SolidFill(u'\N{MEDIUM SHADE}'),
-                                 align='center', width=('relative', 80),
-                                 valign='middle', height=('relative', 70),
-                                 min_width=20, min_height=10)
+        self.top = urwid.Overlay(
+            urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
+            urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+            align='center', width=('relative', 80),
+            valign='middle', height=('relative', 70),
+            min_width=20, min_height=10
+        )
 
     def start(self) -> None:  # pragma: no cover
         """
@@ -86,12 +90,15 @@ class FolderIconizerUrwidTui(object):
 
         :return: None
         """
-        self.loop = urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')])
+        self.loop = urwid.MainLoop(
+            self.top, palette=[('reversed', 'standout', '')]
+        )
         self.loop.run()
         self.iconizing = False
 
     # noinspection PyUnusedLocal
-    def iconize(self, iconize_button: urwid.Button, parameters: None = None) -> None:
+    def iconize(self, iconize_button: urwid.Button, parameters: None = None) \
+            -> None:
         """
         Starts the iconization
 
@@ -116,13 +123,16 @@ class FolderIconizerUrwidTui(object):
 
     def start_spinner(self):
         """
-        Starts a little animation on the iconizer button to indicate that the iconization is running
+        Starts a little animation on the iconizer button to indicate
+        that the iconization is running
 
         :return: None
         """
         def spinner():
             while self.iconizing:
-                new_text = "Iconizing" + (self.iconize_button.get_label().count(".") % 3 + 1) * "."
+                new_text = \
+                    "Iconizing" + \
+                    (self.iconize_button.get_label().count(".") % 3 + 1) * "."
                 self.iconize_button.set_label(new_text)
                 self.loop.draw_screen()
                 time.sleep(0.3)
@@ -144,7 +154,8 @@ class FolderIconizerUrwidTui(object):
 
     def quit(self) -> None:
         """
-        Cleans up any variables that may cause thread to continue executing after the TUI ends
+        Cleans up any variables that may cause thread to continue
+        executing after the TUI ends
 
         :return: None
         """

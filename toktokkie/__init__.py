@@ -18,7 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 """
-The metadata is stored here. It can be used by any other module in this project this way, most
+The metadata is stored here.
+It can be used by any other module in this project this way, most
 notably by the setup.py file
 """
 

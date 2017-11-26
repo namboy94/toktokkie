@@ -110,7 +110,7 @@ setup(
         'tvdb_api',
         'beautifulsoup4',
         'typing',
-        'raven',
+        'requests',
         'urwid',
         'xdcc_dl'
     ],

@@ -20,7 +20,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 # imports
 import tvdb_api
 from requests.exceptions import ConnectionError
-from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound
+from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
+    tvdb_shownotfound
 
 
 class GenericScheme(object):
@@ -28,7 +29,8 @@ class GenericScheme(object):
     Class that models a generic renaming scheme
     """
 
-    def __init__(self, series_name: str, season_number: int, episode_number: int) -> None:
+    def __init__(self, series_name: str, season_number: int,
+                 episode_number: int) -> None:
         """
         Initializes a Scheme object for a single episode
 
@@ -42,20 +44,24 @@ class GenericScheme(object):
 
     def generate_episode_name(self) -> str:
         """
-        Generates an episode name for the specified series with regards to its episode and season numbers
+        Generates an episode name for the specified series with regards to its
+        episode and season numbers.
         Sanitizes the episode name beforehand
 
         :return: the generated name
         """
         sanitized = self.apply_scheme()
-        illegal_characters = ['/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^']
+        illegal_characters = [
+            '/', '\\', '?', '<', '>', ':', '*', '|', "\"", '^'
+        ]
         for illegal_character in illegal_characters:
             sanitized = sanitized.replace(illegal_character, "")
         return sanitized
 
     def apply_scheme(self) -> str:  # pragma: no cover
         """
-        Applies the scheme to the episode information and returns it as a string
+        Applies the scheme to the episode information
+        and returns it as a string
 
         :return: the generated episode name
         """
@@ -69,20 +75,25 @@ class GenericScheme(object):
         raise NotImplementedError()
 
     @staticmethod
-    def get_tvdb_episode_name(series_name: str, season_number: int, episode_number: int) -> str:
+    def get_tvdb_episode_name(series_name: str, season_number: int,
+                              episode_number: int) -> str:
         """
         Finds the TVDB episode name for a specified episode
 
         :param series_name:    the episode's series name
         :param season_number:  the episode's season number
         :param episode_number: the episode's episode number
-        :return:               the TVDB episode name, or Episode <episode_number> if any sort of error occurs
+        :return:               the TVDB episode name,
+                               or Episode <episode_number>
+                               if any sort of error occurs
         """
         try:
             tvdb = tvdb_api.Tvdb()
             episode_info = tvdb[series_name][season_number][episode_number]
             episode_name = episode_info['episodename']
-        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound, ConnectionError, KeyError) as e:
+
+        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound,
+                ConnectionError, KeyError) as e:
             # If not found, or other error, just return generic name
             if str(e) == "cache_location":  # pragma: no cover
                 print("TheTVDB.com is down!")

@@ -59,22 +59,28 @@ class Ebook(Base):
 
     def get_child_names(self) -> List[str]:
         """
-        Method that fetches all children items (The individual books, in this case)
+        Method that fetches all children items
+        (The individual books, in this case)
         :return: A list of children names
         """
         children = os.listdir(self.path)
         children = list(filter(
-            lambda x: not x.startswith(".") and os.path.isfile(os.path.join(self.path, x)) and x.endswith(".epub"),
+            lambda x:
+            not x.startswith(".") and
+            os.path.isfile(os.path.join(self.path, x)) and
+            x.endswith(".epub"),
             children
         ))
         return list(map(lambda x: x.rsplit(".epub")[0], children))
 
     # noinspection PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) \
+            -> Dict[str, Dict[str, type]]:
         """
         Defines additional attributes for this media type
-        :param additional: Further additional parameters for use with child classes
+        :param additional: Further additional parameters
+                           for use with child classes
         :return: The attributes of the Media Type
         """
         additional.append({

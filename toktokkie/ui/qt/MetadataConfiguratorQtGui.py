@@ -32,7 +32,8 @@ from toktokkie.ui.qt.pyuic.metadata_configurator import Ui_MetadataConfigurator
 
 class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
     """
-    A QT GUI that displays media folders and lets the user modify the stored metadata
+    A QT GUI that displays media folders and lets the
+    user modify the stored metadata
     """
 
     def __init__(self, parent: QMainWindow = None) -> None:
@@ -43,7 +44,8 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.config_file = os.path.join(os.path.expanduser("~"), ".toktokkie/metadata_config.json")
+        self.config_file = os.path.join(os.path.expanduser("~"),
+                                        ".toktokkie/metadata_config.json")
         with open(self.config_file, 'r') as f:
             self.config_data = json.loads(f.read())
 
@@ -68,9 +70,9 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
 
     def parse_media_directories(self):
         """
-        Parses the directories in the metadata_config.json file and fills the UI elements with any
-        found media files
-        
+        Parses the directories in the metadata_config.json file and fills
+        the UI elements with any found media files
+
         :return: None
         """
         self.media_metadata_items = {}
@@ -80,7 +82,9 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
                 continue
 
             for item in sorted(os.listdir(directory)):
-                metadata = MetaDataManager.autoresolve_directory(os.path.join(directory, item))
+                metadata = MetaDataManager.autoresolve_directory(
+                    os.path.join(directory, item)
+                )
                 if metadata is not None:
                     self.media_metadata_items[item] = metadata
 
@@ -94,7 +98,8 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
     def browse_for_directory(self) -> None:
         """
         Brings up a directory browser window.
-        Once a directory was selected, the new directory is then inserted into the
+        Once a directory was selected,
+        the new directory is then inserted into the
         directory path entry.
 
         :return: None
@@ -106,8 +111,8 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
     def add_media_directory(self) -> None:
         """
         Adds a media directory to the metadata_config.json file
-        
-        :return: None 
+
+        :return: None
         """
         entry = self.add_new_edit.text()
         if entry:
@@ -118,7 +123,7 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
         """
         Removes a media directory to the metadata_config.json file
 
-        :return: None 
+        :return: None
         """
         selected = self.media_directory_list.selectedItems()
         for item in selected:
@@ -127,9 +132,10 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
 
     def update_config(self) -> None:
         """
-        Updates the list of directories that get parsed and parses those directories afterwards
+        Updates the list of directories that get parsed and
+        parses those directories afterwards.
         Also saves the current config to metadata_config.json
-        
+
         :return: None
         """
 
@@ -137,14 +143,16 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
             f.write(json.dumps(self.config_data))
         self.media_directory_list.clear()
         for directory in self.config_data["media_directories"]:
-            self.media_directory_list.addTopLevelItem(QTreeWidgetItem([directory]))
+            self.media_directory_list.addTopLevelItem(
+                QTreeWidgetItem([directory])
+            )
         self.parse_media_directories()
 
     def load_widget_data(self, widget: QTreeWidgetItem) -> None:
         """
         Loads the data for the selected widget
-        
-        :param widget: The newly selected tree item 
+
+        :param widget: The newly selected tree item
         :return: None
         """
         if widget is None:

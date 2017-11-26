@@ -28,28 +28,48 @@ class AutoSearcher(object):
     """
 
     search_patterns = {
-        "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 [@quality_p_notation].mkv",
-        "sakura & c-w 4:3": "@search_name - @episode_zfill_2 @quality_4:3_x_notation [Sakura][C-W]",
+        "horriblesubs": "[HorribleSubs] @search_name - @episode_zfill_2 "
+                        "[@quality_p_notation].mkv",
+        "sakura & c-w 4:3": "@search_name - @episode_zfill_2 "
+                            "@quality_4:3_x_notation [Sakura][C-W]",
         "amazon": "@search_name - @episode_zfill_2 (Amazon).mkv",
-        "doki_h264": "[Doki] @search_name - @episode_zfill_2 (@quality_x_notation h264 AAC)",
-        "doki_hevc": "[Doki] @search_name - @episode_zfill_2 (@quality_x_notation HEVC AAC)",
+        "doki_h264": "[Doki] @search_name - @episode_zfill_2 "
+                     "(@quality_x_notation h264 AAC)",
+        "doki_hevc": "[Doki] @search_name - @episode_zfill_2 "
+                     "(@quality_x_notation HEVC AAC)",
         "namibsun": "@episode_raw_@search_name"
     }
 
     check_patterns = {
-        "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 \[@quality_p_notation\].mkv$",
-        "sakura & c-w 4:3": "^@search_name - @episode_zfill_2 \[(x264-AC3-BD)@quality_4:3_x_notation\]\[Sakura\]"
-                            "\[C-W\]\[[0-9A-Z]+\].mkv$",
+        "horriblesubs": "^\[HorribleSubs\] @search_name - @episode_zfill_2 "
+                        "\[@quality_p_notation\].mkv$",
+        "sakura & c-w 4:3": "^@search_name - @episode_zfill_2 "
+                            "\[(x264-AC3-BD)@quality_4:3_x_notation\]"
+                            "\[Sakura\]\[C-W\]\[[0-9A-Z]+\].mkv$",
         "amazon": "^@search_name - @episode_zfill_2 \(Amazon\).mkv$",
-        "doki_h264": "\[Doki\] @search_name - @episode_zfill_2 \(@quality_x_notation h264 AAC\) \[[0-9A-Z]+\].mkv",
-        "doki_hevc": "\[Doki\] @search_name - @episode_zfill_2 \(@quality_x_notation HEVC AAC\) \[[0-9A-Z]+\].mkv",
+        "doki_h264": "\[Doki\] @search_name - @episode_zfill_2 "
+                     "\(@quality_x_notation h264 AAC\) \[[0-9A-Z]+\].mkv",
+        "doki_hevc": "\[Doki\] @search_name - @episode_zfill_2 "
+                     "\(@quality_x_notation HEVC AAC\) \[[0-9A-Z]+\].mkv",
         "namibsun": "^[0-9]+_test.txt$"
     }
 
     quality_patterns = {
-        "480p": {"p_notation": "480p", "x_notation": "848x480", "4:3_x_notation": "640x480"},
-        "720p": {"p_notation": "720p", "x_notation": "1280x720", "4:3_x_notation": "960x720"},
-        "1080p": {"p_notation": "1080p", "x_notation": "1920x1080", "4:3_x_notation": "1440x1080"}
+        "480p": {
+            "p_notation": "480p",
+            "x_notation": "848x480",
+            "4:3_x_notation": "640x480"
+        },
+        "720p": {
+            "p_notation": "720p",
+            "x_notation": "1280x720",
+            "4:3_x_notation": "960x720"
+        },
+        "1080p": {
+            "p_notation": "1080p",
+            "x_notation": "1920x1080",
+            "4:3_x_notation": "1440x1080"
+        }
     }
 
     @staticmethod
@@ -60,9 +80,11 @@ class AutoSearcher(object):
         return list(AutoSearcher.search_patterns.keys())
 
     @staticmethod
-    def generate_search_string(pattern: str, show: str, episode: int, quality: str) -> str:
+    def generate_search_string(pattern: str, show: str, episode: int,
+                               quality: str) -> str:
         """
-        Generates a search string from a given pattern and the provided information
+        Generates a search string from a given pattern
+        and the provided information
 
         :param pattern: The pattern to use
         :param show:    The show's name
@@ -71,10 +93,13 @@ class AutoSearcher(object):
         :return:        The search string
         """
         search_pattern = AutoSearcher.search_patterns[pattern]
-        return AutoSearcher.fill_in_pattern(search_pattern, show, episode, quality)
+        return AutoSearcher.fill_in_pattern(
+            search_pattern, show, episode, quality
+        )
 
     @staticmethod
-    def matches_pattern(pattern: str, episode_name: str, show: str, episode: int, quality: str) -> bool:
+    def matches_pattern(pattern: str, episode_name: str, show: str,
+                        episode: int, quality: str) -> bool:
         """
         Checks if an episode name fits the specified pattern
 
@@ -86,11 +111,14 @@ class AutoSearcher(object):
         :return:             True if it matches, false otherwise
         """
         regex_pattern = AutoSearcher.check_patterns[pattern]
-        regex = re.compile(AutoSearcher.fill_in_pattern(regex_pattern, show, episode, quality, regex=True))
+        regex = re.compile(AutoSearcher.fill_in_pattern(
+            regex_pattern, show, episode, quality, regex=True)
+        )
         return bool(re.search(regex, episode_name))
 
     @staticmethod
-    def fill_in_pattern(pattern: str, show: str, episode: int, quality: str, regex: bool = False) -> str:
+    def fill_in_pattern(pattern: str, show: str, episode: int, quality: str,
+                        regex: bool = False) -> str:
         """
         Fills a pattern with the @ replacers
 
@@ -98,7 +126,8 @@ class AutoSearcher(object):
         :param show:    The show to use
         :param episode: The episode to use
         :param quality: The quality to use
-        :param regex:   Replaces any Regex characters in the input through escaped ones
+        :param regex:   Replaces any Regex characters in the input through
+                        escaped ones
         :return:        The filled in pattern
         """
         if regex:
@@ -110,7 +139,16 @@ class AutoSearcher(object):
         pattern = pattern.replace("@search_name", show)
         pattern = pattern.replace("@episode_raw", str(episode))
         pattern = pattern.replace("@episode_zfill_2", str(episode).zfill(2))
-        pattern = pattern.replace("@quality_p_notation", AutoSearcher.quality_patterns[quality]["p_notation"])
-        pattern = pattern.replace("@quality_x_notation", AutoSearcher.quality_patterns[quality]["x_notation"])
-        pattern = pattern.replace("@quality_4:3_x_notation", AutoSearcher.quality_patterns[quality]["4:3_x_notation"])
+        pattern = pattern.replace(
+            "@quality_p_notation",
+            AutoSearcher.quality_patterns[quality]["p_notation"]
+        )
+        pattern = pattern.replace(
+            "@quality_x_notation",
+            AutoSearcher.quality_patterns[quality]["x_notation"]
+        )
+        pattern = pattern.replace(
+            "@quality_4:3_x_notation",
+            AutoSearcher.quality_patterns[quality]["4:3_x_notation"]
+        )
         return pattern

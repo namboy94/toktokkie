@@ -37,7 +37,8 @@ class TvSeriesConfig(GenericConfig, Ui_TvSeriesConfig):
         self.setupUi(self)
         self.metadata = None
         self.initialize()
-        self.tvdb_url_button.clicked.connect(lambda x: webbrowser.open(self.metadata.tvdb_url, new=2))
+        self.tvdb_url_button.clicked.connect(
+            lambda x: webbrowser.open(self.metadata.tvdb_url, new=2))
 
     def load_online_data(self):
         """
@@ -54,9 +55,12 @@ class TvSeriesConfig(GenericConfig, Ui_TvSeriesConfig):
 
         tvdb_data = self.metadata.load_tvdb_data()
 
-        if metadata_name == self.metadata.name:  # Make sure that the same metadata object is still being displayed
+        # Make sure that the same metadata object is still being displayed
+        if metadata_name == self.metadata.name:
             self.first_aired_label.setText(tvdb_data["firstaired"])
             self.episode_length_label.setText(tvdb_data["runtime"])
-            self.amount_of_episodes_label.setText(str(tvdb_data["episode_count"]))
-            self.amount_of_seasons_label.setText(str(tvdb_data["season_count"]))
+            self.amount_of_episodes_label.setText(
+                str(tvdb_data["episode_count"]))
+            self.amount_of_seasons_label.setText(
+                str(tvdb_data["season_count"]))
             self.genres_label.setText(", ".join(tvdb_data["genres"]))

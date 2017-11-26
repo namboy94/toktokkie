@@ -34,7 +34,7 @@ class SchemeManager(object):
     """
 
     @staticmethod
-    def get_all_schemes() -> List[GenericScheme]:
+    def get_all_schemes() -> List[type(GenericScheme)]:
         """
         :return: A list of all implemented schemes
         """
@@ -51,12 +51,13 @@ class SchemeManager(object):
         return scheme_names
 
     @staticmethod
-    def get_scheme_from_scheme_name(scheme_name: str) -> GenericScheme:
+    def get_scheme_from_scheme_name(scheme_name: str) -> type(GenericScheme):
         """
         Turns a scheme name into a Scheme class and returns it
 
         :param scheme_name: the scheme name of the scheme to return
-        :return:            the scheme's class, or None if the name did not match any implemented scheme
+        :return:            the scheme's class, or None if the name did not
+                            match any implemented scheme
         """
         for scheme in SchemeManager.implemented_schemes:
             if scheme_name == scheme.get_scheme_name():

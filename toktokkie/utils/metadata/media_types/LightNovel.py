@@ -76,7 +76,8 @@ class LightNovel(Ebook):
     def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
         """
         Fetches information from myanimelist.net for this metadata object
-        :return: A dictionary with information from myanimelist.net with chosen default values in
+        :return: A dictionary with information from myanimelist.net with chosen
+                 default values in
                  case any values were not found
         """
         params = {
@@ -106,18 +107,24 @@ class LightNovel(Ebook):
             retries += 1
             html = requests.get(self.novelupdates_url)
 
-        soup = BeautifulSoup("" if html.status_code != 200 else html.text, "html.parser")
+        soup = BeautifulSoup(
+            "" if html.status_code != 200 else html.text, "html.parser"
+        )
 
-        data["licensed"] = soup.find_all("div", id="showlicensed")[0].text.strip()
-        data["completely_translated"] = soup.find_all("div", id="showtranslated")[0].text.strip()
+        data["licensed"] = \
+            soup.find_all("div", id="showlicensed")[0].text.strip()
+        data["completely_translated"] = \
+            soup.find_all("div", id="showtranslated")[0].text.strip()
         return data
 
     # noinspection PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) \
+            -> Dict[str, Dict[str, type]]:
         """
         Defines additional attributes for this media type
-        :param additional: Further additional parameters for use with child classes
+        :param additional: Further additional parameters
+                           for use with child classes
         :return: The attributes of the Media Type
         """
         additional.append({

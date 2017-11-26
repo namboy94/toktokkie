@@ -55,10 +55,12 @@ class GenericProcedure(object):
     @staticmethod
     def get_icon_file(directory: str) -> str or None:
         """
-        Returns the path to the given directory's icon file, if it is iconized. If not, None is returned
+        Returns the path to the given directory's icon file, if it is iconized.
+        If not, None is returned
 
         :param directory: The directory to check
-        :return:          Either the path to the icon file or None if no icon file exists
+        :return:          Either the path to the icon file or
+                          None if no icon file exists
         """
         return None
 

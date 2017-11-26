@@ -45,8 +45,8 @@ class AnimeSeries(TvSeries):
     def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
         """
         Fetches information from myanimelist.net for this metadata object
-        :return: A dictionary with information from myanimelist.net with chosen default values in
-                 case any values were not found
+        :return: A dictionary with information from myanimelist.net with chosen
+                 default values in case any values were not found
         """
 
         params = {
@@ -67,10 +67,12 @@ class AnimeSeries(TvSeries):
 
     # noinspection PyDefaultArgument
     @staticmethod
-    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) -> Dict[str, Dict[str, type]]:
+    def define_attributes(additional: List[Dict[str, Dict[str, type]]]=[]) \
+            -> Dict[str, Dict[str, type]]:
         """
         Defines additional attributes for this media type
-        :param additional: Further additional parameters for use with child classes
+        :param additional: Further additional parameters
+                           for use with child classes
         :return: The attributes of the Media Type
         """
         additional.append({

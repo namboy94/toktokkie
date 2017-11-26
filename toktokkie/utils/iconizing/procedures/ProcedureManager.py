@@ -20,13 +20,16 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 # imports
 from typing import List
 from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
-from toktokkie.utils.iconizing.procedures.GenericProcedure import GenericProcedure
-from toktokkie.utils.iconizing.procedures.DesktopIniProcedure import DesktopIniProcedure
+from toktokkie.utils.iconizing.procedures.GenericProcedure import \
+    GenericProcedure
+from toktokkie.utils.iconizing.procedures.DesktopIniProcedure import \
+    DesktopIniProcedure
 
 
 class ProcedureManager(object):
     """
-    Class that offers an interface for choosing the correct iconization procedure
+    Class that offers an interface for choosing the
+    correct iconization procedure
     """
 
     implemented_procedures = [GnomeProcedure,
@@ -36,17 +39,20 @@ class ProcedureManager(object):
     """
 
     @staticmethod
-    def get_all_procedures() -> List[GenericProcedure]:
+    def get_all_procedures() -> List[type(GenericProcedure)]:
         """
         :return: A list of all implemented procedures
         """
         return ProcedureManager.implemented_procedures
 
     @staticmethod
-    def get_procedure_names(supports_current_platform: bool = True) -> List[str]:
+    def get_procedure_names(supports_current_platform: bool = True) \
+            -> List[str]:
         """
-        :param supports_current_platform: Can be set to True if only procedures for the current platform should
-                                          be shown, and False if all implemented procedures should be returned
+        :param supports_current_platform: Can be set to True if only procedures
+                                          for the current platform should be
+                                          shown, and False if all implemented
+                                          procedures should be returned
         :return:                          A list of implemented procedure names
         """
         procedure_names = []
@@ -59,12 +65,14 @@ class ProcedureManager(object):
         return procedure_names
 
     @staticmethod
-    def get_procedure_from_procedure_name(procedure_name: str) -> GenericProcedure:
+    def get_procedure_from_procedure_name(procedure_name: str) \
+            -> type(GenericProcedure):
         """
         Turns a procedure name into a Procedure class and returns it
 
         :param procedure_name: the procedure name of the procedure to return
-        :return:               the procedure's class, or None if the name did not match any implemented procedure
+        :return:               the procedure's class, or None if the name did
+                               not match any implemented procedure
         """
         for procedure in ProcedureManager.implemented_procedures:
             if procedure_name == procedure.get_procedure_name():
@@ -72,11 +80,13 @@ class ProcedureManager(object):
         return GenericProcedure
 
     @staticmethod
-    def get_applicable_procedure() -> GenericProcedure:
+    def get_applicable_procedure() -> type(GenericProcedure):
         """
-        Gets an applicable iconizing procedure from the list of implemented procedures
+        Gets an applicable iconizing procedure from the list of
+        implemented procedures
 
-        :return: The iconizing procedure, or None if no applicable procedure was found
+        :return: The iconizing procedure,
+                 or None if no applicable procedure was found
         """
         for procedure in ProcedureManager.implemented_procedures:
             if procedure.is_applicable():  # pragma: no cover

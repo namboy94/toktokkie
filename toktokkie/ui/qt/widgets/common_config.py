@@ -23,7 +23,7 @@ from copy import copy
 from subprocess import Popen
 from threading import Thread
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QCheckBox
+from PyQt5.QtWidgets import QWidget
 from toktokkie.utils.metadata.media_types import Base
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 
@@ -42,24 +42,27 @@ class GenericConfig(QWidget):
         self.open_directory_button.clicked.connect(self.open_directory)
         for media_type in MetaDataManager.media_type_map:
             self.media_type_combo_box.addItem(media_type)
-    
+
     def set_metadata(self, metadata: Base, child_key: str):
         """
         Sets the metadata of the Config widget
-        :param metadata: The metadata to set 
-        :param child_key: The child key for use with media types that allow child elements
+        :param metadata: The metadata to set
+        :param child_key: The child key for use with media types that allow
+                          child elements
         :return: None
         """
         # noinspection PyAttributeOutsideInit
         self.metadata = copy(metadata)
 
-        if self.metadata.media_type in ["tv_series", "anime_series"] and child_key != "main":
+        if self.metadata.media_type in ["tv_series", "anime_series"] \
+                and child_key != "main":
             self.metadata.set_child_extender("seasons", child_key)
-        elif self.metadata.media_type in ["ebook", "light_novel"] and child_key != "main":
+        elif self.metadata.media_type in ["ebook", "light_novel"] \
+                and child_key != "main":
             self.metadata.set_child_extender("books", child_key)
 
         self.display()
-    
+
     def save_data(self):
         """
         Saves the data in the UI elements to the info.json file
@@ -74,7 +77,7 @@ class GenericConfig(QWidget):
         }[self.metadata.media_type](self)
         self.metadata.write_changes()
         self.display()
-    
+
     def display(self):
         """
         Displays the information in the info.json file
@@ -95,13 +98,16 @@ class GenericConfig(QWidget):
         :return: None
         """
         pass
-        
+
     def open_directory(self):
         """
-        Opens the currently displayed directory in the system's default file browser
+        Opens the currently displayed directory in the system's
+        default file browser
         :return: None
         """
-        path = self.metadata.path if os.path.isdir(self.metadata.path) else os.path.dirname(self.metadata.path)
+        path = self.metadata.path \
+            if os.path.isdir(self.metadata.path) \
+            else os.path.dirname(self.metadata.path)
 
         if sys.platform.startswith("linux"):
             Popen(["xdg-open", path]).wait()
@@ -113,28 +119,31 @@ def display_base_info(widget: GenericConfig):
     """
     Displays the information in a Base metadata object
     Also kicks of the load_online_data method
-    
-    :param widget: The widget in which to display the information 
+
+    :param widget: The widget in which to display the information
     :return: None
     """
-    widget.media_type_combo_box.setCurrentIndex(widget.media_type_combo_box.findText(widget.metadata.media_type))
+    widget.media_type_combo_box.setCurrentIndex(
+        widget.media_type_combo_box.findText(widget.metadata.media_type))
     widget.series_name_edit.setText(widget.metadata.name)
-    widget.folder_icon_label.setPixmap(QPixmap(widget.metadata.get_icon_path()))
+    widget.folder_icon_label.setPixmap(
+        QPixmap(widget.metadata.get_icon_path()))
     widget.tags_edit.setText(", ".join(widget.metadata.tags))
-    
+
 
 def display_tv_series_info(widget: GenericConfig):
     """
     Displays the information in a TvSeries metadata object
-    
-    :param widget: The widget in which to display the information 
+
+    :param widget: The widget in which to display the information
     :return: None
     """
     display_base_info(widget)
-    
+
     widget.tvdb_url_edit.setText(widget.metadata.tvdb_url)
     widget.audio_language_edit.setText(", ".join(widget.metadata.audio_langs))
-    widget.subtitle_language_edit.setText(", ".join(widget.metadata.subtitle_langs))
+    widget.subtitle_language_edit.setText(
+        ", ".join(widget.metadata.subtitle_langs))
 
     for i, widgets in enumerate([
         [widget.resolution_one_edit_x, widget.resolution_one_edit_y],
@@ -153,7 +162,7 @@ def display_anime_series_info(widget: GenericConfig):
     """
     Displays the information in an AnimeSeries metadata object
 
-    :param widget: The widget in which to display the information 
+    :param widget: The widget in which to display the information
     :return: None
     """
     display_tv_series_info(widget)
@@ -164,7 +173,7 @@ def display_ebook_info(widget: GenericConfig):
     """
     Displays the information in an Ebook metadata object
 
-    :param widget: The widget in which to display the information 
+    :param widget: The widget in which to display the information
     :return: None
     """
     display_base_info(widget)
@@ -176,12 +185,13 @@ def display_light_novel_info(widget: GenericConfig):
     """
     Displays the information in an LightNovel metadata object
 
-    :param widget: The widget in which to display the information 
+    :param widget: The widget in which to display the information
     :return: None
     """
     display_ebook_info(widget)
     widget.illustrator_edit.setText(widget.metadata.illustrator)
-    widget.official_translation_check.setChecked(widget.metadata.official_translation)
+    widget.official_translation_check.setChecked(
+        widget.metadata.official_translation)
     widget.myanimelist_url_edit.setText(widget.metadata.myanimelist_url)
     widget.novelupdates_url_edit.setText(widget.metadata.novelupdates_url)
 
@@ -199,15 +209,17 @@ def store_base_info(widget: GenericConfig):
 
 def store_tv_series_info(widget: GenericConfig):
     """
-    Stores the TvSeries metadata info from the UI elements into the metadata object
+    Stores the TvSeries metadata info from the UI elements into the metadata
+    object.
     :param widget: The widget from which to retrieve the data
     :return: None
     """
     store_base_info(widget)
-    
+
     widget.metadata.tvdb_url = widget.tvdb_url_edit.text()
     widget.metadata.audio_langs = widget.audio_language_edit.text().split(",")
-    widget.metadata.subtitle_langs = widget.subtitle_language_edit.text().split(",")
+    widget.metadata.subtitle_langs = \
+        widget.subtitle_language_edit.text().split(",")
 
     resolutions = []
     for i, widgets in enumerate([
@@ -223,12 +235,14 @@ def store_tv_series_info(widget: GenericConfig):
                 })
             except ValueError:
                 pass
-    widget.metadata.resolutions = resolutions  # Must be set here due to the setter method
+    # Must be set here due to the setter method
+    widget.metadata.resolutions = resolutions
 
 
 def store_anime_series_info(widget: GenericConfig):
     """
-    Stores the AnimeSeries metadata info from the UI elements into the metadata object
+    Stores the AnimeSeries metadata info from the UI elements into the
+    metadata object.
     :param widget: The widget from which to retrieve the data
     :return: None
     """
@@ -238,7 +252,8 @@ def store_anime_series_info(widget: GenericConfig):
 
 def store_ebook_info(widget: GenericConfig):
     """
-    Stores the Ebook metadata info from the UI elements into the metadata object
+    Stores the Ebook metadata info from the UI elements
+    into the metadata object.
     :param widget: The widget from which to retrieve the data
     :return: None
     """
@@ -249,12 +264,14 @@ def store_ebook_info(widget: GenericConfig):
 
 def store_light_novel_info(widget: GenericConfig):
     """
-    Stores the LightNovel metadata info from the UI elements into the metadata object
+    Stores the LightNovel metadata info from the UI elements
+    into the metadata object
     :param widget: The widget from which to retrieve the data
     :return: None
     """
     store_ebook_info(widget)
     widget.metadata.illustrator = widget.illustrator_edit.text()
-    widget.metadata.official_translation = bool(widget.official_translation_check.checkState())
+    widget.metadata.official_translation = \
+        bool(widget.official_translation_check.checkState())
     widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text()
     widget.metadata.novelupdates_url = widget.novelupdates_url_edit.text()
