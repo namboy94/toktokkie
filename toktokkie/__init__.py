@@ -23,7 +23,7 @@ It can be used by any other module in this project this way, most
 notably by the setup.py file
 """
 
-version = "0.14.0"
+version = "0.15.0"
 """
 The current version of the program
 """
