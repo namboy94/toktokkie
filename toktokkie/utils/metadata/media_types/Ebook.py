@@ -84,7 +84,7 @@ class Ebook(Base):
         :return: The attributes of the Media Type
         """
         additional.append({
-            "required": {"author": str, "isbn": str},
+            "required": {"isbn": str},
             "optional": {},
             "extenders": {"books": dict}
         })

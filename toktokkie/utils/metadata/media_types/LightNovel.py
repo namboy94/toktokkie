@@ -128,7 +128,7 @@ class LightNovel(Ebook):
         :return: The attributes of the Media Type
         """
         additional.append({
-            "required": {"illustrator": str, "official_translation": bool},
+            "required": {"official_translation": bool},
             "optional": {"myanimelist_url": str, "novelupdates_url": str},
             "extenders": {}
         })
