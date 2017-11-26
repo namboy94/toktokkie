@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -72,18 +67,22 @@ class FolderIconizerUrwidTui(object):
         """
         div = urwid.Divider()
 
-        directory_edit = urwid.AttrMap(self.directory_edit, None, focus_map='reversed')
-        iconize_button = urwid.AttrMap(self.iconize_button, None, focus_map='reversed')
+        directory_edit = urwid.AttrMap(self.directory_edit, None,
+                                       focus_map='reversed')
+        iconize_button = urwid.AttrMap(self.iconize_button, None,
+                                       focus_map='reversed')
 
         self.body = [self.title, div, self.directory_text, directory_edit,
                      div, self.recursive_check, div, iconize_button]
 
         self.list_walker = urwid.SimpleFocusListWalker(self.body)
-        self.top = urwid.Overlay(urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
-                                 urwid.SolidFill(u'\N{MEDIUM SHADE}'),
-                                 align='center', width=('relative', 80),
-                                 valign='middle', height=('relative', 70),
-                                 min_width=20, min_height=10)
+        self.top = urwid.Overlay(
+            urwid.Padding(urwid.ListBox(self.list_walker), left=2, right=2),
+            urwid.SolidFill(u'\N{MEDIUM SHADE}'),
+            align='center', width=('relative', 80),
+            valign='middle', height=('relative', 70),
+            min_width=20, min_height=10
+        )
 
     def start(self) -> None:  # pragma: no cover
         """
@@ -91,12 +90,15 @@ class FolderIconizerUrwidTui(object):
 
         :return: None
         """
-        self.loop = urwid.MainLoop(self.top, palette=[('reversed', 'standout', '')])
+        self.loop = urwid.MainLoop(
+            self.top, palette=[('reversed', 'standout', '')]
+        )
         self.loop.run()
         self.iconizing = False
 
     # noinspection PyUnusedLocal
-    def iconize(self, iconize_button: urwid.Button, parameters: None = None) -> None:
+    def iconize(self, iconize_button: urwid.Button, parameters: None = None) \
+            -> None:
         """
         Starts the iconization
 
@@ -121,13 +123,16 @@ class FolderIconizerUrwidTui(object):
 
     def start_spinner(self):
         """
-        Starts a little animation on the iconizer button to indicate that the iconization is running
+        Starts a little animation on the iconizer button to indicate
+        that the iconization is running
 
         :return: None
         """
         def spinner():
             while self.iconizing:
-                new_text = "Iconizing" + (self.iconize_button.get_label().count(".") % 3 + 1) * "."
+                new_text = \
+                    "Iconizing" + \
+                    (self.iconize_button.get_label().count(".") % 3 + 1) * "."
                 self.iconize_button.set_label(new_text)
                 self.loop.draw_screen()
                 time.sleep(0.3)
@@ -149,7 +154,8 @@ class FolderIconizerUrwidTui(object):
 
     def quit(self) -> None:
         """
-        Cleans up any variables that may cause thread to continue executing after the TUI ends
+        Cleans up any variables that may cause thread to continue
+        executing after the TUI ends
 
         :return: None
         """

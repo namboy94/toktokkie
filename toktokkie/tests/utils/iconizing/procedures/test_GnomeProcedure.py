@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -33,9 +28,11 @@ from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
 class GnomeProcedureUnitTests(unittest.TestCase):
 
     def setUp(self):
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(os.path.join(
+            "toktokkie", "tests", "resources", "directories"), "temp_testing")
         self.game_of_thrones = os.path.join("temp_testing", "Game of Thrones")
-        self.game_of_thrones_icon = os.path.join(self.game_of_thrones, ".meta", "icons", "main.png")
+        self.game_of_thrones_icon = os.path.join(
+            self.game_of_thrones, ".meta", "icons", "main.png")
 
     def tearDown(self):
         shutil.rmtree("temp_testing")
@@ -44,7 +41,10 @@ class GnomeProcedureUnitTests(unittest.TestCase):
 
         if sys.platform.startswith("linux"):
             try:
-                self.assertEqual(os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"], GnomeProcedure.is_applicable())
+                self.assertEqual(
+                    os.environ["DESKTOP_SESSION"] in ["cinnamon", "gnome"],
+                    GnomeProcedure.is_applicable()
+                )
             except KeyError:
                 self.assertFalse(GnomeProcedure.is_applicable())
 
@@ -57,7 +57,10 @@ class GnomeProcedureUnitTests(unittest.TestCase):
             self.assertEqual(icon_file, self.game_of_thrones_icon)
 
     def test_iconizing_with_no_icon_extension(self):
-        GnomeProcedure.iconize(self.game_of_thrones, self.game_of_thrones_icon.rsplit(".png", 1)[0])
+        GnomeProcedure.iconize(
+            self.game_of_thrones,
+            self.game_of_thrones_icon.rsplit(".png", 1)[0]
+        )
         icon_file = GnomeProcedure.get_icon_file(self.game_of_thrones)
         GnomeProcedure.reset_iconization_state(self.game_of_thrones)
 
@@ -66,7 +69,10 @@ class GnomeProcedureUnitTests(unittest.TestCase):
 
     def test_retrieving_icon_file(self):
 
-        self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), None)
+        self.assertEqual(
+            GnomeProcedure.get_icon_file(self.game_of_thrones),
+            None
+        )
 
         GnomeProcedure.iconize(self.game_of_thrones, self.game_of_thrones_icon)
         icon_file = GnomeProcedure.get_icon_file(self.game_of_thrones)
@@ -75,4 +81,7 @@ class GnomeProcedureUnitTests(unittest.TestCase):
             self.assertEqual(icon_file, self.game_of_thrones_icon)
 
         GnomeProcedure.reset_iconization_state(self.game_of_thrones)
-        self.assertEqual(GnomeProcedure.get_icon_file(self.game_of_thrones), None)
+        self.assertEqual(
+            GnomeProcedure.get_icon_file(self.game_of_thrones),
+            None
+        )

@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -27,9 +22,11 @@ try:
     from PyQt5.QtCore import Qt
     from PyQt5.QtTest import QTest
     from PyQt5.QtWidgets import QApplication, QFileDialog
-    from toktokkie.ui.qt.XDCCUpdateConfiguratorQtGui import XDCCUpdateConfiguratorQtGui
+    from toktokkie.ui.qt.XDCCUpdateConfiguratorQtGui import \
+        XDCCUpdateConfiguratorQtGui
 except ImportError:
-    Qt = QTest = QFileDialog = QApplication = XDCCUpdateConfiguratorQtGui = None
+    Qt = QTest = QFileDialog = QApplication = XDCCUpdateConfiguratorQtGui = \
+        None
 
 import os
 import sys
@@ -62,7 +59,10 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         sys.argv = [sys.argv[0], "-platform", "minimal"]
         self.form = XDCCUpdateConfiguratorQtGui()
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "json"), "json_test")
+        shutil.copytree(
+            os.path.join("toktokkie", "tests", "resources", "json"),
+            "json_test"
+        )
 
     def tearDown(self):
         self.form.closeEvent(None)
@@ -103,7 +103,8 @@ class UnitTests(unittest.TestCase):
         QTest.mouseClick(self.form.new_button, Qt.LeftButton)
         self.assertEqual(len(self.form.json_handler.get_series()), 1)
         self.assertTrue(self.form.json_handler.get_series()[0].equals(
-            Series(os.getcwd(), "New Series", "1080p", "Bot", 1, ["nibl"], "Plex (TVDB)", "horriblesubs")
+            Series(os.getcwd(), "New Series", "1080p", "Bot", 1, ["nibl"],
+                   "Plex (TVDB)", "horriblesubs")
         ))
 
     def test_delete_series(self):
@@ -132,8 +133,14 @@ class UnitTests(unittest.TestCase):
 
         self.assertTrue(os.path.join("a_json_file.json"))
         self.assertTrue(self.form.file_loaded)
-        self.assertEqual(self.form.json_handler.get_json_file_path(), "a_json_file.json")
-        self.assertEqual(len(JsonHandler("a_json_file.json").get_series()), len(self.form.json_handler.get_series()))
+        self.assertEqual(
+            self.form.json_handler.get_json_file_path(),
+            "a_json_file.json"
+        )
+        self.assertEqual(
+            len(JsonHandler("a_json_file.json").get_series()),
+            len(self.form.json_handler.get_series())
+        )
 
     def test_saving_to_previous_file(self):
         self.test_loading_json()
@@ -143,7 +150,9 @@ class UnitTests(unittest.TestCase):
 
         QTest.mouseClick(self.form.save_button, Qt.LeftButton)
 
-        self.assertTrue(os.path.isfile(os.path.join("json_test", "updater.json")))
+        self.assertTrue(
+            os.path.isfile(os.path.join("json_test", "updater.json"))
+        )
 
     def test_changing_series_info(self):
         self.test_loading_json()
@@ -156,7 +165,10 @@ class UnitTests(unittest.TestCase):
 
         QTest.mouseClick(self.form.confirm_button, Qt.LeftButton)
 
-        self.assertEqual("Not Drifters", self.form.json_handler.get_series()[1].get_search_name())
+        self.assertEqual(
+            "Not Drifters",
+            self.form.json_handler.get_series()[1].get_search_name()
+        )
 
     def test_deleting_no_selection(self):
         self.test_adding_new_series()

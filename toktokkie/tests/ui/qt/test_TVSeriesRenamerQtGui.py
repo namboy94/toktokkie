@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -38,7 +33,8 @@ import shutil
 import unittest
 from toktokkie.utils.renaming.objects.TVEpisode import TVEpisode
 from toktokkie.utils.renaming.schemes.PlexTvdbScheme import PlexTvdbScheme
-from toktokkie.utils.renaming.objects.RenamerConfirmation import RenamerConfirmation
+from toktokkie.utils.renaming.objects.RenamerConfirmation import \
+    RenamerConfirmation
 
 
 class DummySignal(object):
@@ -66,10 +62,15 @@ class UnitTests(unittest.TestCase):
         self.form = TVSeriesRenamerQtGui()
 
         self.form.populate_list_signal = DummySignal(self.form.populate_list)
-        self.form.visibility_switcher_signal = DummySignal(self.form.meta_warning_label.setVisible)
-        self.form.spinner_updater_signal = DummySignal(self.form.update_spinner_text)
+        self.form.visibility_switcher_signal = \
+            DummySignal(self.form.meta_warning_label.setVisible)
+        self.form.spinner_updater_signal = \
+            DummySignal(self.form.update_spinner_text)
 
-        shutil.copytree(os.path.join("toktokkie", "tests", "resources", "directories"), "temp_testing")
+        shutil.copytree(
+            os.path.join("toktokkie", "tests", "resources", "directories"),
+            "temp_testing"
+        )
 
     def tearDown(self):
         self.form.closeEvent(None)
@@ -92,7 +93,9 @@ class UnitTests(unittest.TestCase):
 
         self.assertFalse(self.form.recursive_check.checkState())
         self.assertTrue(self.form.meta_warning_label.isVisibleTo(self.form))
-        self.form.directory_entry.setText(os.path.join("temp_testing", "Game of Thrones"))
+        self.form.directory_entry.setText(
+            os.path.join("temp_testing", "Game of Thrones")
+        )
 
         while self.form.parsing:
             pass
@@ -118,10 +121,16 @@ class UnitTests(unittest.TestCase):
         self.assertFalse(self.form.meta_warning_label.isVisibleTo(self.form))
 
     def test_remove_selection(self):
-        self.form.confirmation = [RenamerConfirmation(TVEpisode("test", 1, 1, "Test", PlexTvdbScheme)),
-                                  RenamerConfirmation(TVEpisode("test2", 1, 2, "Test", PlexTvdbScheme))]
+        self.form.confirmation = [
+            RenamerConfirmation(
+                TVEpisode("test", 1, 1, "Test", PlexTvdbScheme)),
+            RenamerConfirmation(
+                TVEpisode("test2", 1, 2, "Test", PlexTvdbScheme))
+        ]
         self.form.populate_list()
-        self.form.confirmation += [RenamerConfirmation(TVEpisode("test", 1, 3, "Test", PlexTvdbScheme))]
+        self.form.confirmation += [RenamerConfirmation(
+            TVEpisode("test", 1, 3, "Test", PlexTvdbScheme)
+        )]
         self.assertEqual(2, self.form.rename_list.topLevelItemCount())
 
         self.form.rename_list.selectAll()
@@ -130,7 +139,9 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(1, self.form.rename_list.topLevelItemCount())
 
     def test_renaming(self):
-        self.form.directory_entry.setText(os.path.join("temp_testing", "Game of Thrones"))
+        self.form.directory_entry.setText(os.path.join(
+            "temp_testing", "Game of Thrones"
+        ))
 
         while self.form.parsing:
             pass
@@ -141,17 +152,24 @@ class UnitTests(unittest.TestCase):
         while self.form.renaming:
             pass
 
-        self.assertTrue(os.path.isfile(os.path.join("temp_testing", "Game of Thrones", "Season 1",
-                                                    "Game of Thrones - S01E01 - Winter Is Coming.mkv")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            "temp_testing", "Game of Thrones", "Season 1",
+            "Game of Thrones - S01E01 - Winter Is Coming.mkv"
+        )))
 
         while self.form.parsing:
             pass
 
-        self.assertEqual(previous_item_amount, self.form.rename_list.topLevelItemCount())
+        self.assertEqual(
+            previous_item_amount,
+            self.form.rename_list.topLevelItemCount()
+        )
 
     def test_parsing_directory_with_slash_at_end(self):
 
-        self.form.directory_entry.setText(os.path.join("temp_testing", "Game of Thrones") + os.path.sep)
+        self.form.directory_entry.setText(
+            os.path.join("temp_testing", "Game of Thrones") + os.path.sep
+        )
 
         while self.form.parsing:
             pass
@@ -161,7 +179,9 @@ class UnitTests(unittest.TestCase):
 
     def test_cancelling_mid_parse(self):
 
-        self.form.directory_entry.setText(os.path.join("temp_testing", "Game of Thrones"))
+        self.form.directory_entry.setText(
+            os.path.join("temp_testing", "Game of Thrones")
+        )
 
         while self.form.parser_id == 0:
             pass

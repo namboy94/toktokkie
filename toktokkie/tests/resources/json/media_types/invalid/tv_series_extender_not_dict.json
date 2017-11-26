@@ -1,0 +1,11 @@
+{
+  "type": "tv_series",
+  "name": "TvSeries",
+  "tags": ["test"],
+  "resolutions": [],
+  "audio_langs": [],
+  "subtitle_langs": [],
+  "seasons": {
+    "Season 1": 1
+  }
+}

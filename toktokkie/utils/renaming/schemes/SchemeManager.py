@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -39,7 +34,7 @@ class SchemeManager(object):
     """
 
     @staticmethod
-    def get_all_schemes() -> List[GenericScheme]:
+    def get_all_schemes() -> List[type(GenericScheme)]:
         """
         :return: A list of all implemented schemes
         """
@@ -56,12 +51,13 @@ class SchemeManager(object):
         return scheme_names
 
     @staticmethod
-    def get_scheme_from_scheme_name(scheme_name: str) -> GenericScheme:
+    def get_scheme_from_scheme_name(scheme_name: str) -> type(GenericScheme):
         """
         Turns a scheme name into a Scheme class and returns it
 
         :param scheme_name: the scheme name of the scheme to return
-        :return:            the scheme's class, or None if the name did not match any implemented scheme
+        :return:            the scheme's class, or None if the name did not
+                            match any implemented scheme
         """
         for scheme in SchemeManager.implemented_schemes:
             if scheme_name == scheme.get_scheme_name():

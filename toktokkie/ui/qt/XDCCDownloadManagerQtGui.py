@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -36,9 +31,12 @@ from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
 from toktokkie.utils.xdcc.XDCCDownloadManager import XDCCDownloadManager
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
-from toktokkie.utils.iconizing.procedures.ProcedureManager import ProcedureManager
-from toktokkie.ui.qt.pyuic.xdcc_download_manager import Ui_XDCCDownloadManagerWindow
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton, QMessageBox
+from toktokkie.utils.iconizing.procedures.ProcedureManager import \
+    ProcedureManager
+from toktokkie.ui.qt.pyuic.xdcc_download_manager import \
+    Ui_XDCCDownloadManagerWindow
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, \
+    QHeaderView, QPushButton, QMessageBox
 
 
 class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
@@ -46,10 +44,14 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
     Class that defines the functionality of the XDCC Downloader GUI
     """
 
-    progress_updater_signal = pyqtSignal(float, float, int, int, name="progress_updater")
-    download_queue_refresh_signal = pyqtSignal(name="download_queue_refresh_signal")
-    spinner_updater_signal = pyqtSignal(QPushButton, str, name="spinner_updater")
-    show_download_completed_signal = pyqtSignal(dict, name="show_download_completed")
+    progress_updater_signal = \
+        pyqtSignal(float, float, int, int, name="progress_updater")
+    download_queue_refresh_signal = \
+        pyqtSignal(name="download_queue_refresh_signal")
+    spinner_updater_signal = \
+        pyqtSignal(QPushButton, str, name="spinner_updater")
+    show_download_completed_signal = \
+        pyqtSignal(dict, name="show_download_completed")
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -74,27 +76,38 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         self.progress_updater_signal.connect(self.update_progress)
         self.download_queue_refresh_signal.connect(self.refresh_download_queue)
-        self.spinner_updater_signal.connect(lambda x, y: x.setText(y))  # pragma: no cover
-        self.show_download_completed_signal.connect(self.show_download_completed_message_box)
+
+        # pragma: no cover
+        self.spinner_updater_signal.connect(lambda x, y: x.setText(y))
+        self.show_download_completed_signal.connect(
+            self.show_download_completed_message_box)
 
         self.add_to_queue_button.clicked.connect(self.add_to_queue)
         self.remove_from_queue_button.clicked.connect(self.remove_from_queue)
-        self.move_up_button.clicked.connect(lambda x: self.move_queue_item(up=True))  # pragma: no cover
-        self.move_down_button.clicked.connect(lambda x: self.move_queue_item(down=True))  # pragma: no cover
+
+        self.move_up_button.clicked.connect(
+            lambda x: self.move_queue_item(up=True))  # pragma: no cover
+        self.move_down_button.clicked.connect(
+            lambda x: self.move_queue_item(down=True))  # pragma: no cover
 
         self.show_name_edit.textChanged.connect(self.refresh_download_queue)
         self.season_spin_box.valueChanged.connect(self.refresh_download_queue)
         self.episode_spin_box.valueChanged.connect(self.refresh_download_queue)
-        self.auto_rename_check.stateChanged.connect(self.refresh_download_queue)
+        self.auto_rename_check.stateChanged.connect(
+            self.refresh_download_queue)
 
         for scheme in SchemeManager.get_scheme_names():
             self.renaming_scheme_combo_box.addItem(scheme)
-        for procedure in ProcedureManager.get_procedure_names():  # pragma: no cover
+        # pragma: no cover
+        for procedure in ProcedureManager.get_procedure_names():
             self.iconizing_method_combo_box.addItem(procedure)
-        for pack_searcher in ["All"] + PackSearcher.get_available_pack_searchers():
+        for pack_searcher in ["All"] + \
+                PackSearcher.get_available_pack_searchers():
             self.search_engine_combo_box.addItem(pack_searcher)
 
-        self.search_result_list.header().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.search_result_list.header().setSectionResizeMode(
+            4, QHeaderView.Stretch
+        )
 
         self.directory_edit.setText(os.getcwd())
 
@@ -128,17 +141,22 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
             search_engine = self.search_engine_combo_box.currentText()
 
             if search_engine == "All":
-                self.search_results = PackSearcher(PackSearcher.get_available_pack_searchers()).search(search_term)
+                self.search_results = PackSearcher(
+                    PackSearcher.get_available_pack_searchers()
+                ).search(search_term)
             else:
-                self.search_results = PackSearcher([search_engine]).search(search_term)
+                self.search_results = \
+                    PackSearcher([search_engine]).search(search_term)
 
             self.search_result_list.clear()
             for i, result in enumerate(self.search_results):
-                self.search_result_list.addTopLevelItem(QTreeWidgetItem([str(i),
-                                                                         result.get_bot(),
-                                                                         str(result.get_packnumber()),
-                                                                         str(result.get_size()),
-                                                                         result.get_filename()]))
+                self.search_result_list.addTopLevelItem(QTreeWidgetItem([
+                    str(i),
+                    result.get_bot(),
+                    str(result.get_packnumber()),
+                    str(result.get_size()),
+                    result.get_filename()
+                ]))
             self.searching = False
 
         Thread(target=search).start()
@@ -155,14 +173,18 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         self.downloading = True
         self.start_spinner("download")
 
-        destination_directory, season_directory = XDCCDownloadManager.prepare_directory(self.directory_edit.text(),
-                                                                                        self.show_name_edit.text(),
-                                                                                        self.season_spin_box.value())
+        destination_directory, season_directory = \
+            XDCCDownloadManager.prepare_directory(self.directory_edit.text(),
+                                                  self.show_name_edit.text(),
+                                                  self.season_spin_box.value())
 
         # noinspection PyShadowingNames
-        progress = Progress(len(self.download_queue_list),
-                            callback=lambda a, b, single_progres, d, e, total_progres, current_speed, avg_speed:
-                            self.progress_updater_signal.emit(single_progres, total_progres, current_speed, avg_speed))
+        progress = Progress(
+            len(self.download_queue_list),
+            callback=lambda a, b, single_progres, d, e, total_progres,
+            current_speed, avg_speed:
+            self.progress_updater_signal.emit(single_progres, total_progres,
+                                              current_speed, avg_speed))
 
         packs = list(self.download_queue_list)
 
@@ -175,18 +197,26 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def handle_download() -> None:
 
-            results = MultipleServerDownloader("random").download(packs, progress)
+            results = \
+                MultipleServerDownloader("random").download(packs, progress)
 
             if self.auto_rename_check.checkState():
 
-                scheme = SchemeManager.get_scheme_from_scheme_name(
-                                              self.renaming_scheme_combo_box.currentText())
+                scheme = \
+                    SchemeManager.get_scheme_from_scheme_name(
+                        self.renaming_scheme_combo_box.currentText()
+                    )
 
-                XDCCDownloadManager.auto_rename(scheme, self.episode_spin_box.value(), packs)
+                XDCCDownloadManager.auto_rename(
+                    scheme,
+                    self.episode_spin_box.value(),
+                    packs
+                )
 
             if self.iconize_check.checkState():
 
-                iconization_method = self.iconizing_method_combo_box.currentText()
+                iconization_method = \
+                    self.iconizing_method_combo_box.currentText()
                 if iconization_method != "":  # pragma: no cover
                     Iconizer().iconize_directory(destination_directory)
 
@@ -202,13 +232,17 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
     def parse_directory(self) -> None:
         """
-        Parses the currently entered directory, checks if it contains a .meta directory.
+        Parses the currently entered directory, checks if it contains
+        a .meta directory.
         Fills show name, episode and season according to info found.
         Search Term = show name
 
         :return: None
         """
-        season, episode = XDCCDownloadManager.get_max_season_and_episode_number(self.directory_edit.text())
+        season, episode = \
+            XDCCDownloadManager.get_max_season_and_episode_number(
+                self.directory_edit.text()
+            )
         episode += 1
 
         self.episode_spin_box.setValue(episode)
@@ -221,20 +255,25 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
     def refresh_download_queue(self) -> None:
         """
-        Refreshes the download queue with the current values in the download queue list
+        Refreshes the download queue with the current values
+        in the download queue list
 
         :return: None
         """
 
         if self.auto_rename_check.checkState():
 
-            naming_scheme = SchemeManager.get_scheme_from_scheme_name(self.renaming_scheme_combo_box.currentText())
+            naming_scheme = SchemeManager.get_scheme_from_scheme_name(
+                self.renaming_scheme_combo_box.currentText()
+            )
 
-            episodes = XDCCDownloadManager.get_preliminary_renaming_results(naming_scheme,
-                                                                            self.episode_spin_box.value(),
-                                                                            self.download_queue_list,
-                                                                            self.season_spin_box.value(),
-                                                                            self.show_name_edit.text())
+            episodes = XDCCDownloadManager.get_preliminary_renaming_results(
+                naming_scheme,
+                self.episode_spin_box.value(),
+                self.download_queue_list,
+                self.season_spin_box.value(),
+                self.show_name_edit.text()
+            )
 
             self.download_queue.clear()
             for pack in episodes:
@@ -247,7 +286,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
     def add_to_queue(self) -> None:
         """
-        Add the currently selected items in the search result list to the download queue
+        Add the currently selected items in the search result
+        list to the download queue
 
         :return: None
         """
@@ -284,8 +324,10 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         :return:     None
         """
 
-        size_check = (lambda x: x > 0) if up and not down else (lambda x: x < len(self.download_queue_list) - 1)
-        index_change = (lambda x: x - 1) if up and not down else (lambda x: x + 1)
+        size_check = (lambda x: x > 0) if up and not down else (
+            lambda x: x < len(self.download_queue_list) - 1)
+        index_change = (lambda x: x - 1) if up and not down else (
+            lambda x: x + 1)
 
         indexes = self.download_queue.selectedIndexes() if up and not down \
             else reversed(self.download_queue.selectedIndexes())
@@ -294,12 +336,15 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
             index = row.row()
             if size_check(index):
-                self.download_queue_list.insert(index_change(index), self.download_queue_list.pop(index))
+                self.download_queue_list.insert(
+                    index_change(index),
+                    self.download_queue_list.pop(index)
+                )
 
         self.refresh_download_queue()
 
-    def update_progress(self, single_progress: float, total_progress: float, current_speed: int, average_speed: int)\
-            -> None:
+    def update_progress(self, single_progress: float, total_progress: float,
+                        current_speed: int, average_speed: int) -> None:
         """
         Updates the progress bars and speed displays
 
@@ -318,7 +363,8 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         """
         Starts a spinner animation while either searching or downloading
 
-        :param spinner_type: The type of spinner (a string that's either 'download' or 'search')
+        :param spinner_type: The type of spinner
+                             (a string that's either 'download' or 'search')
         :return:             None
         """
 
@@ -327,27 +373,41 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
 
         def spin():
 
-            while (self.searching and search) or (self.downloading and download):
+            while (self.searching and search) or \
+                    (self.downloading and download):
 
                 if self.searching and search:
-                    new_text = "Searching" + (self.search_button.text().count(".") % 3 + 1) * "."
-                    self.spinner_updater_signal.emit(self.search_button, new_text)
+                    new_text = \
+                        "Searching" + \
+                        (self.search_button.text().count(".") % 3 + 1) * "."
+                    self.spinner_updater_signal.emit(
+                        self.search_button, new_text
+                    )
 
                 if self.downloading and download:
-                    new_text = "Downloading" + (self.download_button.text().count(".") % 3 + 1) * "."
-                    self.spinner_updater_signal.emit(self.download_button, new_text)
+                    new_text = \
+                        "Downloading" + \
+                        (self.download_button.text().count(".") % 3 + 1) * "."
+                    self.spinner_updater_signal.emit(
+                        self.download_button, new_text
+                    )
 
                 time.sleep(0.3)
 
             if search and not self.searching:
-                self.spinner_updater_signal.emit(self.search_button, "Search")
+                self.spinner_updater_signal.emit(
+                    self.search_button, "Search"
+                )
             if download and not self.downloading:
-                self.spinner_updater_signal.emit(self.download_button, "Download")
+                self.spinner_updater_signal.emit(
+                    self.download_button, "Download"
+                )
 
         Thread(target=spin).start()
 
     # noinspection PyMethodMayBeStatic
-    def generate_message(self, icon_type: object, window_title: str, text: str) -> QMessageBox:
+    def generate_message(self, icon_type: object, window_title: str,
+                         text: str) -> QMessageBox:
         """
         Generates a message dialog.
 
@@ -362,22 +422,27 @@ class XDCCDownloadManagerQtGui(QMainWindow, Ui_XDCCDownloadManagerWindow):
         msg.setStandardButtons(QMessageBox.Ok)
         return msg
 
-    def show_download_completed_message_box(self, packs: Dict[XDCCPack, str]) -> None:
+    def show_download_completed_message_box(self, packs: Dict[XDCCPack, str]) \
+            -> None:
         """
         Shows a dialog box that indicates that the download has completed
 
-        :param packs: the packs that were downloaded, and their results, as output by the Downloader
+        :param packs: the packs that were downloaded, and their results,
+                      as output by the Downloader
         :return:      None
         """
-        message = self.generate_message(QMessageBox.Information, "Download Complete",
-                                        "The following packs were downloaded:")
+        message = self.generate_message(
+            QMessageBox.Information, "Download Complete",
+            "The following packs were downloaded:"
+        )
 
         details = ""
         for pack in packs:
             details += pack.get_filename() + ": " + packs[pack] + "\n"
         message.setDetailedText(details.rstrip().lstrip())
 
-        if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+        # pragma: no cover
+        if not sys.argv == [sys.argv[0], "-platform", "minimal"]:
             message.exec_()
 
     def closeEvent(self, event: object) -> None:

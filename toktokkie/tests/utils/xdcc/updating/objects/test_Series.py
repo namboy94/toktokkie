@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -33,8 +28,10 @@ from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 class UnitTests(unittest.TestCase):
 
     def setUp(self):
-        self.test_series = Series("Updater Test Series", "test.txt", "1080p", "xdcc_servbot", 1, ["namibsun"],
-                                  "Plex (TVDB)", "namibsun")
+        self.test_series = Series(
+            "Updater Test Series", "test.txt", "1080p", "xdcc_servbot", 1,
+            ["namibsun"], "Plex (TVDB)", "namibsun"
+        )
 
     def tearDown(self):
         if os.path.isdir("Updater Test Series"):
@@ -67,19 +64,34 @@ class UnitTests(unittest.TestCase):
 
         season_directory = os.path.join("Updater Test Series", "Season 1")
 
-        self.assertTrue(MetaDataManager.is_media_directory("Updater Test Series"))
+        self.assertTrue(
+            MetaDataManager.is_media_directory("Updater Test Series"))
         self.assertTrue(os.path.isdir(season_directory))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E01 - Episode 1.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E02 - Episode 2.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E03 - Episode 3.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory,
+            "Updater Test Series - S01E01 - Episode 1.txt"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory,
+            "Updater Test Series - S01E02 - Episode 2.txt"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory,
+            "Updater Test Series - S01E03 - Episode 3.txt"
+        )))
 
         self.test_series.update(verbose=True)
 
-        self.assertTrue(MetaDataManager.is_media_directory("Updater Test Series"))
+        self.assertTrue(MetaDataManager.is_media_directory(
+            "Updater Test Series"
+        ))
         self.assertTrue(os.path.isdir(season_directory))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E01 - Episode 1.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E02 - Episode 2.txt")))
-        self.assertTrue(os.path.isfile(os.path.join(season_directory, "Updater Test Series - S01E03 - Episode 3.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory, "Updater Test Series - S01E01 - Episode 1.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory, "Updater Test Series - S01E02 - Episode 2.txt")))
+        self.assertTrue(os.path.isfile(os.path.join(
+            season_directory, "Updater Test Series - S01E03 - Episode 3.txt")))
 
     def test_search_for_episodes_where_bot_does_not_match(self):
         self.test_series.set_bot_preference("Not A Bot")

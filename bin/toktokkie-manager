@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 """
 LICENSE:
 Copyright 2015,2016 Hermann Krumrey
@@ -22,17 +25,16 @@ This file is part of toktokkie.
 LICENSE
 """
 
-"""
-The metadata is stored here. It can be used by any other module in this project this way, most
-notably by the setup.py file
-"""
+import sys
+from PyQt5.QtWidgets import QApplication
+from toktokkie.ui.qt.MetadataConfiguratorQtGui import MetadataConfiguratorQtGui
 
-version = "0.14.0"
-"""
-The current version of the program
-"""
+def start():
+    app = QApplication(sys.argv)
+    form = MetadataConfiguratorQtGui()
+    form.show()
+    app.exec_()
 
-sentry_dsn = "https://82919205c6e8434683783f57939149ae:8f27907cecb7419184dd274cb41963fc@sentry.io/110683"
-"""
-The DSN used for Sentry Error Logging
-"""
+
+if __name__ == '__main__':
+    start()

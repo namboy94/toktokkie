@@ -1,25 +1,20 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
@@ -33,7 +28,8 @@ from toktokkie.utils.renaming.TVSeriesRenamer import TVSeriesRenamer
 from toktokkie.utils.metadata.MetaDataManager import MetaDataManager
 from toktokkie.ui.qt.pyuic.tv_series_renamer import Ui_TVSeriesRenamer
 from toktokkie.utils.renaming.schemes.SchemeManager import SchemeManager
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QHeaderView, QPushButton, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, \
+    QHeaderView, QPushButton, QMessageBox
 
 
 class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
@@ -41,7 +37,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
     Class that models th QT GUI for the TV Series Renamer
     """
 
-    spinner_updater_signal = pyqtSignal(str, QPushButton, name="spinner_updater")
+    spinner_updater_signal = \
+        pyqtSignal(str, QPushButton, name="spinner_updater")
     visibility_switcher_signal = pyqtSignal(bool, name="visibility_switcher")
     populate_list_signal = pyqtSignal(str, name="populate_list")
 
@@ -64,7 +61,9 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
         self.recursive_check.stateChanged.connect(self.parse_directory)
 
         self.spinner_updater_signal.connect(self.update_spinner_text)
-        self.visibility_switcher_signal.connect(lambda x: self.meta_warning_label.setVisible(x))  # pragma: no cover
+        # pragma: no cover
+        self.visibility_switcher_signal.connect(
+            lambda x: self.meta_warning_label.setVisible(x))
         self.populate_list_signal.connect(self.populate_list)
 
         for scheme in SchemeManager.get_scheme_names():
@@ -85,7 +84,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
     def browse_for_directory(self) -> None:
         """
         Brings up a directory browser window.
-        Once a directory was selected, the new directory is then inserted into the
+        Once a directory was selected,
+        the new directory is then inserted into the
         directory path entry.
 
         :return: None
@@ -103,8 +103,9 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
         Checks the currently entered directory for episode files to rename.
         All discovered episodes are then displayed in the rename list
 
-        This can be cancelled using the cancel button, which is why the thread is assigned a random 50-character
-        id with which can be determined if the thread was cancelled
+        This can be cancelled using the cancel button, which is why the thread
+        is assigned a random 50-character id with which can be determined if
+        the thread was cancelled
 
         :return: None
         """
@@ -125,13 +126,20 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
                 directory = directory.rsplit(os.path.sep, 1)[0]
 
             if os.path.isdir(directory) and \
-                    (MetaDataManager.is_media_directory(directory, media_type="tv_series") or
-                     self.recursive_check.checkState()):
+                    (MetaDataManager.is_media_directory(
+                        directory, media_type="tv_series"
+                    )
+                    or self.recursive_check.checkState()):
 
                 renaming_scheme = self.scheme_selector.currentText()
-                renaming_scheme = SchemeManager.get_scheme_from_scheme_name(renaming_scheme)
+                renaming_scheme = \
+                    SchemeManager.get_scheme_from_scheme_name(renaming_scheme)
 
-                renamer = TVSeriesRenamer(directory, renaming_scheme, self.recursive_check.checkState())
+                renamer = TVSeriesRenamer(
+                    directory,
+                    renaming_scheme,
+                    self.recursive_check.checkState()
+                )
                 confirmation = renamer.request_confirmation()
 
                 if parse_id == self.parser_id:
@@ -161,7 +169,9 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
         """
         self.populating = True
         for item in self.confirmation:
-            self.rename_list.addTopLevelItem(QTreeWidgetItem([item.get_names()[0], item.get_names()[1]]))
+            self.rename_list.addTopLevelItem(
+                QTreeWidgetItem([item.get_names()[0], item.get_names()[1]])
+            )
         self.populating = False
 
     def cancel(self) -> None:
@@ -209,7 +219,8 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
             msg.setText("The files where successfully renamed")
             msg.setStandardButtons(QMessageBox.Ok)
 
-            if not sys.argv == [sys.argv[0], "-platform", "minimal"]:  # pragma: no cover
+            # pragma: no cover
+            if not sys.argv == [sys.argv[0], "-platform", "minimal"]:
                 msg.exec_()
 
         Thread(target=rename).start()
@@ -226,13 +237,16 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
             self.confirmation.pop(row.row() - int(index / 2))
         self.rename_list.clear()
         for item in self.confirmation:
-            self.rename_list.addTopLevelItem(QTreeWidgetItem([item.get_names()[0], item.get_names()[1]]))
+            self.rename_list.addTopLevelItem(
+                QTreeWidgetItem([item.get_names()[0], item.get_names()[1]])
+            )
 
     def start_spinner(self, mode: str) -> None:
         """
         Starts a small animation while something is loading, parsing etc.
 
-        :param mode:  The mode determines which UI element is going to be 'spun'
+        :param mode:  The mode determines which UI element
+                      is going to be 'spun'
         :return:      None
         """
         renaming = mode == "rename"
@@ -243,18 +257,28 @@ class TVSeriesRenamerQtGui(QMainWindow, Ui_TVSeriesRenamer):
             while (renaming and self.renaming) or (parsing and self.parsing):
 
                 if renaming and self.renaming:
-                    new_text = "Renaming" + (self.confirm_button.text().count(".") % 3 + 1) * "."
-                    self.spinner_updater_signal.emit(new_text, self.confirm_button)
+                    new_text = \
+                        "Renaming" + \
+                        (self.confirm_button.text().count(".") % 3 + 1) * "."
+                    self.spinner_updater_signal.emit(
+                        new_text, self.confirm_button
+                    )
 
                 if parsing and self.parsing:
-                    new_text = "Reloading" + (self.browse_button.text().count(".") % 3 + 1) * "."
-                    self.spinner_updater_signal.emit(new_text, self.browse_button)
+                    new_text = \
+                        "Reloading" + \
+                        (self.browse_button.text().count(".") % 3 + 1) * "."
+                    self.spinner_updater_signal.emit(
+                        new_text, self.browse_button
+                    )
                 time.sleep(0.3)
 
             if renaming and not self.renaming:
-                self.spinner_updater_signal.emit("Confirm", self.confirm_button)
+                self.spinner_updater_signal.emit(
+                    "Confirm", self.confirm_button)
             if parsing and not self.parsing:
-                self.spinner_updater_signal.emit("Browse", self.browse_button)
+                self.spinner_updater_signal.emit(
+                    "Browse", self.browse_button)
 
         Thread(target=spin).start()
 

@@ -4,7 +4,7 @@
 |:----:|:-----:|
 |[![build status](https://gitlab.namibsun.net/namboy94/toktokkie/badges/master/build.svg)](https://gitlab.namibsun.net/namboy94/toktokkie/commits/master)|[![build status](https://gitlab.namibsun.net/namboy94/toktokkie/badges/develop/build.svg)](https://gitlab.namibsun.net/namboy94/toktokkie/commits/develop)|
 
-![Logo](toktokkie/resources/logo/logo_256.png)
+![Logo](resources/logo/logo-readme.png)
 
 An multi-purpose media manager
 
@@ -92,6 +92,7 @@ toktokkie als integrates a number of external GUIs and TUIs:
 ## Further Information
 
 * [Changelog](https://gitlab.namibsun.net/namboy94/toktokkie/raw/master/CHANGELOG)
+* [License (GPLv3)](https://gitlab.namibsun.net/namboy94/toktokkie/raw/master/LICENSE)
 * [Gitlab](https://gitlab.namibsun.net/namboy94/toktokkie)
 * [Github](https://github.com/namboy94/toktokkie)
 * [Python Package Index Site](https://pypi.python.org/pypi/toktokkie)

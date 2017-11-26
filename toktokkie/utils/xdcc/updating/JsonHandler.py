@@ -1,32 +1,28 @@
 """
-LICENSE:
-Copyright 2015,2016 Hermann Krumrey
+Copyright 2015-2017 Hermann Krumrey
 
 This file is part of toktokkie.
 
-    toktokkie is a program that allows convenient managing of various
-    local media collections, mostly focused on video.
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    toktokkie is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    toktokkie is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # imports
 import sys
 import json
 from typing import List
-from toktokkie.utils.xdcc.updating.objects.Series import Series, from_dict as series_generator
+from toktokkie.utils.xdcc.updating.objects.Series import Series, \
+    from_dict as series_generator
 
 
 class JsonHandler(object):
@@ -36,7 +32,8 @@ class JsonHandler(object):
 
     def __init__(self, json_file: str = None) -> None:
         """
-        Creates a new JsonHandler, either from scratch or from an existing JSON file
+        Creates a new JsonHandler, either from scratch or
+        from an existing JSON file
 
         :raises:          ValueError if the loaded JSON file was invalid.json
         :param json_file: An optional JSON file location.
@@ -52,7 +49,8 @@ class JsonHandler(object):
 
     def check_validity(self) -> None:
         """
-        Checks the JSON data for validity. If the file is not valid, an exception is raised
+        Checks the JSON data for validity. If the file is not valid,
+        an exception is raised
 
         :raises: ValueError if the loaded JSON file was invalid.json
         :return: None
@@ -77,7 +75,8 @@ class JsonHandler(object):
         """
         Stores the current JSON data in a JSON file
 
-        :param destination: The destination JSON file. If left blank, the loaded file will be used
+        :param destination: The destination JSON file. If left blank,
+        the loaded file will be used
         :return:            None
         """
         if not destination:
@@ -88,7 +87,13 @@ class JsonHandler(object):
         open_mode = "w" if sys.version_info[0] >= 3 else 'wb'
 
         with open(destination, open_mode) as f:
-            json.dump(self.json_data, f)
+            json.dump(
+                self.json_data,
+                f,
+                sort_keys=True,
+                indent=2,
+                separators=(',', ': ')
+            )
 
     def add_series(self, series: Series) -> None:
         """
