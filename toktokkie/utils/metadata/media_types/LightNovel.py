@@ -90,7 +90,7 @@ class LightNovel(Ebook):
         }
 
         # noinspection PyTypeChecker
-        return parse_myanimelist_url(self.myanimelist_urls, params)
+        return parse_myanimelist_url(self.myanimelist_urls[0], params)
 
     def load_novelupdates_data(self) -> Dict[str, str]:
         """

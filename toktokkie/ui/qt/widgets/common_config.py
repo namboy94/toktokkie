@@ -140,7 +140,7 @@ def display_tv_series_info(widget: GenericConfig):
     """
     display_base_info(widget)
 
-    widget.tvdb_url_edit.setText(widget.metadata.tvdb_url)
+    widget.tvdb_url_edit.setText(", ".join(widget.metadata.tvdb_urls))
     widget.audio_language_edit.setText(", ".join(widget.metadata.audio_langs))
     widget.subtitle_language_edit.setText(
         ", ".join(widget.metadata.subtitle_langs))
@@ -166,7 +166,7 @@ def display_anime_series_info(widget: GenericConfig):
     :return: None
     """
     display_tv_series_info(widget)
-    widget.myanimelist_url_edit.setText(widget.metadata.myanimelist_url)
+    widget.myanimelist_url_edit.setText(", ".join(widget.metadata.myanimelist_urls))
 
 
 def display_ebook_info(widget: GenericConfig):
@@ -192,8 +192,8 @@ def display_light_novel_info(widget: GenericConfig):
     widget.illustrator_edit.setText(widget.metadata.illustrator)
     widget.official_translation_check.setChecked(
         widget.metadata.official_translation)
-    widget.myanimelist_url_edit.setText(widget.metadata.myanimelist_url)
-    widget.novelupdates_url_edit.setText(widget.metadata.novelupdates_url)
+    widget.myanimelist_url_edit.setText(", ".join(widget.metadata.myanimelist_urls))
+    widget.novelupdates_url_edit.setText(", ".join(widget.metadata.novelupdates_urls))
 
 
 def store_base_info(widget: GenericConfig):
@@ -216,7 +216,7 @@ def store_tv_series_info(widget: GenericConfig):
     """
     store_base_info(widget)
 
-    widget.metadata.tvdb_url = widget.tvdb_url_edit.text()
+    widget.metadata.tvdb_urls = widget.tvdb_url_edit.text().split(",")
     widget.metadata.audio_langs = widget.audio_language_edit.text().split(",")
     widget.metadata.subtitle_langs = \
         widget.subtitle_language_edit.text().split(",")
@@ -247,7 +247,7 @@ def store_anime_series_info(widget: GenericConfig):
     :return: None
     """
     store_tv_series_info(widget)
-    widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text()
+    widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text().split(",")
 
 
 def store_ebook_info(widget: GenericConfig):
@@ -273,5 +273,5 @@ def store_light_novel_info(widget: GenericConfig):
     widget.metadata.illustrator = widget.illustrator_edit.text()
     widget.metadata.official_translation = \
         bool(widget.official_translation_check.checkState())
-    widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text()
-    widget.metadata.novelupdates_url = widget.novelupdates_url_edit.text()
+    widget.metadata.myanimelist_url = widget.myanimelist_url_edit.text().split(",")
+    widget.metadata.novelupdates_url = widget.novelupdates_url_edit.text().split(",")

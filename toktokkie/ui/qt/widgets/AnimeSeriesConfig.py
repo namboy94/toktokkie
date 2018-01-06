@@ -39,10 +39,10 @@ class AnimeSeriesConfig(GenericConfig, Ui_AnimeSeriesConfig):
         self.metadata = None
         self.initialize()
         self.tvdb_url_button.clicked.connect(
-            lambda x: webbrowser.open(self.metadata.tvdb_url, new=2)
+            lambda x: webbrowser.open(self.metadata.tvdb_urls[0], new=2)
         )
         self.myanimelist_url_button.clicked.connect(
-            lambda x: webbrowser.open(self.metadata.myanimelist_url, new=2)
+            lambda x: webbrowser.open(self.metadata.myanimelist_urls[0], new=2)
         )
 
     def load_online_data(self):

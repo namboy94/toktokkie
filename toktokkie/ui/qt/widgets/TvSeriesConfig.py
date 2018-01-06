@@ -38,7 +38,7 @@ class TvSeriesConfig(GenericConfig, Ui_TvSeriesConfig):
         self.metadata = None
         self.initialize()
         self.tvdb_url_button.clicked.connect(
-            lambda x: webbrowser.open(self.metadata.tvdb_url, new=2))
+            lambda x: webbrowser.open(self.metadata.tvdb_url[0], new=2))
 
     def load_online_data(self):
         """

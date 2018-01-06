@@ -46,6 +46,10 @@ class MetadataConfiguratorQtGui(QMainWindow, Ui_MetadataConfigurator):
 
         self.config_file = os.path.join(os.path.expanduser("~"),
                                         ".toktokkie/metadata_config.json")
+        if not os.path.isfile(self.config_file):
+            with open(self.config_file, 'w') as f:
+                f.write("{\"media_directories\": []}")
+
         with open(self.config_file, 'r') as f:
             self.config_data = json.loads(f.read())
 

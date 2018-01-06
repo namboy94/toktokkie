@@ -63,7 +63,7 @@ class AnimeSeries(TvSeries):
         }
 
         # noinspection PyTypeChecker
-        return parse_myanimelist_url(self.myanimelist_urls, params)
+        return parse_myanimelist_url(self.myanimelist_urls[0], params)
 
     # noinspection PyDefaultArgument
     @staticmethod

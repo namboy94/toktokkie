@@ -38,9 +38,9 @@ class LightNovelConfig(GenericConfig, Ui_LightNovelConfig):
         self.metadata = None
         self.initialize()
         self.myanimelist_url_button.clicked.connect(
-            lambda x: webbrowser.open(self.metadata.myanimelist_url, new=2))
+            lambda x: webbrowser.open(self.metadata.myanimelist_urls[0], new=2))
         self.novelupdates_url_button.clicked.connect(
-            lambda x: webbrowser.open(self.metadata.novelupdates_url, new=2))
+            lambda x: webbrowser.open(self.metadata.novelupdates_urls[0], new=2))
 
     def load_online_data(self):
         """
