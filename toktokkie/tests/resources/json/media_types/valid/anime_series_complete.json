@@ -5,8 +5,8 @@
   "resolutions": [],
   "audio_langs": [],
   "subtitle_langs": [],
-  "tvdb_url": "tvdb",
-  "myanimelist_url": "mal",
+  "tvdb_urls": ["tvdb"],
+  "myanimelist_urls": ["mal"],
   "seasons": {
     "Season 1": {
       "resolutions": [{"x": 1920, "y": 1080}]

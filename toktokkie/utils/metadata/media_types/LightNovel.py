@@ -45,14 +45,14 @@ class LightNovel(Ebook):
         return bool(self.resolve_inner_attribute("official_translation"))
 
     @property
-    def myanimelist_url(self) -> str:
-        url = self.resolve_inner_attribute("myanimelist_url")
-        return url if url is not None else ""
+    def myanimelist_urls(self) -> List[str]:
+        url = self.resolve_inner_attribute("myanimelist_urls")
+        return url if url is not None else []
 
     @property
-    def novelupdates_url(self) -> str:
-        url = self.resolve_inner_attribute("novelupdates_url")
-        return url if url is not None else ""
+    def novelupdates_urls(self) -> List[str]:
+        url = self.resolve_inner_attribute("novelupdates_urls")
+        return url if url is not None else []
 
     # Setters
     @illustrator.setter
@@ -63,15 +63,15 @@ class LightNovel(Ebook):
     def official_translation(self, value: bool):
         self.store_inner_attribute("official_translation", value)
 
-    @myanimelist_url.setter
-    def myanimelist_url(self, value: str):
-        url = None if value == "" else value
-        self.store_inner_attribute("myanimelist_url", url)
+    @myanimelist_urls.setter
+    def myanimelist_urls(self, value: List[str]):
+        url = None if value == [] else value
+        self.store_inner_attribute("myanimelist_urls", url)
 
-    @novelupdates_url.setter
-    def novelupdates_url(self, value: str):
-        url = None if value == "" else value
-        self.store_inner_attribute("novelupdates_url", url)
+    @novelupdates_urls.setter
+    def novelupdates_urls(self, value: List[str]):
+        url = None if value == [] else value
+        self.store_inner_attribute("novelupdates_urls", url)
 
     def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
         """
@@ -90,7 +90,7 @@ class LightNovel(Ebook):
         }
 
         # noinspection PyTypeChecker
-        return parse_myanimelist_url(self.myanimelist_url, params)
+        return parse_myanimelist_url(self.myanimelist_urls, params)
 
     def load_novelupdates_data(self) -> Dict[str, str]:
         """
@@ -100,12 +100,12 @@ class LightNovel(Ebook):
 
         data = {"licensed": "?", "completely_translated": "?"}
 
-        html = requests.get(self.novelupdates_url)
+        html = requests.get(self.novelupdates_urls)
         retries = 0
         while html.status_code != 200 and retries < 10:
             time.sleep(1)
             retries += 1
-            html = requests.get(self.novelupdates_url)
+            html = requests.get(self.novelupdates_urls)
 
         soup = BeautifulSoup(
             "" if html.status_code != 200 else html.text, "html.parser"
@@ -129,7 +129,7 @@ class LightNovel(Ebook):
         """
         additional.append({
             "required": {"official_translation": bool},
-            "optional": {"myanimelist_url": str, "novelupdates_url": str},
+            "optional": {"myanimelist_urls": list, "novelupdates_urls": list},
             "extenders": {}
         })
         return super(LightNovel, LightNovel).define_attributes(additional)

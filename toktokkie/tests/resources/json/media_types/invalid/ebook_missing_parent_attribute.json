@@ -2,5 +2,5 @@
   "type": "ebook",
   "tags": ["test"],
   "author": "Test",
-  "isbn": "N/A"
+  "isbn": ["N/A"]
 }

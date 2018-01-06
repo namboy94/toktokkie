@@ -52,9 +52,9 @@ class TvSeries(Base):
         return self.resolve_inner_attribute("subtitle_langs")
 
     @property
-    def tvdb_url(self) -> str:
-        url = self.resolve_inner_attribute("tvdb_url")
-        return url if url is not None else ""
+    def tvdb_urls(self) -> List[str]:
+        url = self.resolve_inner_attribute("tvdb_urls")
+        return url if url is not None else []
 
     @property  # Doesn't get a setter
     def seasons(self) -> Dict[str, Dict[str, object]] or None:
@@ -89,10 +89,10 @@ class TvSeries(Base):
         self.store_inner_attribute("subtitle_langs",
                                    list(map(lambda x: x.strip(), value)))
 
-    @tvdb_url.setter
-    def tvdb_url(self, value: str):
-        url = None if value == "" else value
-        self.store_inner_attribute("tvdb_url", url)
+    @tvdb_urls.setter
+    def tvdb_urls(self, value: List[str]):
+        url = None if value == [] else value
+        self.store_inner_attribute("tvdb_urls", url)
 
     def get_child_names(self) -> List[str]:
         """
@@ -164,7 +164,7 @@ class TvSeries(Base):
                 "audio_langs": list,
                 "subtitle_langs": list
             },
-            "optional": {"tvdb_url": str},
+            "optional": {"tvdb_urls": list},
             "extenders": {"seasons": dict}
         })
         return super(TvSeries, TvSeries).define_attributes(additional)

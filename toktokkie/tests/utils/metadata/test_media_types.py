@@ -146,16 +146,16 @@ class MediaTypesUnitTests(unittest.TestCase):
             "anime_series_minimal.json"
         )
         anime = AnimeSeries("test_media_type")
-        anime.myanimelist_url = "M@L"
+        anime.myanimelist_urls = ["M@L"]
 
         new_anime = AnimeSeries("test_media_type")
-        self.assertNotEqual(new_anime.myanimelist_url, "M@L")
-        self.assertEqual(new_anime.myanimelist_url, "")
+        self.assertNotEqual(new_anime.myanimelist_urls, ["M@L"])
+        self.assertEqual(new_anime.myanimelist_urls, [])
 
         anime.write_changes()
 
         new_anime = AnimeSeries("test_media_type")
-        self.assertEqual(new_anime.myanimelist_url, "M@L")
+        self.assertEqual(new_anime.myanimelist_urls, ["M@L"])
         shutil.rmtree("test_media_type")
 
     def test_modifying_ebook(self):
@@ -167,15 +167,15 @@ class MediaTypesUnitTests(unittest.TestCase):
             "toktokkie/tests/resources/json/media_types/valid/ebook.json"
         )
         ebook = Ebook("test_media_type")
-        ebook.isbn = "AAAAAA"
+        ebook.isbn = ["AAAAAA"]
 
         new_ebook = Ebook("test_media_type")
-        self.assertNotEqual(new_ebook.isbn, "AAAAAA")
+        self.assertNotEqual(new_ebook.isbn, ["AAAAAA"])
 
         ebook.write_changes()
 
         new_ebook = Ebook("test_media_type")
-        self.assertEqual(new_ebook.isbn, "AAAAAA")
+        self.assertEqual(new_ebook.isbn, ["AAAAAA"])
         shutil.rmtree("test_media_type")
 
     def test_modifying_light_novel(self):
@@ -189,15 +189,15 @@ class MediaTypesUnitTests(unittest.TestCase):
         )
 
         ln = LightNovel("test_media_type")
-        ln.novelupdates_url = "N"
+        ln.novelupdates_urls = ["N"]
 
         new_ln = LightNovel("test_media_type")
-        self.assertNotEqual(new_ln.novelupdates_url, "N")
+        self.assertNotEqual(new_ln.novelupdates_urls, ["N"])
 
         ln.write_changes()
 
         new_ln = LightNovel("test_media_type")
-        self.assertEqual(new_ln.novelupdates_url, "N")
+        self.assertEqual(new_ln.novelupdates_urls, ["N"])
         shutil.rmtree("test_media_type")
 
     def test_removing_optional_attribute(self):
@@ -210,15 +210,15 @@ class MediaTypesUnitTests(unittest.TestCase):
             "tv_series_complete.json"
         )
         tv = TvSeries("test_media_type")
-        tv.tvdb_url = None
+        tv.tvdb_urls = None
 
         new_tv = TvSeries("test_media_type")
-        self.assertNotEqual(new_tv.tvdb_url, "")
+        self.assertNotEqual(new_tv.tvdb_urls, [])
 
         tv.write_changes()
 
         new_tv = TvSeries("test_media_type")
-        self.assertEqual(new_tv.tvdb_url, "")
+        self.assertEqual(new_tv.tvdb_urls, [])
         shutil.rmtree("test_media_type")
 
     def test_generating_media_type_directories(self):

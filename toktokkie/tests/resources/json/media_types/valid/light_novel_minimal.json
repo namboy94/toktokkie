@@ -3,6 +3,6 @@
   "name": "LightNovel",
   "tags": ["test"],
   "author": "Test",
-  "isbn": "N/A",
+  "isbn": [],
   "official_translation": true
 }

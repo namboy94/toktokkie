@@ -3,8 +3,8 @@
   "name": "LightNovel",
   "tags": ["test"],
   "author": "Test",
-  "isbn": "N/A",
+  "isbn": [],
   "official_translation": true,
-  "myanimelist_url": "mal",
-  "novelupdates_url": "novelupdates"
+  "myanimelist_urls": ["mal"],
+  "novelupdates_urls": ["novelupdates"]
 }

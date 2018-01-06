@@ -5,7 +5,7 @@
   "resolutions": [],
   "audio_langs": [],
   "subtitle_langs": [],
-  "tvdb_url": "tvdb",
+  "tvdb_urls": ["tvdb"],
   "seasons": {
     "Season 1": {
       "resolutions": [{"x": 1920, "y": 1080}],

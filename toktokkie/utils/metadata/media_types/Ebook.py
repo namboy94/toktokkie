@@ -38,8 +38,9 @@ class Ebook(Base):
         return str(self.resolve_inner_attribute("author"))
 
     @property
-    def isbn(self) -> str:  # ISBN-13
-        return str(self.resolve_inner_attribute("isbn"))
+    def isbn(self) -> List[str]:  # ISBN-13
+        # noinspection PyTypeChecker
+        return list(self.resolve_inner_attribute("isbn"))
 
     @property  # Doesn't get a setter
     def books(self) -> Dict[str, Dict[str, object]] or None:
@@ -54,7 +55,7 @@ class Ebook(Base):
         self.store_inner_attribute("author", value)
 
     @isbn.setter
-    def isbn(self, value: str):
+    def isbn(self, value: List[str]):
         self.store_inner_attribute("isbn", value)
 
     def get_child_names(self) -> List[str]:
@@ -84,7 +85,7 @@ class Ebook(Base):
         :return: The attributes of the Media Type
         """
         additional.append({
-            "required": {"isbn": str},
+            "required": {"isbn": list},
             "optional": {},
             "extenders": {"books": dict}
         })

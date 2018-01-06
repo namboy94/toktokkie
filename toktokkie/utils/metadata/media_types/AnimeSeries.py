@@ -33,14 +33,14 @@ class AnimeSeries(TvSeries):
     """
 
     @property
-    def myanimelist_url(self) -> str:
-        url = self.resolve_inner_attribute("myanimelist_url")
-        return url if url is not None else ""
+    def myanimelist_urls(self) -> List[str]:
+        url = self.resolve_inner_attribute("myanimelist_urls")
+        return url if url is not None else []
 
-    @myanimelist_url.setter
-    def myanimelist_url(self, value: str):
-        url = None if value == "" else value
-        self.store_inner_attribute("myanimelist_url", url)
+    @myanimelist_urls.setter
+    def myanimelist_urls(self, value: List[str]):
+        url = None if value == [] else value
+        self.store_inner_attribute("myanimelist_urls", url)
 
     def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
         """
@@ -63,7 +63,7 @@ class AnimeSeries(TvSeries):
         }
 
         # noinspection PyTypeChecker
-        return parse_myanimelist_url(self.myanimelist_url, params)
+        return parse_myanimelist_url(self.myanimelist_urls, params)
 
     # noinspection PyDefaultArgument
     @staticmethod
@@ -77,7 +77,7 @@ class AnimeSeries(TvSeries):
         """
         additional.append({
             "required": {},
-            "optional": {"myanimelist_url": str},
+            "optional": {"myanimelist_urls": list, "myanimelist_check_ignore": list},
             "extenders": {}
         })
         return super(AnimeSeries, AnimeSeries).define_attributes(additional)
