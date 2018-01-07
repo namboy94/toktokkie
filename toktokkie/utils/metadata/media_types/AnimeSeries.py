@@ -42,6 +42,16 @@ class AnimeSeries(TvSeries):
         url = None if value == [] else value
         self.store_inner_attribute("myanimelist_urls", url)
 
+    @property
+    def myanimelist_ignore_urls(self) -> List[str]:
+        url = self.resolve_inner_attribute("myanimelist_ignore_urls")
+        return url if url is not None else []
+
+    @myanimelist_ignore_urls.setter
+    def myanimelist_ignore_urls(self, value: List[str]):
+        url = None if value == [] else value
+        self.store_inner_attribute("myanimelist_ignore_urls", url)
+
     def load_myanimelist_data(self) -> Dict[str, str or int or List[str]]:
         """
         Fetches information from myanimelist.net for this metadata object
@@ -77,7 +87,10 @@ class AnimeSeries(TvSeries):
         """
         additional.append({
             "required": {},
-            "optional": {"myanimelist_urls": list, "myanimelist_check_ignore": list},
+            "optional": {
+                "myanimelist_urls": list,
+                "myanimelist_ignore_urls": list
+            },
             "extenders": {}
         })
         return super(AnimeSeries, AnimeSeries).define_attributes(additional)

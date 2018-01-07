@@ -75,7 +75,7 @@ class MetaDataManager(object):
             directories.append(directory)
         else:
             # Parse every subdirectory like the original directory recursively
-            for child in children:
+            for child in sorted(children):
                 child_path = os.path.join(directory, child)
                 if os.path.isdir(child_path):
                     directories += \
