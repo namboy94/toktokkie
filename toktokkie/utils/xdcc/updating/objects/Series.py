@@ -200,8 +200,8 @@ class Series(object):
                 pack.original_filename.replace("'", "_")
             )  # Fix for incorrect file names
 
-        verbosity = 2 if verbose else 1
-        MultipleServerDownloader("random", verbosity).download(download_queue)
+        verbosity = 2 if verbose else 1  # Currently used for debugging
+        MultipleServerDownloader("random", 5).download(download_queue)
 
         show_name = os.path.basename(self.data["destination_directory"])
         renaming_scheme = SchemeManager.get_scheme_from_scheme_name(
