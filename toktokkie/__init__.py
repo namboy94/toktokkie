@@ -1,5 +1,5 @@
 """
-Copyright 2015-2017 Hermann Krumrey
+Copyright 2015-2018 Hermann Krumrey
 
 This file is part of toktokkie.
 
@@ -23,7 +23,7 @@ It can be used by any other module in this project this way, most
 notably by the setup.py file
 """
 
-version = "0.15.0"
+version = "0.16.0"
 """
 The current version of the program
 """
