@@ -17,7 +17,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import sys
 import argparse
+from toktokkie.metadata import Base
+from toktokkie.metadata import get_metadata_types
 
 
 def main():
@@ -25,7 +29,7 @@ def main():
     The toktokkie-metadata-gen main method
     :return: None
     """
-    media_types = []  # TODO Restrict media types
+    media_types = list(map(lambda x: x.type, get_metadata_types()))
 
     parser = argparse.ArgumentParser()
     parser.add_argument("directory",
@@ -37,8 +41,26 @@ def main():
 
     directory = args.directory
     media_type = args.media_type
+    metadata_class = list(filter(
+        lambda x: x.type == media_type,
+        get_metadata_types()
+    ))[0]
 
-    # TODO Generate Metadata
+    meta_dir = os.path.join(directory, ".meta")
+    meta_file = os.path.join(meta_dir, "info.json")
+    if os.path.isfile(meta_file):
+        prompt = input("Metadata File already exists. "
+                       "Continuing will delete the previous data. "
+                       "Continue? (y/n)")
+        if prompt != "y":
+            print("aborting")
+            sys.exit(0)
+
+    metadata = metadata_class.generate_from_prompts(directory)  # type: Base
+
+    if not os.path.isdir(meta_dir):
+        os.makedirs(meta_dir)
+    metadata.write(meta_file)
 
 
 if __name__ == "__main__":
