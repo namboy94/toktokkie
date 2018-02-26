@@ -1,5 +1,5 @@
 """
-Copyright 2015-2018 Hermann Krumrey
+Copyright 2015-2018 Hermann Krumrey <hermann@krumreyh.com>
 
 This file is part of toktokkie.
 
@@ -53,15 +53,15 @@ def find_scripts():
     """
     scripts = []
 
-    for file_name in os.listdir("bin"):
+    for file_name in os.listdir("toktokkie/bin"):
 
-        path = os.path.join("bin", file_name)
+        path = os.path.join("toktokkie/bin", file_name)
         if file_name == "__init__.py":
             continue
         elif not os.path.isfile(path):
             continue
         else:
-            scripts.append(os.path.join("bin", file_name))
+            scripts.append(os.path.join("toktokkie/bin", file_name))
 
     return scripts
 

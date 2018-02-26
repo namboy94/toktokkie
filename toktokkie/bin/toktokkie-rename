@@ -17,7 +17,18 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-version = "0.16.0"
-"""
-The current version of the program
-"""
+import argparse
+
+
+def main():
+    """
+    The toktokkie-rename main method
+    :return: None
+    """
+    parser = argparse.ArgumentParser()
+    args = parser.parse_args()
+    # TODO
+
+
+if __name__ == "__main__":
+    main()

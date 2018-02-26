@@ -1,0 +1,62 @@
+"""
+Copyright 2015-2018 Hermann Krumrey <hermann@krumreyh.com>
+
+This file is part of toktokkie.
+
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+import os
+import argparse
+
+
+def main():
+    """
+    The toktokkie-iconize main method
+    :return: None
+    """
+    # TODO Define naming schemes and agents
+    naming_schemes = ["plex"]
+    agents = ["tvdb", "myanimelist"]
+    default_naming_scheme = "plex"
+    default_agent = "tvdb"
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directories", nargs="+",
+                        help="The directories to iconize. "
+                             "Files and directories that do not contain any "
+                             "valid metadata configuration will be ignored.")
+    parser.add_argument("naming_scheme", choices=set(naming_schemes),
+                        default=default_naming_scheme,
+                        help="The naming scheme to use")
+    parser.add_argument("agent", choices=set(agents), default=default_agent,
+                        help="The episode data fetching agent to use")
+    parser.add_argument("--noconfirm", action="store",
+                        help="Skips the user confirmation step")
+    args = parser.parse_args()
+
+    directories = args.directories
+    naming_scheme = args.naming_scheme
+    agent = args.agent
+
+    for directory in directories:
+
+        if os.path.isfile(directory):  # TODO or not valid_metadata(directory)
+            continue
+
+        # TODO Rename + Confirmation
+
+
+if __name__ == "__main__":
+    main()
