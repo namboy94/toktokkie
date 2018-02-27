@@ -26,32 +26,3 @@ def get_metadata_types() -> list:
     :return: The list of metadata types
     """
     return[Base]
-
-
-def prompt_user(arg: str, arg_type: any, default: object = None) \
-        -> any:
-    """
-    Prompts a user for input.
-    :param arg: The argument which the user is prompted for
-    :param arg_type: The argument's type
-    :param default: An optional default value,
-                    used when the user enters nothing
-    :return: The result of the prompt
-    """
-
-    prompt = arg + " "
-    if default is not None:
-        prompt += "(Default: " + str(default) + ")"
-    prompt += ":   "
-
-    while True:
-        response = input(prompt)
-        if not response and default is None:
-            continue
-        elif not response and default is not None:
-            return default
-        else:
-            try:
-                return arg_type(response)
-            except ValueError:
-                continue
