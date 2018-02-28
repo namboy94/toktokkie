@@ -42,6 +42,9 @@ def main():
     args = parser.parse_args()
 
     directory = args.directory
+    if directory.endswith("/"):
+        directory = directory.rsplit("/", 1)[0]
+
     media_type = args.media_type
     metadata_class = list(filter(
         lambda x: x.type == media_type,
@@ -49,8 +52,6 @@ def main():
     ))[0]
 
     Directory(directory, True, metadata_class)
-    x = Directory(directory)
-    print(x.metadata.jsonize_dict(x.metadata.to_dict()))
 
 
 if __name__ == "__main__":

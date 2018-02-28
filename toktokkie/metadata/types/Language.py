@@ -34,7 +34,8 @@ class Language(MetaPrimitive):
         "fre": "French",
         "chi": "Chinese",
         "kor": "Korean",
-        "rus": "Russian"
+        "rus": "Russian",
+        "ara": "Arabic"
     }  # TODO Implement more languages
     """
     Dictionary mapping ISO 639-2/B language codes to languages

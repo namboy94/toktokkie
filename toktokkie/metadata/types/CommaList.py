@@ -42,7 +42,7 @@ class CommaList(MetaPrimitive):
         self.list = []
         for element in _list:
             if type(element) != self.meta_type:
-                element = element.parse(str(element))
+                element = self.meta_type.parse(str(element))
             self.list.append(element)
 
     @classmethod
@@ -53,6 +53,7 @@ class CommaList(MetaPrimitive):
         :return: The parsed list
         """
         parsed = string.split(",") if string != "" else []
+        parsed = list(map(lambda x: x.strip(), parsed))
         parsed = list(map(lambda x: Str(x), parsed))
         return cls(parsed)
 

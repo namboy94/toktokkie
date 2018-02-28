@@ -44,19 +44,23 @@ class TvSeriesSeason(MetaType):
     The default resolutions used in the prompt for this class
     """
 
-    def __init__(self, name: Str,
+    def __init__(self,
+                 path: Str,
+                 name: Str,
                  tvdb_ids: IntCommaList,
                  audio_langs: LanguageCommaList,
                  subtitle_langs: LanguageCommaList,
                  resolutions: ResolutionCommaList):
         """
         Initializes the TV Series Season
+        :param path: The name of the season's directory
         :param name: The name of the season
         :param tvdb_ids: The TVDB Ids of the season
         :param audio_langs: The audio languages of the season
         :param subtitle_langs: The subtitle languages of the season
         :param resolutions: The resolutions of the season
         """
+        self.path = path
         self.name = name
         self.tvdb_ids = tvdb_ids
         self.audio_langs = audio_langs
@@ -69,6 +73,7 @@ class TvSeriesSeason(MetaType):
         :return: The dictionary
         """
         return {
+            "path": self.path.to_json(),
             "name": self.name.to_json(),
             "tvdb_ids": self.tvdb_ids.to_json(),
             "audio_langs": self.audio_langs.to_json(),
@@ -84,6 +89,7 @@ class TvSeriesSeason(MetaType):
         :return: The generated TvSeries object
         """
         return cls(
+            Str.from_json(json_data["path"]),
             Str.from_json(json_data["name"]),
             IntCommaList.from_json(json_data["tvdb_ids"]),
             LanguageCommaList.from_json(json_data["audio_langs"]),
@@ -102,6 +108,7 @@ class TvSeriesSeason(MetaType):
         """
 
         print("Season \"" + name + "\":")
+        path = Str(name)
         name = prompt_user("Name", Str, Str(name))
 
         if previous is None:
@@ -125,4 +132,6 @@ class TvSeriesSeason(MetaType):
             "Resolutions", ResolutionCommaList, resolution_defaults
         )
 
-        return cls(name, tvdb_ids, audio_langs, subtitle_langs, resolutions)
+        return cls(
+            path, name, tvdb_ids, audio_langs, subtitle_langs, resolutions
+        )

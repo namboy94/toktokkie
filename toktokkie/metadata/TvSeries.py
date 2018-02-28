@@ -20,9 +20,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 from typing import Dict
 from toktokkie.metadata.Base import Base
-from toktokkie.metadata.helper import prompt_user
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
-from toktokkie.metadata.types.MetaType import Str, Int, MetaType, MetaList
+from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
 from toktokkie.metadata.exceptions import InvalidMetadataException
 
 
@@ -44,8 +43,6 @@ class TvSeries(Base):
         :return: The generated metadata dictionary
         """
         data = super().generate_dict_from_prompts(directory)
-
-        data["tvdb_id"] = prompt_user("TVDB ID", Int)
         seasons = []
 
         for season in sorted(os.listdir(directory)):
@@ -70,7 +67,6 @@ class TvSeries(Base):
         :return: The dictionary representation of the metadata
         """
         data = super().to_dict()
-        data["tvdb_id"] = self.tvdb_id
         data["seasons"] = self.seasons
         return data
 
@@ -81,7 +77,6 @@ class TvSeries(Base):
         """
         super().__init__(json_data)
         try:
-            self.tvdb_id = Int.from_json(json_data["tvdb_id"])
             self.seasons = MetaList([])
 
             for season in json_data["seasons"]:

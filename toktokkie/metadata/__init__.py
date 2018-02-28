@@ -40,4 +40,4 @@ def resolve_metadata(metadata_file: str) -> Base:
     metadata_class = \
         list(filter(lambda x: x.type == data["type"], metadata_types))[0]
 
-    return metadata_class.from_json(metadata_file)
+    return metadata_class.from_json_file(metadata_file)
