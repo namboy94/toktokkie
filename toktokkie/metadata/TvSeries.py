@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-from typing import List, Dict
+from typing import Dict
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.helper import prompt_user
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
@@ -37,19 +37,18 @@ class TvSeries(Base):
     """
 
     @classmethod
-    def generate_from_prompts(cls, directory: str,
-                              extra_data: List[Dict[str, MetaType]] = None):
+    def generate_dict_from_prompts(cls, directory: str) -> Dict[str, MetaType]:
         """
         Generates a TV Series from user prompts
         :param directory: The directory to generate the metadata for
-        :param extra_data: optional parameter that can be used by subclasses
-                           to add additional prompts
-        :return: The generated metadata object
+        :return: The generated metadata dictionary
         """
-        tvdb_id = prompt_user("TVDB ID", Int)
+        data = super().generate_dict_from_prompts(directory)
+
+        data["tvdb_id"] = prompt_user("TVDB ID", Int)
         seasons = []
 
-        for season in os.listdir(directory):
+        for season in sorted(os.listdir(directory)):
             season_dir = os.path.join(directory, season)
             if os.path.isfile(season_dir) or season.startswith(".meta"):
                 continue
@@ -62,16 +61,10 @@ class TvSeries(Base):
 
             seasons.append(season_obj)
 
-        data = [{
-            "tvdb_id": tvdb_id,
-            "seasons": MetaList(seasons)
-        }]
-        if extra_data is not None:
-            data += extra_data
+        data["seasons"] = MetaList(seasons)
+        return data
 
-        return super().generate_from_prompts(directory, data)
-
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict[str, MetaType]:
         """
         Turns the metadata into a dictionary
         :return: The dictionary representation of the metadata

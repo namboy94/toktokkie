@@ -42,16 +42,12 @@ class Base:
     # -------------------------------------------------------------------------
 
     @classmethod
-    def generate_from_prompts(cls, directory: str,
-                              extra_data: List[Dict[str, MetaType]] = None):
+    def generate_dict_from_prompts(cls, directory: str) -> Dict[str, MetaType]:
         """
-        Generates a Metadata object based on user prompts
-        This can and should be extended by child classes
+        Generates a Metadata dictionary based on user prompts.
         :param directory: The path to the directory for which to generate
                           the metadata
-        :param extra_data: Additional data. to insert into the data dictionary.
-                           May be used to make extending the method easier
-        :return: The generated metadata object
+        :return: The generated metadata dictionary
         """
         name = os.path.basename(directory)
         print("Generating " + cls.type + " metadata for " + name)
@@ -60,14 +56,7 @@ class Base:
             "name": prompt_user("Name", Str, Str(name)),
             "tags": prompt_user("Tags", StrCommaList, StrCommaList([]))
         }
-
-        if extra_data is not None:
-            for extra in extra_data:
-                for key, value in extra.items():
-                    data[key] = value
-
-        data = cls.jsonize_dict(data)
-        return cls(data)
+        return data
 
     def to_dict(self) -> dict:
         """
@@ -90,15 +79,25 @@ class Base:
                           to generate the metadata object
         """
         try:
-            self.name = Str(json_data["name"])
-            self.tags = StrCommaList(json_data["tags"])
+            self.name = Str.from_json(json_data["name"])
+            self.tags = StrCommaList.from_json(json_data["tags"])
         except KeyError:
             raise InvalidMetadataException()
 
     # -------------------------------------------------------------------------
 
     @classmethod
-    def from_json(cls, json_file: str):
+    def generate_from_prompts(cls, directory: str):
+        """
+        Generates a Metadata object from user prompts and a dictionary
+        :param directory: The dictionary to use
+        :return: The generated metadata object
+        """
+        data = cls.generate_dict_from_prompts(directory)
+        return cls(cls.jsonize_dict(data))
+
+    @classmethod
+    def from_json_file(cls, json_file: str):
         """
         Generates a Metadata object from a JSON file path
         :param json_file: The path to the JSON file
@@ -107,6 +106,13 @@ class Base:
         with open(json_file, "r") as f:
             data = json.load(f)
         return cls(data)
+
+    def to_json(self) -> Dict[str, any]:
+        """
+        Converts this object into a JSON dictionary
+        :return: The JSOn dictionary
+        """
+        return self.jsonize_dict(self.to_dict())
 
     def write(self, json_file: str):
         """
