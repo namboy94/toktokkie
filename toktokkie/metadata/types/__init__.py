@@ -16,8 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-from toktokkie.metadata.types.MetaType import MetaType, MetaPrimitive, Str, Int
-from toktokkie.metadata.types.CommaList import CommaList as StrCommaList
-from toktokkie.metadata.types.CommaList import CommaList, IntCommaList, \
-    ResolutionCommaList, LanguageCommaList

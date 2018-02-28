@@ -19,10 +19,11 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import json
-from typing import Type, List, Dict
+from typing import List, Dict
+from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.exceptions import InvalidMetadataException
-from toktokkie.metadata.types import MetaType, MetaPrimitive, CommaList, \
-    StrCommaList, Str
+from toktokkie.metadata.types.MetaType import MetaType, Str
+from toktokkie.metadata.types.CommaList import StrCommaList
 
 
 class Base:
@@ -56,8 +57,8 @@ class Base:
         print("Generating " + cls.type + " metadata for " + name)
         data = {
             "type": cls.type,
-            "name": cls.prompt_user("Name", Str, Str(name)),
-            "tags": cls.prompt_user("Tags", CommaList, CommaList([]))
+            "name": prompt_user("Name", Str, Str(name)),
+            "tags": prompt_user("Tags", StrCommaList, StrCommaList([]))
         }
 
         if extra_data is not None:
@@ -133,33 +134,3 @@ class Base:
         for key, value in data.items():
             data[key] = value.to_json()
         return data
-
-    @staticmethod
-    def prompt_user(arg: str, arg_type: Type[MetaPrimitive],
-                    default: MetaPrimitive = None) -> any:
-        """
-        Prompts a user for input.
-        :param arg: The argument which the user is prompted for
-        :param arg_type: The argument's type
-        :param default: An optional default value,
-                        used when the user enters nothing
-        :return: The result of the prompt
-        """
-
-        prompt = arg + " "
-        if default is not None:
-            prompt += "(Default: " + str(default) + ")"
-        prompt += ":   "
-
-        while True:
-            response = input(prompt)
-            if not response and default is None:
-                continue
-            elif not response and default is not None:
-                return default
-            else:
-                try:
-                    return arg_type.parse(response)
-                except ValueError:
-                    print("Invalid input: " + response)
-                    continue

@@ -17,23 +17,33 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from typing import List
+from typing import List, Type
 from toktokkie.metadata.types.Language import Language
 from toktokkie.metadata.types.Resolution import Resolution
-from toktokkie.metadata.types.MetaType import MetaType, MetaPrimitive, Str, Int
+from toktokkie.metadata.types.MetaType import MetaPrimitive, Str, Int
 
 
 class CommaList(MetaPrimitive):
     """
-    A class that automatically splits up a string into a comma-separated list
+    A class that automatically parses comma-separated strings into
+    various different objects and supports JSON serialization
     """
 
-    def __init__(self, _list: List[MetaType]):
+    meta_type = Str  # type: Type[MetaPrimitive]
+    """
+    The type of the comma list. Defaults to Str.
+    """
+
+    def __init__(self, _list: List[MetaPrimitive]):
         """
-        Initializes a comma list
+        Initializes a comma list. Casts to the correw
         :param _list: The list to use
         """
-        self.list = _list
+        self.list = []
+        for element in _list:
+            if type(element) != self.meta_type:
+                element = element.parse(str(element))
+            self.list.append(element)
 
     @classmethod
     def parse(cls, string: str):
@@ -46,60 +56,56 @@ class CommaList(MetaPrimitive):
         parsed = list(map(lambda x: Str(x), parsed))
         return cls(parsed)
 
+    def to_json(self) -> List[any]:
+        """
+        Converts this object into a JSON-compatible list
+        :return: The JSON-compatible list
+        """
+        data = []
+        for element in self.list:
+            data.append(element.to_json())
+        return data
+
+    @classmethod
+    def from_json(cls, json_data: List[any]):
+        """
+        Generates a string-based comma list from a JSON list
+        :param json_data: The JSON list to use
+        :return: The generated CommaList object
+        """
+        return cls(list(map(lambda x: cls.meta_type.from_json(x), json_data)))
+
     def __str__(self) -> str:
         """
         Provides a string representation of the comma-separated list
         :return: The string representation of the list
         """
-        return str(self.list)
+        return str(list(map(lambda x: str(x), self.list)))
 
-    def cast(self, cls: any) -> list:
-        """
-        Casts all elements in the list to the specified class
-        :param cls: The class to which to cast to
-        :return: The converted list of elements
-        """
-        return list(map(lambda x: cls(x), self.list))
+
+class StrCommaList(CommaList):
+    """
+    A String Comma List
+    """
+    pass
 
 
 class IntCommaList(CommaList):
     """
-    A comma list specialized for integer values
+    An Integer Comma List
     """
-
-    def __init__(self, _list: List[MetaType]):
-        """
-        Casts the list values to int
-        :param _list: The list to use
-        """
-        super().__init__(_list)
-        self.list = self.cast(Int)
+    meta_type = Int
 
 
 class ResolutionCommaList(CommaList):
     """
-    A comma list specialized for Resolutions
+    A Resolution Comma List
     """
-
-    def __init__(self, _list: List[MetaType]):
-        """
-        Casts the list to Resolution objects and turns them into
-        dictionaries.
-        :param _list: The list to use
-        """
-        super().__init__(_list)
-        self.list = self.cast(Resolution)
+    meta_type = Resolution
 
 
 class LanguageCommaList(CommaList):
     """
-    A comma list specialized for language values
+    A Language Comma List
     """
-
-    def __init__(self, _list: List[MetaType]):
-        """
-        Casts the list values to int
-        :param _list: The list to use
-        """
-        super().__init__(_list)
-        self.list = self.cast(Language)
+    meta_type = Language

@@ -17,27 +17,4 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import json
-from toktokkie.metadata.Base import Base
-from toktokkie.metadata.TvSeries import TvSeries
-
-metadata_types = [Base, TvSeries]
-"""
-All available metadata types
-"""
-
-
-def resolve_metadata(metadata_file: str) -> Base:
-    """
-    Automatically resolves a metadata type based on the info.json's metadata
-    type parameter.
-    :param metadata_file: The metadata file for which to resolve the metadata
-    :return: The read metadata file
-    """
-    with open(metadata_file, "r") as f:
-        data = json.load(f)
-
-    metadata_class = \
-        list(filter(lambda x: x.type == data["type"], metadata_types))[0]
-
-    return metadata_class.from_json(metadata_file)
+from toktokkie.metadata.helper.prompt import prompt_user

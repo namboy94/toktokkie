@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from typing import List
+
 
 class MetaType:
     """
@@ -30,6 +32,17 @@ class MetaType:
         :return: A JSON-compatible representation of the object
         """
         return self
+
+    @classmethod
+    def from_json(cls, json_data: any):
+        """
+        Generates a MetaType from a JSON element.
+        By default, the json data is simply passed on to the constructor
+        :param json_data: The JSON data to use
+        :return: The generated object
+        """
+        # noinspection PyArgumentList
+        return cls(json_data)
 
 
 # noinspection PyAbstractClass
@@ -65,3 +78,42 @@ class Int(int, MetaPrimitive):
     A class that implements an Integer primitive
     """
     pass
+
+
+class MetaList(MetaType):
+    """
+    A class that acts as a list that can easily json-ify its content
+    """
+
+    def __init__(self, _list: List[MetaType]):
+        """
+        Initializes the internal list
+        :param _list: The internal list
+        """
+        self.list = _list
+
+    def append(self, element: MetaType):
+        """
+        Appends an element to the list
+        :param element: The element to append
+        :return: None
+        """
+        self.list.append(element)
+
+    def pop(self, index: int) -> MetaType:
+        """
+        Removes an element of the list
+        :param index: The index at which to remove the element
+        :return: The removed element
+        """
+        return self.list.pop(index)
+
+    def to_json(self) -> List[any]:
+        """
+        Converts the list to a JSON-compatible list
+        :return: The JSON list
+        """
+        data = []
+        for element in self.list:
+            data.append(element.to_json())
+        return data
