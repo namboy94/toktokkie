@@ -17,15 +17,89 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from typing import List
+from toktokkie.metadata.types.Language import Language
+from toktokkie.metadata.types.Resolution import Resolution
+from toktokkie.metadata.types.MetaType import MetaType, MetaPrimitive, Str, Int
 
-class CommaList:
+
+class CommaList(MetaPrimitive):
     """
     A class that automatically splits up a string into a comma-separated list
     """
 
-    def __init__(self, string: str = None):
+    def __init__(self, _list: List[MetaType]):
         """
-        Splits the string into a list
-        :param string: The string to split
+        Initializes a comma list
+        :param _list: The list to use
         """
-        self.list = string.split(",") if string is not None else []
+        self.list = _list
+
+    @classmethod
+    def parse(cls, string: str):
+        """
+        Parses a comma-separated list
+        :param string: The string to parse
+        :return: The parsed list
+        """
+        parsed = string.split(",") if string != "" else []
+        parsed = list(map(lambda x: Str(x), parsed))
+        return cls(parsed)
+
+    def __str__(self) -> str:
+        """
+        Provides a string representation of the comma-separated list
+        :return: The string representation of the list
+        """
+        return str(self.list)
+
+    def cast(self, cls: any) -> list:
+        """
+        Casts all elements in the list to the specified class
+        :param cls: The class to which to cast to
+        :return: The converted list of elements
+        """
+        return list(map(lambda x: cls(x), self.list))
+
+
+class IntCommaList(CommaList):
+    """
+    A comma list specialized for integer values
+    """
+
+    def __init__(self, _list: List[MetaType]):
+        """
+        Casts the list values to int
+        :param _list: The list to use
+        """
+        super().__init__(_list)
+        self.list = self.cast(Int)
+
+
+class ResolutionCommaList(CommaList):
+    """
+    A comma list specialized for Resolutions
+    """
+
+    def __init__(self, _list: List[MetaType]):
+        """
+        Casts the list to Resolution objects and turns them into
+        dictionaries.
+        :param _list: The list to use
+        """
+        super().__init__(_list)
+        self.list = self.cast(Resolution)
+
+
+class LanguageCommaList(CommaList):
+    """
+    A comma list specialized for language values
+    """
+
+    def __init__(self, _list: List[MetaType]):
+        """
+        Casts the list values to int
+        :param _list: The list to use
+        """
+        super().__init__(_list)
+        self.list = self.cast(Language)

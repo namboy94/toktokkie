@@ -17,5 +17,21 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.metadata.exceptions.InvalidMetadataException import \
-    InvalidMetadataException
+
+class Resolution:
+    """
+    A resolution with an X and Y dimension
+    """
+
+    def __init__(self, string: str):
+        """
+        Initializes the resolution object based on a string in the
+        format like 1920x1080. Errors in the string will raise a ValueError
+        :param string: The string to parse
+        """
+        try:
+            split = string.lower().split("x")
+            self.x = int(split[0])
+            self.y = int(split[1])
+        except IndexError:
+            raise ValueError()

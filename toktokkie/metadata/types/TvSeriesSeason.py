@@ -17,5 +17,20 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.metadata.exceptions.InvalidMetadataException import \
-    InvalidMetadataException
+
+class TvSeriesSeason:
+    """
+    A TV Series Season that can easily be serialized into a dictionary
+    """
+
+    def __init__(self, name: str, season_data: dict):
+        self.name = name
+        self.tvdb_urls = season_data["tvdb_urls"]
+        self.audio_langs = season_data["audio_langs"]
+        self.subtitle_langs = season_data["subtitle_langs"]
+        self.resolutions = []
+
+        for resolution in season_data["resolutions"]:
+            self.resolutions.append()
+
+    def to_json(self) -> dict:

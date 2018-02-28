@@ -19,9 +19,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import json
-from toktokkie.metadata.types.CommaList import CommaList
-from toktokkie.metadata.exceptions.InvalidMetadataException import \
-    InvalidMetadataException
+from typing import Type, List, Dict
+from toktokkie.metadata.exceptions import InvalidMetadataException
+from toktokkie.metadata.types import MetaType, MetaPrimitive, CommaList, \
+    StrCommaList, Str
 
 
 class Base:
@@ -30,24 +31,18 @@ class Base:
     common interfaces.
     """
 
-    type = "base"
+    type = Str("base")
     """
     The type of the Metadata. Shoudl generally be overridden by child classes
     """
 
-    @classmethod
-    def from_json(cls, json_file: str):
-        """
-        Generates a Metadata object from a JSON file path
-        :param json_file: The path to the JSON file
-        :return: The generated metadata object
-        """
-        with open(json_file, "r") as f:
-            data = json.load(f)
-        return cls(data)
+    # -------------------------------------------------------------------------
+    # These Methods should be extended by subclasses
+    # -------------------------------------------------------------------------
 
     @classmethod
-    def generate_from_prompts(cls, directory: str, extra_data: dict = None):
+    def generate_from_prompts(cls, directory: str,
+                              extra_data: List[Dict[str, MetaType]] = None):
         """
         Generates a Metadata object based on user prompts
         This can and should be extended by child classes
@@ -61,15 +56,16 @@ class Base:
         print("Generating " + cls.type + " metadata for " + name)
         data = {
             "type": cls.type,
-            "name": cls.prompt_user("name", str, name),
-            "tags": cls.prompt_user("tags", CommaList, CommaList()).list
+            "name": cls.prompt_user("Name", Str, Str(name)),
+            "tags": cls.prompt_user("Tags", CommaList, CommaList([]))
         }
-        print(data)
 
         if extra_data is not None:
-            for key, value in extra_data.items():
-                data[key] = value
+            for extra in extra_data:
+                for key, value in extra.items():
+                    data[key] = value
 
+        data = cls.jsonize_dict(data)
         return cls(data)
 
     def to_dict(self) -> dict:
@@ -84,7 +80,7 @@ class Base:
             "tags": self.tags
         }
 
-    def __init__(self, json_data: dict):
+    def __init__(self, json_data: Dict[str, any]):
         """
         Initializes the Metadata object. If the provided JSON data is incorrect
         (i.e. missing elements or invalid types), an InvalidMetadata exception
@@ -93,10 +89,23 @@ class Base:
                           to generate the metadata object
         """
         try:
-            self.name = json_data["name"]
-            self.tags = json_data["tags"]
+            self.name = Str(json_data["name"])
+            self.tags = StrCommaList(json_data["tags"])
         except KeyError:
             raise InvalidMetadataException()
+
+    # -------------------------------------------------------------------------
+
+    @classmethod
+    def from_json(cls, json_file: str):
+        """
+        Generates a Metadata object from a JSON file path
+        :param json_file: The path to the JSON file
+        :return: The generated metadata object
+        """
+        with open(json_file, "r") as f:
+            data = json.load(f)
+        return cls(data)
 
     def write(self, json_file: str):
         """
@@ -107,15 +116,27 @@ class Base:
         """
         with open(json_file, "w") as f:
             f.write(json.dumps(
-                self.to_dict(),
+                self.jsonize_dict(self.to_dict()),
                 sort_keys=True,
                 indent=4,
                 separators=(",", ": ")
             ))
 
     @staticmethod
-    def prompt_user(arg: str, arg_type: any, default: object = None) \
-            -> any:
+    def jsonize_dict(data: Dict[str, MetaType]) -> dict:
+        """
+        Resolves all parameters of a dictionary and turns it into a
+        json-compatible dictionary
+        :param data: The dictionary resolve
+        :return: The resolved JSON-compatible dictionary
+        """
+        for key, value in data.items():
+            data[key] = value.to_json()
+        return data
+
+    @staticmethod
+    def prompt_user(arg: str, arg_type: Type[MetaPrimitive],
+                    default: MetaPrimitive = None) -> any:
         """
         Prompts a user for input.
         :param arg: The argument which the user is prompted for
@@ -138,6 +159,7 @@ class Base:
                 return default
             else:
                 try:
-                    return arg_type(response)
+                    return arg_type.parse(response)
                 except ValueError:
+                    print("Invalid input: " + response)
                     continue

@@ -16,13 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-from toktokkie.metadata.Base import Base
-
-
-def get_metadata_types() -> list:
-    """
-    Retrieves a list of all available metadata types
-    :return: The list of metadata types
-    """
-    return[Base]
