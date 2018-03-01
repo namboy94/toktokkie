@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
-from typing import Dict, List
+from typing import Dict, List, Type
 from toktokkie.metadata import TvSeries, check_metadata_subtype
 from toktokkie.renaming.schemes.Scheme import Scheme
 from toktokkie.renaming.agents.Agent import Agent
@@ -32,7 +32,7 @@ class Renamer:
     """
 
     def __init__(self, path: str, metadata: TvSeries,
-                 scheme: Scheme, agent: Agent):
+                 scheme: Type[Scheme], agent: Type[Agent]):
         """
         Initializes the Renamer. ValueErrors will be thrown if an error
         is encountered at any point during the initialization process

@@ -22,29 +22,43 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import argparse
 from toktokkie import Directory
+from toktokkie.renaming import Plex, Renamer, TVDB
+from toktokkie.metadata import AnimeSeries
 from toktokkie.exceptions import InvalidMetadataException, \
     MissingMetadataException
 
 
 def main():
     """
-    The toktokkie-print-metadata main method
+    The toktokkie-anime-checker main method
     :return: None
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("directories", nargs="+",
-                        help="The directories to print.")
+                        help="The directories to check.")
+    parser.add_argument("-u", "--mal-username",
+                        help="Your myanimelist.net username")
     args = parser.parse_args()
 
     for path in args.directories:
         try:
+
             directory = Directory(path)
-            print(directory.metadata.to_json())
-        except InvalidMetadataException:
+            metadata = AnimeSeries.from_json_file(directory.metadata_file)
+            renamer = Renamer(path, metadata, Plex, TVDB)
+            episodes = renamer.episodes
+
+            valid = True
+            for episode in episodes:
+                if episode.current != episode.new:
+                    valid = False
+
+            if not valid:
+                print("Invalid Episode Names:")
+                renamer.rename(False)
+
+        except (InvalidMetadataException, MissingMetadataException):
             print("Invalid Metadata")
-            sys.exit(1)
-        except MissingMetadataException:
-            print("Metadata does not exist")
             sys.exit(1)
 
 

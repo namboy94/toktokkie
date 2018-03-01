@@ -19,7 +19,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
-from toktokkie.renaming import Renamer
+from typing import Type
+from toktokkie.renaming import Renamer, Scheme, Agent
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
 from toktokkie.exceptions import MissingMetadataException
@@ -74,7 +75,8 @@ class Directory:
             os.makedirs(self.meta_dir)
         metadata.write(self.metadata_file)
 
-    def rename(self, scheme, agent, noconfirm: bool = False):
+    def rename(self, scheme: Type[Scheme], agent: Type[Agent],
+               noconfirm: bool = False):
         """
         Renames the contained files according to a naming scheme.
         If the metadata type does not support renaming, this does nothing

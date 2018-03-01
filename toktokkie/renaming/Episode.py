@@ -43,6 +43,11 @@ class Episode:
         self.location = os.path.dirname(file_path)
         self.current = os.path.basename(file_path)
 
+        try:
+            self.ext = "." + str(self.current.rsplit(".")[1])
+        except IndexError:
+            self.ext = ""
+
         self.season = season
         self.episode = episode
 
@@ -50,7 +55,7 @@ class Episode:
 
         self.new = scheme.generate_episode_name(
             series_name, season, episode, episode_name
-        )
+        ) + self.ext
 
     def rename(self):
         """
