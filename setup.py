@@ -107,12 +107,12 @@ setup(
     license="GNU GPL3",
     packages=find_packages(),
     install_requires=[
-        'tvdb_api',
-        'beautifulsoup4',
-        'typing',
-        'requests',
-        'urwid',
-        'xdcc_dl'
+        "tvdb_api",
+        "beautifulsoup4",
+        "typing",
+        "requests",
+        "xdcc_dl",
+        "colorama"
     ],
     test_suite='nose.collector',
     tests_require=['nose'],

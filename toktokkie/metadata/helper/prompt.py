@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from typing import Type
+from colorama import Fore, Style
 from toktokkie.metadata.types.MetaType import MetaPrimitive
 
 
@@ -32,9 +33,10 @@ def prompt_user(arg: str, arg_type: Type[MetaPrimitive],
     :return: The result of the prompt
     """
 
-    prompt = "\033[34m" + arg + "\033[0m "
+    prompt = Fore.LIGHTBLUE_EX + arg + Style.RESET_ALL + " "
     if default is not None:
-        prompt += "(Default: \033[33m" + str(default) + "\033[0m)"
+        prompt += "(Default: " + Fore.LIGHTYELLOW_EX + str(default) + \
+                  Style.RESET_ALL + ")"
     prompt += ":   "
 
     while True:

@@ -21,6 +21,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 import argparse
+from colorama import Fore, Style
 from toktokkie import Directory
 from toktokkie.renaming import Plex, Renamer, TVDB
 from toktokkie.metadata import AnimeSeries
@@ -49,12 +50,22 @@ def main():
             episodes = renamer.episodes
 
             valid = True
+            longest = len(max(episodes, key=lambda x: len(x.current)).current)
+
             for episode in episodes:
                 if episode.current != episode.new:
+
+                    if valid:
+                        print("Invalid Episodes [" + metadata.name + "]:")
+
+                    print(Fore.LIGHTMAGENTA_EX +
+                          episode.current.ljust(longest + 1) + Style.RESET_ALL +
+                          " !=   " + Fore.LIGHTBLUE_EX + episode.new +
+                          Style.RESET_ALL)
                     valid = False
 
             if not valid:
-                print("Invalid Episode Names:")
+                print("Suggestion:")
                 renamer.rename(False)
 
         except (InvalidMetadataException, MissingMetadataException):

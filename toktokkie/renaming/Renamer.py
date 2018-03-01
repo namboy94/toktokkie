@@ -19,6 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
+from colorama import Fore, Style
 from typing import Dict, List, Type
 from toktokkie.metadata import TvSeries, check_metadata_subtype
 from toktokkie.renaming.schemes.Scheme import Scheme
@@ -112,6 +113,7 @@ class Renamer:
 
             for episode in eps:
 
+                # Skip excluded episodes
                 while True:
                     exclude = list(filter(
                         lambda x: x["S"] == season
@@ -123,6 +125,17 @@ class Renamer:
                     else:
                         episode_count += 1
 
+                # Check for multi episodes
+                multi_range = None
+                for multi_episode in self.metadata.get_multi_episode_ranges(
+                        self.agent.id_type
+                ):
+                    multi_s = multi_episode["start"]["S"]
+                    multi_e = multi_episode["start"]["E"]
+
+                    if multi_s == season and multi_e == episode_count:
+                        multi_range = (multi_e, multi_episode["end"]["E"])
+
                 # noinspection PyTypeChecker
                 episodes.append(Episode(
                     episode["path"],
@@ -131,8 +144,14 @@ class Renamer:
                     season,
                     episode_count,
                     self.scheme,
-                    self.agent
+                    self.agent,
+                    multi_range
                 ))
+
+                # Skip multi-episode parts
+                if multi_range is not None:
+                    episode_count = multi_range[1]
+
                 episode_count += 1
 
         return episodes
@@ -148,9 +167,9 @@ class Renamer:
             len(max(self.episodes, key=lambda x: len(x.current)).current)
 
         for episode in self.episodes:
-            print(
-                episode.current.ljust(max_current + 1) + " ---> " + episode.new
-            )
+            print(Fore.LIGHTCYAN_EX + episode.current.ljust(max_current + 1) +
+                  Style.RESET_ALL + " ---> " + Fore.LIGHTYELLOW_EX +
+                  episode.new + Style.RESET_ALL)
 
         if not noconfirm:
             confirm = input("Start the renaming Process? (y/n)")

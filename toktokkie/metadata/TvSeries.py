@@ -21,11 +21,13 @@ import os
 from typing import Dict, List
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.helper.prompt import prompt_user
+from toktokkie.exceptions import InvalidMetadataException
 from toktokkie.metadata.types.AgentIdType import AgentIdType
+from toktokkie.metadata.types.SeasonEpisode import SeasonEpisode
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
-from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
+    SeasonEpisodeRangeCommaList
 
 
 class TvSeries(Base):
@@ -79,6 +81,10 @@ class TvSeries(Base):
             "TVDB Irregular Season Starts",
             SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
         )
+        data["tvdb_multi_episodes"] = prompt_user(
+            "TVDB Multi-Episodes (x episodes/1 file)",
+            SeasonEpisodeRangeCommaList, SeasonEpisodeRangeCommaList([])
+        )
         return data
 
     def to_dict(self) -> Dict[str, MetaType]:
@@ -91,6 +97,7 @@ class TvSeries(Base):
         data["tvdb_excludes"] = self.tvdb_excludes
         data["tvdb_irregular_season_starts"] = \
             self.tvdb_irregular_season_starts
+        data["tvdb_multi_episodes"] = self.tvdb_multi_episodes
         return data
 
     def __init__(self, json_data: dict):
@@ -107,6 +114,9 @@ class TvSeries(Base):
                 SeasonEpisodeCommaList.from_json(
                     json_data["tvdb_irregular_season_starts"]
                 )
+            self.tvdb_multi_episodes = SeasonEpisodeRangeCommaList.from_json(
+                json_data["tvdb_multi_episodes"]
+            )
 
             for season in json_data["seasons"]:
                 self.seasons.append(self.season_type.from_json(season))
@@ -123,7 +133,9 @@ class TvSeries(Base):
         """
 
         if id_type == AgentIdType.TVDB:
-            return self.tvdb_excludes.to_json()
+            return self.merge_excludes(
+                self.tvdb_excludes, self.tvdb_multi_episodes
+            ).to_json()
         else:
             return None
 
@@ -147,4 +159,39 @@ class TvSeries(Base):
         else:
             return 1
 
+    def get_multi_episode_ranges(self, id_type: AgentIdType) \
+            -> List[Dict[str, Dict[str, int]]] or None:
+        """
+        Retrieves ranges of multiple episodes contained within a single file
+        :param id_type: The type of ID
+        :return: A list of dictionaries representing the episode ranges
+        """
+
+        if id_type == AgentIdType.TVDB:
+            return self.tvdb_multi_episodes.to_json()
+        else:
+            return None
+
     # -------------------------------------------------------------------------
+
+    # noinspection PyMethodMayBeStatic
+    def merge_excludes(self, excludes: SeasonEpisodeCommaList,
+                       ranges: SeasonEpisodeRangeCommaList) \
+            -> SeasonEpisodeCommaList:
+        """
+        Merges a SeasonEpisodeCommaList and a SeasonEpisodeRangeCommaList
+        into a single SeasonEpisodeCommaList that contains all episodes to skip
+        :param excludes: The single episodes to exclude
+        :param ranges: The ranges which will be completely excluded,
+                       with the exception of the first episode
+        :return: The combined SeasonEpisodeCommaList exclusion list
+        """
+        excluded = excludes.list
+
+        for multi in ranges.list:
+            episode = multi.start.episode + 1
+            while episode <= multi.end.episode:
+                excluded.append(SeasonEpisode(multi.start.season, episode))
+                episode += 1
+
+        return SeasonEpisodeCommaList(excluded)

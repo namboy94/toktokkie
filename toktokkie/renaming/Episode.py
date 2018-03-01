@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-from typing import List
+from typing import List, Tuple
 from toktokkie.renaming.schemes.Scheme import Scheme
 from toktokkie.renaming.agents.Agent import Agent
 
@@ -29,7 +29,8 @@ class Episode:
     """
 
     def __init__(self, file_path: str, series_name: str, agent_ids: List[int],
-                 season: int, episode: int, scheme: Scheme, agent: Agent):
+                 season: int, episode: int, scheme: Scheme, agent: Agent,
+                 multi_range: Tuple[int, int] = None):
         """
         Initializes the Episode object
         :param file_path: The path to the file
@@ -39,23 +40,38 @@ class Episode:
         :param episode: The episode number of this episode
         :param scheme: The naming scheme to use
         :param agent: The agent to use
+        :param multi_range: Optional episode range for multi-episodes
         """
         self.location = os.path.dirname(file_path)
         self.current = os.path.basename(file_path)
 
         try:
-            self.ext = "." + str(self.current.rsplit(".")[1])
+            self.ext = "." + str(self.current.rsplit(".", 1)[1])
         except IndexError:
             self.ext = ""
 
+        self.series_name = series_name
+        self.agent_ids = agent_ids
         self.season = season
         self.episode = episode
+        self.range = multi_range
 
-        episode_name = agent.fetch_episode_name(agent_ids, season, episode)
+        if multi_range is None:
+            episode_name = agent.fetch_episode_name(agent_ids, season, episode)
 
-        self.new = scheme.generate_episode_name(
-            series_name, season, episode, episode_name
-        ) + self.ext
+            self.new = scheme.generate_episode_name(
+                series_name, season, episode, episode_name
+            ) + self.ext
+
+        else:
+            episodes = []
+            for ep_num in range(multi_range[0], multi_range[1] + 1):
+                ep_name = agent.fetch_episode_name(agent_ids, season, ep_num)
+                episodes.append((ep_num, ep_name))
+
+            self.new = scheme.generate_episode_name_with_range(
+                series_name, season, episodes
+            ) + self.ext
 
     def rename(self):
         """

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from typing import Tuple, List
+
 
 class Scheme:
     """
@@ -31,7 +33,7 @@ class Scheme:
 
     @classmethod
     def _format_episode_name(cls, series_name: str, season: int,
-                            episode: int, episode_name: str) -> str:
+                             episode: int, episode_name: str) -> str:
         """
         Formats the episode name. This is the method that should be
         implemented by subclasses
@@ -39,6 +41,20 @@ class Scheme:
         :param season: The season of the episode
         :param episode: The episode number of the episode
         :param episode_name: The name of the episode
+        :return: The formatted episode name
+        """
+        raise NotImplementedError()
+
+    @classmethod
+    def _format_episode_name_with_range(cls, series_name: str, season: int,
+                                        episodes: List[Tuple[int, str]]) -> str:
+        """
+        Formats the episode name. This is the method that should be
+        implemented by subclasses. Formats a range of episodes.
+        :param series_name: The name of the series
+        :param season: The season of the episode
+        :param episodes: A list of tuples consisting of
+                         episode numbers and names
         :return: The formatted episode name
         """
         raise NotImplementedError()
@@ -57,6 +73,24 @@ class Scheme:
         """
         return cls.sanitize(
             cls._format_episode_name(series_name, season, episode, episode_name)
+        )
+
+    @classmethod
+    def generate_episode_name_with_range(cls, series_name: str, season: int,
+                                         episodes: List[Tuple[int, str]]) \
+            -> str:
+        """
+        Generates an episode name that was checked for illegal file system
+        characters beforehand.
+        This formats an episode name for a range of episodes.
+        :param series_name: The name of the series
+        :param season: The season of the episode
+        :param episodes: A list of tuples consisting of
+                         episode numbers and names
+        :return: The generated episode name
+        """
+        return cls.sanitize(
+            cls._format_episode_name_with_range(series_name, season, episodes)
         )
 
     @staticmethod

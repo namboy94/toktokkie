@@ -22,9 +22,10 @@ from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.MetaType import Str, MetaType
-from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList
 from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
 from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
+    SeasonEpisodeRangeCommaList
 
 
 class AnimeSeries(TvSeries):
@@ -61,6 +62,10 @@ class AnimeSeries(TvSeries):
             "Myanimelist Irregular Season Starts",
             SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
         )
+        data["mal_multi_episodes"] = prompt_user(
+            "Myanimelist Multi-Episodes (x episodes/1 file)",
+            SeasonEpisodeRangeCommaList, SeasonEpisodeRangeCommaList([])
+        )
         return data
 
     def to_dict(self) -> Dict[str, MetaType]:
@@ -72,6 +77,7 @@ class AnimeSeries(TvSeries):
         data["mal_excludes"] = self.mal_excludes
         data["mal_irregular_season_starts"] = \
             self.mal_irregular_season_starts
+        data["mal_multi_episodes"] = self.mal_multi_episodes
         return data
 
     def __init__(self, json_data: dict):
@@ -87,6 +93,9 @@ class AnimeSeries(TvSeries):
                 SeasonEpisodeCommaList.from_json(
                     json_data["mal_irregular_season_starts"]
                 )
+            self.mal_multi_episodes = SeasonEpisodeRangeCommaList.from_json(
+                json_data["mal_multi_episodes"]
+            )
 
         except KeyError:
             raise InvalidMetadataException()
@@ -102,7 +111,9 @@ class AnimeSeries(TvSeries):
         if sup is not None:
             return sup
         elif id_type == AgentIdType.MYANIMELIST:
-            return self.mal_excludes.to_json()
+            return self.merge_excludes(
+                self.mal_excludes, self.mal_multi_episodes
+            )
         else:
             return None
 
@@ -125,5 +136,20 @@ class AnimeSeries(TvSeries):
                 # TODO New data structure so that duplicate entries can't exist
         else:
             return super().get_season_start(id_type, season)
+
+    def get_multi_episode_ranges(self, id_type: AgentIdType) \
+            -> List[Dict[str, Dict[str, int]]] or None:
+        """
+        Retrieves ranges of multiple episodes contained within a single file
+        :param id_type: The type of ID
+        :return: A list of dictionaries representing the episode ranges
+        """
+        sup = super().get_multi_episode_ranges(id_type)
+        if sup is not None:
+            return sup
+        if id_type == AgentIdType.MYANIMELIST:
+            return self.mal_multi_episodes.to_json()
+        else:
+            return None
 
     # -------------------------------------------------------------------------
