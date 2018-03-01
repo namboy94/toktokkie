@@ -20,6 +20,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import argparse
+from toktokkie.renaming import schemes, agents, Plex, TVDB
+from toktokkie import Directory
 
 
 def main():
@@ -27,9 +29,38 @@ def main():
     The toktokkie-rename main method
     :return: None
     """
+    # TODO Define naming schemes and agents
+    naming_schemes = list(map(lambda x: x.name, schemes))
+    naming_agents = list(map(lambda x: x.name, agents))
+    default_scheme = Plex.name
+    default_agent = TVDB.name
+
     parser = argparse.ArgumentParser()
+    parser.add_argument("directories", nargs="+",
+                        help="The directories to rename. "
+                             "Files and directories that do not contain any "
+                             "valid metadata configuration will be ignored.")
+    parser.add_argument("scheme", choices=set(naming_schemes), nargs="?",
+                        default=default_scheme,
+                        help="The naming scheme to use")
+    parser.add_argument("agent", choices=set(naming_agents), nargs="?",
+                        default=default_agent,
+                        help="The episode data fetching agent to use")
+    parser.add_argument("--noconfirm", action="store",
+                        help="Skips the user confirmation step")
     args = parser.parse_args()
-    # TODO
+
+    directories = args.directories
+    scheme = list(filter(lambda x: x.name == args.scheme, schemes))[0]
+    agent = list(filter(lambda x: x.name == args.agent, agents))[0]
+
+    for path in directories:
+
+        try:
+            directory = Directory(path)
+            directory.rename(scheme, agent, args.noconfirm)
+        except ValueError:
+            print("Renaming of " + path + "failed")
 
 
 if __name__ == "__main__":

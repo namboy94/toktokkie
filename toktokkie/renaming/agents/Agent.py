@@ -17,16 +17,32 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from typing import List
+
 
 class Agent:
+    """
+    Generic Agent class that defines what a renaming agent should implement
+    """
 
-    agent_name = "agent"
+    name = "agent"
+    """
+    The name/identifier of this agent
+    """
 
     id_type = None
+    """
+    The ID type required for fetching episode name data
+    """
 
     @classmethod
-    def fetch_episode_name(cls, series_id: int, season: int,
+    def fetch_episode_name(cls, series_ids: List[int], season: int,
                            episode: int) -> str:
+        """
+        Fetches an episode name for an episode
+        :param series_ids: Agent IDs for searching the series
+        :param season: The season of the episode
+        :param episode: The episode number of the episode
+        :return: The episode name
+        """
         raise NotImplementedError()
-
-

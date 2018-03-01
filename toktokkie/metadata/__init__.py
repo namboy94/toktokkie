@@ -55,16 +55,22 @@ def check_metadata_subtype(metadata_object: Base, to_check: Base or str) \
     :return: True if the metadata object is a subclass of the to_check class
     """
 
-    if issubclass(to_check, Base):
-        return metadata_object.is_subclass_of(to_check)
-    elif issubclass(to_check, str):
-        try:
-            to_check = list(filter(
-                lambda x: x.type.to_json() == to_check.lower(),
-                metadata_types
-            ))[0]
-            return issubclass(type(metadata_object), to_check)
-        except IndexError:
+    try:
+        if issubclass(type(to_check), str):
+            try:
+                to_check = list(filter(
+                    lambda x: x.type.to_json() == to_check.lower(),
+                    metadata_types
+                ))[0]
+                return issubclass(type(metadata_object), to_check)
+            except IndexError:
+                raise ValueError(to_check)
+
+        elif issubclass(to_check, Base):
+            return metadata_object.is_subclass_of(to_check)
+
+        else:
             raise ValueError(to_check)
-    else:
+
+    except TypeError:
         raise ValueError(to_check)

@@ -118,16 +118,22 @@ class TvSeries(Base):
         else:
             return None
 
-    def get_agent_irregular_season_starts(self, id_type: AgentIdType) \
-            -> Dict[int, int] or None:
+    def get_season_start(self, id_type: AgentIdType, season: int) -> int:
         """
         Retrieves irregular season episode starts for the provided agent type
+        and season
         :param id_type: The agent ID type
-        :return: A dictionary of irregular season starts or None if the id is
-                 not applicable
+        :param season: The season to get the season start for
+        :return: The episode at which that season starts
         """
 
         if id_type == AgentIdType.TVDB:
-            return self.tvdb_irregular_season_starts.to_json()
+            irregulars = self.tvdb_irregular_season_starts.to_json()
+            hits = list(filter(lambda x: x["S"] == season, irregulars))
+            if len(hits) == 0:
+                return 1
+            elif len(hits) >= 1:
+                return hits[0]["E"]
+                # TODO New data structure so that duplicate entries can't exist
         else:
-            return None
+            return 1

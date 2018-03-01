@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import tvdb_api
+from typing import List
 from toktokkie.renaming.agents.Agent import Agent
 from toktokkie.metadata.types.AgentIdType import AgentIdType
 from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
@@ -25,19 +26,40 @@ from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
 
 
 class TVDB(Agent):
+    """
+    Class that uses TheTVDB.com to fetch episode names
+    """
+
+    name = "tvdb"
+    """
+    The name/identifier of this agent
+    """
 
     id_type = AgentIdType.TVDB
+    """
+    Requires TVDB IDs
+    """
 
     @classmethod
-    def fetch_episode_name(cls, series_id: int, season: int, episode: int) \
-            -> str:
-        try:
-            tvdb = tvdb_api.Tvdb()
-            return tvdb[series_id][season][episode]["episodename"]
-        except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound,
-                ConnectionError, KeyError) as e:
+    def fetch_episode_name(cls, series_ids: List[int], season: int,
+                           episode: int) -> str:
+        """
+        Fetches an episode name for an episode from TheTVDB.com
+        :param series_ids: Agent IDs for searching the series
+        :param season: The season of the episode
+        :param episode: The episode number of the episode
+        :return: The episode name
+        """
 
-            # If not found, or other error, just return generic name
-            if str(e) == "cache_location":  # pragma: no cover
-                print("TheTVDB.com is down!")
-            return "Episode " + str(episode)
+        for agent_id in series_ids:
+            try:
+                tvdb = tvdb_api.Tvdb()
+                return tvdb[agent_id][season][episode]["episodename"]
+
+            except (tvdb_episodenotfound, tvdb_seasonnotfound,
+                    tvdb_shownotfound, ConnectionError, KeyError) as e:
+                # If not found, or other error, just return generic name
+                if str(e) == "cache_location":  # pragma: no cover
+                    print("TheTVDB.com is down!")
+
+        return "Episode " + str(episode)

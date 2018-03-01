@@ -21,8 +21,29 @@ from toktokkie.renaming.schemes.Scheme import Scheme
 
 
 class Plex(Scheme):
+    """
+    Generates a naming scheme like this:
+
+    Series Name - SXXEXX - Episode Name
+
+    Plex Media Server accepts this format
+    """
+
+    name = "plex"
+    """
+    The name/identifier of this scheme
+    """
+
     @classmethod
     def _format_episode_name(cls, series_name: str, season: int, episode: int,
                              episode_name: str) -> str:
+        """
+        Formats the episode name
+        :param series_name: The name of the series
+        :param season: The season of this episode
+        :param episode: The episode number of this episode
+        :param episode_name: The name of this episode
+        :return: The generated episode name
+        """
         return series_name + " - S" + str(season).zfill(2) + \
-               "E" + str(episode).zfill(2) + " - " + episode_name
+            "E" + str(episode).zfill(2) + " - " + episode_name

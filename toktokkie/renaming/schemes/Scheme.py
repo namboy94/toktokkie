@@ -19,37 +19,68 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 
 class Scheme:
+    """
+    Class that models a generic naming scheme that defines how a naming
+    scheme should behave
+    """
 
-    scheme_name = "scheme"
-
-    illegal_characters = {
-        "/": " ",
-        "\\": " ",
-        "?": " ",
-        "<": " ",
-        ">": " ",
-        ":": " - ",
-        "*": " ",
-        "|": " ",
-        "\"": " ",
-        "^": " "
-    }
-
-    @classmethod
-    def sanitize(cls, string: str) -> str:
-        sanitized = string
-        for illegal_character, replacement in cls.illegal_characters.items():
-            sanitized = sanitized.replace(illegal_character, replacement)
-        return sanitized
-
-    @classmethod
-    def generate_episode_name(cls, series_name: str, season: int,
-                              episode: int, episode_name: str) -> str:
-        return cls.sanitize(
-            cls._format_episode_name(series_name, season, episode, episode_name)
-        )
+    name = "scheme"
+    """
+    The name/identifier of this scheme
+    """
 
     @classmethod
     def _format_episode_name(cls, series_name: str, season: int,
                             episode: int, episode_name: str) -> str:
+        """
+        Formats the episode name. This is the method that should be
+        implemented by subclasses
+        :param series_name: The name of the series
+        :param season: The season of the episode
+        :param episode: The episode number of the episode
+        :param episode_name: The name of the episode
+        :return: The formatted episode name
+        """
         raise NotImplementedError()
+
+    @classmethod
+    def generate_episode_name(cls, series_name: str, season: int,
+                              episode: int, episode_name: str) -> str:
+        """
+        Generates an episode name that was checked for illegal file system
+        characters beforehand
+        :param series_name: The name of the series
+        :param season: The season of the episode
+        :param episode: The episode number of the episode
+        :param episode_name: The name of the episode
+        :return: The generated episode name
+        """
+        return cls.sanitize(
+            cls._format_episode_name(series_name, season, episode, episode_name)
+        )
+
+    @staticmethod
+    def sanitize(string: str) -> str:
+        """
+        Replaces all illegal file system characters with valid ones
+        :param string: The string to sanitize
+        :return: The sanitized string
+        """
+
+        illegal_characters = {
+            "/": " ",
+            "\\": " ",
+            "?": " ",
+            "<": " ",
+            ">": " ",
+            ":": " - ",
+            "*": " ",
+            "|": " ",
+            "\"": " ",
+            "^": " "
+        }
+
+        sanitized = string
+        for illegal_character, replacement in illegal_characters.items():
+            sanitized = sanitized.replace(illegal_character, replacement)
+        return sanitized
