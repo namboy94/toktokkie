@@ -69,7 +69,7 @@ class Renamer:
 
             try:
                 if season.path.lower().startswith("season "):
-                    season_number = int(season.path.split(" ")[1])
+                    season_number = int(season.path.split(" ", 1)[1])
                 else:
                     season_number = 0
             except (IndexError, ValueError):
