@@ -21,6 +21,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
 from toktokkie import Directory
+from toktokkie.metadata.AnimeSeries import AnimeSeries
 
 
 def main():
@@ -34,8 +35,6 @@ def main():
 
     for path in args.directories:
         directory = Directory(path)
-        print(directory.metadata.to_json())
-        directory.metadata.write(directory.metadata_file)
 
 
 if __name__ == "__main__":

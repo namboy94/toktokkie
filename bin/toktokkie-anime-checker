@@ -154,6 +154,9 @@ def check_myanimelist(directory: Directory, username: str):
         for _id in mal_data.related_anime:
             if _id not in related_ids:
                 related_ids.append(_id)
+    for ignored in metadata.mal_check_ignores.list:
+        if ignored in related_ids:
+            related_ids.remove(ignored)
 
     check_myanimelist_watch_state(related_ids, username)
 
@@ -169,16 +172,16 @@ def check_myanimelist_watch_state(mal_ids: List[int], username: str):
     for mal_id in mal_ids:
         mal_data = UserMalAnime(mal_id, username)
 
+        to_print = "Not Completed: " + mal_data.name + " [" + str(mal_id) + "]"
+
         if mal_data.airing_status == AiringState.FINISHED:
             if mal_data.watch_status != WatchState.COMPLETED:
                 if mal_data.watch_status == WatchState.PLAN_TO_WATCH:
                     continue
                 elif mal_data.watch_status == WatchState.ON_HOLD:
-                    print(Fore.YELLOW + "Not Completed: " + str(mal_data.name) +
-                          Style.RESET_ALL)
+                    print(Fore.YELLOW + to_print + Style.RESET_ALL)
                 else:
-                    print(Fore.LIGHTRED_EX + "Not Completed: " +
-                          str(mal_data.name) + Style.RESET_ALL)
+                    print(Fore.LIGHTRED_EX + to_print + Style.RESET_ALL)
 
 
 if __name__ == "__main__":

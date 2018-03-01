@@ -25,7 +25,7 @@ from toktokkie.metadata.types.MetaType import Str, MetaType
 from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
 from toktokkie.exceptions import InvalidMetadataException
 from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
-    SeasonEpisodeRangeCommaList
+    SeasonEpisodeRangeCommaList, IntCommaList
 
 
 class AnimeSeries(TvSeries):
@@ -54,6 +54,9 @@ class AnimeSeries(TvSeries):
         """
         data = super().generate_dict_from_prompts(directory)
 
+        data["mal_check_ignores"] = prompt_user(
+            "Myanimelist Check Ignores", IntCommaList, IntCommaList([])
+        )
         data["mal_excludes"] = prompt_user(
             "Myanimelist Excludes",
             SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
@@ -74,6 +77,7 @@ class AnimeSeries(TvSeries):
         :return: The dictionary representation of the metadata
         """
         data = super().to_dict()
+        data["mal_check_ignores"] = self.mal_check_ignores
         data["mal_excludes"] = self.mal_excludes
         data["mal_irregular_season_starts"] = \
             self.mal_irregular_season_starts
@@ -87,6 +91,9 @@ class AnimeSeries(TvSeries):
         """
         super().__init__(json_data)
         try:
+            self.mal_check_ignores = IntCommaList.from_json(
+                json_data["mal_check_ignores"]
+            )
             self.mal_excludes = \
                 SeasonEpisodeCommaList.from_json(json_data["mal_excludes"])
             self.mal_irregular_season_starts = \
