@@ -21,6 +21,7 @@ from typing import List, Type
 from toktokkie.metadata.types.Language import Language
 from toktokkie.metadata.types.Resolution import Resolution
 from toktokkie.metadata.types.MetaType import MetaPrimitive, Str, Int
+from toktokkie.metadata.types.SeasonEpisode import SeasonEpisode
 
 
 class CommaList(MetaPrimitive):
@@ -110,3 +111,10 @@ class LanguageCommaList(CommaList):
     A Language Comma List
     """
     meta_type = Language
+
+
+class SeasonEpisodeCommaList(CommaList):
+    """
+    An Episode Exclusion Comma List
+    """
+    meta_type = SeasonEpisode

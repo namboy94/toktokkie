@@ -20,9 +20,11 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 from typing import Dict, List
 from toktokkie.metadata.Base import Base
+from toktokkie.metadata.helper import prompt_user
 from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
+from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList
 from toktokkie.metadata.exceptions import InvalidMetadataException
 
 
@@ -60,6 +62,13 @@ class TvSeries(Base):
             seasons.append(season_obj)
 
         data["seasons"] = MetaList(seasons)
+        data["tvdb_excludes"] = prompt_user(
+            "TVDB Excludes", SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+        )
+        data["tvdb_irregular_season_starts"] = prompt_user(
+            "TVDB Irregular Season Starts",
+            SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+        )
         return data
 
     def to_dict(self) -> Dict[str, MetaType]:
@@ -69,6 +78,9 @@ class TvSeries(Base):
         """
         data = super().to_dict()
         data["seasons"] = self.seasons
+        data["tvdb_excludes"] = self.tvdb_excludes
+        data["tvdb_irregular_season_starts"] = \
+            self.tvdb_irregular_season_starts
         return data
 
     def __init__(self, json_data: dict):
@@ -79,8 +91,12 @@ class TvSeries(Base):
         super().__init__(json_data)
         try:
             self.seasons = MetaList([])
-            self.tvdb_excludes = [{"S": 0, "E": 1}]  # TODO Make user-configurable
-            self.tvdb_irregular_season_start_episode = {0: 0}  # TODO Make user-configurable
+            self.tvdb_excludes = \
+                SeasonEpisodeCommaList.from_json(json_data["tvdb_excludes"])
+            self.tvdb_irregular_season_starts = \
+                SeasonEpisodeCommaList.from_json(
+                    json_data["tvdb_irregular_season_starts"]
+                )
 
             for season in json_data["seasons"]:
                 self.seasons.append(TvSeriesSeason.from_json(season))
@@ -111,6 +127,6 @@ class TvSeries(Base):
         """
 
         if id_type == AgentIdType.TVDB:
-            return self.tvdb_irregular_season_start_episode.to_json()
+            return self.tvdb_irregular_season_starts.to_json()
         else:
             return None
