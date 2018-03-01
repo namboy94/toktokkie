@@ -19,9 +19,14 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
 import sys
 import argparse
+from typing import List
 from colorama import Fore, Style
+from malscraper.types.AiringState import AiringState
+from malscraper.types.WatchState import WatchState
+from malscraper.UserMalAnime import UserMalAnime
 from toktokkie import Directory
 from toktokkie.renaming import Plex, Renamer, TVDB
 from toktokkie.metadata import AnimeSeries
@@ -43,36 +48,137 @@ def main():
 
     for path in args.directories:
         try:
-
             directory = Directory(path)
-            metadata = AnimeSeries.from_json_file(directory.metadata_file)
-            renamer = Renamer(path, metadata, Plex, TVDB)
-            episodes = renamer.episodes
-
-            valid = True
-            longest = len(max(episodes, key=lambda x: len(x.current)).current)
-
-            for episode in episodes:
-                if episode.current != episode.new:
-
-                    if valid:
-                        print("Invalid Episodes [" + metadata.name + "]:")
-
-                    print(Fore.LIGHTMAGENTA_EX +
-                          episode.current.ljust(longest + 1) + Style.RESET_ALL +
-                          " !=   " + Fore.LIGHTBLUE_EX + episode.new +
-                          Style.RESET_ALL)
-                    valid = False
-
-            if not valid:
-                print("Suggestion:")
-                renamer.rename(False)
-
+            print(directory.metadata.name)
+            if args.mal_username is not None:
+                check_myanimelist(directory, args.mal_username)
+            check_tvdb_episode_names(directory)
+            check_icons(directory)
+            check_all_directories_in_metadata(directory)
         except (InvalidMetadataException, MissingMetadataException):
             print("Invalid Metadata")
             sys.exit(1)
 
     print("Done!")
+
+
+def check_icons(directory: Directory):
+    """
+    Checks that icons exist for all applicable directories
+    :param directory: The directory to check
+    :return: None
+    """
+
+    for child in os.listdir(directory.path):
+        child_path = os.path.join(directory.path, child)
+        if os.path.isdir(child_path) and not child.startswith("."):
+            icon_path = os.path.join(directory.icon_path, child + ".png")
+
+            if not os.path.isfile(icon_path):
+                print("No Icon for " + child_path)
+                sys.exit(1)
+
+    if not os.path.isfile(os.path.join(directory.icon_path, "main.png")):
+        print("No main icon for " + directory.metadata.name)
+        sys.exit(1)
+
+
+def check_all_directories_in_metadata(directory: Directory):
+    """
+    Makes sure that all subdirectories of a media folder has a
+    season entry in the metadata file
+    :param directory: The directory to check
+    :return: None
+    """
+    meta = directory.metadata
+    for child in os.listdir(directory.path):
+        child_path = os.path.join(directory.path, child)
+
+        if os.path.isdir(child_path) and not child.startswith("."):
+            search = list(filter(lambda x: x.path == child, meta.seasons.list))
+            if len(search) != 1:
+                print("No metadata for " + child_path)
+
+
+def check_tvdb_episode_names(directory: Directory):
+    """
+    Checks that the episode names are all correct according to TheTVDB.com
+    :param directory: The media directory to check
+    :return: None
+    """
+
+    metadata = AnimeSeries.from_json_file(directory.metadata_file)
+    renamer = Renamer(directory.path, metadata, Plex, TVDB)
+    episodes = renamer.episodes
+
+    valid = True
+    longest = len(max(episodes, key=lambda x: len(x.current)).current)
+
+    for episode in episodes:
+        if episode.current != episode.new:
+
+            if valid:
+                print("Invalid Episodes [" + metadata.name + "]:")
+
+            print(Fore.LIGHTMAGENTA_EX +
+                  episode.current.ljust(longest + 1) + Style.RESET_ALL +
+                  " !=   " + Fore.LIGHTBLUE_EX + episode.new +
+                  Style.RESET_ALL)
+            valid = False
+
+    if not valid:
+        print("Suggestion:")
+        renamer.rename(False)
+
+
+def check_myanimelist(directory: Directory, username: str):
+    """
+    Checks if the data is correct as documented on myanimelist
+    :param directory: The directory to check
+    :param username: Provide a myanimelist user for more checks
+    :return: None
+    """
+    metadata = directory.metadata
+
+    mal_map = {}
+    for season in metadata.seasons.list:
+        for mal_id in season.mal_ids.list:
+            if mal_id in mal_map:
+                mal_map[mal_id].append(season)
+            else:
+                mal_map[mal_id] = [season]
+
+    related_ids = []
+    for mal_id in mal_map:
+        mal_data = UserMalAnime(mal_id, username)
+        for _id in mal_data.related_anime:
+            if _id not in related_ids:
+                related_ids.append(_id)
+
+    check_myanimelist_watch_state(related_ids, username)
+
+
+def check_myanimelist_watch_state(mal_ids: List[int], username: str):
+    """
+    Makes sure that all myanimelist IDs provided have been marked as completed,
+    provided they have already finished airing
+    :param mal_ids: The myanimelist IDs to check
+    :param username: The myanimelist username
+    :return: None
+    """
+    for mal_id in mal_ids:
+        mal_data = UserMalAnime(mal_id, username)
+
+        if mal_data.airing_status == AiringState.FINISHED:
+            if mal_data.watch_status != WatchState.COMPLETED:
+                if mal_data.watch_status == WatchState.PLAN_TO_WATCH:
+                    continue
+                elif mal_data.watch_status == WatchState.ON_HOLD:
+                    print(Fore.YELLOW + "Not Completed: " + str(mal_data.name) +
+                          Style.RESET_ALL)
+                else:
+                    print(Fore.LIGHTRED_EX + "Not Completed: " +
+                          str(mal_data.name) + Style.RESET_ALL)
 
 
 if __name__ == "__main__":

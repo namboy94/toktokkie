@@ -112,7 +112,8 @@ setup(
         "typing",
         "requests",
         "xdcc_dl",
-        "colorama"
+        "colorama",
+        "malscraper"
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
