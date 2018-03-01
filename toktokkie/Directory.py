@@ -20,6 +20,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 from toktokkie.renaming import Renamer
+from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
 
 
@@ -38,6 +39,9 @@ class Directory:
         self.meta_dir = os.path.join(path, ".meta")
         self.icon_path = os.path.join(self.meta_dir, "icons")
         self.metadata_file = os.path.join(self.meta_dir, "info.json")
+
+        if not os.path.isdir(self.icon_path):
+            os.makedirs(self.icon_path)
 
         if generate_metadata:
             if metadata_type is None:
@@ -81,10 +85,11 @@ class Directory:
             renamer = Renamer(self.path, self.metadata, scheme, agent)
             renamer.rename(noconfirm)
 
-    def iconize(self, method=None):
+    def iconize(self, procedure: Procedure):
         """
         Applies the directory's icons
-        :param method: The iconizing method to use
+        :param procedure: The iconizing procedure to use
         :return: None
         """
-        pass  # TODO iconize
+        iconizer = Iconizer(self.path, self.icon_path, procedure)
+        iconizer.iconize()

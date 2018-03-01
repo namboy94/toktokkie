@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
 import argparse
+from toktokkie import Directory
+from toktokkie.iconizing import procedures, default_procedure
 
 
 def main():
@@ -28,36 +29,28 @@ def main():
     The toktokkie-iconize main method
     :return: None
     """
-    # TODO Define naming schemes and agents
-    naming_schemes = ["plex"]
-    agents = ["tvdb", "myanimelist"]
-    default_naming_scheme = "plex"
-    default_agent = "tvdb"
+    procedure_names = list(map(lambda x: x.name, procedures))
 
     parser = argparse.ArgumentParser()
     parser.add_argument("directories", nargs="+",
                         help="The directories to iconize. "
                              "Files and directories that do not contain any "
                              "valid metadata configuration will be ignored.")
-    parser.add_argument("naming_scheme", choices=set(naming_schemes),
-                        default=default_naming_scheme,
+    parser.add_argument("procedure", choices=set(procedure_names), nargs="?",
+                        default=default_procedure().name,
                         help="The naming scheme to use")
-    parser.add_argument("agent", choices=set(agents), default=default_agent,
-                        help="The episode data fetching agent to use")
-    parser.add_argument("--noconfirm", action="store",
-                        help="Skips the user confirmation step")
     args = parser.parse_args()
 
     directories = args.directories
-    naming_scheme = args.naming_scheme
-    agent = args.agent
+    procedure = list(filter(lambda x: x.name == args.procedure, procedures))[0]
 
-    for directory in directories:
+    for path in directories:
 
-        if os.path.isfile(directory):  # TODO or not valid_metadata(directory)
-            continue
-
-        # TODO Rename + Confirmation
+        try:
+            directory = Directory(path)
+            directory.iconize(procedure)
+        except ValueError:
+            print("Iconizing of " + path + "failed")
 
 
 if __name__ == "__main__":
