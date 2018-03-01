@@ -20,8 +20,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import json
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.AnimeSeries import AnimeSeries
 
-metadata_types = [Base, TvSeries]
+metadata_types = [Base, TvSeries, AnimeSeries]
 """
 All available metadata types
 """

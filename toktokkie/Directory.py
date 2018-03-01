@@ -22,6 +22,7 @@ import sys
 from toktokkie.renaming import Renamer
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
+from toktokkie.exceptions import MissingMetadataException
 
 
 class Directory:
@@ -48,6 +49,8 @@ class Directory:
                 raise ValueError("Metadata type must be specified")
             self.generate_metadata(metadata_type)
 
+        if not os.path.isfile(self.metadata_file):
+            raise MissingMetadataException()
         self.metadata = resolve_metadata(self.metadata_file)
 
     def generate_metadata(self, metadata_type: Base):

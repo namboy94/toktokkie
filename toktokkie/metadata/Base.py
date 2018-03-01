@@ -23,8 +23,7 @@ from typing import Dict
 from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.types.MetaType import MetaType, Str
 from toktokkie.metadata.types.CommaList import StrCommaList
-from toktokkie.metadata.exceptions.InvalidMetadataException import \
-    InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadataException
 
 
 class Base:
@@ -33,14 +32,14 @@ class Base:
     common interfaces.
     """
 
+    # -------------------------------------------------------------------------
+    # These Methods and Variables should be extended by subclasses
+    # -------------------------------------------------------------------------
+
     type = Str("base")
     """
     The type of the Metadata. Shoudl generally be overridden by child classes
     """
-
-    # -------------------------------------------------------------------------
-    # These Methods should be extended by subclasses
-    # -------------------------------------------------------------------------
 
     @classmethod
     def generate_dict_from_prompts(cls, directory: str) -> Dict[str, MetaType]:

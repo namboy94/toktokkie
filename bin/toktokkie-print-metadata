@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Copyright 2015-2018 Hermann Krumrey <hermann@krumreyh.com>
 
@@ -17,7 +19,32 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.exceptions.InvalidMetadataException import \
-    InvalidMetadataException
-from toktokkie.exceptions.MissingMetadataException import \
+import argparse
+from toktokkie import Directory
+from toktokkie.exceptions import InvalidMetadataException, \
     MissingMetadataException
+
+
+def main():
+    """
+    The toktokkie-iconize main method
+    :return: None
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directory", help="The directory to print.")
+    args = parser.parse_args()
+
+    try:
+        directory = Directory(args.directory)
+        print(directory.metadata.to_json())
+    except InvalidMetadataException:
+        print("Invalid Metadata")
+    except MissingMetadataException:
+        print("Metadata does not exist")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Thanks for using toktokkie!")

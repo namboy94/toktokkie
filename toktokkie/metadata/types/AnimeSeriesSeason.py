@@ -19,23 +19,21 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 from typing import Dict, List
 from toktokkie.metadata.helper.prompt import prompt_user
-from toktokkie.metadata.types.MetaType import MetaType, Str
+from toktokkie.metadata.types.MetaType import Str
 from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.CommaList import IntCommaList, LanguageCommaList,\
     ResolutionCommaList, Language, Resolution
+from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 
 
-class TvSeriesSeason(MetaType):
-    """
-    A TV Series Season that can easily be serialized into a dictionary
-    """
+class AnimeSeriesSeason(TvSeriesSeason):
 
-    default_audio_languages = LanguageCommaList([Language("eng")])
+    default_audio_languages = LanguageCommaList([Language("jpn")])
     """
     The default audio languages used in the prompt for this class
     """
 
-    default_subtitle_languages = LanguageCommaList([])
+    default_subtitle_languages = LanguageCommaList([Language("eng")])
     """
     The default subtitle languages used in the prompt for this class
     """
@@ -49,6 +47,7 @@ class TvSeriesSeason(MetaType):
                  path: Str,
                  name: Str,
                  tvdb_ids: IntCommaList,
+                 mal_ids: IntCommaList,
                  audio_langs: LanguageCommaList,
                  subtitle_langs: LanguageCommaList,
                  resolutions: ResolutionCommaList):
@@ -61,23 +60,23 @@ class TvSeriesSeason(MetaType):
         :param subtitle_langs: The subtitle languages of the season
         :param resolutions: The resolutions of the season
         """
-        self.path = path
-        self.name = name
-        self.tvdb_ids = tvdb_ids
-        self.audio_langs = audio_langs
-        self.subtitle_langs = subtitle_langs
-        self.resolutions = resolutions
+        super().__init__(path, name, tvdb_ids,
+                         audio_langs, subtitle_langs, resolutions)
+        self.mal_ids = mal_ids
 
     def get_agent_ids(self, id_type: AgentIdType) -> List[int] or None:
         """
         Retrieves agent IDs for this season based on the provided ID type.
-        If the ID type could not be applied to this TvSeries, None will
+        If the ID type could not be applied to this season, None will
         be returned
         :param id_type: The Agent ID type to check for
         :return: The agent IDs for this season or None if not applicable
         """
-        if id_type == AgentIdType.TVDB:
-            return self.tvdb_ids.to_json()
+        sup = super().get_agent_ids(id_type)
+        if sup is not None:
+            return sup
+        elif id_type == AgentIdType.MYANIMELIST:
+            return self.mal_ids.to_json()
         else:
             return None
 
@@ -86,14 +85,9 @@ class TvSeriesSeason(MetaType):
         Turns this object into a JSON-compatible dictionary
         :return: The dictionary
         """
-        return {
-            "path": self.path.to_json(),
-            "name": self.name.to_json(),
-            "tvdb_ids": self.tvdb_ids.to_json(),
-            "audio_langs": self.audio_langs.to_json(),
-            "subtitle_langs": self.subtitle_langs.to_json(),
-            "resolutions": self.resolutions.to_json()
-        }
+        data = super().to_json()
+        data["mal_ids"] = self.mal_ids.to_json()
+        return data
 
     @classmethod
     def from_json(cls, json_data: any):
@@ -106,6 +100,7 @@ class TvSeriesSeason(MetaType):
             Str.from_json(json_data["path"]),
             Str.from_json(json_data["name"]),
             IntCommaList.from_json(json_data["tvdb_ids"]),
+            IntCommaList.from_json(json_data["mal_ids"]),
             LanguageCommaList.from_json(json_data["audio_langs"]),
             LanguageCommaList.from_json(json_data["subtitle_langs"]),
             ResolutionCommaList.from_json(json_data["resolutions"])
@@ -114,54 +109,17 @@ class TvSeriesSeason(MetaType):
     @classmethod
     def _prompt_to_json(cls, name: str, previous=None) -> Dict[str, any]:
         """
-        Generates a TvSeriesSeason JSON dictionary based on user prompts
+        Generates a AnimeSeriesSeason JSON dictionary based on user prompts
         :param name: The name of the season
         :param previous: Optionally, provide a previously created season object
                          for more applicable default values
-        :return: The generated TvSeriesSeason JSON dictionary
+        :return: The generated AnimeSeriesSeason JSON dictionary
         """
-
-        print("Season \"" + name + "\":")
-        path = Str(name)
-        name = prompt_user("Name", Str, Str(name))
-
+        data = super()._prompt_to_json(name, previous)
         if previous is None:
-            audio_defaults = cls.default_audio_languages
-            subtitle_defaults = cls.default_subtitle_languages
-            resolution_defaults = cls.default_resolutions
-            tvdb_ids = prompt_user("TVDB IDs", IntCommaList)
+            mal_ids = prompt_user("Myanimelist IDs", IntCommaList)
         else:
-            audio_defaults = previous.audio_langs
-            subtitle_defaults = previous.subtitle_langs
-            resolution_defaults = previous.resolutions
-            tvdb_ids = prompt_user("TVDB IDs", IntCommaList, previous.tvdb_ids)
-
-        audio_langs = prompt_user(
-            "Audio Languages", LanguageCommaList, audio_defaults
-        )
-        subtitle_langs = prompt_user(
-            "Subtitle Languages", LanguageCommaList, subtitle_defaults
-        )
-        resolutions = prompt_user(
-            "Resolutions", ResolutionCommaList, resolution_defaults
-        )
-
-        return {
-            "path": path.to_json(),
-            "name": name.to_json(),
-            "tvdb_ids": tvdb_ids.to_json(),
-            "audio_langs": audio_langs.to_json(),
-            "subtitle_langs": subtitle_langs.to_json(),
-            "resolutions": resolutions.to_json()
-        }
-
-    @classmethod
-    def prompt(cls, name: str, previous=None):
-        """
-        Generates a TvSeriesSeason object based on user prompts
-        :param name: The name of the season
-        :param previous: Optionally, provide a previously created season object
-                         for more applicable default values
-        :return: The generated TvSeriesSeason object
-        """
-        return cls.from_json(cls._prompt_to_json(name, previous))
+            mal_ids = \
+                prompt_user("Myanimelist IDs", IntCommaList, previous.mal_ids)
+        data["mal_ids"] = mal_ids.to_json()
+        return data

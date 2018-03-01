@@ -17,32 +17,28 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
 from typing import Dict, List
-from toktokkie.metadata.Base import Base
 from toktokkie.metadata.helper.prompt import prompt_user
+from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.types.AgentIdType import AgentIdType
-from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
-from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
+from toktokkie.metadata.types.MetaType import Str, MetaType
 from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList
+from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
 from toktokkie.exceptions import InvalidMetadataException
 
 
-class TvSeries(Base):
-    """
-    A metadata model for tv series
-    """
+class AnimeSeries(TvSeries):
 
     # -------------------------------------------------------------------------
     # These Methods and Variables should be extended by subclasses
     # -------------------------------------------------------------------------
 
-    type = Str("tv_series")
+    type = Str("anime_series")
     """
     The metadata type
     """
 
-    season_type = TvSeriesSeason
+    season_type = AnimeSeriesSeason
     """
     The type of season to use. Can be used by subclasses to add more attributes
     to seasons
@@ -51,32 +47,18 @@ class TvSeries(Base):
     @classmethod
     def generate_dict_from_prompts(cls, directory: str) -> Dict[str, MetaType]:
         """
-        Generates a TV Series from user prompts
+        Generates an Anime Series from user prompts
         :param directory: The directory to generate the metadata for
         :return: The generated metadata dictionary
         """
         data = super().generate_dict_from_prompts(directory)
-        seasons = []
 
-        for season in sorted(os.listdir(directory)):
-            season_dir = os.path.join(directory, season)
-            if os.path.isfile(season_dir) or season.startswith(".meta"):
-                continue
-
-            if len(seasons) > 0:
-                previous = seasons[len(seasons) - 1]
-                season_obj = cls.season_type.prompt(season, previous)
-            else:
-                season_obj = cls.season_type.prompt(season)
-
-            seasons.append(season_obj)
-
-        data["seasons"] = MetaList(seasons)
-        data["tvdb_excludes"] = prompt_user(
-            "TVDB Excludes", SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+        data["mal_excludes"] = prompt_user(
+            "Myanimelist Excludes",
+            SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
         )
-        data["tvdb_irregular_season_starts"] = prompt_user(
-            "TVDB Irregular Season Starts",
+        data["mal_irregular_season_starts"] = prompt_user(
+            "Myanimelist Irregular Season Starts",
             SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
         )
         return data
@@ -87,10 +69,9 @@ class TvSeries(Base):
         :return: The dictionary representation of the metadata
         """
         data = super().to_dict()
-        data["seasons"] = self.seasons
-        data["tvdb_excludes"] = self.tvdb_excludes
-        data["tvdb_irregular_season_starts"] = \
-            self.tvdb_irregular_season_starts
+        data["mal_excludes"] = self.mal_excludes
+        data["mal_irregular_season_starts"] = \
+            self.mal_irregular_season_starts
         return data
 
     def __init__(self, json_data: dict):
@@ -100,16 +81,12 @@ class TvSeries(Base):
         """
         super().__init__(json_data)
         try:
-            self.seasons = MetaList([])
-            self.tvdb_excludes = \
-                SeasonEpisodeCommaList.from_json(json_data["tvdb_excludes"])
-            self.tvdb_irregular_season_starts = \
+            self.mal_excludes = \
+                SeasonEpisodeCommaList.from_json(json_data["mal_excludes"])
+            self.mal_irregular_season_starts = \
                 SeasonEpisodeCommaList.from_json(
-                    json_data["tvdb_irregular_season_starts"]
+                    json_data["mal_irregular_season_starts"]
                 )
-
-            for season in json_data["seasons"]:
-                self.seasons.append(self.season_type.from_json(season))
 
         except KeyError:
             raise InvalidMetadataException()
@@ -121,9 +98,11 @@ class TvSeries(Base):
         :param id_type: The ID type to check for
         :return: The excluded episode list, or None if id type not applicable
         """
-
-        if id_type == AgentIdType.TVDB:
-            return self.tvdb_excludes.to_json()
+        sup = super().get_agent_excludes(id_type)
+        if sup is not None:
+            return sup
+        elif id_type == AgentIdType.MYANIMELIST:
+            return self.mal_excludes.to_json()
         else:
             return None
 
@@ -136,8 +115,8 @@ class TvSeries(Base):
         :return: The episode at which that season starts
         """
 
-        if id_type == AgentIdType.TVDB:
-            irregulars = self.tvdb_irregular_season_starts.to_json()
+        if id_type == AgentIdType.MYANIMELIST:
+            irregulars = self.mal_irregular_season_starts.to_json()
             hits = list(filter(lambda x: x["S"] == season, irregulars))
             if len(hits) == 0:
                 return 1
@@ -145,6 +124,6 @@ class TvSeries(Base):
                 return hits[0]["E"]
                 # TODO New data structure so that duplicate entries can't exist
         else:
-            return 1
+            return super().get_season_start(id_type, season)
 
     # -------------------------------------------------------------------------

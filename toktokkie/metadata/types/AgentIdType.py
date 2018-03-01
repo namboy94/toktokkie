@@ -25,3 +25,4 @@ class AgentIdType(Enum):
     Enum that maps renaming agent ID types to metadata types
     """
     TVDB = "tv_series"
+    MYANIMELIST = "anime_series"
