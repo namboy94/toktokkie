@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from typing import Dict
+from typing import Dict, List
 from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.types.MetaType import MetaType, Str
+from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.CommaList import IntCommaList, LanguageCommaList,\
     ResolutionCommaList, Language, Resolution
 
@@ -66,6 +67,19 @@ class TvSeriesSeason(MetaType):
         self.audio_langs = audio_langs
         self.subtitle_langs = subtitle_langs
         self.resolutions = resolutions
+
+    def get_agent_ids(self, id_type: AgentIdType) -> List[int] or None:
+        """
+        Retrieves agent IDs for this season based on the provided ID type.
+        If the ID type could not be applied to this TvSeries, None will
+        be returned
+        :param id_type: The Agent ID type to check for
+        :return: The agent IDs for this season or None if not applicable
+        """
+        if id_type == AgentIdType.TVDB:
+            return self.tvdb_ids.to_json()
+        else:
+            return None
 
     def to_json(self) -> Dict[str, any]:
         """

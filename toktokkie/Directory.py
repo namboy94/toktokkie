@@ -19,7 +19,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
-from toktokkie.metadata import resolve_metadata, Base
+from toktokkie.renaming import Episode
+from toktokkie.metadata import resolve_metadata, check_metadata_subtype, Base, \
+    TvSeries
+from toktokkie.metadata.types import TvSeriesSeason, AgentIdType
 
 
 class Directory:
@@ -75,7 +78,93 @@ class Directory:
         :param noconfirm: Skips the confirmation phase
         :return: None
         """
-        pass
+        if self.metadata.is_subclass_of(TvSeries):
+            metadata = self.metadata  # type: TvSeries
+            required_metadata_type = agent.id_type.value
+
+            if not check_metadata_subtype(metadata, required_metadata_type):
+                raise ValueError("Agent Type not applicable to metadata")
+
+            episodes = {}
+            for season in metadata.seasons.list:
+                season_path = os.path.join(self.path, season.path)
+
+                try:
+                    if season.path.lower().startswith("season "):
+                        season_number = int(season.path.split(" ")[1])
+                    else:
+                        season_number = 0
+                except (IndexError, ValueError):
+                    season_number = 0
+
+                season_ids = season.get_agent_ids(agent.id_type)
+                if season_ids is None:
+                    raise ValueError("Invalid agent ID type")
+
+                if season_number not in episodes:
+                    episodes[season_number] = []
+
+                for episode in os.listdir(season_path):
+                    episode_path = os.path.join(season_path, episode)
+
+                    if os.path.isfile(episode_path) and \
+                            not episode.startswith("."):
+                        episodes[season_number].append({
+                            "name": episode,
+                            "path": episode_path,
+                            "agent_ids": season_ids
+                        })
+
+            renaming_episodes = []
+            for season in sorted(episodes):
+
+                eps = sorted(episodes[season], key=lambda x: x["name"])
+
+                irregular = \
+                    metadata.get_agent_irregular_season_starts(agent.id_type)
+
+                if season in irregular:
+                    episode_count = irregular[season]
+                else:
+                    episode_count = 1
+
+                excluded = metadata.get_agent_excludes(agent.id_type)
+
+                for episode in eps:
+
+                    while True:
+                        exclude = list(filter(
+                            lambda x: x["S"] == season
+                                      and x["E"] == episode_count,
+                            excluded
+                        ))
+                        if len(exclude) == 0:
+                            break
+                        else:
+                            episode_count += 1
+
+                    renaming_episodes.append(Episode(
+                        episode["path"],
+                        metadata.name,
+                        episode["agent_ids"],
+                        season,
+                        episode_count,
+                        scheme,
+                        agent
+                    ))
+                    episode_count += 1
+
+            for episode in renaming_episodes:
+                print(episode.current.ljust(30) + " ---> " + episode.new)
+
+            if not noconfirm:
+                confirm = input("Start the renaming Process? (y/n)")
+                if confirm != "y":
+                    print("Renaming aborted")
+                    sys.exit(0)
+
+            for episode in renaming_episodes:
+                episode.rename()
 
     def iconize(self, method=None):
         """
@@ -83,4 +172,4 @@ class Directory:
         :param method: The iconizing method to use
         :return: None
         """
-        pass
+        pass  # TODO iconize

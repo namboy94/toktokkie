@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import json
-from typing import List, Dict
+from typing import Dict
 from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.exceptions import InvalidMetadataException
 from toktokkie.metadata.types.MetaType import MetaType, Str
@@ -140,3 +140,13 @@ class Base:
         for key, value in data.items():
             data[key] = value.to_json()
         return data
+
+    @classmethod
+    def is_subclass_of(cls, metadata_type: any) -> bool:
+        """
+        Checks if this metadata type is a subclass of another metadata type
+        :param metadata_type: The metadata type to check for
+        :return: True if the metadata object/class is a subclass of the
+                 provided class
+        """
+        return issubclass(cls, metadata_type)

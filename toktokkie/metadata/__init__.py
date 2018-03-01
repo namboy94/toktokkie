@@ -41,3 +41,30 @@ def resolve_metadata(metadata_file: str) -> Base:
         list(filter(lambda x: x.type == data["type"], metadata_types))[0]
 
     return metadata_class.from_json_file(metadata_file)
+
+
+def check_metadata_subtype(metadata_object: Base, to_check: Base or str) \
+        -> bool:
+    """
+    Checks if a metadata class is a subclass of another metadata class based
+    either on an explicit metdata class or even just the type string.
+    ValueErrors get raised when the to_check parameter isn't either a
+    valid Metadata class or a valid metadata type string.
+    :param metadata_object: The metadata object to check
+    :param to_check: The metadata class to check against
+    :return: True if the metadata object is a subclass of the to_check class
+    """
+
+    if issubclass(to_check, Base):
+        return metadata_object.is_subclass_of(to_check)
+    elif issubclass(to_check, str):
+        try:
+            to_check = list(filter(
+                lambda x: x.type.to_json() == to_check.lower(),
+                metadata_types
+            ))[0]
+            return issubclass(type(metadata_object), to_check)
+        except IndexError:
+            raise ValueError(to_check)
+    else:
+        raise ValueError(to_check)

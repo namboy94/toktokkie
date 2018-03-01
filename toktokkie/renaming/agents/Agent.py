@@ -17,5 +17,18 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.metadata.types.AgentIdType import AgentIdType
-from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
+from enum import Enum
+
+
+class Agent:
+
+    agent_name = "agent"
+
+    id_type = None
+
+    @classmethod
+    def fetch_episode_name(cls, series_id: int, season: int,
+                           episode: int) -> str:
+        raise NotImplementedError()
+
+

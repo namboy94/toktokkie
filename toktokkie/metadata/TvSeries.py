@@ -18,8 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-from typing import Dict
+from typing import Dict, List
 from toktokkie.metadata.Base import Base
+from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
 from toktokkie.metadata.exceptions import InvalidMetadataException
@@ -78,9 +79,38 @@ class TvSeries(Base):
         super().__init__(json_data)
         try:
             self.seasons = MetaList([])
+            self.tvdb_excludes = [{"S": 0, "E": 1}]  # TODO Make user-configurable
+            self.tvdb_irregular_season_start_episode = {0: 0}  # TODO Make user-configurable
 
             for season in json_data["seasons"]:
                 self.seasons.append(TvSeriesSeason.from_json(season))
 
         except KeyError:
             raise InvalidMetadataException()
+
+    def get_agent_excludes(self, id_type: AgentIdType) \
+            -> List[Dict[str, int]] or None:
+        """
+        Retrieves excluded episodes using the provided agent ID type
+        :param id_type: The ID type to check for
+        :return: The excluded episode list, or None if id type not applicable
+        """
+
+        if id_type == AgentIdType.TVDB:
+            return self.tvdb_excludes.to_json()
+        else:
+            return None
+
+    def get_agent_irregular_season_starts(self, id_type: AgentIdType) \
+            -> Dict[int, int] or None:
+        """
+        Retrieves irregular season episode starts for the provided agent type
+        :param id_type: The agent ID type
+        :return: A dictionary of irregular season starts or None if the id is
+                 not applicable
+        """
+
+        if id_type == AgentIdType.TVDB:
+            return self.tvdb_irregular_season_start_episode.to_json()
+        else:
+            return None

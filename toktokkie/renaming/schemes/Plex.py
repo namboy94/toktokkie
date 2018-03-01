@@ -17,5 +17,12 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.metadata.types.AgentIdType import AgentIdType
-from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
+from toktokkie.renaming.schemes.Scheme import Scheme
+
+
+class Plex(Scheme):
+    @classmethod
+    def _format_episode_name(cls, series_name: str, season: int, episode: int,
+                            episode_name: str) -> str:
+        return series_name + " - S" + str(season).zfill(2) + \
+               "E" + str(episode).zfill(2) + " - " + episode_name
