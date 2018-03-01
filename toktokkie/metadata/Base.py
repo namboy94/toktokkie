@@ -21,9 +21,10 @@ import os
 import json
 from typing import Dict
 from toktokkie.metadata.helper.prompt import prompt_user
-from toktokkie.metadata.exceptions import InvalidMetadataException
 from toktokkie.metadata.types.MetaType import MetaType, Str
 from toktokkie.metadata.types.CommaList import StrCommaList
+from toktokkie.metadata.exceptions.InvalidMetadataException import \
+    InvalidMetadataException
 
 
 class Base:

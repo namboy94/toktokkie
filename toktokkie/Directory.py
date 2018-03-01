@@ -22,7 +22,6 @@ import sys
 from toktokkie.renaming import Episode
 from toktokkie.metadata import resolve_metadata, check_metadata_subtype, Base, \
     TvSeries
-from toktokkie.metadata.types import TvSeriesSeason, AgentIdType
 
 
 class Directory:
@@ -135,7 +134,7 @@ class Directory:
                     while True:
                         exclude = list(filter(
                             lambda x: x["S"] == season
-                                      and x["E"] == episode_count,
+                            and x["E"] == episode_count,
                             excluded
                         ))
                         if len(exclude) == 0:

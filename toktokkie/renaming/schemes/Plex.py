@@ -23,6 +23,6 @@ from toktokkie.renaming.schemes.Scheme import Scheme
 class Plex(Scheme):
     @classmethod
     def _format_episode_name(cls, series_name: str, season: int, episode: int,
-                            episode_name: str) -> str:
+                             episode_name: str) -> str:
         return series_name + " - S" + str(season).zfill(2) + \
                "E" + str(episode).zfill(2) + " - " + episode_name

@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import tvdb_api
 from toktokkie.renaming.agents.Agent import Agent
-from toktokkie.metadata.types import AgentIdType
+from toktokkie.metadata.types.AgentIdType import AgentIdType
 from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 

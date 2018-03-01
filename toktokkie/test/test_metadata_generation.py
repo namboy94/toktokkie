@@ -59,7 +59,7 @@ class MetadataGenerationUnitTests(unittest.TestCase):
         with mock.patch("builtins.input", return_value=""):
             metadata = Base.generate_from_prompts(self.testdir)
 
-        self.assertEquals(
+        self.assertEqual(
             metadata.to_json(),
             {"type": "base", "name": "testdir", "tags": []}
         )
@@ -73,17 +73,17 @@ class MetadataGenerationUnitTests(unittest.TestCase):
         with mock.patch("builtins.input", side_effect=user_input):
             metadata = Base.generate_from_prompts(self.testdir)
 
-        self.assertEquals(metadata.type.to_json(), "base")
-        self.assertEquals(metadata.name.to_json(), "TestName")
-        self.assertEquals(metadata.tags.to_json(), ["Tag1", "Tag2"])
+        self.assertEqual(metadata.type.to_json(), "base")
+        self.assertEqual(metadata.name.to_json(), "TestName")
+        self.assertEqual(metadata.tags.to_json(), ["Tag1", "Tag2"])
 
-        self.assertEquals(metadata.to_json(), {
+        self.assertEqual(metadata.to_json(), {
             "type": "base", "name": "TestName", "tags": ["Tag1", "Tag2"]
         })
         metadata.write(self.testjson)
         written = Base.from_json_file(self.testjson)
 
-        self.assertEquals(metadata.to_json(), written.to_json())
+        self.assertEqual(metadata.to_json(), written.to_json())
         self.assertTrue(os.path.isfile(self.testjson))
 
     def test_defaults_tv_series_metadata(self):
@@ -100,12 +100,13 @@ class MetadataGenerationUnitTests(unittest.TestCase):
             "Tester", "One, Two",
             "", "a", "a1", "", "123", "", "", "",
             "Two", "124", "ger", "ger", "1280x720",
-            "", "125", "1", "test", "", "1", "test", "", "1280p", "test", ""
+            "", "125", "1", "test", "", "1", "test", "", "1280p", "test", "",
+            "A", "1", "", ""
         ]
         with mock.patch("builtins.input", side_effect=user_input):
             metadata = TvSeries.generate_from_prompts(self.testdir)
 
-        self.assertEquals(metadata.to_json(), {
+        self.assertEqual(metadata.to_json(), {
             "type": "tv_series",
             "name": "Tester",
             "tags": ["One", "Two"],
@@ -134,7 +135,9 @@ class MetadataGenerationUnitTests(unittest.TestCase):
                     "subtitle_langs": ["ger"],
                     "resolutions": [{"x": 1280, "y": 720}]
                 }
-            ]
+            ],
+            "tvdb_excludes": [],
+            "tvdb_irregular_season_starts": []
         })
 
     def test_generating_and_reading_tv_series_metadata(self):
@@ -145,7 +148,8 @@ class MetadataGenerationUnitTests(unittest.TestCase):
         os.makedirs(os.path.join(self.testdir, "Season 1"))
         user_input = [
             "Tester", "One, Two",
-            "First", "123", "JPN,eng", "gEr", "1280x720"
+            "First", "123", "JPN,eng", "gEr", "1280x720",
+            "S01E01", "S00E00, S02E10"
         ]
 
         with mock.patch("builtins.input", side_effect=user_input):
@@ -153,21 +157,27 @@ class MetadataGenerationUnitTests(unittest.TestCase):
 
         metadata = metadata  # type: TvSeries
 
-        self.assertEquals(metadata.type.to_json(), "tv_series")
-        self.assertEquals(metadata.name.to_json(), "Tester")
-        self.assertEquals(metadata.tags.to_json(), ["One", "Two"])
-        self.assertEquals(len(metadata.seasons.list), 1)
+        self.assertEqual(metadata.type.to_json(), "tv_series")
+        self.assertEqual(metadata.name.to_json(), "Tester")
+        self.assertEqual(metadata.tags.to_json(), ["One", "Two"])
+        self.assertEqual(len(metadata.seasons.list), 1)
 
         season = metadata.seasons.list[0]  # type: TvSeriesSeason
 
-        self.assertEquals(season.path.to_json(), "Season 1")
-        self.assertEquals(season.name.to_json(), "First")
-        self.assertEquals(season.tvdb_ids.to_json(), [123])
-        self.assertEquals(season.audio_langs.to_json(), ["jpn", "eng"])
-        self.assertEquals(season.subtitle_langs.to_json(), ["ger"])
-        self.assertEquals(season.resolutions.to_json(), [{"x": 1280, "y": 720}])
+        self.assertEqual(season.path.to_json(), "Season 1")
+        self.assertEqual(season.name.to_json(), "First")
+        self.assertEqual(season.tvdb_ids.to_json(), [123])
+        self.assertEqual(season.audio_langs.to_json(), ["jpn", "eng"])
+        self.assertEqual(season.subtitle_langs.to_json(), ["ger"])
+        self.assertEqual(season.resolutions.to_json(), [{"x": 1280, "y": 720}])
 
-        self.assertEquals(metadata.to_json(), {
+        self.assertEqual(metadata.tvdb_excludes.to_json(), [{"S": 1, "E": 1}])
+        self.assertEqual(
+            metadata.tvdb_irregular_season_starts.to_json(),
+            [{"S": 0, "E": 0}, {"S": 2, "E": 10}]
+        )
+
+        self.assertEqual(metadata.to_json(), {
             "type": "tv_series",
             "name": "Tester",
             "tags": ["One", "Two"],
@@ -178,11 +188,16 @@ class MetadataGenerationUnitTests(unittest.TestCase):
                 "audio_langs": ["jpn", "eng"],
                 "subtitle_langs": ["ger"],
                 "resolutions": [{"x": 1280, "y": 720}]
-            }]
+            }],
+            "tvdb_excludes": [{"S": 1, "E": 1}],
+            "tvdb_irregular_season_starts": [
+                {"S": 0, "E": 0},
+                {"S": 2, "E": 10}
+            ]
         })
 
         metadata.write(self.testjson)
         written = TvSeries.from_json_file(self.testjson)
 
-        self.assertEquals(metadata.to_json(), written.to_json())
+        self.assertEqual(metadata.to_json(), written.to_json())
         self.assertTrue(os.path.isfile(self.testjson))

@@ -46,7 +46,7 @@ class Scheme:
     def generate_episode_name(cls, series_name: str, season: int,
                               episode: int, episode_name: str) -> str:
         return cls.sanitize(
-            cls.format_episode_name(series_name, season, episode, episode_name)
+            cls._format_episode_name(series_name, season, episode, episode_name)
         )
 
     @classmethod

@@ -20,12 +20,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 from typing import Dict, List
 from toktokkie.metadata.Base import Base
-from toktokkie.metadata.helper import prompt_user
+from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
 from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList
-from toktokkie.metadata.exceptions import InvalidMetadataException
+from toktokkie.metadata.exceptions.InvalidMetadataException import \
+    InvalidMetadataException
 
 
 class TvSeries(Base):
