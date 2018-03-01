@@ -68,7 +68,7 @@ class Scheme:
         """
 
         illegal_characters = {
-            "/": "̷",
+            "/": "／",
             "\\": "＼",
             "?": "？",
             "<": "＜",

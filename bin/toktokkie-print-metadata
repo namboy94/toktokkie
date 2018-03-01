@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import sys
 import argparse
 from toktokkie import Directory
 from toktokkie.exceptions import InvalidMetadataException, \
@@ -31,16 +32,20 @@ def main():
     :return: None
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory", help="The directory to print.")
+    parser.add_argument("directories", help="The directories to print.",
+                        nargs="+")
     args = parser.parse_args()
 
-    try:
-        directory = Directory(args.directory)
-        print(directory.metadata.to_json())
-    except InvalidMetadataException:
-        print("Invalid Metadata")
-    except MissingMetadataException:
-        print("Metadata does not exist")
+    for path in args.directories:
+        try:
+            directory = Directory(path)
+            print(directory.metadata.to_json())
+        except InvalidMetadataException:
+            print("Invalid Metadata")
+            sys.exit(1)
+        except MissingMetadataException:
+            print("Metadata does not exist")
+            sys.exit(1)
 
 
 if __name__ == "__main__":

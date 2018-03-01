@@ -29,7 +29,6 @@ def main():
     The toktokkie-rename main method
     :return: None
     """
-    # TODO Define naming schemes and agents
     naming_schemes = list(map(lambda x: x.name, schemes))
     naming_agents = list(map(lambda x: x.name, agents))
     default_scheme = Plex.name
