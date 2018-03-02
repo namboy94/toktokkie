@@ -48,6 +48,7 @@ def prompt_user(arg: str, arg_type: Type[MetaPrimitive],
         else:
             try:
                 return arg_type.parse(response)
-            except ValueError:
+            except ValueError as e:
                 print("Invalid input: " + response)
+                print(str(e))
                 continue

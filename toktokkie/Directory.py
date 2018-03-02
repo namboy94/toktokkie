@@ -24,6 +24,7 @@ from toktokkie.renaming import Renamer, Scheme, Agent
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
 from toktokkie.exceptions import MissingMetadataException
+from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
 
 
 class Directory:
@@ -105,3 +106,14 @@ class Directory:
         """
         iconizer = Iconizer(self.path, self.icon_path, procedure)
         iconizer.iconize()
+
+    def xdcc_update(self, scheme: Type[Scheme], agent: Type[Agent]):
+        """
+        Performs an XDCC Update
+        :param scheme: The naming scheme to use
+        :param agent: The naming agent to use
+        :return: None
+        """
+        # noinspection PyTypeChecker
+        updater = XDCCUpdater(self.path, self.metadata, scheme, agent)
+        updater.update()

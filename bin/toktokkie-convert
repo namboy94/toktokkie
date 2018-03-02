@@ -35,6 +35,7 @@ def main():
 
     for path in args.directories:
         directory = Directory(path)
+        directory.metadata.write(directory.metadata_file)
 
 
 if __name__ == "__main__":
