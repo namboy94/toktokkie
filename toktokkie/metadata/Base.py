@@ -121,9 +121,10 @@ class Base:
                           which to write the metadata
         :return: None
         """
+        data = self.to_json()  # Must be in front of file open
         with open(json_file, "w") as f:
             f.write(json.dumps(
-                self.jsonize_dict(self.to_dict()),
+                data,
                 sort_keys=True,
                 indent=4,
                 separators=(",", ": ")

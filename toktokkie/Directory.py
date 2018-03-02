@@ -54,6 +54,13 @@ class Directory:
             raise MissingMetadataException()
         self.metadata = resolve_metadata(self.metadata_file)
 
+    def write_metadata(self):
+        """
+        Updates the metadata file with the current contents of the metadata
+        :return: None
+        """
+        self.metadata.write(self.metadata_file)
+
     def generate_metadata(self, metadata_type: Base):
         """
         Prompts the user for metadata information

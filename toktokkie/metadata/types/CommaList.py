@@ -21,8 +21,10 @@ from typing import List, Type
 from toktokkie.metadata.types.Language import Language
 from toktokkie.metadata.types.Resolution import Resolution
 from toktokkie.metadata.types.MetaType import MetaPrimitive, Str, Int
+from toktokkie.metadata.types.MyanimelistEpisode import MyanimelistEpisode
 from toktokkie.metadata.types.SeasonEpisode import SeasonEpisode
-from toktokkie.metadata.types.SeasonEpisodeRange import SeasonEpisodeRange
+from toktokkie.metadata.types.EpisodeRange import SeasonEpisodeRange, \
+    MyanimelistEpisodeRange
 
 
 class CommaList(MetaPrimitive):
@@ -126,3 +128,17 @@ class SeasonEpisodeRangeCommaList(CommaList):
     An Episode Exclusion Comma List
     """
     meta_type = SeasonEpisodeRange
+
+
+class MyanimelistEpisodeCommaList(CommaList):
+    """
+    A Myanimelist Episode Comma List
+    """
+    meta_type = MyanimelistEpisode
+
+
+class MyanimelistEpisodeRangeCommaList(CommaList):
+    """
+    A Myanimelist Episode Range Comma List
+    """
+    meta_type = MyanimelistEpisodeRange

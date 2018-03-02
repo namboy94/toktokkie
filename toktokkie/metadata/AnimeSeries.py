@@ -24,8 +24,8 @@ from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.MetaType import Str, MetaType
 from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
 from toktokkie.exceptions import InvalidMetadataException
-from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
-    SeasonEpisodeRangeCommaList, IntCommaList
+from toktokkie.metadata.types.CommaList import MyanimelistEpisodeCommaList, \
+    MyanimelistEpisodeRangeCommaList, IntCommaList
 
 
 class AnimeSeries(TvSeries):
@@ -59,15 +59,16 @@ class AnimeSeries(TvSeries):
         )
         data["mal_excludes"] = prompt_user(
             "Myanimelist Excludes",
-            SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+            MyanimelistEpisodeCommaList, MyanimelistEpisodeCommaList([])
         )
         data["mal_irregular_season_starts"] = prompt_user(
             "Myanimelist Irregular Season Starts",
-            SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+            MyanimelistEpisodeCommaList, MyanimelistEpisodeCommaList([])
         )
         data["mal_multi_episodes"] = prompt_user(
             "Myanimelist Multi-Episodes (x episodes/1 file)",
-            SeasonEpisodeRangeCommaList, SeasonEpisodeRangeCommaList([])
+            MyanimelistEpisodeRangeCommaList,
+            MyanimelistEpisodeRangeCommaList([])
         )
         return data
 
@@ -95,14 +96,15 @@ class AnimeSeries(TvSeries):
                 json_data["mal_check_ignores"]
             )
             self.mal_excludes = \
-                SeasonEpisodeCommaList.from_json(json_data["mal_excludes"])
+                MyanimelistEpisodeCommaList.from_json(json_data["mal_excludes"])
             self.mal_irregular_season_starts = \
-                SeasonEpisodeCommaList.from_json(
+                MyanimelistEpisodeCommaList.from_json(
                     json_data["mal_irregular_season_starts"]
                 )
-            self.mal_multi_episodes = SeasonEpisodeRangeCommaList.from_json(
-                json_data["mal_multi_episodes"]
-            )
+            self.mal_multi_episodes = \
+                MyanimelistEpisodeRangeCommaList.from_json(
+                    json_data["mal_multi_episodes"]
+                )
 
         except KeyError:
             raise InvalidMetadataException()

@@ -22,14 +22,18 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import argparse
-from typing import List
+from typing import List, Dict
 from colorama import Fore, Style
 from malscraper.types.AiringState import AiringState
 from malscraper.types.WatchState import WatchState
 from malscraper.UserMalAnime import UserMalAnime
+from malscraper.MalAnime import MalAnime
 from toktokkie import Directory
+from toktokkie.metadata.types.MetaType import Int
 from toktokkie.renaming import Plex, Renamer, TVDB
 from toktokkie.metadata import AnimeSeries
+from toktokkie.metadata.types.Resolution import Resolution
+from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
 from toktokkie.exceptions import InvalidMetadataException, \
     MissingMetadataException
 
@@ -75,11 +79,13 @@ def check_icons(directory: Directory):
             icon_path = os.path.join(directory.icon_path, child + ".png")
 
             if not os.path.isfile(icon_path):
-                print("No Icon for " + child_path)
+                print(Fore.LIGHTWHITE_EX + "No Icon for " + child_path +
+                      Style.RESET_ALL)
                 sys.exit(1)
 
     if not os.path.isfile(os.path.join(directory.icon_path, "main.png")):
-        print("No main icon for " + directory.metadata.name)
+        print(Fore.LIGHTWHITE_EX + "No main icon for " +
+              directory.metadata.name + Style.RESET_ALL)
         sys.exit(1)
 
 
@@ -148,28 +154,94 @@ def check_myanimelist(directory: Directory, username: str):
             else:
                 mal_map[mal_id] = [season]
 
+    # Include related IDs
     related_ids = []
     for mal_id in mal_map:
-        mal_data = UserMalAnime(mal_id, username)
+        mal_data = MalAnime(mal_id)
         for _id in mal_data.related_anime:
             if _id not in related_ids:
                 related_ids.append(_id)
     for ignored in metadata.mal_check_ignores.list:
         if ignored in related_ids:
             related_ids.remove(ignored)
+    for related in related_ids:
+        if related not in mal_map:
+            mal_map[related] = []
 
-    check_myanimelist_watch_state(related_ids, username)
+    if not check_myanimelist_watch_state(directory, mal_map, username):
+        return
+    if not check_myanimelist_watch_dates(mal_map, username):
+        return
+    if not check_myanimelist_tags(mal_map, username):
+        return
+    if not check_myanimelist_local_files(directory, mal_map, username):
+        return
 
 
-def check_myanimelist_watch_state(mal_ids: List[int], username: str):
+def check_myanimelist_local_files(directory: Directory,
+                                  mal_map: Dict[int, List[AnimeSeriesSeason]],
+                                  username: str) -> bool:
+    """
+    Checks if the local files are matching with the myanimelist data
+    :param directory: The directory containing the files
+    :param mal_map: The myanimelist IDs mapped to lists of seasons
+    :param username: The myanimelist username
+    :return: True if everything is fine, False otherwise
+    """
+    valid = True
+
+    for mal_id, seasons in mal_map.items():
+
+        mal_data = UserMalAnime(mal_id, username)
+        if mal_data.watch_status != WatchState.COMPLETED:
+            continue
+
+        if len(seasons) == 0:
+            print(Fore.LIGHTMAGENTA_EX + "Myanimelist ID " + str(mal_id) + " ("
+                  + mal_data.name + ") missing from local files" +
+                  Style.RESET_ALL)
+            valid = False
+            continue
+
+        episode_count = calculate_episode_amount(mal_id, directory, mal_map)
+
+        if mal_data.episode_count != mal_data.episodes_watched_count:
+            print(
+                Fore.LIGHTCYAN_EX +
+                "Episodes available and watched out of sync for " +
+                mal_data.name + " (" + str(mal_id) + "): [" +
+                str(mal_data.episode_count) + "|" +
+                str(mal_data.episodes_watched_count) + "]" + Style.RESET_ALL
+            )
+            valid = False
+
+        if mal_data.episode_count != episode_count:
+            print(
+                Fore.LIGHTBLUE_EX +
+                "Episodes available and local files out of sync for " +
+                mal_data.name + " (" + str(mal_id) + "): [" +
+                str(mal_data.episode_count) + "|" + str(episode_count) +
+                "]" + Style.RESET_ALL
+            )
+            valid = False
+    return valid
+
+
+def check_myanimelist_watch_state(directory: Directory,
+                                  mal_map: Dict[int, List[AnimeSeriesSeason]],
+                                  username: str) -> bool:
     """
     Makes sure that all myanimelist IDs provided have been marked as completed,
     provided they have already finished airing
-    :param mal_ids: The myanimelist IDs to check
+    :param directory: The directory to use
+    :param mal_map: The myanimelist IDs mapped to lists of seasons
     :param username: The myanimelist username
-    :return: None
+    :return: True if everything is fine, False otherwise
     """
-    for mal_id in mal_ids:
+    valid = True
+
+    for mal_id in mal_map:
+
         mal_data = UserMalAnime(mal_id, username)
 
         to_print = "Not Completed: " + mal_data.name + " [" + str(mal_id) + "]"
@@ -179,9 +251,172 @@ def check_myanimelist_watch_state(mal_ids: List[int], username: str):
                 if mal_data.watch_status == WatchState.PLAN_TO_WATCH:
                     continue
                 elif mal_data.watch_status == WatchState.ON_HOLD:
-                    print(Fore.YELLOW + to_print + Style.RESET_ALL)
+                    print(Fore.GREEN + to_print + Style.RESET_ALL)
                 else:
                     print(Fore.LIGHTRED_EX + to_print + Style.RESET_ALL)
+                    if input("Ignore this entry? (y/n)") == "y":
+                        directory.metadata.mal_check_ignores.list.append(
+                            Int(mal_id)
+                        )
+                        directory.write_metadata()
+                        print("Ignoring entry " + str(mal_id))
+                    else:
+                        print("Not ignoring entry " + str(mal_id))
+                        valid = False
+    return valid
+
+
+def check_myanimelist_watch_dates(mal_map: Dict[int, List[AnimeSeriesSeason]],
+                                  username: str) -> bool:
+    """
+    Checks if the user-entered watching dates are entered for every completed
+    item
+    :param mal_map: The myanimelist IDs mapped to lists of seasons
+    :param username: The username to use
+    :return: True if everything is fine, False otherwise
+    """
+    valid = True
+
+    for mal_id in mal_map:
+        mal_data = UserMalAnime(mal_id, username)
+
+        if mal_data.watch_status == WatchState.COMPLETED:
+            if mal_data.start_watching_date is None \
+                    or mal_data.finish_watching_date is None:
+                print(Fore.MAGENTA + "Watch dates missing for " + mal_data.name
+                      + "[" + str(mal_id) + "]" + Style.RESET_ALL)
+                valid = False
+    return valid
+
+
+def check_myanimelist_tags(mal_map: Dict[int, List[AnimeSeriesSeason]],
+                           username: str) -> bool:
+    """
+    Checks that the myanimelist user-added tags actually confirm the data in the
+    metadata
+    :param mal_map: The myanimelist IDs mapped to lists of seasons
+    :param username: The username
+    :return: True if everything is fine, False otherwise
+    """
+    valid = True
+
+    for mal_id, seasons in mal_map.items():
+        mal_data = UserMalAnime(mal_id, username)
+
+        if mal_data.watch_status != WatchState.COMPLETED:
+            continue
+
+        if len(mal_data.tags) < 2:
+            print(Fore.YELLOW + "Not enough tags for " + mal_data.name +
+                  "[" + str(mal_id) + "]" + Style.RESET_ALL)
+            valid = False
+
+        for tag in mal_data.tags:
+            if tag.lower() in ["subbed", "dubbed"]:
+
+                audios = []
+                subtitles = []
+
+                if tag.lower() == "subbed":
+                    audios.append("jpn")
+                    subtitles.append("eng")
+                if tag.lower() == "dubbed":
+                    audios.append("eng")
+
+                for season in seasons:
+                    for audio in audios:
+                        if audio not in season.audio_langs.to_json():
+                            print(Fore.YELLOW + "Missing audio: " + str(audio) +
+                                  " for " + mal_data.name + Style.RESET_ALL)
+                            valid = False
+                    for subtitle in subtitles:
+                        if subtitle not in season.subtitle_langs.to_json():
+                            print(Fore.YELLOW + "Missing audio: " +
+                                  str(subtitle) + " for " + mal_data.name +
+                                  Style.RESET_ALL)
+                            valid = False
+
+            else:
+                try:
+                    resolution = Resolution.parse(tag)
+
+                    for season in seasons:
+                        if resolution.to_json() \
+                                not in season.resolutions.to_json():
+
+                            print(Fore.YELLOW + "Resolution " + str(resolution)
+                                  + " missing for " + mal_data.name +
+                                  " in local metadata." + Style.RESET_ALL)
+                            valid = False
+                except (IndexError, ValueError):
+                    pass
+    return valid
+
+
+def calculate_episode_amount(mal_id: int, directory: Directory,
+                             mal_map: Dict[int, List[AnimeSeriesSeason]]) \
+        -> int:
+    """
+    Calculates the amount of episodes that are present locally for a given
+    myanimelist ID.
+    This is definitely the most complex function in this entire script
+    :param mal_id: The myanimelist ID
+    :param directory: The directory in which to search
+    :param mal_map: Dictionary mapping myanimelist ids to seasons
+    :return: The episode amount
+    """
+
+    season_episodes = {mal_id: []}
+    unique_id = "/////"
+
+    # Collect all RELATED myanimelist IDs
+    for season in mal_map[mal_id]:
+        for season_mal_id in season.mal_ids.list:
+            if season_mal_id != mal_id:
+                season_episodes[season_mal_id] = []
+
+    # Search for all episodes related to a specific myanimelist id
+    for season in directory.metadata.seasons.list:
+        season_dir = os.path.join(directory.path, season.path)
+        for season_mal_id in season_episodes:
+            if season_mal_id in season.mal_ids.to_json():
+
+                for episode in os.listdir(season_dir):
+                    episode_path = os.path.join(season_dir, episode)
+
+                    if os.path.isfile(episode_path) and \
+                            not episode.startswith("."):
+                        season_episodes[season_mal_id].append(episode_path)
+
+                # Add excluded episodes
+                for excluded in directory.metadata.mal_excludes.list:
+                    if excluded.mal_id == season_mal_id:
+                        season_episodes[season_mal_id].append(unique_id)
+                        unique_id += "/"
+
+                # Add multi episodes
+                for multi_episode in directory.metadata.mal_multi_episodes.list:
+                    if multi_episode.start.mal_id == season_mal_id:
+                        diff = abs(multi_episode.end.episode -
+                                   multi_episode.start.episode)
+                        for _ in range(0, diff):
+                            season_episodes[season_mal_id].append(unique_id)
+                            unique_id += "/"
+
+    # Figure out how many episodes are there in total,
+    # across all related myanimelist episodes
+    all_episodes = []
+    for _, episodes in season_episodes.items():
+        all_episodes += episodes
+    episode_count = len(set(all_episodes))
+
+    # Subtract all episodes from other IDs
+    for season_mal_id in season_episodes:
+        if season_mal_id != mal_id:
+            season_mal_data = MalAnime(season_mal_id)
+            episode_count -= season_mal_data.episode_count
+
+    return episode_count
 
 
 if __name__ == "__main__":
