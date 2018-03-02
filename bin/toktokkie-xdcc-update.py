@@ -22,6 +22,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import argparse
 from toktokkie.renaming import schemes, agents, Plex, TVDB
 from toktokkie import Directory
+from toktokkie.exceptions import MissingMetadataException, \
+    MissingUpdateInstructionsException
 
 
 def main():
@@ -60,12 +62,16 @@ def main():
             directory = Directory(path)
 
             if args.create:
-                directory.create_xdcc_update()
+                directory.xdcc_update(scheme, agents, True)
             else:
                 directory.xdcc_update(scheme, agent)
 
         except ValueError:
             print("Updating of " + path + "failed")
+        except MissingMetadataException:
+            print("Missing metadata: " + path)
+        except MissingUpdateInstructionsException:
+            print("Missing update instructions. Run with --create first")
 
 
 if __name__ == "__main__":

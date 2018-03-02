@@ -18,11 +18,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import sys
 from typing import Type
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.renaming.schemes.Scheme import Scheme
 from toktokkie.renaming.agents.Agent import Agent
 from toktokkie.xdcc_update.UpdateInstructions import UpdateInstructions
+from toktokkie.exceptions import MissingUpdateInstructionsException
 
 
 class XDCCUpdater:
@@ -31,13 +33,16 @@ class XDCCUpdater:
     """
 
     def __init__(self, path: str, metadata: TvSeries,
-                 scheme: Type[Scheme], agent: Type[Agent]):
+                 scheme: Type[Scheme], agent: Type[Agent],
+                 create: bool = False):
         """
         Initializes the XDCCUpdater
         :param path: The path to the directory to update
         :param metadata: The metadata of the directory
         :param scheme: The naming scheme to use
         :param agent: The agent to use
+        :param create: If set to True, will prompt user to create new
+                       xdcc-update instructions
         """
         self.path = path
         self.metadata = metadata
@@ -46,8 +51,24 @@ class XDCCUpdater:
 
         self.update_instructions_file = \
             os.path.join(path, ".meta", "xdcc-update.json")
-        self.update_instructions = \
-            UpdateInstructions.from_json_file(self.update_instructions_file)
+
+        if create:
+
+            if os.path.isfile(self.update_instructions_file):
+                if input("File exists. Overwrite? (y/n)") != "y":
+                    print("Aborted")
+                    sys.exit(1)
+
+            self.update_instructions = \
+                UpdateInstructions.generate_from_prompts(path)
+            self.update_instructions.write(self.update_instructions_file)
+
+        elif not os.path.isfile(self.update_instructions_file):
+            raise MissingUpdateInstructionsException()
+
+        else:
+            self.update_instructions = \
+                UpdateInstructions.from_json_file(self.update_instructions_file)
 
     def update(self):
         """

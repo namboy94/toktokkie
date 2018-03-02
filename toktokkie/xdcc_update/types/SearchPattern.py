@@ -61,7 +61,7 @@ class SearchPattern(MetaPrimitive):
         Turns the object into a string
         :return: The dictionary representation of the SearchPattern
         """
-        return self.search_pattern_option.value
+        return self.search_pattern_option.value["name"]
 
     @classmethod
     def from_json(cls, json_data: any):

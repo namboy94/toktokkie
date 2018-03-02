@@ -107,13 +107,15 @@ class Directory:
         iconizer = Iconizer(self.path, self.icon_path, procedure)
         iconizer.iconize()
 
-    def xdcc_update(self, scheme: Type[Scheme], agent: Type[Agent]):
+    def xdcc_update(self, scheme: Type[Scheme], agent: Type[Agent],
+                    create: bool = False):
         """
-        Performs an XDCC Update
+        Performs an XDCC Update Action
         :param scheme: The naming scheme to use
         :param agent: The naming agent to use
+        :param create: Can be set to create the XDCC Update instructions
         :return: None
         """
-        # noinspection PyTypeChecker
-        updater = XDCCUpdater(self.path, self.metadata, scheme, agent)
-        updater.update()
+        updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
+        if not create:
+            updater.update()

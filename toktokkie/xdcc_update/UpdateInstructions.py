@@ -22,9 +22,10 @@ from typing import Dict
 from toktokkie.metadata.types.MetaType import Int, Str, MetaType
 from toktokkie.metadata import Base, TvSeries
 from toktokkie.metadata.helper.prompt import prompt_user
-from toktokkie.xdcc_update.types.Resolution import Resolution, ResolutionOption
 from toktokkie.xdcc_update.types.SearchEngine import SearchEngine
-from toktokkie.xdcc_update.types.SearchPattern import SearchPattern
+from toktokkie.xdcc_update.types.Resolution import Resolution, ResolutionOption
+from toktokkie.xdcc_update.types.SearchPattern import SearchPattern, \
+    SearchPatternOption
 
 
 class UpdateInstructions(Base):
@@ -62,8 +63,9 @@ class UpdateInstructions(Base):
         data = {
             "season_path": season_path,
             "search_name": prompt_user("Search Name", Str),
-            "search_pattern": prompt_user("Search Pattern", SearchPattern,
-                                          SearchPattern.parse("horriblesubs")),
+            "search_pattern": prompt_user(
+                "Search Pattern", SearchPattern,
+                SearchPattern(SearchPatternOption.HORRIBLESUBS)),
             "search_engine": prompt_user("Search Engine", SearchEngine,
                                          SearchEngine.parse("horriblesubs")),
             "resolution": prompt_user("Resolution", Resolution,

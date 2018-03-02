@@ -18,8 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-class MissingMetadataException(Exception):
+class MissingUpdateInstructionsException(Exception):
     """
-    Exception that is raised whenever metadata is not found
+    Exception that is raised whenever update instrcution don't exist
     """
     pass

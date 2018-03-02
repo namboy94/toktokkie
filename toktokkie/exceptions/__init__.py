@@ -21,3 +21,5 @@ from toktokkie.exceptions.InvalidMetadataException import \
     InvalidMetadataException
 from toktokkie.exceptions.MissingMetadataException import \
     MissingMetadataException
+from toktokkie.exceptions.MissingUpdateInstructionsException import \
+    MissingUpdateInstructionsException
