@@ -60,6 +60,7 @@ def main():
 
         try:
             directory = Directory(path)
+            print(directory.metadata.name)
 
             if args.create:
                 directory.xdcc_update(scheme, agents, True)

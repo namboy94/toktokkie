@@ -80,7 +80,7 @@ class XDCCUpdater:
         packs = self.search(episode_count + 1)
 
         # Download
-        results = MultipleServerDownloader("random", 5).download(packs)
+        results = MultipleServerDownloader("random", 1).download(packs)
         for result in results:
             print(result.filename + ": " + results[result])
 

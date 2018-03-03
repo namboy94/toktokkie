@@ -96,7 +96,8 @@ class Scheme:
     @staticmethod
     def sanitize(string: str) -> str:
         """
-        Replaces all illegal file system characters with valid ones
+        Replaces all illegal file system characters with valid ones.
+        Also, limit the length of the string to 120 charcters
         :param string: The string to sanitize
         :return: The sanitized string
         """
@@ -116,4 +117,7 @@ class Scheme:
         sanitized = string
         for illegal_character, replacement in illegal_characters.items():
             sanitized = sanitized.replace(illegal_character, replacement)
+
+        if len(sanitized) > 120:
+            sanitized = sanitized[0:120] + "... "
         return sanitized

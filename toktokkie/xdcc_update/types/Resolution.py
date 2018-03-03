@@ -53,9 +53,9 @@ class Resolution(MetaPrimitive):
         self.resolution_option = resolution_option
         if self.resolution_option == ResolutionOption.X1080p:
             self.x, self.y = (1920, 1080)
-        elif self.resolution_option == ResolutionOption.X1080p:
+        elif self.resolution_option == ResolutionOption.X720p:
             self.x, self.y = (1280, 720)
-        elif self.resolution_option == ResolutionOption.X1080p:
+        elif self.resolution_option == ResolutionOption.X480p:
             self.x, self.y = (720, 480)
         else:
             self.x, self.y = (0, 0)

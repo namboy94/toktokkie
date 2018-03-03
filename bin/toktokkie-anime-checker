@@ -81,12 +81,10 @@ def check_icons(directory: Directory):
             if not os.path.isfile(icon_path):
                 print(Fore.LIGHTWHITE_EX + "No Icon for " + child_path +
                       Style.RESET_ALL)
-                sys.exit(1)
 
     if not os.path.isfile(os.path.join(directory.icon_path, "main.png")):
         print(Fore.LIGHTWHITE_EX + "No main icon for " +
               directory.metadata.name + Style.RESET_ALL)
-        sys.exit(1)
 
 
 def check_all_directories_in_metadata(directory: Directory):
