@@ -36,6 +36,30 @@ class SearchPatternOption(Enum):
         "resolution_format": ResolutionFormat.P_NOTATION
     }
 
+    CHYUU = {
+        "name": "chyuu",
+        "search_pattern": "[Chyuu] @{NAM} - @{EPI} [@{RES}]",
+        "check_pattern": "[Chyuu] @{NAM} - @{EPI} [@{RES}][@{HSH}].mkv",
+        "episode_zfill": 2,
+        "resolution_format": ResolutionFormat.P_NOTATION
+    }
+
+    DAVINCI = {
+        "name": "davinci",
+        "search_pattern": "[Davinci] @{NAM} - @{EPI} [@{RES}]",
+        "check_pattern": "[Davinci] @{NAM} - @{EPI} [@{RES}][@{HSH}].mkv",
+        "episode_zfill": 2,
+        "resolution_format": ResolutionFormat.P_NOTATION
+    }
+
+    GENERIC = {
+        "name": "generic",
+        "search_pattern": "@{NAM} - @{EPI} [@{RES}]",
+        "check_pattern": "@{NAM} - @{EPI} [@{RES}]",
+        "episode_zfill": 2,
+        "resolution_format": ResolutionFormat.P_NOTATION
+    }
+
 
 class SearchPattern(MetaPrimitive):
     """
@@ -130,15 +154,22 @@ class SearchPattern(MetaPrimitive):
         :return: The filled pattern
         """
         pattern = self.check_pattern if regex else self.search_pattern
-        pattern = pattern.replace("@{NAM}",
-                                  series_name)
-        pattern = pattern.replace("@{EPI}",
-                                  str(episode).zfill(self.episode_zfill))
-        pattern = pattern.replace("@{RES}",
-                                  resolution.to_format(self.resolution_format))
+        pattern = pattern.replace("@{NAM}", series_name)
+        pattern = pattern.replace(
+            "@{RES}", resolution.to_format(self.resolution_format)
+        )
 
         if regex:
             pattern = pattern.replace("[", "\[")
             pattern = pattern.replace("]", "\]")
+            pattern = pattern.replace("@{HSH}", "[a-zA-Z0-9]+")
+            pattern = pattern.replace(
+                "@{EPI}", str(episode).zfill(self.episode_zfill) + "(v[0-9]+)?"
+            )
+
+        else:
+            pattern = pattern.replace(
+                "@{EPI}", str(episode).zfill(self.episode_zfill)
+            )
 
         return pattern

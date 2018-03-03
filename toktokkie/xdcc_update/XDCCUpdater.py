@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
-from typing import Type, List, Tuple
+from typing import Type, List
 from xdcc_dl.entities.XDCCPack import XDCCPack
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.metadata.TvSeries import TvSeries
@@ -78,12 +78,42 @@ class XDCCUpdater:
         """
         episode_count = self.update_names()
         packs = self.search(episode_count + 1)
+
+        # Download
         results = MultipleServerDownloader("random", 5).download(packs)
         for result in results:
             print(result.filename + ": " + results[result])
+
         self.update_names()
 
+    def update_names(self) -> int:
+        """
+        Updates the names of the existing episodes and returns the
+        episode number of the next missing episode.
+        :return: The episode number of the next missing episode
+        """
+
+        episode_offset = self.update_instructions.episode_offset.to_json()
+        destination = os.path.join(
+            self.path,
+            self.update_instructions.season_path.to_json()
+        )
+        episode_count = 0
+        renamer = Renamer(self.path, self.metadata, self.scheme, self.agent)
+        for episode in renamer.episodes:
+            if episode.location == destination:
+                episode_count += 1
+                if episode.current != episode.new:
+                    episode.rename()
+
+        return episode_count + episode_offset
+
     def search(self, episode_count: int) -> List[XDCCPack]:
+        """
+        Conducts a search for the next episode
+        :param episode_count: The episode to look for
+        :return: A list of XDCCPacks to download
+        """
 
         # Get Metadata
         season_path = self.update_instructions.season_path.to_json()
@@ -97,10 +127,10 @@ class XDCCUpdater:
         search_engine = self.update_instructions.search_engine
         preferred_bot = self.update_instructions.preferred_bot.to_json()
 
+        # Search
         search_term = search_pattern.generate_search_term(
             search_name, episode_count, resolution
         )
-
         packs = search_engine.search(search_term)
         packs = list(filter(lambda x: search_pattern.check_search_result(
             search_name, episode_count, resolution, x.get_filename()
@@ -112,8 +142,9 @@ class XDCCUpdater:
         elif len(packs) >= 1:
             pack = packs[0]
         else:
-            return []
+            return []  # Premature exit if no packs found
 
+        # Generate episode name
         if season_path.lower().startswith("season "):
             try:
                 season = int(season_path.lower().split("season ", 1)[1])
@@ -131,21 +162,5 @@ class XDCCUpdater:
             pack.original_filename.replace("'", "_")
         )  # Fixes filenames
 
+        # Recursively check for next episode
         return [pack] + self.search(episode_count + 1)
-
-    def update_names(self) -> int:
-
-        episode_offset = self.update_instructions.episode_offset.to_json()
-        destination = os.path.join(
-            self.path,
-            self.update_instructions.season_path.to_json()
-        )
-        episode_count = 0
-        renamer = Renamer(self.path, self.metadata, self.scheme, self.agent)
-        for episode in renamer.episodes:
-            if episode.location == destination:
-                episode_count += 1
-                if episode.current != episode.new:
-                    episode.rename()
-
-        return episode_count + episode_offset
