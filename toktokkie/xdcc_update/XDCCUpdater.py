@@ -19,10 +19,11 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
-from typing import Type
+from typing import Type, List, Tuple
+from xdcc_dl.entities.XDCCPack import XDCCPack
+from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.renaming.schemes.Scheme import Scheme
-from toktokkie.renaming.agents.Agent import Agent
+from toktokkie.renaming import Renamer, Agent, Scheme
 from toktokkie.xdcc_update.UpdateInstructions import UpdateInstructions
 from toktokkie.exceptions import MissingUpdateInstructionsException
 
@@ -73,5 +74,78 @@ class XDCCUpdater:
     def update(self):
         """
         Starts the XDCC Update procedure
-        :return:
+        :return: None
         """
+        episode_count = self.update_names()
+        packs = self.search(episode_count + 1)
+        results = MultipleServerDownloader("random", 5).download(packs)
+        for result in results:
+            print(result.filename + ": " + results[result])
+        self.update_names()
+
+    def search(self, episode_count: int) -> List[XDCCPack]:
+
+        # Get Metadata
+        season_path = self.update_instructions.season_path.to_json()
+        destination = os.path.join(
+            self.path, season_path
+        )
+        series_name = self.metadata.name.to_json()
+        search_name = self.update_instructions.search_name.to_json()
+        resolution = self.update_instructions.resolution
+        search_pattern = self.update_instructions.search_pattern
+        search_engine = self.update_instructions.search_engine
+        preferred_bot = self.update_instructions.preferred_bot.to_json()
+
+        search_term = search_pattern.generate_search_term(
+            search_name, episode_count, resolution
+        )
+
+        packs = search_engine.search(search_term)
+        packs = list(filter(lambda x: search_pattern.check_search_result(
+            search_name, episode_count, resolution, x.get_filename()
+        ), packs))
+        preferred = list(filter(lambda x: x.get_bot() == preferred_bot, packs))
+
+        if len(preferred) >= 1:
+            pack = preferred[0]
+        elif len(packs) >= 1:
+            pack = packs[0]
+        else:
+            return []
+
+        if season_path.lower().startswith("season "):
+            try:
+                season = int(season_path.lower().split("season ", 1)[1])
+            except (ValueError, IndexError):
+                season = 0
+        else:
+            season = 0
+        episode_name = self.scheme.generate_episode_name(
+            series_name, season, episode_count, "Episode " + str(episode_count)
+        )
+
+        pack.set_directory(destination)
+        pack.set_filename(episode_name, override=True)
+        pack.set_original_filename(
+            pack.original_filename.replace("'", "_")
+        )  # Fixes filenames
+
+        return [pack] + self.search(episode_count + 1)
+
+    def update_names(self) -> int:
+
+        episode_offset = self.update_instructions.episode_offset.to_json()
+        destination = os.path.join(
+            self.path,
+            self.update_instructions.season_path.to_json()
+        )
+        episode_count = 0
+        renamer = Renamer(self.path, self.metadata, self.scheme, self.agent)
+        for episode in renamer.episodes:
+            if episode.location == destination:
+                episode_count += 1
+                if episode.current != episode.new:
+                    episode.rename()
+
+        return episode_count + episode_offset

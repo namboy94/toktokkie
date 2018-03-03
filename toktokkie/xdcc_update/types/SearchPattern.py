@@ -113,7 +113,9 @@ class SearchPattern(MetaPrimitive):
         :param result: The resulting episode name
         :return: True if the episode name matches, else False
         """
-        regex = re.compile(self._fill_pattern(series_name, episode, resolution))
+        regex = re.compile(
+            self._fill_pattern(series_name, episode, resolution, True)
+        )
         return bool(re.search(regex, result))
 
     def _fill_pattern(self, series_name: str, episode: int,
