@@ -43,10 +43,8 @@ class Directory:
         self.icon_path = os.path.join(self.meta_dir, "icons")
         self.metadata_file = os.path.join(self.meta_dir, "info.json")
 
-        if not os.path.isdir(self.icon_path):
-            os.makedirs(self.icon_path)
-
         if generate_metadata:
+
             if metadata_type is None:
                 raise ValueError("Metadata type must be specified")
             self.generate_metadata(metadata_type)
@@ -54,6 +52,9 @@ class Directory:
         if not os.path.isfile(self.metadata_file):
             raise MissingMetadataException()
         self.metadata = resolve_metadata(self.metadata_file)
+
+        if not os.path.isdir(self.icon_path):
+            os.makedirs(self.icon_path)
 
     def write_metadata(self):
         """

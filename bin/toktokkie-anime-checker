@@ -22,6 +22,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import argparse
+import tvdb_api
 from typing import List, Dict
 from colorama import Fore, Style
 from malscraper.types.AiringState import AiringState
@@ -31,6 +32,7 @@ from malscraper.MalAnime import MalAnime
 from toktokkie import Directory
 from toktokkie.metadata.types.MetaType import Int
 from toktokkie.renaming import Plex, Renamer, TVDB
+from toktokkie.renaming.helper.resolve import resolve_season, get_episode_files
 from toktokkie.metadata import AnimeSeries
 from toktokkie.metadata.types.Resolution import Resolution
 from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
@@ -57,6 +59,7 @@ def main():
             if args.mal_username is not None:
                 check_myanimelist(directory, args.mal_username)
             check_tvdb_episode_names(directory)
+            check_tvdb_completeness(directory)
             check_icons(directory)
             check_all_directories_in_metadata(directory)
         except (InvalidMetadataException, MissingMetadataException):
@@ -135,10 +138,49 @@ def check_tvdb_episode_names(directory: Directory):
         renamer.rename(False)
 
 
+def check_tvdb_completeness(directory: Directory):
+    """
+    Checks if all tvdb episodes are included or at least excluded/in multis
+    :param directory: The directory to check
+    :return: None
+    """
+
+    tvdb = tvdb_api.Tvdb()
+    episode_count = {}
+    file_counts = {}
+
+    # Only one tvdb id for now
+    tvdb_id = directory.metadata.seasons.list[0].tvdb_ids.list[0]
+
+    tvdb_data = tvdb[tvdb_id]
+    for season_number, season_data in tvdb_data.items():
+        file_counts[season_number] = 0
+        episode_count[season_number] = 0
+        for _ in season_data:
+            episode_count[season_number] += 1
+
+    for season in directory.metadata.seasons.list:
+        season_path = os.path.join(directory.path, season.path)
+        season_number = resolve_season(season_path)
+        file_counts[season_number] += len(get_episode_files(season_path))
+
+    for ex in directory.metadata.tvdb_excludes.list:
+        file_counts[ex.season] += 1
+
+    for multi in directory.metadata.tvdb_multi_episodes.list:
+        file_counts[multi.start.season] += multi.diff()
+
+    for season, count in episode_count.items():
+        if file_counts[season] != count:
+            print(Fore.WHITE + "TVDB Season " + str(season) +
+                  " missing local files. (Have: " + str(file_counts[season]) +
+                  ", Need: " + str(count) + ")" + Style.RESET_ALL)
+
+
 def check_myanimelist(directory: Directory, username: str):
     """
     Checks if the data is correct as documented on myanimelist
-    :param directory: The directory to check
+    :param directory: The directhttp://192.168.1.2/ory to check
     :param username: Provide a myanimelist user for more checks
     :return: None
     """

@@ -24,6 +24,7 @@ from xdcc_dl.entities.XDCCPack import XDCCPack
 from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.renaming import Renamer, Agent, Scheme
+from toktokkie.renaming.helper.resolve import resolve_season
 from toktokkie.xdcc_update.UpdateInstructions import UpdateInstructions
 from toktokkie.exceptions import MissingUpdateInstructionsException
 
@@ -145,13 +146,7 @@ class XDCCUpdater:
             return []  # Premature exit if no packs found
 
         # Generate episode name
-        if season_path.lower().startswith("season "):
-            try:
-                season = int(season_path.lower().split("season ", 1)[1])
-            except (ValueError, IndexError):
-                season = 0
-        else:
-            season = 0
+        season = resolve_season(season_path)
         episode_name = self.scheme.generate_episode_name(
             series_name, season, episode_count, "Episode " + str(episode_count)
         )

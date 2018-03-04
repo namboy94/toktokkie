@@ -22,6 +22,7 @@ import sys
 from colorama import Fore, Style
 from typing import Dict, List, Type
 from toktokkie.metadata import TvSeries, check_metadata_subtype
+from toktokkie.renaming.helper.resolve import resolve_season, get_episode_files
 from toktokkie.renaming.schemes.Scheme import Scheme
 from toktokkie.renaming.agents.Agent import Agent
 from toktokkie.renaming.Episode import Episode
@@ -66,32 +67,21 @@ class Renamer:
         episodes = {}
         for season in self.metadata.seasons.list:
             season_path = os.path.join(self.path, season.path)
-
-            try:
-                if season.path.lower().startswith("season "):
-                    season_number = int(season.path.split(" ", 1)[1])
-                else:
-                    season_number = 0
-            except (IndexError, ValueError):
-                season_number = 0
-
+            season_number = resolve_season(season_path)
             season_ids = season.get_agent_ids(self.agent.id_type)
+
             if season_ids is None:
                 raise ValueError("Invalid agent ID type")
 
             if season_number not in episodes:
                 episodes[season_number] = []
 
-            for episode in os.listdir(season_path):
-                episode_path = os.path.join(season_path, episode)
-
-                if os.path.isfile(episode_path) and \
-                        not episode.startswith("."):
-                    episodes[season_number].append({
-                        "name": episode,
-                        "path": episode_path,
-                        "agent_ids": season_ids
-                    })
+            for episode in get_episode_files(season_path):
+                episodes[season_number].append({
+                    "name": os.path.basename(episode),
+                    "path": episode,
+                    "agent_ids": season_ids
+                })
 
         return episodes
 

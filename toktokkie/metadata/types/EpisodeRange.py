@@ -90,6 +90,14 @@ class EpisodeRange(MetaPrimitive):
         """
         return str(self.start) + "-" + str(self.end)
 
+    def diff(self) -> int:
+        """
+        Calculates the difference between the episodes
+        :return: The difference
+        """
+        # noinspection PyUnresolvedReferences
+        return abs(self.end.episode - self.start.episode)
+
 
 class SeasonEpisodeRange(EpisodeRange):
     """
