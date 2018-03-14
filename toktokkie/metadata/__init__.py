@@ -21,8 +21,10 @@ import json
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.AnimeSeries import AnimeSeries
+from toktokkie.metadata.Movie import Movie
+from toktokkie.metadata.AnimeMovie import AnimeMovie
 
-metadata_types = [Base, TvSeries, AnimeSeries]
+metadata_types = [Base, TvSeries, AnimeSeries, Movie, AnimeMovie]
 """
 All available metadata types
 """
