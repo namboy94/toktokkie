@@ -59,11 +59,12 @@ def main():
             if args.mal_username is not None:
                 check_myanimelist(directory, args.mal_username)
             check_tvdb_episode_names(directory)
-            check_tvdb_completeness(directory)
+            check_tvdb_completeness(directory, args.mal_username)
             check_icons(directory)
             check_all_directories_in_metadata(directory)
-        except (InvalidMetadataException, MissingMetadataException):
+        except (InvalidMetadataException, MissingMetadataException) as e:
             print("Invalid Metadata")
+            print(str(e))
             sys.exit(1)
 
     print("Done!")
@@ -138,10 +139,11 @@ def check_tvdb_episode_names(directory: Directory):
         renamer.rename(False)
 
 
-def check_tvdb_completeness(directory: Directory):
+def check_tvdb_completeness(directory: Directory, mal_username: str):
     """
     Checks if all tvdb episodes are included or at least excluded/in multis
     :param directory: The directory to check
+    :param mal_username: The myanimelist usernam for MAL crosscheck
     :return: None
     """
 
@@ -163,6 +165,10 @@ def check_tvdb_completeness(directory: Directory):
         season_path = os.path.join(directory.path, season.path)
         season_number = resolve_season(season_path)
         file_counts[season_number] += len(get_episode_files(season_path))
+
+        if mal_username is not None:
+            # TODO
+            pass
 
     for ex in directory.metadata.tvdb_excludes.list:
         file_counts[ex.season] += 1

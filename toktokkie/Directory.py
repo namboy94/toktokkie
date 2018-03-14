@@ -50,7 +50,7 @@ class Directory:
             self.generate_metadata(metadata_type)
 
         if not os.path.isfile(self.metadata_file):
-            raise MissingMetadataException()
+            raise MissingMetadataException(self.metadata_file + " missing")
         self.metadata = resolve_metadata(self.metadata_file)
 
         if not os.path.isdir(self.icon_path):
