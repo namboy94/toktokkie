@@ -42,9 +42,8 @@ class AnimeMovie(Movie):
                           the metadata
         :return: The generated metadata dictionary
         """
-        mal_id = prompt_user("Myanimelist ID", Int)
         data = super().generate_dict_from_prompts(directory)
-        data["mal_id"] = mal_id
+        data["mal_id"] = prompt_user("Myanimelist ID", Int)
         return data
 
     def to_dict(self) -> dict:
