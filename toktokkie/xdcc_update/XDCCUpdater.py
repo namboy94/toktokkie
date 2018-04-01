@@ -19,9 +19,11 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
+import logging
 from typing import Type, List
 from xdcc_dl.entities.XDCCPack import XDCCPack
-from xdcc_dl.xdcc.MultipleServerDownloader import MultipleServerDownloader
+from xdcc_dl.logging.Logger import Logger
+from xdcc_dl.xdcc import download_packs
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.renaming import Renamer, Agent, Scheme
 from toktokkie.renaming.helper.resolve import resolve_season
@@ -81,9 +83,8 @@ class XDCCUpdater:
         packs = self.search(episode_count + 1)
 
         # Download
-        results = MultipleServerDownloader("random", 1).download(packs)
-        for result in results:
-            print(result.filename + ": " + results[result])
+        Logger.logging_level = logging.INFO
+        download_packs(packs)
 
         self.update_names()
 
