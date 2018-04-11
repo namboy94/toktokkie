@@ -21,7 +21,7 @@ import tvdb_api
 from typing import List
 from toktokkie.renaming.agents.Agent import Agent
 from toktokkie.metadata.types.AgentIdType import AgentIdType
-from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
+from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 
 

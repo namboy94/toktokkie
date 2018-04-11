@@ -20,7 +20,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 from typing import List
 from toktokkie.metadata.types.MetaType import MetaPrimitive
 from xdcc_dl.entities.XDCCPack import XDCCPack
-from xdcc_dl.pack_searchers.PackSearcher import PackSearcher
+from xdcc_dl.pack_search.SearchEngine import SearchEngineType
 
 
 class SearchEngine(MetaPrimitive):
@@ -59,11 +59,10 @@ class SearchEngine(MetaPrimitive):
         Errors in the string will raise a ValueError.
         :param string: The string to parse
         """
-        if string.lower() in PackSearcher.procedure_map:
+        if SearchEngineType.resolve(string) is not None:
             return cls(string.lower())
         else:
-            raise ValueError("Options: " + str(PackSearcher.
-                                               get_available_pack_searchers()))
+            raise ValueError("Options: " + str(SearchEngineType.choices()))
 
     def __str__(self) -> str:
         """
@@ -77,5 +76,5 @@ class SearchEngine(MetaPrimitive):
         :param search_string: The term for which to search
         :return: The retrieved XDCC packs
         """
-        search_fn = PackSearcher.procedure_map[self.search_engine]
-        return search_fn(search_string)
+        searcher = SearchEngineType.resolve(self.search_engine)
+        return searcher.search(search_string)

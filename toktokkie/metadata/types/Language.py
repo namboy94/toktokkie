@@ -38,7 +38,10 @@ class Language(MetaPrimitive):
         "ara": "Arabic",
         "rum": "Romanian",
         "fin": "Finnish",
-        "cze": "Czech"
+        "cze": "Czech",
+        "dan": "Danish",
+        "nor": "Norwegian",
+        "swe": "Swedish"
     }  # TODO Implement more languages
     """
     Dictionary mapping ISO 639-2/B language codes to languages

@@ -20,6 +20,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import argparse
+from xdcc_dl.helper import set_throttle_value
 from toktokkie.renaming import schemes, agents, Plex, TVDB
 from toktokkie import Directory
 from toktokkie.exceptions import MissingMetadataException, \
@@ -50,11 +51,14 @@ def main():
     parser.add_argument("-c", "--create", action="store_true",
                         help="If set, will prompt for information and create "
                              "new xdcc update instructions")
+    parser.add_argument("-t", "--throttle",
+                        help="Sets a speed at which to throttle the download")
     args = parser.parse_args()
 
     directories = args.directories
     scheme = list(filter(lambda x: x.name == args.scheme, schemes))[0]
     agent = list(filter(lambda x: x.name == args.agent, agents))[0]
+    set_throttle_value(args.throttle)
 
     for path in directories:
 
@@ -67,8 +71,10 @@ def main():
             else:
                 directory.xdcc_update(scheme, agent)
 
-        except ValueError:
+        except ValueError as e:
+            print(e)
             print("Updating of " + path + "failed")
+            raise e
         except MissingMetadataException:
             print("Missing metadata: " + path)
         except MissingUpdateInstructionsException:
