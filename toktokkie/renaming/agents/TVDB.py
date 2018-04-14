@@ -62,4 +62,8 @@ class TVDB(Agent):
                 if str(e) == "cache_location":  # pragma: no cover
                     print("TheTVDB.com is down!")
 
+            except Exception as e:
+
+                print("Error fetching TVDB data: " + str(e))
+
         return "Episode " + str(episode)

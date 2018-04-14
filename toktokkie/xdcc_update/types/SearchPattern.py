@@ -52,6 +52,16 @@ class SearchPatternOption(Enum):
         "resolution_format": ResolutionFormat.P_NOTATION
     }
 
+    CAPTAIN_TSUBASA = {
+        "name": "captain_tsubasa",
+        "search_pattern":
+            "Captain_Tsubasa(2018)_@{EPI}[Please_sub_this_Viz](english).mkv",
+        "check_pattern":
+            "Captain_Tsubasa(2018)_@{EPI}[Please_sub_this_Viz](english).mkv",
+        "episode_zfill": 2,
+        "resolution_format": ResolutionFormat.P_NOTATION
+    }
+
     GENERIC = {
         "name": "generic",
         "search_pattern": "@{NAM} - @{EPI} [@{RES}]",
@@ -162,6 +172,8 @@ class SearchPattern(MetaPrimitive):
         if regex:
             pattern = pattern.replace("[", "\[")
             pattern = pattern.replace("]", "\]")
+            pattern = pattern.replace("(", "\(")
+            pattern = pattern.replace(")", "\)")
             pattern = pattern.replace("@{HSH}", "[a-zA-Z0-9]+")
             pattern = pattern.replace(
                 "@{EPI}", str(episode).zfill(self.episode_zfill) + "(v[0-9]+)?"
