@@ -44,6 +44,22 @@ class SearchPatternOption(Enum):
         "resolution_format": ResolutionFormat.P_NOTATION
     }
 
+    ASENSHI = {
+        "name": "asenshi",
+        "search_pattern": "[Asenshi] @{NAM} - @{EPI}",
+        "check_pattern": "[Asenshi] @{NAM} - @{EPI} [@{HSH}].mkv",
+        "episode_zfill": 2,
+        "resolution_format": ResolutionFormat.P_NOTATION
+    }
+
+    KOORITSUKAI = {
+        "name": "kooritsukai",
+        "search_pattern": "[Kooritsukai] @{NAM} - @{EPI} [@{RES}]",
+        "check_pattern": "[Kooritsukai] @{NAM} - @{EPI} [@{RES}][@{HSH}].mkv",
+        "episode_zfill": 2,
+        "resolution_format": ResolutionFormat.P_NOTATION
+    }
+
     DAVINCI = {
         "name": "davinci",
         "search_pattern": "[Davinci] @{NAM} - @{EPI} [@{RES}]",
