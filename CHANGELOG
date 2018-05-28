@@ -1,3 +1,5 @@
+V 0.16.1:
+  - Removed __init__ file in bin
 V 0.16.0:
   - Completely redid project and metadata structure
   - Removed TUIs and GUIs
