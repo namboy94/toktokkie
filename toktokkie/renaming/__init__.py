@@ -17,9 +17,21 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.Directory import Directory
+from toktokkie.renaming.agents.Agent import Agent
+from toktokkie.renaming.schemes.Scheme import Scheme
+from toktokkie.renaming.agents.TVDB import TVDB
+from toktokkie.renaming.schemes.Plex import Plex
+from toktokkie.renaming.Episode import Episode
+from toktokkie.renaming.Renamer import Renamer
 
-version = "0.16.0"
+
+schemes = [Plex]
 """
-The current version of the program
+List of available schemes
+"""
+
+
+agents = [TVDB]
+"""
+List of available agents
 """

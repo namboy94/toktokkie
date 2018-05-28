@@ -21,7 +21,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
 from toktokkie import Directory
-from toktokkie.iconizing import procedures, default_procedure
+from toktokkie.metadata.AnimeSeries import AnimeSeries
 
 
 def main():
@@ -29,28 +29,13 @@ def main():
     The toktokkie-iconize main method
     :return: None
     """
-    procedure_names = list(map(lambda x: x.name, procedures))
-
     parser = argparse.ArgumentParser()
-    parser.add_argument("directories", nargs="+",
-                        help="The directories to iconize. "
-                             "Files and directories that do not contain any "
-                             "valid metadata configuration will be ignored.")
-    parser.add_argument("procedure", choices=set(procedure_names), nargs="?",
-                        default=default_procedure().name,
-                        help="The naming scheme to use")
+    parser.add_argument("directories", nargs="+")
     args = parser.parse_args()
 
-    directories = args.directories
-    procedure = list(filter(lambda x: x.name == args.procedure, procedures))[0]
-
-    for path in directories:
-
-        try:
-            directory = Directory(path)
-            directory.iconize(procedure)
-        except ValueError:
-            print("Iconizing of " + path + "failed")
+    for path in args.directories:
+        directory = Directory(path)
+        directory.metadata.write(directory.metadata_file)
 
 
 if __name__ == "__main__":

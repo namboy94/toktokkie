@@ -1,5 +1,5 @@
 """
-Copyright 2015-2017 Hermann Krumrey
+Copyright 2015-2018 Hermann Krumrey <hermann@krumreyh.com>
 
 This file is part of toktokkie.
 
@@ -40,7 +40,7 @@ def readme():
             rst = pypandoc.convert(markdown, "rst", format="md")
             return rst
 
-    except ModuleNotFoundError:
+    except ImportError:
         # If pandoc is not installed, just return the raw markdown text
         with open("README.md") as f:
             return f.read()
@@ -107,12 +107,13 @@ setup(
     license="GNU GPL3",
     packages=find_packages(),
     install_requires=[
-        'tvdb_api',
-        'beautifulsoup4',
-        'typing',
-        'requests',
-        'urwid',
-        'xdcc_dl'
+        "tvdb_api",
+        "beautifulsoup4",
+        "typing",
+        "requests",
+        "xdcc_dl",
+        "colorama",
+        "malscraper"
     ],
     test_suite='nose.collector',
     tests_require=['nose'],

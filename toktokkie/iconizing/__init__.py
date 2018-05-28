@@ -17,9 +17,20 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.Directory import Directory
+from typing import Type
+from toktokkie.iconizing.procedures.Procedure import Procedure
+from toktokkie.iconizing.procedures.GnomeProcedure import GnomeProcedure
+from toktokkie.iconizing.Iconizer import Iconizer
 
-version = "0.16.0"
-"""
-The current version of the program
-"""
+procedures = [GnomeProcedure]
+
+
+def default_procedure() -> Type[Procedure] or None:
+    """
+    Checks all available procedures for eligibility
+    :return: The eligible procedure or None if none were found
+    """
+    for procedure in procedures:
+        if procedure.is_applicable():
+            return procedure
+    return None

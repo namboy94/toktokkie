@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.Directory import Directory
 
-version = "0.16.0"
-"""
-The current version of the program
-"""
+class InvalidMetadataException(Exception):
+    """
+    Exception that is raised whenever metadata is invalid
+    """
+    pass
