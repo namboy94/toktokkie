@@ -1,3 +1,6 @@
+V 0.16.0:
+  - Completely redid project and metadata structure
+  - Removed TUIs and GUIs
 V 0.15.0:
   - Added Metadata Editor/Manager
   - Added Doki XDCC Update Searcher
