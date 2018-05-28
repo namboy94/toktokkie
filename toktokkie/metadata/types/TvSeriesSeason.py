@@ -21,8 +21,8 @@ from typing import Dict, List
 from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.types.MetaType import MetaType, Str
 from toktokkie.metadata.types.AgentIdType import AgentIdType
-from toktokkie.metadata.types.CommaList import IntCommaList, LanguageCommaList,\
-    ResolutionCommaList, Language, Resolution
+from toktokkie.metadata.types.CommaList import IntCommaList,\
+    LanguageCommaList, ResolutionCommaList, Language, Resolution
 
 
 class TvSeriesSeason(MetaType):

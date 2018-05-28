@@ -100,7 +100,8 @@ class SearchPattern(MetaPrimitive):
         self.search_pattern_option = search_pattern_option
 
         self.name = self.search_pattern_option.value["name"]
-        self.search_pattern = self.search_pattern_option.value["search_pattern"]
+        self.search_pattern = \
+            self.search_pattern_option.value["search_pattern"]
         self.check_pattern = self.search_pattern_option.value["check_pattern"]
         self.episode_zfill = self.search_pattern_option.value["episode_zfill"]
         self.resolution_format = \
@@ -186,10 +187,10 @@ class SearchPattern(MetaPrimitive):
         )
 
         if regex:
-            pattern = pattern.replace("[", "\[")
-            pattern = pattern.replace("]", "\]")
-            pattern = pattern.replace("(", "\(")
-            pattern = pattern.replace(")", "\)")
+            pattern = pattern.replace("[", "\\[")
+            pattern = pattern.replace("]", "\\]")
+            pattern = pattern.replace("(", "\\(")
+            pattern = pattern.replace(")", "\\)")
             pattern = pattern.replace("@{HSH}", "[a-zA-Z0-9]+")
             pattern = pattern.replace(
                 "@{EPI}", str(episode).zfill(self.episode_zfill) + "(v[0-9]+)?"

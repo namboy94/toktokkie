@@ -65,7 +65,7 @@ class Resolution(MetaPrimitive):
         Turns the object into a string
         :return: The dictionary representation of the resolution
         """
-        return self.resolution_option.value
+        return str(self.resolution_option.value)
 
     @classmethod
     def from_json(cls, json_data: any):
@@ -94,7 +94,7 @@ class Resolution(MetaPrimitive):
         """
         :return: A string representation of the resolution
         """
-        return self.resolution_option.value
+        return str(self.resolution_option.value)
 
     def to_format(self, resolution_format: ResolutionFormat):
         """
@@ -103,4 +103,6 @@ class Resolution(MetaPrimitive):
         :return:
         """
         pattern = resolution_format.value
-        return pattern.replace("@{X}", str(self.x)).replace("@{Y}", str(self.y))
+        return pattern\
+            .replace("@{X}", str(self.x))\
+            .replace("@{Y}", str(self.y))

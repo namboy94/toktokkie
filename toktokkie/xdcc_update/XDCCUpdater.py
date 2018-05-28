@@ -71,8 +71,9 @@ class XDCCUpdater:
             raise MissingUpdateInstructionsException()
 
         else:
-            self.update_instructions = \
-                UpdateInstructions.from_json_file(self.update_instructions_file)
+            self.update_instructions = UpdateInstructions.from_json_file(
+                self.update_instructions_file
+            )
 
     def update(self):
         """

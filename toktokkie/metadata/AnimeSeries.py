@@ -95,8 +95,9 @@ class AnimeSeries(TvSeries):
             self.mal_check_ignores = IntCommaList.from_json(
                 json_data["mal_check_ignores"]
             )
-            self.mal_excludes = \
-                MyanimelistEpisodeCommaList.from_json(json_data["mal_excludes"])
+            self.mal_excludes = MyanimelistEpisodeCommaList.from_json(
+                json_data["mal_excludes"]
+            )
             self.mal_irregular_season_starts = \
                 MyanimelistEpisodeCommaList.from_json(
                     json_data["mal_irregular_season_starts"]

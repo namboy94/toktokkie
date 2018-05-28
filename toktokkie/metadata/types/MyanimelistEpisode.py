@@ -56,7 +56,8 @@ class MyanimelistEpisode(MetaPrimitive):
     @classmethod
     def parse(cls, string: str):
         """
-        Parses the MyanimelistEpisode object from a string in the format idXXeXX
+        Parses the MyanimelistEpisode object from a string in the format
+            idXXeXX
         :param string: The string to parse
         :return: The generated MyanimelistEpisode object
         """

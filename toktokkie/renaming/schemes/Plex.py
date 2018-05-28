@@ -51,7 +51,8 @@ class Plex(Scheme):
 
     @classmethod
     def _format_episode_name_with_range(cls, series_name: str, season: int,
-                                        episodes: List[Tuple[int, str]]) -> str:
+                                        episodes: List[Tuple[int, str]])\
+            -> str:
         """
         Formats the episode name. This is the method that should be
         implemented by subclasses. Formats a range of episodes.
