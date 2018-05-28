@@ -17,4 +17,12 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.Directory import Directory
+from enum import Enum
+
+
+class AgentIdType(Enum):
+    """
+    Enum that maps renaming agent ID types to metadata types
+    """
+    TVDB = "tv_series"
+    MYANIMELIST = "anime_series"

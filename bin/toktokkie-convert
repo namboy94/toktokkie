@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """LICENSE
 Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
 
@@ -17,4 +19,27 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.Directory import Directory
+import argparse
+from toktokkie import Directory
+from toktokkie.metadata.AnimeSeries import AnimeSeries
+
+
+def main():
+    """
+    The toktokkie-iconize main method
+    :return: None
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directories", nargs="+")
+    args = parser.parse_args()
+
+    for path in args.directories:
+        directory = Directory(path)
+        directory.metadata.write(directory.metadata_file)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Thanks for using toktokkie!")

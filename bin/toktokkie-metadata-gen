@@ -21,36 +21,35 @@ LICENSE"""
 
 import argparse
 from toktokkie import Directory
-from toktokkie.iconizing import procedures, default_procedure
+from toktokkie.metadata import metadata_types
 
 
 def main():
     """
-    The toktokkie-iconize main method
+    The toktokkie-metadata-gen main method
     :return: None
     """
-    procedure_names = list(map(lambda x: x.name, procedures))
+    media_types = list(map(lambda x: x.type, metadata_types))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("directories", nargs="+",
-                        help="The directories to iconize. "
-                             "Files and directories that do not contain any "
-                             "valid metadata configuration will be ignored.")
-    parser.add_argument("procedure", choices=set(procedure_names), nargs="?",
-                        default=default_procedure().name,
-                        help="The naming scheme to use")
+    parser.add_argument("directory",
+                        help="The directory for which to generate "
+                             "a metadata file for")
+    parser.add_argument("media_type", choices=set(media_types),
+                        help="The media type of the metadata")
     args = parser.parse_args()
 
-    directories = args.directories
-    procedure = list(filter(lambda x: x.name == args.procedure, procedures))[0]
+    directory = args.directory
+    if directory.endswith("/"):
+        directory = directory.rsplit("/", 1)[0]
 
-    for path in directories:
+    media_type = args.media_type
+    metadata_class = list(filter(
+        lambda x: x.type == media_type,
+        metadata_types
+    ))[0]
 
-        try:
-            directory = Directory(path)
-            directory.iconize(procedure)
-        except ValueError:
-            print("Iconizing of " + path + "failed")
+    Directory(directory, True, metadata_class)
 
 
 if __name__ == "__main__":
