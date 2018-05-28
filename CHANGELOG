@@ -1,0 +1,99 @@
+V 0.16.1:
+  - Removed __init__ file in bin
+V 0.16.0:
+  - Completely redid project and metadata structure
+  - Removed TUIs and GUIs
+V 0.15.0:
+  - Added Metadata Editor/Manager
+  - Added Doki XDCC Update Searcher
+  - Uses gio instead of gvfs
+  - Create CLI tools for renaming and iconizing
+  - Metadata is now stored in a single JSON file
+  - Added episode offset functionality to XDCC Updater
+  - Redid project metadata
+V 0.14.0:
+  - Fixed unit tests
+  - Removed unnecessarily complicated metadata structure
+  - Fix build process
+V 0.13.0:
+  - Made xdcc-update script JSON file argument optional. It now defaults to *series.json*
+V 0.12.0:
+  - Integrated XDCC Downloader(xdcc_dl) GUI and TUI
+V 0.11.1:
+  - Fixed bug that made the XDCC Update Configurator TUI store invalid JSON files
+V 0.11.0:
+  - Implemented XDCC Updater Configurator TUI
+  - Wrote Unit Tests for 100% coverage
+V 0.10.0:
+  - Complete Restructure of the Program
+  - GUIs now in QT
+  - TUIs now in urwid
+  - GUI for creating XDCC Updater Config Files
+  - Unit Testing and coverage
+  - Integrated with gitlab-build-scripts
+V 0.9.9.5:
+  - Implemented colorized printing for the XDCC downloader
+  - Implemented Range Downloading in Single XDCC Downloader Script
+  - XDCC Downloader Stability Improvements
+  - Fixed IRC Encoding Issues
+  - integrated Sentry Exception logging
+V 0.9.9.4:
+  - Implemented RSS opml file generator to anime updater script
+V 0.9.9.3:
+  - Remodelled the xdcc-dl script to be more versatile, can now specify server
+V 0.9.9.2:
+  - Added renaming feature for previously downloaded episodes to anime-updater
+V 0.9.9.1:
+  - Changed package name to toktokkie (was tok_tokkie)
+  - enabled python 2 support
+V 0.9.9:
+  - Removed Hexchat Downloader
+  - Made IRCLib Downloader only IRC/XDCC Downloader
+  - IRCLib Downloader is now very robust, finds active channels of bots independently and tries different servers
+  - Removed unnecessary functions and replaced them with puffotter methods
+  - Updated comments and readme
+V 0.9.8.2:
+  - Created anime updater/auto downloader
+  - Integrated Horriblesubs XDCC packlist search engine
+V 0.9.8.1:
+  - Renamed executable files
+  - Minor bugfixes resulting from the restructure
+V 0.9.8:
+  - Created standalone XDCC downloader script
+  - Re-structured the project
+V 0.9.7:
+  - Created workflow for creating windows builds
+V 0.9.6.5:
+  - Fixed issues with the batch download manager creating a file <showname>.png if an icon for a season was
+  - contained within the .icons directory
+V 0.9.6.4:
+  - Fixed a stupid error introduced in V 0.9.6.3
+V 0.9.6.3:
+  - Fixed file extensions going missing when using the auto-rename functionality with the irclib downloader
+V 0.9.6.2:
+  - File/Directory paths are now accepted even if they are wrapped in quotation marks
+V 0.9.6.1:
+  - The irclib downloader now automatically saves the downloaded file with the correct file name from the beginning
+V 0.9.6:
+  - Implemented a native XDCC downloader, completely independent from Hexchat or an external python2 call.
+  - Fixed renamer crashing when encountering special seasons
+V 0.9.5.7:
+  - Fixed Hexchat downloading of multiple files
+  - Fixed issue #18
+V 0.9.5.6:
+  - Fixed syntax errors in python 2
+V 0.9.5.5:
+  - Improved python 2 support
+V 0.9.5.4:
+  - Added python 2 support
+V 0.9.5.3:
+  - Converts Markdown to .rst for the pypi site
+V 0.9.5.2:
+  - Added Changelog to readme file
+V 0.9.5.1:
+  - Created PyPi-friendly readme configuration
+  - Added download url to project
+V 0.9.5:
+  - Added Changelog
+V 0.0.1-0.9.4:
+  - See the commits, changelog was not being maintained back then
