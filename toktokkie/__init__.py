@@ -18,8 +18,3 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from toktokkie.Directory import Directory
-
-version = "0.16.0"
-"""
-The current version of the program
-"""
