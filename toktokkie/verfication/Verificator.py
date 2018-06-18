@@ -20,6 +20,7 @@ LICENSE"""
 from colorama import Fore, Style
 from toktokkie.Directory import Directory
 
+
 class Verificator:
     """
     Abstract class that defines a verification structure with which media
