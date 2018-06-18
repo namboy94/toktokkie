@@ -19,11 +19,13 @@ LICENSE"""
 
 import os
 import json
-from typing import Dict
+from typing import Dict, List
 from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.types.MetaType import MetaType, Str
 from toktokkie.metadata.types.CommaList import StrCommaList
 from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.verfication.Verificator import Verificator
+from toktokkie.verfication.FolderIconVerificator import FolderIconVerificator
 
 
 class Base:
@@ -69,6 +71,14 @@ class Base:
             "name": self.name,
             "tags": self.tags
         }
+
+    @classmethod
+    def get_verifactors(cls) -> List[Verificator.__class__]:
+        """
+        Retrieves a list of Verificator classes for this metadata class
+        :return: The list of verificator classes
+        """
+        return [FolderIconVerificator]
 
     def __init__(self, json_data: Dict[str, any]):
         """
