@@ -24,7 +24,8 @@ from toktokkie.renaming import Renamer, Scheme, Agent
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
 from toktokkie.exceptions import MissingMetadataException
-from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
+from toktokkie.xdcc_update import XDCCUpdater
+from toktokkie.verfication import Verificator
 
 
 class Directory:
@@ -117,6 +118,22 @@ class Directory:
         :param create: Can be set to create the XDCC Update instructions
         :return: None
         """
+        if not self.metadata.is_subclass_of(TvSeries):
+            return
+
+        # noinspection PyTypeChecker
         updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
         if not create:
             updater.update()
+
+    def verify(self):
+        """
+        Verifies this media directory
+        :return: None
+        """
+        for verificator_cls in self.metadata.get_verifactors():
+            # noinspection PyCallingNonCallable
+            verificator = \
+                verificator_cls(self.path, self.metadata)  # type: Verificator
+            if not verificator.verify():
+                verificator.fix()

@@ -18,7 +18,6 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from colorama import Fore, Style
-from toktokkie.Directory import Directory
 
 
 class Verificator:
@@ -27,12 +26,14 @@ class Verificator:
     directory content can be verified
     """
 
-    def __init__(self, directory: Directory):
+    def __init__(self, path: str, metadata):
         """
         Initializes the verificator.
-        :param directory: The directory to verify
+        :param path: The path to the media directory
+        :param metadata: The metadata of the media directory
         """
-        self.directory = directory
+        self.path = path
+        self.metadata = metadata
 
     def verify(self) -> bool:
         """

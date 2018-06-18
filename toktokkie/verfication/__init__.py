@@ -16,3 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
+
+from toktokkie.verfication.Verificator import Verificator
+from toktokkie.verfication.FolderIconVerificator import FolderIconVerificator

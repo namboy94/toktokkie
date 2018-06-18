@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """LICENSE
 Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
 
@@ -18,28 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
-
-import argparse
-from toktokkie import Directory
-from toktokkie.exceptions import MissingMetadataException
-
-
-def main():
-    """
-    The main method of this script
-    :return: None
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("directories", nargs="+",
-                        help="The directories to verify")
-    directories = parser.parse_args().directories
-
-    for path in directories:
-        try:
-            Directory(path).verify()
-        except MissingMetadataException:
-            print("Missing Metadata for " + path)
-
-
-if __name__ == "__main__":
-    main()
