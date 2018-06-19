@@ -134,6 +134,6 @@ class Directory:
         for verificator_cls in self.metadata.get_verifactors():
             # noinspection PyCallingNonCallable
             verificator = \
-                verificator_cls(self.path, self.metadata)  # type: Verificator
+                verificator_cls(self)  # type: Verificator
             if not verificator.verify():
                 verificator.fix()

@@ -26,14 +26,13 @@ class Verificator:
     directory content can be verified
     """
 
-    def __init__(self, path: str, metadata):
+    def __init__(self, directory):
         """
         Initializes the verificator.
-        :param path: The path to the media directory
-        :param metadata: The metadata of the media directory
+        :param directory: The directory to verify
         """
-        self.path = path
-        self.metadata = metadata
+        from toktokkie.Directory import Directory
+        self.directory = directory  # type: Directory
 
     def verify(self) -> bool:
         """

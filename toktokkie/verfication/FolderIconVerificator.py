@@ -60,7 +60,7 @@ class FolderIconVerificator(Verificator):
             self.missing_icons.append(main_icon)
             missing = True
 
-        return missing
+        return not missing
 
     def fix(self):
         """
@@ -71,7 +71,9 @@ class FolderIconVerificator(Verificator):
         for icon_file in self.missing_icons:
             self.print_err("Icon file missing: " + icon_file)
             self.print_ins("Please place an icon file at the above location.")
-            self.prompt_yn("Is the icon file at the correct location?")
+            resp = self.prompt_yn("Is the icon file at the correct location?")
             while not os.path.isfile(icon_file):
-                self.print_err("No it's not.")
-                self.prompt_yn("Is the icon file at the correct location?")
+                if resp:
+                    self.print_err("No it's not.")
+                resp = \
+                    self.prompt_yn("Is the icon file at the correct location?")
