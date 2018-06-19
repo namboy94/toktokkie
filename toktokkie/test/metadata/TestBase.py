@@ -18,11 +18,11 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from test.metadata.MetadataTester import MetadataTester
+from toktokkie.test.metadata.MetadataTester import MetadataTester
 from toktokkie.metadata.Base import Base
 
 
-class BaseMetadataTest(MetadataTester):
+class TestBase(MetadataTester):
     """
     Class that contains tests for the Base Metadata class
     """

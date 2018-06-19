@@ -46,6 +46,8 @@ if __name__ == "__main__":
             "colorama",
             "malscraper"
         ],
+        test_suite='nose.collector',
+        tests_require=['nose'],
         include_package_data=True,
         zip_safe=False
     )
