@@ -23,3 +23,25 @@ class InvalidMetadataException(Exception):
     Exception that is raised whenever metadata is invalid
     """
     pass
+
+
+class MetadataMismatch(Exception):
+    """
+    Exception that is raised whenever the metadata type in the JSON data
+    is in conflict with the actual metadata class
+    """
+    pass
+
+
+class MissingMetadataException(Exception):
+    """
+    Exception that is raised whenever metadata is not found
+    """
+    pass
+
+
+class MissingUpdateInstructionsException(Exception):
+    """
+    Exception that is raised whenever update instrcution don't exist
+    """
+    pass

@@ -90,7 +90,7 @@ class Base:
                           to generate the metadata object
         """
         try:
-            if self.type != json_data["type"]:
+            if self.type.to_json() != json_data["type"]:
                 raise MetadataMismatch()
 
             self.name = Str.from_json(json_data["name"])

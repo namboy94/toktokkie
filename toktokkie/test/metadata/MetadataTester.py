@@ -23,7 +23,7 @@ from typing import List, Any, Callable, Dict
 from unittest import TestCase, mock
 from toktokkie.metadata.Base import Base
 from toktokkie.verfication.Verificator import Verificator
-from toktokkie.exceptions import InvalidMetadataException, MetadataMismatch
+from toktokkie.exceptions import MetadataMismatch, InvalidMetadataException
 
 
 class MetadataTester(TestCase):
