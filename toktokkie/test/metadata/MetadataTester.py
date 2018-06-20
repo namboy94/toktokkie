@@ -19,8 +19,11 @@ LICENSE"""
 
 import os
 import shutil
-from typing import List, Any, Callable
+from typing import List, Any, Callable, Dict
 from unittest import TestCase, mock
+from toktokkie.metadata.Base import Base
+from toktokkie.verfication.Verificator import Verificator
+from toktokkie.exceptions import InvalidMetadataException, MetadataMismatch
 
 
 class MetadataTester(TestCase):
@@ -36,6 +39,21 @@ class MetadataTester(TestCase):
     testjson = os.path.join(testdir, "test.json")
     """
     The path to the metadata JSON file
+    """
+
+    metadata_cls = Base
+    """
+    The metadata class to test. Used by helper methods defined here
+    """
+
+    json_data_example = {
+        "type": "base",
+        "name": "TestName",
+        "tags": ["Tag1", "Tag2"]
+    }
+    """
+    An example metadata dictionary. Used to test generating the metadata
+    object using a constructor call
     """
 
     def setUp(self):
@@ -73,3 +91,76 @@ class MetadataTester(TestCase):
         """
         with mock.patch("builtins.input", side_effect=prompt_input):
             return action()
+
+    def generate_metadata(self, user_input: List[str] = None) -> Base:
+        """
+        Generates a metadata directory and object using mocked user input
+        :param user_input: The user input to use
+        :return: The generated metadata
+        """
+        return self.execute_with_mocked_input(
+            user_input,
+            lambda: self.metadata_cls.generate_from_prompts(self.testdir)
+        )
+
+    def verify_metadata(self, json_data: Dict[str, Any], metadata: Base):
+        """
+        Makes sure that the metadata contents are the same as a json data
+        dictionary.
+        :param json_data: The JSON data dictionary
+        :param metadata: The metadata to check
+        :return: None
+        """
+        metadata_json = metadata.to_json()
+        for key in json_data:
+            self.assertTrue(key in metadata_json)
+            self.assertEqual(metadata_json[key], json_data[key])
+
+    def test_retrieving_verificators(self):
+        """
+        Tests if the verificator retrieving method is correct
+        :return: None
+        """
+        verificators = self.metadata_cls.get_verifactors()
+        for verificator in verificators:
+            issubclass(verificator, Verificator)
+
+    def test_generating_using_constructor(self):
+        """
+        Tests generating a metadata object using the constructor
+        :return: None
+        """
+        metadata = self.metadata_cls(self.json_data_example)
+        self.verify_metadata(self.json_data_example, metadata)
+
+    def test_invalid_metadata(self):
+        """
+        Tests if invalid metadata is correctly identified
+        :return: None
+        """
+        for key in self.json_data_example:
+            data = self.json_data_example.copy()
+            data.pop(key)
+
+            if "type" not in data:
+                continue
+
+            try:
+                self.metadata_cls(data)
+                print(data)
+                self.fail()
+            except InvalidMetadataException:
+                pass
+
+    def test_metadata_mismatch(self):
+        """
+        Tests if a metadata mismatch is correctly recognized
+        :return: None
+        """
+        try:
+            data = self.json_data_example.copy()
+            data["type"] = "other"
+            self.metadata_cls(data)
+            self.fail()
+        except MetadataMismatch:
+            pass

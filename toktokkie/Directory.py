@@ -38,6 +38,9 @@ class Directory:
         """
         Initializes the metadata of the directory
         :param path: The directory's path
+        :except MissingMetadataException,
+                InvalidMetadataException,
+                MetadataMismatch
         """
         self.path = path
         self.meta_dir = os.path.join(path, ".meta")
