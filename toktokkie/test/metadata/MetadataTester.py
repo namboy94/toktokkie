@@ -56,6 +56,17 @@ class MetadataTester(TestCase):
     object using a constructor call
     """
 
+    user_input_example = ["TestName", "Tag1,Tag2"]
+    """
+    Example user input that generates the same metadata as
+    the json_data_example.
+    """
+
+    subdirectories = []
+    """
+    A list of subdirectory names to generate during setup
+    """
+
     def setUp(self):
         """
         Creates the test directory after deleting any previously existing ones
@@ -63,6 +74,8 @@ class MetadataTester(TestCase):
         """
         self.cleanup()
         os.makedirs(self.testdir)
+        for subdirectory in self.subdirectories:
+            os.makedirs(os.path.join(self.testdir, subdirectory))
 
     def tearDown(self):
         """
@@ -116,6 +129,8 @@ class MetadataTester(TestCase):
             self.assertTrue(key in metadata_json)
             self.assertEqual(metadata_json[key], json_data[key])
 
+    # ---------------General Tests for all Metadata classes--------------------
+
     def test_retrieving_verificators(self):
         """
         Tests if the verificator retrieving method is correct
@@ -164,3 +179,36 @@ class MetadataTester(TestCase):
             self.fail()
         except MetadataMismatch:
             pass
+
+    def test_subclass_check(self):
+        """
+        Tests if the is_subclass method works correctly
+        :return: None
+        """
+        class Dummy(Base):
+            pass
+        self.assertTrue(self.metadata_cls.is_subclass_of(object))
+        self.assertTrue(self.metadata_cls.is_subclass_of(Base))
+        self.assertFalse(self.metadata_cls.is_subclass_of(str))
+        self.assertFalse(self.metadata_cls.is_subclass_of(Dummy))
+
+    def test_write_and_read_metadata(self):
+        """
+        Tests writing to a metadata file, the reading it again
+        :return: None
+        """
+        metadata = self.metadata_cls(self.json_data_example)
+
+        metadata.write(self.testjson)
+        written = self.metadata_cls.from_json_file(self.testjson)
+
+        self.assertEqual(metadata.to_json(), written.to_json())
+        self.assertTrue(os.path.isfile(self.testjson))
+
+    def test_generating_metadata_from_user_input(self):
+        """
+        Tests generating metadata from user input
+        :return: None
+        """
+        metadata = self.generate_metadata(self.user_input_example)
+        self.verify_metadata(self.json_data_example, metadata)
