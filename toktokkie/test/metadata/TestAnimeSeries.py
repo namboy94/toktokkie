@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.AnimeSeries import AnimeSeries
-from toktokkie.test.metadata.MetadataTester import MetadataTester
+from toktokkie.test.metadata.TestTvSeries import TestTvSeries
 
 
-class TestAnimeSeries(MetadataTester):
+class TestAnimeSeries(TestTvSeries):
     """
     Class that contains tests for the AnimeSeries Metadata class
     """
@@ -113,7 +114,57 @@ class TestAnimeSeries(MetadataTester):
     the json_data_example.
     """
 
-    subdirectories = ["Season 1", "Season 2", "Specials"]
-    """
-    A list of subdirectory names to generate during setup
-    """
+    def test_getting_season_start(self):
+        """
+        Tests retrieving the episode at which a season starts
+        :return: None
+        """
+        super().test_getting_season_start()
+        metadata = self.generate_metadata()  # type: AnimeSeries
+        self.assertEqual(
+            metadata.get_season_start(AgentIdType.MYANIMELIST, 123), 0
+        )
+        self.assertEqual(
+            metadata.get_season_start(AgentIdType.MYANIMELIST, 124), 1
+        )
+        self.assertEqual(
+            metadata.get_season_start(AgentIdType.MYANIMELIST, 125), 1
+        )
+
+    def test_getting_excludes(self):
+        """
+        Tests retrieving excluded episodes
+        :return: None
+        """
+        super().test_getting_excludes()
+        metadata = self.generate_metadata()  # type: AnimeSeries
+        ranges = metadata.get_multi_episode_ranges(AgentIdType.MYANIMELIST)
+
+        expected = [{"mal_id": 123, "E": 10}]
+
+        for _range in ranges:
+            while _range["start"]["E"] != _range["end"]["E"]:
+                _range["start"]["E"] += 1
+                expected.append(_range["start"].copy())
+
+        for excluded in metadata.get_agent_excludes(AgentIdType.MYANIMELIST):
+            self.assertTrue(excluded in expected)
+
+    def test_using_unsupported_agent_type(self):
+        """
+        Tests using an unsupported agent type
+        :return: None
+        """
+        metadata = self.generate_metadata()  # type: AnimeSeries
+        self.assertEqual(
+            metadata.get_season_start(AgentIdType.NONE, 1),
+            1
+        )
+        self.assertEqual(
+            metadata.get_multi_episode_ranges(AgentIdType.NONE),
+            None
+        )
+        self.assertEqual(
+            metadata.get_agent_excludes(AgentIdType.NONE),
+            None
+        )

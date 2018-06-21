@@ -26,3 +26,4 @@ class AgentIdType(Enum):
     """
     TVDB = "tv_series"
     MYANIMELIST = "anime_series"
+    NONE = "base"

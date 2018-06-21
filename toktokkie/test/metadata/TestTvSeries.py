@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
+from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.test.metadata.MetadataTester import MetadataTester
+from toktokkie.test.metadata.TestBase import TestBase
 
 
-class TestTvSeries(MetadataTester):
+class TestTvSeries(TestBase):
     """
     Class that contains tests for the TvSeries Metadata class
     """
@@ -101,3 +103,64 @@ class TestTvSeries(MetadataTester):
     """
     A list of subdirectory names to generate during setup
     """
+
+    def test_getting_season_start(self):
+        """
+        Tests retrieving the episode at which a season starts
+        :return: None
+        """
+        metadata = self.generate_metadata()  # type: TvSeries
+        self.assertEqual(metadata.get_season_start(AgentIdType.TVDB, 1), 2)
+        self.assertEqual(metadata.get_season_start(AgentIdType.TVDB, 2), 1)
+        self.assertEqual(metadata.get_season_start(AgentIdType.TVDB, 0), 0)
+
+    def test_getting_excludes(self):
+        """
+        Tests retrieving excluded episodes
+        :return: None
+        """
+        metadata = self.generate_metadata()  # type: TvSeries
+        ranges = metadata.get_multi_episode_ranges(AgentIdType.TVDB)
+
+        expected = [
+            {"S": 0, "E": 1}, {"S": 0, "E": 2}
+        ]
+        for _range in ranges:
+            while _range["start"]["E"] != _range["end"]["E"]:
+                _range["start"]["E"] += 1
+                expected.append(_range["start"].copy())
+
+        for excluded in metadata.get_agent_excludes(AgentIdType.TVDB):
+            self.assertTrue(excluded in expected)
+
+    def test_using_unsupported_agent_type(self):
+        """
+        Tests using an unsupported agent type
+        :return: None
+        """
+        metadata = self.generate_metadata()  # type: TvSeries
+        self.assertEqual(
+            metadata.get_season_start(AgentIdType.MYANIMELIST, 1),
+            1
+        )
+        self.assertEqual(
+            metadata.get_multi_episode_ranges(AgentIdType.MYANIMELIST),
+            None
+        )
+        self.assertEqual(
+            metadata.get_agent_excludes(AgentIdType.MYANIMELIST),
+            None
+        )
+
+    def test_generating_from_user_prompts_with_hidden_dirs_and_files(self):
+        """
+        Tests generating a metadata object where hidden directories and files
+        exist in the media directory
+        :return: None
+        """
+        check = self.generate_metadata(self.user_input_example)
+        with open(os.path.join(self.testdir, "file.txt"), "w") as f:
+            f.write("test")
+        os.makedirs(os.path.join(self.testdir, ".test"))
+        new = self.generate_metadata(self.user_input_example)
+        self.assertEqual(new.to_json(), check.to_json())

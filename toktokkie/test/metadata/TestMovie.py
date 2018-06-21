@@ -18,10 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from toktokkie.metadata.Movie import Movie
-from toktokkie.test.metadata.MetadataTester import MetadataTester
+from toktokkie.test.metadata.TestBase import TestBase
 
 
-class TestMovie(MetadataTester):
+class TestMovie(TestBase):
     """
     Class that contains tests for the Movie Metadata class
     """

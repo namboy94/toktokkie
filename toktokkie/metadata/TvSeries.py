@@ -28,6 +28,7 @@ from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
 from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
     SeasonEpisodeRangeCommaList
+typer = type  # Little hack
 
 
 class TvSeries(Base):
@@ -63,7 +64,7 @@ class TvSeries(Base):
 
         for season in sorted(os.listdir(directory)):
             season_dir = os.path.join(directory, season)
-            if os.path.isfile(season_dir) or season.startswith(".meta"):
+            if os.path.isfile(season_dir) or season.startswith("."):
                 continue
 
             if len(seasons) > 0:
@@ -134,9 +135,10 @@ class TvSeries(Base):
         """
 
         if id_type == AgentIdType.TVDB:
-            return self.merge_excludes(
+            merged = self.merge_excludes(
                 self.tvdb_excludes, self.tvdb_multi_episodes
-            ).to_json()
+            )
+            return SeasonEpisodeCommaList(merged).to_json()
         else:
             return None
 
@@ -156,7 +158,8 @@ class TvSeries(Base):
                 return 1
             elif len(hits) >= 1:
                 return hits[0]["E"]
-                # TODO New data structure so that duplicate entries can't exist
+            else:  # pragma: no cover
+                pass  # Should never come to pass
         else:
             return 1
 
@@ -177,22 +180,24 @@ class TvSeries(Base):
 
     # noinspection PyMethodMayBeStatic
     def merge_excludes(self, excludes: SeasonEpisodeCommaList,
-                       ranges: SeasonEpisodeRangeCommaList) \
-            -> SeasonEpisodeCommaList:
+                       ranges: SeasonEpisodeRangeCommaList,
+                       episode_type: typer(SeasonEpisode) = SeasonEpisode) \
+            -> List[SeasonEpisode]:
         """
         Merges a SeasonEpisodeCommaList and a SeasonEpisodeRangeCommaList
         into a single SeasonEpisodeCommaList that contains all episodes to skip
         :param excludes: The single episodes to exclude
         :param ranges: The ranges which will be completely excluded,
                        with the exception of the first episode
-        :return: The combined SeasonEpisodeCommaList exclusion list
+        :param episode_type: The type of episode to generate
+        :return: The combined exclusion list
         """
         excluded = excludes.list
 
         for multi in ranges.list:
             episode = multi.start.episode + 1
             while episode <= multi.end.episode:
-                excluded.append(SeasonEpisode(multi.start.season, episode))
+                excluded.append(episode_type(multi.start.season, episode))
                 episode += 1
 
-        return SeasonEpisodeCommaList(excluded)
+        return excluded

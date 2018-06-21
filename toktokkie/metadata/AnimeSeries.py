@@ -24,6 +24,7 @@ from toktokkie.metadata.types.AgentIdType import AgentIdType
 from toktokkie.metadata.types.MetaType import Str, MetaType
 from toktokkie.metadata.types.AnimeSeriesSeason import AnimeSeriesSeason
 from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.metadata.types.MyanimelistEpisode import MyanimelistEpisode
 from toktokkie.metadata.types.CommaList import MyanimelistEpisodeCommaList, \
     MyanimelistEpisodeRangeCommaList, IntCommaList
 
@@ -128,9 +129,11 @@ class AnimeSeries(TvSeries):
         if sup is not None:
             return sup
         elif id_type == AgentIdType.MYANIMELIST:
-            return self.merge_excludes(
-                self.mal_excludes, self.mal_multi_episodes
+            merged = self.merge_excludes(
+                self.mal_excludes, self.mal_multi_episodes, MyanimelistEpisode
             )
+            print(merged)
+            return MyanimelistEpisodeCommaList(merged).to_json()
         else:
             return None
 
@@ -145,12 +148,13 @@ class AnimeSeries(TvSeries):
 
         if id_type == AgentIdType.MYANIMELIST:
             irregulars = self.mal_irregular_season_starts.to_json()
-            hits = list(filter(lambda x: x["S"] == season, irregulars))
+            hits = list(filter(lambda x: x["mal_id"] == season, irregulars))
             if len(hits) == 0:
                 return 1
             elif len(hits) >= 1:
                 return hits[0]["E"]
-                # TODO New data structure so that duplicate entries can't exist
+            else:  # pragma: no cover
+                pass  # Can't happen
         else:
             return super().get_season_start(id_type, season)
 
