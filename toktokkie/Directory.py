@@ -25,7 +25,7 @@ from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
 from toktokkie.exceptions import MissingMetadataException
 from toktokkie.xdcc_update import XDCCUpdater
-from toktokkie.verfication import get_verificators
+from toktokkie.verification import get_verificators
 
 
 class Directory:

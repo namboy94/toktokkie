@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from toktokkie.verfication.Verificator import Verificator
+from toktokkie.verification.Verificator import Verificator
 
 
 class FolderIconVerificator(Verificator):

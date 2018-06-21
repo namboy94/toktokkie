@@ -19,8 +19,8 @@ LICENSE"""
 
 from typing import List
 from toktokkie.metadata import metadata_types, Base
-from toktokkie.verfication.Verificator import Verificator
-from toktokkie.verfication.FolderIconVerificator import FolderIconVerificator
+from toktokkie.verification.Verificator import Verificator
+from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
 
 
 all_verificators = [

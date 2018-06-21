@@ -19,7 +19,10 @@ LICENSE"""
 
 import os
 import shutil
+from typing import Dict
 from unittest import TestCase
+from toktokkie.Directory import Directory
+from toktokkie.verification.Verificator import Verificator
 
 
 class TestVerificator(TestCase):
@@ -28,9 +31,29 @@ class TestVerificator(TestCase):
     other verificator tests
     """
 
+    verificator_cls = Verificator
+    """
+    The verificator class to test
+    """
+
     testdir = "testdir"
     """
     Directory in which to store any generated files
+    """
+
+    structure = {}
+    """
+    The structure to generate during setup
+    """
+
+    metadatas = {}
+    """
+    Metadata information for directories
+    """
+
+    verificators = {}
+    """
+    A verificator for each directory
     """
 
     def setUp(self):
@@ -40,6 +63,13 @@ class TestVerificator(TestCase):
         """
         self.cleanup()
         os.makedirs(self.testdir)
+        self.generate_structure(self.structure)
+        for directory, metadata in self.metadatas.items():
+            metadata.write(os.path.join(
+                self.testdir, directory, ".meta", "info.json"
+            ))
+            directory = Directory(os.path.join(self.testdir, directory))
+            self.verificators[directory] = self.verificator_cls(directory)
 
     def tearDown(self):
         """
@@ -55,3 +85,28 @@ class TestVerificator(TestCase):
         """
         if os.path.isdir(self.testdir):
             shutil.rmtree(self.testdir)
+
+    def generate_structure(self,
+                           structure: Dict[str, dict or list],
+                           previous: str = None):
+        """
+        Generates a file system structure
+        :param structure: The structure to generate
+        :param previous: Used for recursive calls
+        :return: None
+        """
+
+        if previous is None:
+            previous = self.testdir
+
+        for child in structure:
+            child_path = os.path.join(previous, child)
+
+            if not child.startswith(".") and "." in child or \
+                    isinstance(structure, list):
+                with open(child_path, "w") as f:
+                    f.write("placeholder")
+
+            elif isinstance(structure, dict):
+                os.makedirs(child_path)
+                self.generate_structure(structure[child], child_path)

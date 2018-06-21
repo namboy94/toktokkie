@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import sys
-from toktokkie.verfication.Verificator import Verificator
+from toktokkie.verification.Verificator import Verificator
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.AnimeSeries import AnimeSeries
 from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
