@@ -19,13 +19,11 @@ LICENSE"""
 
 import os
 import json
-from typing import Dict, List
+from typing import Dict
 from toktokkie.metadata.helper.prompt import prompt_user
 from toktokkie.metadata.types.MetaType import MetaType, Str
 from toktokkie.metadata.types.CommaList import StrCommaList
 from toktokkie.exceptions import InvalidMetadataException, MetadataMismatch
-from toktokkie.verfication.Verificator import Verificator
-from toktokkie.verfication.FolderIconVerificator import FolderIconVerificator
 typer = type  # Little hack
 
 

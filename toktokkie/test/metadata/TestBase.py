@@ -22,7 +22,6 @@ import shutil
 from typing import List, Any, Callable, Dict
 from unittest import TestCase, mock
 from toktokkie.metadata.Base import Base
-from toktokkie.verfication.Verificator import Verificator
 from toktokkie.exceptions import MetadataMismatch, InvalidMetadataException
 
 
@@ -136,15 +135,6 @@ class TestBase(TestCase):
             self.assertEqual(metadata_json[key], json_data[key])
 
     # ---------------General Tests for all Metadata classes--------------------
-
-    def test_retrieving_verificators(self):
-        """
-        Tests if the verificator retrieving method is correct
-        :return: None
-        """
-        verificators = self.metadata_cls.get_verifactors()
-        for verificator in verificators:
-            issubclass(verificator, Verificator)
 
     def test_generating_using_constructor(self):
         """
