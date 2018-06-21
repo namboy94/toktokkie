@@ -145,6 +145,7 @@ class MetadataTester(TestCase):
         Tests generating a metadata object using the constructor
         :return: None
         """
+        print(self.json_data_example)
         metadata = self.metadata_cls(self.json_data_example)
         self.verify_metadata(self.json_data_example, metadata)
 

@@ -29,6 +29,13 @@ from toktokkie.metadata.types.CommaList import MyanimelistEpisodeCommaList, \
 
 
 class AnimeSeries(TvSeries):
+    """
+    Metadata class that models an anime series
+    We use IDs for myanimelist.net since that's the de-facto anime database
+    Due to the API fiasco of 2018, this might be called into question
+    in the future, but for now we'll keep on using myanimelist IDs,
+    since anilist.co supports those as well
+    """
 
     # -------------------------------------------------------------------------
     # These Methods and Variables should be extended by subclasses

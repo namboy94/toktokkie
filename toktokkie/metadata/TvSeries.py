@@ -32,7 +32,8 @@ from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
 
 class TvSeries(Base):
     """
-    A metadata model for tv series
+    Metadata class that models a tv series
+    We use IDs for thetvdb.com since that's the de-facto tv series database
     """
 
     # -------------------------------------------------------------------------

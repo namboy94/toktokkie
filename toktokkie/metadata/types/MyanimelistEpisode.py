@@ -32,6 +32,7 @@ class MyanimelistEpisode(MetaPrimitive):
         :param mal_id: The myanimelist ID of the episode
         :param episode: The episode number of the episode
         """
+        self.season = mal_id  # For Range parsing
         self.mal_id = mal_id
         self.episode = episode
 

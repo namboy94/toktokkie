@@ -76,6 +76,7 @@ class EpisodeRange(MetaPrimitive):
         try:
             split = string.lower().split("-")
             start = cls.episode_type.parse(split[0])
+
             end = cls.episode_type(start.season, int(split[1]))
             if start.episode <= end.episode:
                 return cls(start, end)

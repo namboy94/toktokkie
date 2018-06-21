@@ -27,6 +27,9 @@ from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
 
 
 class AnimeSeriesSeason(TvSeriesSeason):
+    """
+    An Anime Series Season that can easily be serialized into a dictionary
+    """
 
     default_audio_languages = LanguageCommaList([Language("jpn")])
     """

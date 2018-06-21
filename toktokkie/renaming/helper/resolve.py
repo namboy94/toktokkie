@@ -23,7 +23,7 @@ from typing import List
 
 def resolve_season(season_path: str) -> int:
     """
-    Setermines a season's season number based on the path's name
+    Determines a season's season number based on the path's name
     :param season_path: The path to check
     :return: The season number
     """
@@ -41,7 +41,7 @@ def resolve_season(season_path: str) -> int:
 
 def get_episode_files(season_path: str) -> List[str]:
     """
-    Searches a directory for all eligible episode files
+    Searches a season directory for all eligible episode files
     :param season_path: The path to check
     :return: A list of episode file paths
     """

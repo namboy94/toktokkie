@@ -35,31 +35,37 @@ class TestTvSeries(MetadataTester):
         "type": "tv_series",
         "name": "TestTvSeries",
         "tags": ["Tag1", "Tag2", "Tag3"],
-        "seasons": {
-            "Season 1": {
+        "seasons": [
+            {
+                "path": "Season 1",
+                "name": "Season 1",
                 "tvdb_ids": [12345],
                 "audio_langs": ["eng"],
                 "subtitle_langs": ["eng", "ger"],
                 "resolutions": [{"x": 1920, "y": 1080}]
             },
-            "Season 2": {
+            {
+                "path": "Season 2",
+                "name": "Season 2",
                 "tvdb_ids": [12345],
                 "audio_langs": ["eng"],
                 "subtitle_langs": ["eng", "ger"],
                 "resolutions": [{"x": 1920, "y": 1080}]
             },
-            "Specials": {
+            {
+                "path": "Specials",
+                "name": "Specials",
                 "tvdb_ids": [54321, 12345],
                 "audio_langs": ["fre"],
                 "subtitle_langs": ["jpn"],
                 "resolutions": [{"x": 1280, "y": 720}, {"x": 1920, "y": 1080}]
             }
-        },
+        ],
         "tvdb_excludes": [{"S": 0, "E": 1}, {"S": 0, "E": 2}],
         "tvdb_irregular_season_starts": [{"S": 0, "E": 0}, {"S": 1, "E": 2}],
         "tvdb_multi_episodes": [
-            {"start": {"S": 0, "E": 0}, "end": {"S": 0, "E": 0}},
-            {"start": {"S": 0, "E": 0}, "end": {"S": 0, "E": 0}}
+            {"start": {"S": 1, "E": 3}, "end": {"S": 1, "E": 4}},
+            {"start": {"S": 1, "E": 5}, "end": {"S": 1, "E": 10}}
         ]
 
     }
@@ -76,7 +82,7 @@ class TestTvSeries(MetadataTester):
         "eng",
         "eng,ger",
         "1920x1080",
-        "Season 2", "", "", "", "",
+        "", "", "", "", "",  # Season 2 with autocomplete
         "Specials",
         "54321,12345",
         "fre",
@@ -84,7 +90,7 @@ class TestTvSeries(MetadataTester):
         "1280x720, 1920x1080",
         "S00E01,S00E02",
         "S00E00,S01E02",
-        "S01E03-S01E04,S01E05-S01E10"
+        "S01E03-04,S01E05-10"
     ]
     """
     Example user input that generates the same metadata as
