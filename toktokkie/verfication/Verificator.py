@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from colorama import Fore, Style
+from toktokkie.metadata.Base import Base
 
 
 class Verificator:
@@ -26,13 +27,34 @@ class Verificator:
     directory content can be verified
     """
 
-    def __init__(self, directory):
+    applicable_metadata_types = [Base]
+    """
+    Metadata classes on which this verificator may be executed on
+    """
+
+    def __init__(self, directory,
+                 anilist_user: str = None,
+                 mal_user: str = None):
         """
         Initializes the verificator.
         :param directory: The directory to verify
+        :param anilist_user: The anilist.co username used for checks
+        :param mal_user: The myanimelist.net username used for checks
         """
         from toktokkie.Directory import Directory
+
+        if not type(directory.metadata) in self.applicable_metadata_types:
+            supported = False
+            for metatype in self.applicable_metadata_types:
+                if directory.metadata.is_subclass_of(metatype):
+                    supported = True
+
+            if not supported:
+                raise ValueError("Metadata type not supported")
+
         self.directory = directory  # type: Directory
+        self.anilist_user = anilist_user
+        self.mal_user = mal_user
 
     def verify(self) -> bool:
         """

@@ -25,7 +25,7 @@ from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
 from toktokkie.exceptions import MissingMetadataException
 from toktokkie.xdcc_update import XDCCUpdater
-from toktokkie.verfication import Verificator
+from toktokkie.verfication import get_verificators
 
 
 class Directory:
@@ -129,14 +129,14 @@ class Directory:
         if not create:
             updater.update()
 
-    def verify(self):
+    def verify(self, anilist_user: str = None, mal_user: str = None):
         """
         Verifies this media directory
+        :param anilist_user: The anilist.co user to use for checks
+        :param mal_user: The myanimelist.net user to use for checks
         :return: None
         """
-        for verificator_cls in self.metadata.get_verifactors():
-            # noinspection PyCallingNonCallable
-            verificator = \
-                verificator_cls(self)  # type: Verificator
+        verificators = get_verificators(self, anilist_user, mal_user)
+        for verificator in verificators:
             if not verificator.verify():
                 verificator.fix()

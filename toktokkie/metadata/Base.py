@@ -73,14 +73,6 @@ class Base:
             "tags": self.tags
         }
 
-    @classmethod
-    def get_verifactors(cls) -> List[typer(Verificator)]:
-        """
-        Retrieves a list of Verificator classes for this metadata class
-        :return: The list of verificator classes
-        """
-        return [FolderIconVerificator]
-
     def __init__(self, json_data: Dict[str, any]):
         """
         Initializes the Metadata object. If the provided JSON data is incorrect
