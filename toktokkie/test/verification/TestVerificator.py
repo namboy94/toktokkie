@@ -19,9 +19,14 @@ LICENSE"""
 
 import os
 import shutil
-from typing import Dict
-from unittest import TestCase
+from typing import Dict, List, Callable, Any
+from unittest import TestCase, mock
 from toktokkie.Directory import Directory
+from toktokkie.metadata.Base import Base
+from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.AnimeSeries import AnimeSeries
+from toktokkie.metadata.Movie import Movie
+from toktokkie.metadata.AnimeMovie import AnimeMovie
 from toktokkie.verification.Verificator import Verificator
 
 
@@ -31,14 +36,14 @@ class TestVerificator(TestCase):
     other verificator tests
     """
 
-    verificator_cls = Verificator
-    """
-    The verificator class to test
-    """
-
     testdir = "testdir"
     """
     Directory in which to store any generated files
+    """
+
+    verificator_cls = Verificator
+    """
+    The verificator class to test
     """
 
     structure = {}
@@ -68,8 +73,8 @@ class TestVerificator(TestCase):
             metadata.write(os.path.join(
                 self.testdir, directory, ".meta", "info.json"
             ))
-            directory = Directory(os.path.join(self.testdir, directory))
-            self.verificators[directory] = self.verificator_cls(directory)
+            toktokkie_dir = Directory(os.path.join(self.testdir, directory))
+            self.verificators[directory] = self.verificator_cls(toktokkie_dir)
 
     def tearDown(self):
         """
@@ -102,7 +107,7 @@ class TestVerificator(TestCase):
         for child in structure:
             child_path = os.path.join(previous, child)
 
-            if not child.startswith(".") and "." in child or \
+            if (not child.startswith(".") and "." in child) or \
                     isinstance(structure, list):
                 with open(child_path, "w") as f:
                     f.write("placeholder")
@@ -110,3 +115,135 @@ class TestVerificator(TestCase):
             elif isinstance(structure, dict):
                 os.makedirs(child_path)
                 self.generate_structure(structure[child], child_path)
+
+    @staticmethod
+    def execute_with_mocked_input(
+            prompt_input: List[str], action: Callable
+    ) -> Any:
+        """
+        Executes a function with mocked user input
+        :param prompt_input: The user input to mock
+        :param action: The function to execute
+        :return: The return value of the function
+        """
+        with mock.patch("builtins.input", side_effect=prompt_input):
+            return action()
+
+
+class TestVerificatorAbstractClass(TestVerificator):
+    """
+    Class that tests stuff that's only relevant to the actual abstract
+    Verificator class
+    """
+
+    structure = {
+        "test": {".meta": {}},
+        "a": {},
+        "b": {},
+        "c": {},
+        "d": {}
+    }
+    """
+    The test directory structure
+    """
+
+    metadatas = {
+        "test": Base({
+            "type": "base",
+            "name": "test",
+            "tags": []
+        })
+    }
+    """
+    The metadata for the media directories
+    """
+
+    def test_if_abstract_methods_are_abstract(self):
+        """
+        Tests if the abstract methods of the Verificator class throw an
+        error when called directly
+        :return: None
+        """
+
+        directory = self.verificators["test"].directory  # type: Directory
+        verificator = Verificator(directory)
+
+        try:
+            verificator.verify()
+            self.fail()
+        except NotImplementedError:
+            pass
+
+        try:
+            verificator.fix()
+            self.fail()
+        except NotImplementedError:
+            pass
+
+    def test_for_supported_metadatas(self):
+        """
+        Tests if supported metadata is identified correctly
+        :return: None
+        """
+
+        base = self.verificators["test"].directory  # type: Directory
+        tv_series = self.execute_with_mocked_input(
+            ["", "", "", "", ""],
+            lambda: Directory(os.path.join(self.testdir, "a"), True, TvSeries)
+        )
+        anime_series = self.execute_with_mocked_input(
+            ["", "", "", "", "", "", "", "", ""],
+            lambda:
+            Directory(os.path.join(self.testdir, "b"), True, AnimeSeries)
+        )
+        movie = self.execute_with_mocked_input(
+            ["", "", "1", "", "", ""],
+            lambda: Directory(os.path.join(self.testdir, "c"), True, Movie)
+        )
+        anime_movie = self.execute_with_mocked_input(
+            ["", "", "1", "", "", "", "1"],
+            lambda:
+            Directory(os.path.join(self.testdir, "d"), True, AnimeMovie)
+        )
+
+        # noinspection PyAbstractClass
+        class TestClass(Verificator):
+            pass
+
+        all_metadata = [base, tv_series, anime_series, movie, anime_movie]
+        for config in [
+            {
+                "types": [Base],
+                "valid": all_metadata
+            },
+            {
+                "types": [TvSeries],
+                "valid": [tv_series, anime_series]
+            },
+            {
+                "types": [AnimeSeries],
+                "valid": [anime_series]
+            },
+            {
+                "types": [TvSeries, AnimeMovie],
+                "valid": [tv_series, anime_series, anime_movie]
+            },
+            {
+                "types": [Movie],
+                "valid": [movie, anime_movie]
+            },
+            {
+                "types": [AnimeMovie, AnimeSeries],
+                "valid": [anime_movie, anime_series]
+            }
+        ]:
+            TestClass.applicable_metadata_types = config["types"]
+            for valid in config["valid"]:
+                TestClass(valid)
+            for metadata_type in all_metadata:
+                if metadata_type not in config["valid"]:
+                    try:
+                        TestClass(metadata_type)
+                        self.fail()
+                    except ValueError:
+                        pass

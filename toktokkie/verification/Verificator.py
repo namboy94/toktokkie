@@ -32,6 +32,12 @@ class Verificator:
     Metadata classes on which this verificator may be executed on
     """
 
+    input_function = input
+    """
+    The function used for user input. May be overridden from the outside,
+    which is helpful for testing purposes
+    """
+
     def __init__(self, directory,
                  anilist_user: str = None,
                  mal_user: str = None):
@@ -90,17 +96,17 @@ class Verificator:
         """
         print(Fore.WHITE + string + Style.RESET_ALL)
 
-    @staticmethod
-    def prompt(prompt: str) -> str:
+    def prompt(self, prompt: str) -> str:
         """
         Prompts the user for input using yellow text
         :param prompt: The text to prompt the user
         :return: the user prompt
         """
-        return input(Fore.YELLOW + prompt + Style.RESET_ALL + "    ")
+        return self.input_function(
+            Fore.YELLOW + prompt + Style.RESET_ALL + "    "
+        )
 
-    @staticmethod
-    def prompt_yn(prompt: str) -> bool:
+    def prompt_yn(self, prompt: str) -> bool:
         """
         Prompts the user a yes/no question
         :param prompt: The prompt to show the used
@@ -108,5 +114,5 @@ class Verificator:
         """
         response = ""
         while response not in ["y", "n"]:
-            response = Verificator.prompt(prompt)
+            response = self.prompt(prompt)
         return response == "y"

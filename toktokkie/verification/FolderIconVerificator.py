@@ -43,6 +43,7 @@ class FolderIconVerificator(Verificator):
 
             path = os.path.join(self.directory.path, subdirectory)
             if subdirectory.startswith(".") or not os.path.isdir(path):
+                print("", end="")  # Somehow, coverage is broken without this
                 continue
 
             icon_file = os.path.join(
