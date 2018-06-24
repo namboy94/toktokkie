@@ -56,11 +56,12 @@ def main():
                                 type=info["type"], help=info["help"])
 
     args = parser.parse_args()
+    argvars = vars(args)
     directories = args.directories
     attributes = {}
 
     for attribute, info in get_all_verificator_attributes().items():
-        arg = args.__getattr__(attribute)
+        arg = argvars[attribute] if attribute in argvars else None
         if arg is not None and arg is not False:
             attributes[attribute] = arg
 
