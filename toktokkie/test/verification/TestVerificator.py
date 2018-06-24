@@ -70,9 +70,12 @@ class TestVerificator(TestCase):
         os.makedirs(self.testdir)
         self.generate_structure(self.structure)
         for directory, metadata in self.metadatas.items():
-            metadata.write(os.path.join(
-                self.testdir, directory, ".meta", "info.json"
-            ))
+
+            metadata_dir = os.path.join(self.testdir, directory, ".meta")
+            if not os.path.isdir(metadata_dir):
+                os.makedirs(metadata_dir)
+
+            metadata.write(os.path.join(metadata_dir, "info.json"))
             toktokkie_dir = Directory(os.path.join(self.testdir, directory))
             self.verificators[directory] = self.verificator_cls(toktokkie_dir)
 

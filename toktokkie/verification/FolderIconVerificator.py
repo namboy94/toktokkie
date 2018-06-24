@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from typing import List
 from toktokkie.verification.Verificator import Verificator
 
 
@@ -27,17 +28,37 @@ class FolderIconVerificator(Verificator):
     subdirectories in the media directory
     """
 
-    missing_icons = []
-    """
-    Stores any icons that were identified as missing
-    """
-
     def verify(self) -> bool:
         """
         Checks if all required icon files exist
         :return: True if all icons are present, False if one is missing
         """
-        missing = False
+        missing_icons = self.__get_missing_icons()
+        return len(missing_icons) <= 0
+
+    def fix(self):
+        """
+        Allows the user to fix missing icons by saving an icon file
+        to the correct location
+        :return: None
+        """
+        for icon_file in self.__get_missing_icons():
+            self.print_err("Icon file missing: " + icon_file)
+            self.print_ins("Please place an icon file at the above location.")
+            resp = self.prompt_yn("Is the icon file at the correct location?")
+            while not os.path.isfile(icon_file) or not resp:
+                if resp:
+                    self.print_err("No it's not.")
+                resp = \
+                    self.prompt_yn("Is the icon file at the correct location?")
+
+    def __get_missing_icons(self) -> List[str]:
+        """
+        Checks for missing icons and returns the paths at
+        which they are expected to be
+        :return: The list of icon file paths
+        """
+        missing_icons = []
 
         for subdirectory in os.listdir(self.directory.path):
 
@@ -52,29 +73,11 @@ class FolderIconVerificator(Verificator):
             )
 
             if not os.path.isfile(icon_file):
-                missing = True
-                self.missing_icons.append(icon_file)
+                missing_icons.append(icon_file)
 
         main_icon = os.path.join(self.directory.icon_path, "main.png")
 
         if not os.path.isfile(main_icon):
-            self.missing_icons.append(main_icon)
-            missing = True
+            missing_icons.append(main_icon)
 
-        return not missing
-
-    def fix(self):
-        """
-        Allows the user to fix missing icons by saving an icon file
-        to the correct location
-        :return: None
-        """
-        for icon_file in self.missing_icons:
-            self.print_err("Icon file missing: " + icon_file)
-            self.print_ins("Please place an icon file at the above location.")
-            resp = self.prompt_yn("Is the icon file at the correct location?")
-            while not os.path.isfile(icon_file):
-                if resp:
-                    self.print_err("No it's not.")
-                resp = \
-                    self.prompt_yn("Is the icon file at the correct location?")
+        return missing_icons

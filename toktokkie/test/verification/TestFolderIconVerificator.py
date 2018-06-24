@@ -73,7 +73,6 @@ class TestFolderIconVerificator(TestVerificator):
         Tests if the verificator correctly finds the icon files
         :return: None
         """
-        print(self.metadatas)
         self.assertTrue(self.verificators[self.media_dir].verify())
 
     def test_with_missing_icon(self):
@@ -127,9 +126,11 @@ class TestFolderIconVerificator(TestVerificator):
         self.assertFalse(verificator.verify())
         self.assertFalse(os.path.isfile(missing_icon))
 
-        Thread(target=background).start()
+        bg_thread = Thread(target=background)
+        bg_thread.start()
         verificator.fix()
 
         self.assertTrue(os.path.isfile(missing_icon))
         self.assertTrue(verificator.verify())
         self.assertTrue(n_called["status"])
+        self.assertFalse(bg_thread.isAlive())

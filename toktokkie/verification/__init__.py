@@ -21,10 +21,13 @@ from typing import List
 from toktokkie.metadata import metadata_types, Base
 from toktokkie.verification.Verificator import Verificator
 from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
+from toktokkie.verification.SeasonMetadataVerificator import \
+    SeasonMetadataVerificator
 
 
 all_verificators = [
-    FolderIconVerificator
+    FolderIconVerificator,
+    SeasonMetadataVerificator
 ]
 
 
@@ -41,17 +44,22 @@ def get_verificators(directory,
 
     metadata = directory.metadata  # type: Base
 
-    try:
-        verificators = {}
-        for metadata_type in metadata_types:
-            verificators[metadata_type.type] = list(filter(
-                lambda x: metadata_type in x.applicable_metadata_types,
-                all_verificators
-            ))
+    verificators = []
 
-        return list(map(
-            lambda x: x(directory, anilist_user, mal_user),
-            verificators[metadata.type]
-        ))
-    except KeyError:
-        return []
+    applicable = []
+    for metadata_type in metadata_types:
+        if metadata.is_subclass_of(metadata_type):
+            applicable.append(metadata_type)
+
+    for verificator_type in all_verificators:
+        valid = False
+        for metadata_type in applicable:
+            if metadata_type in verificator_type.applicable_metadata_types:
+                valid = True
+
+        if valid:
+            verificators.append(
+                verificator_type(directory, anilist_user, mal_user)
+            )
+
+    return verificators

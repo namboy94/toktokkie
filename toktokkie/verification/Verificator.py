@@ -96,6 +96,15 @@ class Verificator:
         """
         print(Fore.WHITE + string + Style.RESET_ALL)
 
+    @staticmethod
+    def print_inf(string: str):
+        """
+        Prints an info string in blue
+        :param string: The string to print
+        :return: None
+        """
+        print(Fore.LIGHTBLUE_EX + string + Style.RESET_ALL)
+
     def prompt(self, prompt: str) -> str:
         """
         Prompts the user for input using yellow text
