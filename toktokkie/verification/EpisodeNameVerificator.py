@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from colorama import Fore, Style
 from typing import Dict, Any, List
 from toktokkie.renaming.export import agents, schemes
 from toktokkie.renaming.Renamer import Renamer, Episode
@@ -94,8 +93,9 @@ class EpisodeNameVerificator(Verificator):
         ) + 1
 
         for episode in invalid_episodes:
-            self.print_inf(Fore.LIGHTRED_EX + episode.current.ljust(padding)
-                           + " !=   " + episode.new + Style.RESET_ALL)
+            self.print_inf(episode.current.ljust(padding) +
+                           " !=   " +
+                           episode.new)
 
         self.print_ins("Look over the new episode names "
                        "and initiate the renaming:")

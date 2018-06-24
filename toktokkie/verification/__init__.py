@@ -23,11 +23,17 @@ from toktokkie.verification.Verificator import Verificator
 from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
 from toktokkie.verification.SeasonMetadataVerificator import \
     SeasonMetadataVerificator
+from toktokkie.verification.EpisodeNameVerificator import \
+    EpisodeNameVerificator
+from toktokkie.verification.EntriesInAnilistVerificator import \
+    EntriesInAnilistVerificator
 
 
 all_verificators = [
     FolderIconVerificator,
-    SeasonMetadataVerificator
+    SeasonMetadataVerificator,
+    EpisodeNameVerificator,
+    EntriesInAnilistVerificator
 ]
 """
 A list of all verificators

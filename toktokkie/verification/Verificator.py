@@ -20,6 +20,8 @@ LICENSE"""
 from typing import Dict, Any
 from colorama import Fore, Style
 from toktokkie.metadata.Base import Base
+from toktokkie.metadata.AnimeSeries import AnimeSeries
+from toktokkie.verification.lib.anilist.Cache import Cache as AnilistCache
 
 
 class Verificator:
@@ -37,7 +39,7 @@ class Verificator:
     """
     A dictionary of attributes required for verification to be able to work
     Should be of form: {"attribute": {"help": "Help Message", "type": str}},
-    for example.
+    for example. The parameters 'choices' and 'default' may also be used
     """
 
     input_function = input
@@ -63,10 +65,12 @@ class Verificator:
             if not supported:
                 raise ValueError("Metadata type not supported")
 
-        for attribute, value in attributes.items():
+        for attribute, value in self.required_attributes.items():
 
-            if attribute not in self.required_attributes:
+            if attribute not in attributes:
                 raise ValueError("Attribute missing: " + attribute)
+
+        for attribute, value in attributes.items():
 
             type_check = issubclass(
                 type(value),
@@ -146,3 +150,38 @@ class Verificator:
         while response not in ["y", "n"]:
             response = self.prompt(prompt)
         return response == "y"
+
+
+# noinspection PyAbstractClass
+class AnilistVerificator(Verificator):
+    """
+    A Verificator class specifically for use with anilist.co related checks.
+    """
+
+    applicable_metadata_types = [AnimeSeries]
+    """
+    By default, only activate for anime series, not for anime movies.
+    Support for anime movies will have to be activated separately
+    """
+
+    required_attributes = {
+        "anilist_user": {
+            "type": str,
+            "help": "The anilist.co username to use for checks"
+        }
+    }
+    """
+    Specifies that the attribute 'anilist_user' is required
+    """
+
+    def __init__(self, directory, attributes: Dict[str, Any]):
+        """
+        Initializes the verificator and adds a couple of
+        anilist-specific instance variables.
+        :param directory: The directory to verify
+        :param attributes: Attributes provided for verification
+        """
+        super().__init__(directory, attributes)
+        self.username = attributes["anilist_user"]
+        self.handler = AnilistCache.get_handler_for_user(self.username)
+        self.entries = self.handler.entries

@@ -43,16 +43,37 @@ class AnilistHandler:
         :param username: The user for which to fetch the entries
         """
         self.username = username
-        self.fill_entries()
+        self.__fill_entries()
 
-    def fetch_data(self) -> Dict[str, Any]:
+    def get_anilist_id(self, mal_id: int) -> int or None:
+        """
+        Retrieves a single anilist ID for an entry
+        :param mal_id: The myanimelist ID for which to fetch the anilist ID
+        :return: The anilist ID, or None if anilist.co does not have an entry
+                 for the specified myanimelist ID
+        """
+        query = """
+            query ($mal_id: Int) {
+                Media (idMal: $mal_id) {
+                    id
+                }
+            }
+        """
+        data = self.query(query, {"mal_id": mal_id})
+
+        if "errors" in data:
+            return None
+        else:
+            return data["data"]["Media"]["id"]
+
+    def __fetch_data(self) -> Dict[str, Any]:
         """
         Fetches the relevant list entry data from the anilist API
         :return: The retrieved data
         """
         query = """
-            query ($user: String) {
-                MediaListCollection (userName: $user, type: ANIME) {
+            query ($username: String) {
+                MediaListCollection (userName: $username, type: ANIME) {
                     lists {
                         entries {
                             status
@@ -88,14 +109,13 @@ class AnilistHandler:
         """
         return self.query(query, {"username": self.username})["data"]
 
-    def fill_entries(self):
+    def __fill_entries(self):
         """
         Parses the retrieved data and generates list entries, then maps
         them to their myanimelist IDs in a dictionary
         :return: None
         """
-
-        for collection in self.fetch_data()["MediaListCollection"]["lists"]:
+        for collection in self.__fetch_data()["MediaListCollection"]["lists"]:
             for entry in collection["entries"]:
 
                 start = entry["startedAt"]
@@ -107,12 +127,12 @@ class AnilistHandler:
                 relations = []
                 for relation in entry["media"]["relations"]["edges"]:
                     relations.append(AnilistRelation(
-                        entry["idMal"],
+                        entry["media"]["idMal"],
                         relation["node"]["idMal"],
                         RelationType[relation["relationType"]]
                     ))
-                self.entries[entry["idMal"]] = AnilistEntry(
-                    entry["idMal"],
+                self.entries[entry["media"]["idMal"]] = AnilistEntry(
+                    entry["media"]["idMal"],
                     self.username,
                     WatchingState[entry["status"]],
                     AiringState[entry["media"]["status"]],

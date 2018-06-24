@@ -31,6 +31,10 @@ class TestVerificatorFetcher(TestVerificator):
     """
 
     def test_fetching_verificators(self):
+        """
+        Tests fetching verificators
+        :return: None
+        """
 
         base, tv_series, anime_series, movie, anime_movie = \
             self.generate_sample_metadata()
