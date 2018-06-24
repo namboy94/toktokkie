@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import shutil
-from typing import Dict, List, Callable, Any
+from typing import Dict, List, Callable, Any, Tuple
 from unittest import TestCase, mock
 from toktokkie.Directory import Directory
 from toktokkie.metadata.Base import Base
@@ -132,6 +132,45 @@ class TestVerificator(TestCase):
         with mock.patch("builtins.input", side_effect=prompt_input):
             return action()
 
+    def generate_sample_metadata(self) \
+            -> Tuple[Base, TvSeries, AnimeSeries, Movie, AnimeMovie]:
+        """
+        Generates some sample metadata files in the 'testdir' directory
+        :return: A tuple of metadata directories
+        """
+
+        self.generate_structure({
+            "a": [],
+            "b": [],
+            "c": [],
+            "d": [],
+            "e": []
+        })
+
+        base = self.execute_with_mocked_input(
+            ["", "", ""],
+            lambda: Directory(os.path.join(self.testdir, "a"), True, Base)
+        )
+        tv_series = self.execute_with_mocked_input(
+            ["", "", "", "", ""],
+            lambda: Directory(os.path.join(self.testdir, "b"), True, TvSeries)
+        )
+        anime_series = self.execute_with_mocked_input(
+            ["", "", "", "", "", "", "", "", ""],
+            lambda:
+            Directory(os.path.join(self.testdir, "c"), True, AnimeSeries)
+        )
+        movie = self.execute_with_mocked_input(
+            ["", "", "1", "", "", ""],
+            lambda: Directory(os.path.join(self.testdir, "d"), True, Movie)
+        )
+        anime_movie = self.execute_with_mocked_input(
+            ["", "", "1", "", "", "", "1"],
+            lambda:
+            Directory(os.path.join(self.testdir, "e"), True, AnimeMovie)
+        )
+        return base, tv_series, anime_series, movie, anime_movie
+
 
 class TestVerificatorAbstractClass(TestVerificator):
     """
@@ -141,10 +180,6 @@ class TestVerificatorAbstractClass(TestVerificator):
 
     structure = {
         "test": {".meta": {}},
-        "a": {},
-        "b": {},
-        "c": {},
-        "d": {}
     }
     """
     The test directory structure
@@ -189,25 +224,8 @@ class TestVerificatorAbstractClass(TestVerificator):
         :return: None
         """
 
-        base = self.verificators["test"].directory  # type: Directory
-        tv_series = self.execute_with_mocked_input(
-            ["", "", "", "", ""],
-            lambda: Directory(os.path.join(self.testdir, "a"), True, TvSeries)
-        )
-        anime_series = self.execute_with_mocked_input(
-            ["", "", "", "", "", "", "", "", ""],
-            lambda:
-            Directory(os.path.join(self.testdir, "b"), True, AnimeSeries)
-        )
-        movie = self.execute_with_mocked_input(
-            ["", "", "1", "", "", ""],
-            lambda: Directory(os.path.join(self.testdir, "c"), True, Movie)
-        )
-        anime_movie = self.execute_with_mocked_input(
-            ["", "", "1", "", "", "", "1"],
-            lambda:
-            Directory(os.path.join(self.testdir, "d"), True, AnimeMovie)
-        )
+        base, tv_series, anime_series, movie, anime_movie = \
+            self.generate_sample_metadata()
 
         # noinspection PyAbstractClass
         class TestClass(Verificator):
