@@ -32,6 +32,7 @@ class AnilistEntry:
             self,
             mal_id: int,
             username: str,
+            title: str,
             watching_status: WatchingState,
             airing_status: AiringState,
             score: float,
@@ -47,6 +48,7 @@ class AnilistEntry:
         :param mal_id: The myanimelist.net entry
         :param username: The username of the user providing
                          the user-specific data
+        :param title: The title of this series
         :param watching_status: The watching status of the user
         :param airing_status: The airing status of the show
         :param score: The user's score
@@ -58,6 +60,7 @@ class AnilistEntry:
         """
         self.mal_id = mal_id
         self.username = username
+        self.title = title
         self.watching_status = watching_status
         self.airing_status = airing_status
         self.score = score

@@ -17,29 +17,29 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum, auto
+from enum import Enum
 
 
 class WatchingState(Enum):
     """
     Enum that specifies the watching state of a user's list entry
     """
-    CURRENT = auto
-    PLANNING = auto
-    COMPLETED = auto
-    DROPPED = auto
-    PAUSED = auto
-    REPEATING = auto
+    CURRENT = "CURRENT"
+    PLANNING = "PLANNING"
+    COMPLETED = "COMPLETED"
+    DROPPED = "DROPPED"
+    PAUSED = "PAUSED"
+    REPEATING = "REPEATING"
 
 
 class AiringState(Enum):
     """
     Enum that specifies the airing state of a show
     """
-    FINISHED = auto
-    RELEASING = auto
-    NOT_YET_RELEASED = auto
-    CANCELLED = auto
+    FINISHED = "FINISHED"
+    RELEASING = "RELEASING"
+    NOT_YET_RELEASED = "NOT_YET_RELEASED"
+    CANCELLED = "CANCELLED"
 
 
 class RelationType(Enum):
@@ -47,13 +47,13 @@ class RelationType(Enum):
     Enum that specifies the kind of relation
     two list entries have to each other
     """
-    ADAPTATION = auto
-    PREQUEL = auto
-    SEQUEL = auto
-    PARENT = auto
-    SIDE_STORY = auto
-    CHARACTER = auto
-    SUMMARY = auto
-    ALTERNATIVE = auto
-    SPIN_OFF = auto
-    OTHER = auto
+    ADAPTATION = "ADAPTATION"
+    PREQUEL = "PREQUEL"
+    SEQUEL = "SEQUEL"
+    PARENT = "PARENT"
+    SIDE_STORY = "SIDE_STORY"
+    CHARACTER = "CHARACTER"
+    SUMMARY = "SUMMARY"
+    ALTERNATIVE = "ALTERNATIVE"
+    SPIN_OFF = "SPIN_OFF"
+    OTHER = "OTHER"

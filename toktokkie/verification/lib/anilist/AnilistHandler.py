@@ -32,7 +32,7 @@ class AnilistHandler:
     Class that handles anilist.co API calls
     """
 
-    entries = {}
+    entries = {}  # type: Dict[int, AnilistEntry]
     """
     The anime entries mapped to their myanimelist IDs
     """
@@ -91,6 +91,9 @@ class AnilistHandler:
                             }
                             media {
                                 idMal
+                                title {
+                                    userPreferred
+                                }
                                 status
                                 episodes
                                 relations {
@@ -137,6 +140,7 @@ class AnilistHandler:
                 self.entries[entry["media"]["idMal"]] = AnilistEntry(
                     entry["media"]["idMal"],
                     self.username,
+                    entry["media"]["title"]["userPreferred"],
                     WatchingState[entry["status"]],
                     AiringState[entry["media"]["status"]],
                     entry["score"],
