@@ -62,7 +62,7 @@ class EntriesInAnilistVerificator(AnilistVerificator):
                 while prompt or not self.verify():
 
                     if prompt:
-                        self.print_err("No it's not.")
+                        self.print_err("No it's hasn't.")
 
                     prompt = self.prompt("Has the entry been added?")
                     if prompt:
@@ -76,7 +76,10 @@ class EntriesInAnilistVerificator(AnilistVerificator):
         anilist list.
         :return: A set of myanimelist IDs that could not be found
         """
-        return set(filter(lambda x: x in self.entries, self.__get_mal_ids()))
+        return set(filter(
+            lambda x: x not in self.entries,
+            self.__get_mal_ids()
+        ))
 
     def __get_mal_ids(self) -> Set[int]:
         """
@@ -88,10 +91,10 @@ class EntriesInAnilistVerificator(AnilistVerificator):
 
         if self.directory.metadata.type == "anime_series":
             for season in self.directory.metadata.seasons.list:
-                ids += season.mal_ids
+                ids += season.mal_ids.to_json()
 
         elif self.directory.metadata.type == "anime_movie":
-            ids.append(self.directory.metadata.mal_id)
+            ids.append(self.directory.metadata.mal_id.to_json())
 
         else:  # pragma: no cover
             pass

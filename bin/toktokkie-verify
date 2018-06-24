@@ -67,7 +67,9 @@ def main():
 
     for path in directories:
         try:
-            Directory(path).verify(attributes)
+            directory = Directory(path)
+            print(directory.metadata.name)
+            directory.verify(attributes)
         except MissingMetadataException:
             print("Missing Metadata for " + path)
 

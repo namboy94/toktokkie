@@ -72,6 +72,9 @@ class Verificator:
 
         for attribute, value in attributes.items():
 
+            if attribute not in self.required_attributes:
+                continue
+
             type_check = issubclass(
                 type(value),
                 self.required_attributes[attribute]["type"]

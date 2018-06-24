@@ -118,6 +118,9 @@ class AnilistHandler:
         for collection in self.__fetch_data()["MediaListCollection"]["lists"]:
             for entry in collection["entries"]:
 
+                if entry["media"]["idMal"] is None:
+                    continue
+
                 start = entry["startedAt"]
                 start_date = \
                     AnilistDate(start["year"], start["month"], start["day"])
