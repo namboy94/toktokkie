@@ -174,7 +174,7 @@ class TestSeasonMetadataVerificator(TestVerificator):
         self.assertTrue(verificator.verify())
 
         written = Directory(verificator.directory.path)
-        written_verificator = SeasonMetadataVerificator(written)
+        written_verificator = SeasonMetadataVerificator(written, {})
         self.assertTrue(written_verificator.verify())
 
         self.assertEqual(

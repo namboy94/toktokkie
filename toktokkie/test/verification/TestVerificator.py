@@ -77,7 +77,8 @@ class TestVerificator(TestCase):
 
             metadata.write(os.path.join(metadata_dir, "info.json"))
             toktokkie_dir = Directory(os.path.join(self.testdir, directory))
-            self.verificators[directory] = self.verificator_cls(toktokkie_dir)
+            self.verificators[directory] =\
+                self.verificator_cls(toktokkie_dir, {})
 
     def tearDown(self):
         """
@@ -204,7 +205,7 @@ class TestVerificatorAbstractClass(TestVerificator):
         """
 
         directory = self.verificators["test"].directory  # type: Directory
-        verificator = Verificator(directory)
+        verificator = Verificator(directory, {})
 
         try:
             verificator.verify()
@@ -260,11 +261,11 @@ class TestVerificatorAbstractClass(TestVerificator):
         ]:
             TestClass.applicable_metadata_types = config["types"]
             for valid in config["valid"]:
-                TestClass(valid)
+                TestClass(valid, {})
             for metadata_type in all_metadata:
                 if metadata_type not in config["valid"]:
                     try:
-                        TestClass(metadata_type)
+                        TestClass(metadata_type, {})
                         self.fail()
                     except ValueError:
                         pass

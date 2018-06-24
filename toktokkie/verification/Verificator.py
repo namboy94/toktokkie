@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import Dict, Any
 from colorama import Fore, Style
 from toktokkie.metadata.Base import Base
 
@@ -32,20 +33,24 @@ class Verificator:
     Metadata classes on which this verificator may be executed on
     """
 
+    required_attributes = {}
+    """
+    A dictionary of attributes required for verification to be able to work
+    Should be of form: {"attribute": {"help": "Help Message", "type": str}},
+    for example.
+    """
+
     input_function = input
     """
     The function used for user input. May be overridden from the outside,
     which is helpful for testing purposes
     """
 
-    def __init__(self, directory,
-                 anilist_user: str = None,
-                 mal_user: str = None):
+    def __init__(self, directory, attributes: Dict[str, Any]):
         """
         Initializes the verificator.
         :param directory: The directory to verify
-        :param anilist_user: The anilist.co username used for checks
-        :param mal_user: The myanimelist.net username used for checks
+        :param attributes: Attributes provided for verification
         """
         from toktokkie.Directory import Directory
 
@@ -58,9 +63,25 @@ class Verificator:
             if not supported:
                 raise ValueError("Metadata type not supported")
 
+        for attribute, value in attributes.items():
+
+            if attribute not in self.required_attributes:
+                raise ValueError("Attribute missing: " + attribute)
+
+            type_check = issubclass(
+                type(value),
+                self.required_attributes[attribute]["type"]
+            )
+
+            if not type_check:
+                raise ValueError(
+                    "Attribute " + attribute + " has wrong type: " +
+                    str(type(value)) + ".  Should be: " +
+                    self.required_attributes[attribute]
+                )
+
         self.directory = directory  # type: Directory
-        self.anilist_user = anilist_user
-        self.mal_user = mal_user
+        self.attributes = attributes
 
     def verify(self) -> bool:
         """

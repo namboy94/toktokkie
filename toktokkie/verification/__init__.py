@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import List
+from typing import List, Dict, Any
 from toktokkie.metadata import metadata_types, Base
 from toktokkie.verification.Verificator import Verificator
 from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
@@ -29,16 +29,17 @@ all_verificators = [
     FolderIconVerificator,
     SeasonMetadataVerificator
 ]
+"""
+A list of all verificators
+"""
 
 
-def get_verificators(directory,
-                     anilist_user: str = None,
-                     mal_user: str = None) -> List[Verificator]:
+def get_verificators(directory, attributes: Dict[str, Any]) \
+        -> List[Verificator]:
     """
     Retrieves a list of initialized verificators for a directory
     :param directory: The directory to get the verificators for
-    :param anilist_user: The anilist.co username used for checks
-    :param mal_user: The myanimelist.net username used for checks
+    :param attributes: The attributes to use for verification
     :return: The list of verificators
     """
 
@@ -58,8 +59,28 @@ def get_verificators(directory,
                 valid = True
 
         if valid:
-            verificators.append(
-                verificator_type(directory, anilist_user, mal_user)
-            )
+            try:
+                verificators.append(
+                    verificator_type(directory, attributes)
+                )
+            except ValueError:  # Ignore failing verificators
+                pass
 
     return verificators
+
+
+def get_all_verificator_attributes() -> Dict[str, Dict[str, str or type]]:
+    """
+    Retrieves a dictionary containing info for all available verificator
+    attributes.
+    :return: The dictionary of verificator attribute info
+    """
+
+    attributes = {}
+
+    for verificator in all_verificators:
+        for attribute, info in verificator.required_attributes.items():
+            if attribute not in attributes:
+                attributes[attribute] = info
+
+    return attributes

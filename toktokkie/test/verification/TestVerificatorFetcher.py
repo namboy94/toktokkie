@@ -54,7 +54,7 @@ class TestVerificatorFetcher(TestVerificator):
                 FolderIconVerificator
             ]
         }.items():
-            verificators = get_verificators(directory)
+            verificators = get_verificators(directory, {})
             verificator_types = list(map(lambda x: type(x), verificators))
             for verificator in expected:
                 self.assertTrue(verificator in verificator_types)

@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import sys
-from typing import Type
+from typing import Type, Dict, Any
 from toktokkie.renaming import Renamer, Scheme, Agent
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import resolve_metadata, Base, TvSeries
@@ -129,14 +129,13 @@ class Directory:
         if not create:
             updater.update()
 
-    def verify(self, anilist_user: str = None, mal_user: str = None):
+    def verify(self, verificator_attributes: Dict[str, Any]):
         """
         Verifies this media directory
-        :param anilist_user: The anilist.co user to use for checks
-        :param mal_user: The myanimelist.net user to use for checks
+        :param verificator_attributes: The attributes for the verificators
         :return: None
         """
-        verificators = get_verificators(self, anilist_user, mal_user)
+        verificators = get_verificators(self, verificator_attributes)
         for verificator in verificators:
             if not verificator.verify():
                 verificator.fix()

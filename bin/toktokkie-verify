@@ -20,6 +20,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
+from toktokkie.verification import get_all_verificator_attributes
 from toktokkie import Directory
 from toktokkie.exceptions import MissingMetadataException
 
@@ -32,11 +33,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("directories", nargs="+",
                         help="The directories to verify")
-    directories = parser.parse_args().directories
+
+    for attribute, info in get_all_verificator_attributes().items():
+        parser.add_argument("--" + attribute,
+                            type=info["type"], help=info["help"])
+
+    args = parser.parse_args()
+    directories = args.directories
+    attributes = {}
+
+    for attribute, info in get_all_verificator_attributes().items():
+        arg = args.__getattr__(attribute)
+        if arg is not None:
+            attributes[attribute] = arg
 
     for path in directories:
         try:
-            Directory(path).verify()
+            Directory(path).verify(attributes)
         except MissingMetadataException:
             print("Missing Metadata for " + path)
 
