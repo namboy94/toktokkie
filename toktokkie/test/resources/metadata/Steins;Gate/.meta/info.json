@@ -1,0 +1,116 @@
+{
+    "mal_check_ignores": [
+        32188,
+        4975,
+        13599,
+        30485,
+        32962
+    ],
+    "mal_excludes": [],
+    "mal_irregular_season_starts": [],
+    "mal_multi_episodes": [],
+    "name": "Steins;Gate",
+    "seasons": [
+        {
+            "audio_langs": [
+                "jpn",
+                "eng"
+            ],
+            "mal_ids": [
+                11577
+            ],
+            "name": "Fuka Ryouiki no D\u00e9j\u00e0 vu",
+            "path": "Fuka Ryouiki no D\u00e9j\u00e0 vu",
+            "resolutions": [
+                {
+                    "x": 1920,
+                    "y": 1080
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                244061
+            ]
+        },
+        {
+            "audio_langs": [
+                "jpn",
+                "eng"
+            ],
+            "mal_ids": [
+                10863
+            ],
+            "name": "Oukoubakko no Poriomania",
+            "path": "Oukoubakko no Poriomania",
+            "resolutions": [
+                {
+                    "x": 1920,
+                    "y": 1080
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                244061
+            ]
+        },
+        {
+            "audio_langs": [
+                "jpn",
+                "eng"
+            ],
+            "mal_ids": [
+                9253
+            ],
+            "name": "Season 1",
+            "path": "Season 1",
+            "resolutions": [
+                {
+                    "x": 1920,
+                    "y": 1080
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                244061
+            ]
+        },
+        {
+            "audio_langs": [
+                "jpn"
+            ],
+            "mal_ids": [
+                27957
+            ],
+            "name": "Soumei Eichi no Cognitive Computing",
+            "path": "Soumei Eichi no Cognitive Computing",
+            "resolutions": [
+                {
+                    "x": 1280,
+                    "y": 720
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                244061
+            ]
+        }
+    ],
+    "tags": [],
+    "tvdb_excludes": [
+        {
+            "E": 7,
+            "S": 0
+        }
+    ],
+    "tvdb_irregular_season_starts": [],
+    "tvdb_multi_episodes": [],
+    "type": "anime_series"
+}
