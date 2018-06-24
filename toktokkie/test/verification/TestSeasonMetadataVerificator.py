@@ -157,8 +157,10 @@ class TestSeasonMetadataVerificator(TestVerificator):
         Tests fixing missing metadata entries via user prompts
         :return: None
         """
-        verificator: SeasonMetadataVerificator = \
-            self.verificators[self.media_dir]
+
+        verificator = self.verificators[
+            self.media_dir
+        ]  # type: SeasonMetadataVerificator
 
         one = verificator.directory.metadata.seasons.pop(0)
         two = verificator.directory.metadata.seasons.pop(0)
