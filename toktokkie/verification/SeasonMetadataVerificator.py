@@ -47,7 +47,8 @@ class SeasonMetadataVerificator(Verificator):
 
     def fix(self):
         """
-        Allows the user to fix missing icons by saving an icon file
+        Allows the user to fix missing metadata entries using prompts.
+        Missing directories are generated automatically without manual input
         to the correct location
         :return: None
         """

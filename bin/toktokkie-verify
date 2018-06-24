@@ -35,8 +35,25 @@ def main():
                         help="The directories to verify")
 
     for attribute, info in get_all_verificator_attributes().items():
-        parser.add_argument("--" + attribute,
-                            type=info["type"], help=info["help"])
+
+        if info["type"] == bool:
+            parser.add_argument("--" + attribute,
+                                action="store_true", help=info["help"])
+
+        elif "choices" in info:
+
+            if "default" in info:
+                parser.add_argument("--" + attribute, choices=info["choices"],
+                                    default=info["default"],
+                                    type=info["type"], help=info["help"])
+
+            else:
+                parser.add_argument("--" + attribute, choices=info["choices"],
+                                    type=info["type"], help=info["help"])
+
+        else:
+            parser.add_argument("--" + attribute,
+                                type=info["type"], help=info["help"])
 
     args = parser.parse_args()
     directories = args.directories
@@ -44,7 +61,7 @@ def main():
 
     for attribute, info in get_all_verificator_attributes().items():
         arg = args.__getattr__(attribute)
-        if arg is not None:
+        if arg is not None and arg is not False:
             attributes[attribute] = arg
 
     for path in directories:
