@@ -84,7 +84,7 @@ class Verificator:
                 raise ValueError(
                     "Attribute " + attribute + " has wrong type: " +
                     str(type(value)) + ".  Should be: " +
-                    self.required_attributes[attribute]
+                    str(self.required_attributes[attribute])
                 )
 
         self.directory = directory  # type: Directory
@@ -187,4 +187,3 @@ class AnilistVerificator(Verificator):
         super().__init__(directory, attributes)
         self.username = attributes["anilist_user"]
         self.handler = AnilistCache.get_handler_for_user(self.username)
-        self.entries = self.handler.entries

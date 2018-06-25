@@ -21,6 +21,7 @@ import os
 import shutil
 from typing import Dict, List, Callable, Any, Tuple
 from unittest import TestCase, mock
+from toktokkie.test.resources import get_metadata_paths
 from toktokkie.Directory import Directory
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.TvSeries import TvSeries
@@ -46,24 +47,29 @@ class TestVerificator(TestCase):
     The verificator class to test
     """
 
-    structure = {}
+    structure = {}  # type: Dict[str, str or List or Dict]
     """
     The structure to generate during setup
     """
 
-    metadatas = {}
+    metadatas = {}  # type: Dict[str, Base]
     """
     Metadata information for directories
     """
 
-    verificators = {}
+    verificators = {}  # type: Dict[str, verificator_cls]
     """
     A verificator for each directory
     """
 
-    verification_attr = {}
+    verification_attr = {}  # type: Dict[str, Any]
     """
     Verification attributes
+    """
+
+    prepared_directories = []  # type: List[str]
+    """
+    Directories containing pre-made metadata etc.
     """
 
     def setUp(self):
@@ -84,6 +90,18 @@ class TestVerificator(TestCase):
             toktokkie_dir = Directory(os.path.join(self.testdir, directory))
             self.verificators[directory] =\
                 self.verificator_cls(toktokkie_dir, self.verification_attr)
+
+        resources = get_metadata_paths()
+        for directory in self.prepared_directories:
+            if directory in resources:
+                path = os.path.join(self.testdir, directory)
+
+                if not os.path.isdir(path):
+                    shutil.copytree(resources[directory], path)
+
+                self.verificators[directory] = self.verificator_cls(
+                    Directory(path), self.verification_attr
+                )
 
     def tearDown(self):
         """
@@ -139,9 +157,9 @@ class TestVerificator(TestCase):
             return action()
 
     def generate_sample_metadata(self) \
-            -> Tuple[Base, TvSeries, AnimeSeries, Movie, AnimeMovie]:
+            -> Tuple[Directory, Directory, Directory, Directory, Directory]:
         """
-        Generates some sample metadata files in the 'testdir' directory
+        Generates some sample metadata directories in the 'testdir' directory
         :return: A tuple of metadata directories
         """
 

@@ -17,11 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
-import shutil
-from toktokkie.Directory import Directory
+from toktokkie.verification.lib.anilist.Cache import Cache
 from toktokkie.test.verification.TestVerificator import TestVerificator
-from toktokkie.test.resources import get_metadata_paths
 from toktokkie.verification.EntriesInAnilistVerificator import \
     EntriesInAnilistVerificator
 
@@ -32,24 +29,32 @@ class TestEntriesInAnilistVerificator(TestVerificator):
     works correctly
     """
 
+    prepared_directories = ["Steins;Gate", "Kimi no Na wa. (2016)", "91 Days"]
+    """
+    Prepared metadata directories.
+    """
+
+    verification_attr = {"anilist_user": "namboy94"}
+    """
+    Verification attributes
+    """
+
+    verificator_cls = EntriesInAnilistVerificator
+    """
+    Verificator class to test
+    """
+
     def setUp(self):
         """
-        Copies some valid metadata directories into the testing directory
+        Creates easy to use instance variables for verificators
         :return: None
         """
         super().setUp()
-        metadatas = get_metadata_paths()
-        print(metadatas)
-        for item in ["Steins;Gate", "Kimi no Na wa. (2016)"]:
-            shutil.copytree(metadatas[item], os.path.join(self.testdir, item))
-        self.steinsgate = EntriesInAnilistVerificator(
-            Directory(os.path.join(self.testdir, "Steins;Gate")),
-            {"anilist_user": "namboy94"}
-        )
-        self.kiminonawa = EntriesInAnilistVerificator(
-            Directory(os.path.join(self.testdir, "Kimi no Na wa. (2016)")),
-            {"anilist_user": "namboy94"}
-        )
+        self.steinsgate, self.kiminonawa, self.days = [
+            self.verificators["Steins;Gate"],
+            self.verificators["Kimi no Na wa. (2016)"],
+            self.verificators["91 Days"]
+        ]  # type: EntriesInAnilistVerificator
 
     def test_all_entries_in_list(self):
         """
@@ -59,3 +64,89 @@ class TestEntriesInAnilistVerificator(TestVerificator):
         """
         self.assertTrue(self.steinsgate.verify())
         self.assertTrue(self.kiminonawa.verify())
+
+    def test_missing_anime_series_entries(self):
+        """
+        Tests if missing anime series entries are correctly identified
+        :return: None
+        """
+
+        for season in self.steinsgate.directory.metadata.seasons.list:
+            for mal_id in season.mal_ids.list:
+                entry = self.steinsgate.handler.entries.pop(mal_id)
+                self.assertFalse(self.steinsgate.verify())
+                self.steinsgate.handler.entries[mal_id] = entry
+                self.assertTrue(self.steinsgate.verify())
+
+    def test_missing_anime_movie_entries(self):
+        """
+        Tests if missing anime movie entries are correctly identified
+        :return: None
+        """
+        mal_id = self.kiminonawa.directory.metadata.mal_id
+        entry = self.kiminonawa.handler.entries.pop(mal_id)
+        self.assertFalse(self.kiminonawa.verify())
+        self.kiminonawa.handler.entries[mal_id] = entry
+        self.assertTrue(self.kiminonawa.verify())
+
+    def test_fixing_anilist_entry(self):
+        """
+        Tests fixing an anilist entry
+        :return: None
+        """
+        cacheget = Cache.get_handler_for_user
+
+        y_count = {"count": 0}
+        user_input = ["y", "n", "y", "n", "y", "stop"]
+
+        def input_func(_: str) -> str:
+            prompt = user_input.pop(0)
+            if prompt == "y":
+                y_count["count"] += 1
+            self.assertNotEqual(prompt, "stop")
+
+            if len(user_input) == 1:
+                Cache.get_handler_for_user = cacheget
+
+            return prompt
+
+        mal_id = self.kiminonawa.directory.metadata.mal_id
+        self.kiminonawa.handler.entries.pop(mal_id)
+
+        try:
+            Cache.get_handler_for_user = lambda x, y: self.kiminonawa.handler
+
+            self.assertFalse(self.kiminonawa.verify())
+
+            self.kiminonawa.input_function = input_func
+            self.kiminonawa.fix()
+
+            self.assertTrue(self.kiminonawa.verify())
+            self.assertEqual(y_count["count"], 3)
+
+        except (Exception, BaseException) as e:
+            Cache.get_handler_for_user = cacheget
+            raise e
+
+    def test_fixing_all_anime_series_seasons(self):
+        """
+        Tests fixing all missing anilist entries of an anime series
+        :return: None
+        """
+        for season in self.steinsgate.directory.metadata.seasons.list:
+            for mal_id in season.mal_ids.list:
+                self.steinsgate.handler.entries.pop(mal_id)
+
+        self.assertFalse(self.steinsgate.verify())
+
+        self.steinsgate.input_function = lambda x: "y"
+        self.steinsgate.fix()
+
+        self.assertTrue(self.steinsgate.verify())
+
+    def test_handling_of_missing_anilist_id_for_mal_id(self):
+        """
+        Tests that the verificator works correctly for a mal ID
+        that does not exist on anilist.co
+        """
+        self.assertTrue(self.days.verify())

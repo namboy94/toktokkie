@@ -30,6 +30,7 @@ class AnilistEntry:
 
     def __init__(
             self,
+            anilist_id: int,
             mal_id: int,
             username: str,
             title: str,
@@ -41,10 +42,10 @@ class AnilistEntry:
             start_date: AnilistDate,
             completion_date: AnilistDate,
             relations: List[AnilistRelation]
-
     ):
         """
         Initializes the entry
+        :param anilist_id: The anilist.co ID of this entry
         :param mal_id: The myanimelist.net entry
         :param username: The username of the user providing
                          the user-specific data
@@ -58,6 +59,7 @@ class AnilistEntry:
         :param completion_date: The date at which the user completed the series
         :param relations: A list of relations to other shows
         """
+        self.anilist_id = anilist_id
         self.mal_id = mal_id
         self.username = username
         self.title = title

@@ -1,0 +1,80 @@
+{
+    "mal_check_ignores": [],
+    "mal_excludes": [],
+    "mal_irregular_season_starts": [],
+    "mal_multi_episodes": [],
+    "name": "91 Days",
+    "seasons": [
+        {
+            "audio_langs": [
+                "jpn"
+            ],
+            "mal_ids": [
+                33964
+            ],
+            "name": "Recaps",
+            "path": "Recaps",
+            "resolutions": [
+                {
+                    "x": 1920,
+                    "y": 1080
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                309530
+            ]
+        },
+        {
+            "audio_langs": [
+                "jpn"
+            ],
+            "mal_ids": [
+                32998
+            ],
+            "name": "Season 1",
+            "path": "Season 1",
+            "resolutions": [
+                {
+                    "x": 1920,
+                    "y": 1080
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                309530
+            ]
+        },
+        {
+            "audio_langs": [
+                "jpn"
+            ],
+            "mal_ids": [
+                34777
+            ],
+            "name": "Special",
+            "path": "Special",
+            "resolutions": [
+                {
+                    "x": 1920,
+                    "y": 1080
+                }
+            ],
+            "subtitle_langs": [
+                "eng"
+            ],
+            "tvdb_ids": [
+                309530
+            ]
+        }
+    ],
+    "tags": [],
+    "tvdb_excludes": [],
+    "tvdb_irregular_season_starts": [],
+    "tvdb_multi_episodes": [],
+    "type": "anime_series"
+}

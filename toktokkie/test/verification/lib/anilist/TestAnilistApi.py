@@ -51,7 +51,7 @@ class TestAnilistApi(TestCase):
         """
         steinsgate = self.handler.entries[9253]  # El Psy Kongroo!
         self.assertEqual(steinsgate.mal_id, 9253)
-        self.assertEqual(steinsgate.score, 10.0)  # It's so cool!
+        self.assertEqual(steinsgate.score, 100)  # It's so cool!
         self.assertEqual(steinsgate.progress, steinsgate.episodes)
         self.assertEqual(steinsgate.watching_status, WatchingState.COMPLETED)
         self.assertEqual(steinsgate.airing_status, AiringState.FINISHED)
@@ -89,3 +89,12 @@ class TestAnilistApi(TestCase):
         self.assertEqual(1, self.handler.get_anilist_id(1))  # Cowboy Bebop
         self.assertEqual(21127, self.handler.get_anilist_id(30484))  # S;G 0
         self.assertEqual(None, self.handler.get_anilist_id(36501))  # MahoYome0
+
+    def test_fetching_mal_ids_without_equivalent_anilist_id(self):
+        """
+        Tests fetching invalid anilist IDS
+        :return: None
+        """
+        # 91 Days Recap
+        self.assertIsNone(self.handler.get_anilist_id(33964))
+        self.assertIsNone(self.handler.get_anilist_id(33964))  # From cache

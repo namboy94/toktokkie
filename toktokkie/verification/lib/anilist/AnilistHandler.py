@@ -37,6 +37,11 @@ class AnilistHandler:
     The anime entries mapped to their myanimelist IDs
     """
 
+    missing_anilist_ids = []
+    """
+    Keeps track of myanimelist IDs without a corresponding anilist ID
+    """
+
     def __init__(self, username: str):
         """
         Initializes the handler. Fetches all of a user's list entries.
@@ -52,19 +57,27 @@ class AnilistHandler:
         :return: The anilist ID, or None if anilist.co does not have an entry
                  for the specified myanimelist ID
         """
-        query = """
-            query ($mal_id: Int) {
-                Media (idMal: $mal_id) {
-                    id
-                }
-            }
-        """
-        data = self.query(query, {"mal_id": mal_id})
-
-        if "errors" in data:
+        if mal_id in self.missing_anilist_ids:
             return None
+
+        elif mal_id in self.entries:
+            return self.entries[mal_id].anilist_id
+
         else:
-            return data["data"]["Media"]["id"]
+            query = """
+                query ($mal_id: Int) {
+                    Media (idMal: $mal_id) {
+                        id
+                    }
+                }
+            """
+            data = self.query(query, {"mal_id": mal_id})
+
+            if "errors" in data:
+                self.missing_anilist_ids.append(mal_id)
+                return None
+            else:
+                return data["data"]["Media"]["id"]
 
     def __fetch_data(self) -> Dict[str, Any]:
         """
@@ -90,6 +103,7 @@ class AnilistHandler:
                                 day
                             }
                             media {
+                                id
                                 idMal
                                 title {
                                     userPreferred
@@ -138,6 +152,7 @@ class AnilistHandler:
                         RelationType[relation["relationType"]]
                     ))
                 self.entries[entry["media"]["idMal"]] = AnilistEntry(
+                    entry["media"]["id"],
                     entry["media"]["idMal"],
                     self.username,
                     entry["media"]["title"]["userPreferred"],

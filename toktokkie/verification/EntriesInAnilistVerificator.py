@@ -49,51 +49,56 @@ class EntriesInAnilistVerificator(AnilistVerificator):
         :return: None
         """
         self.print_err("Entries missing on anilist.co:")
+
         for missing in self.__get_missing_ids():
             anilist_id = self.handler.get_anilist_id(missing)
-            if anilist_id is None:
-                self.print_inf("ID " + str(missing) +
-                               " does not exist on anilist.co's database ")
-            else:
-                self.print_ins("Enter the following entry to your anilist.co "
-                               "list:   https://anilist.co/anime/"
-                               + str(anilist_id))
-                prompt = False
-                while prompt or not self.verify():
 
-                    if prompt:
-                        self.print_err("No it's hasn't.")
+            self.print_ins("Enter the following entry to your anilist.co "
+                           "list:   https://anilist.co/anime/"
+                           + str(anilist_id))
 
-                    prompt = self.prompt("Has the entry been added?")
-                    if prompt:
-                        self.handler = \
-                            Cache.get_handler_for_user(self.username, True)
-                        self.entries = self.handler.entries
+            verified = False
+            while not verified:
+                prompt = self.prompt_yn("Has the entry been added?")
+
+                if prompt:
+                    self.handler = \
+                        Cache.get_handler_for_user(self.username, True)
+                    verified = self.verify()
+
+                if prompt and not verified:
+                    self.print_err("No it's hasn't.")
 
     def __get_missing_ids(self) -> Set[int]:
         """
         Checks that all myanimelist IDs in the metadata is entered into the
-        anilist list.
+        anilist list. Myanimelist IDs without a corresponding anilist ID
+        are ignored.
         :return: A set of myanimelist IDs that could not be found
         """
-        return set(filter(
-            lambda x: x not in self.entries,
+        filtered = set(filter(
+            lambda x: x not in self.handler.entries,
             self.__get_mal_ids()
         ))
+        with_valid_anilist_id = []
+        for mal_id in filtered:
+            if self.handler.get_anilist_id(mal_id) is not None:
+                with_valid_anilist_id.append(mal_id)
+
+        return set(with_valid_anilist_id)
 
     def __get_mal_ids(self) -> Set[int]:
         """
         Retrieves all myanimelist IDs in the metadata
         :return: A set containing all myanimelist IDs in the metadata
         """
-
         ids = []
 
         if self.directory.metadata.type == "anime_series":
             for season in self.directory.metadata.seasons.list:
                 ids += season.mal_ids.to_json()
 
-        elif self.directory.metadata.type == "anime_movie":
+        elif self.directory.metadata.type == "anime_movie":  # pragma: no cover
             ids.append(self.directory.metadata.mal_id.to_json())
 
         else:  # pragma: no cover

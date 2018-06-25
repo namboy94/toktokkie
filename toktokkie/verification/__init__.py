@@ -86,7 +86,6 @@ def get_all_verificator_attributes() -> Dict[str, Dict[str, str or type]]:
 
     for verificator in all_verificators:
         for attribute, info in verificator.required_attributes.items():
-            if attribute not in attributes:
-                attributes[attribute] = info
+            attributes[attribute] = info
 
     return attributes
