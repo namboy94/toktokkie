@@ -54,7 +54,7 @@ class TVDB(Agent):
         for agent_id in series_ids:
             try:
                 tvdb = tvdb_api.Tvdb()
-                return tvdb[agent_id][season][episode]["episodename"]
+                return tvdb[agent_id][season][episode]["episodename"].strip()
 
             except (tvdb_episodenotfound, tvdb_seasonnotfound,
                     tvdb_shownotfound, ConnectionError, KeyError) as e:
