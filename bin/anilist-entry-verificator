@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+
+"""LICENSE
+Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
+
+This file is part of toktokkie.
+
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
+LICENSE"""
+
+import argparse
+from colorama import Fore, Style
+from toktokkie.verification.lib.anilist.Cache import Cache
+from toktokkie.verification.lib.anilist.enums import WatchingState
+from toktokkie.verification.lib.anilist.AnilistEntry import AnilistEntry
+
+
+def main():
+    """
+    The main function of this script
+    :return: None
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("username", help="The anilist username to check")
+    username = parser.parse_args().username
+
+    handler = Cache.get_handler_for_user(username)
+
+    for _, entry in handler.entries.items():  # type: int, AnilistEntry
+        print(entry.title + " (" + str(entry.anilist_id) + ")")
+
+        for message, condition in {
+            "Not all episodes watched":
+                entry.watching_status != WatchingState.COMPLETED or
+                entry.progress == entry.episodes,
+            "Start/Completed Date Invalid": entry.has_valid_date_entries()
+        }.items():
+            if not condition:
+                print(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
+
+        for relation in entry.get_important_relations():
+            if relation.mal_id not in handler.entries:
+                print(Fore.LIGHTYELLOW_EX + "Relation " + str(relation.mal_id)
+                      + " missing" + Style.RESET_ALL)
+
+
+if __name__ == "__main__":
+    main()

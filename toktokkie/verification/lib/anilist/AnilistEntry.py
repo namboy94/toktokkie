@@ -71,3 +71,27 @@ class AnilistEntry:
         self.start_date = start_date
         self.completion_date = completion_date
         self.relations = relations
+
+    def has_valid_date_entries(self) -> bool:
+        """
+        Checks if the entry has valid date entries
+        :return: True if the date entries are valid, False otherwise
+        """
+
+        if self.watching_status == WatchingState.COMPLETED:
+            return self.start_date.valid() and self.completion_date.valid()
+        elif self.watching_status in [
+            WatchingState.CURRENT, WatchingState.DROPPED
+        ]:
+            return self.start_date.valid() and not self.completion_date.valid()
+        else:
+            return not self.start_date.valid() and \
+                   not self.completion_date.valid()
+
+    def get_important_relations(self) -> List[AnilistRelation]:
+        """
+        Retrieves any relations that are not adaptation, character or
+        alternative relations.
+        :return: The list of important relations
+        """
+        return list(filter(lambda x: x.is_important(), self.relations))

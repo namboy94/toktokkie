@@ -37,8 +37,6 @@ class EpisodeNameVerificator(Verificator):
     Also applicable to children of those classes
     """
 
-    print(schemes)
-
     required_attributes = {
         "naming_scheme": {
             "type": str,

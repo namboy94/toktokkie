@@ -158,7 +158,6 @@ class TestBase(TestCase):
 
             try:
                 self.metadata_cls(data)
-                print(data)
                 self.fail()
             except InvalidMetadataException:
                 pass
