@@ -48,26 +48,26 @@ class EntriesInAnilistVerificator(AnilistVerificator):
         update their anilist.co list.
         :return: None
         """
-        self.print_err("Entries missing on anilist.co:")
-
         for missing in self.__get_missing_ids():
+
             anilist_id = self.handler.get_anilist_id(missing)
 
-            self.print_ins("Enter the following entry to your anilist.co "
-                           "list:   https://anilist.co/anime/"
-                           + str(anilist_id))
+            def verificate():
+                """
+                Updates the handler before the verification check
+                :return: The updated verification state
+                """
+                self.handler = Cache.get_handler_for_user(self.username, True)
+                return self.verify()
 
-            verified = False
-            while not verified:
-                prompt = self.prompt_yn("Has the entry been added?")
-
-                if prompt:
-                    self.handler = \
-                        Cache.get_handler_for_user(self.username, True)
-                    verified = self.verify()
-
-                if prompt and not verified:
-                    self.print_err("No it's hasn't.")
+            self.prompt_until_verified(
+                "Entry missing on anilist.co: " + str(anilist_id),
+                "Enter the following entry to your anilist.co list:   "
+                "https://anilist.co/anime/" + str(anilist_id),
+                "Has the entry been added?",
+                "No it's hasn't.",
+                verificate
+            )
 
     def __get_missing_ids(self) -> Set[int]:
         """

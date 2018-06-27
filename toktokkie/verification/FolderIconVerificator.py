@@ -43,14 +43,13 @@ class FolderIconVerificator(Verificator):
         :return: None
         """
         for icon_file in self.__get_missing_icons():
-            self.print_err("Icon file missing: " + icon_file)
-            self.print_ins("Please place an icon file at the above location.")
-            resp = self.prompt_yn("Is the icon file at the correct location?")
-            while not os.path.isfile(icon_file) or not resp:
-                if resp:
-                    self.print_err("No it's not.")
-                resp = \
-                    self.prompt_yn("Is the icon file at the correct location?")
+            self.prompt_until_verified(
+                "Icon file missing: " + icon_file,
+                "Please place an icon file at the above location.",
+                "Is the icon file at the correct location?",
+                "No it's not.",
+                lambda: os.path.isfile(icon_file)
+            )
 
     def __get_missing_icons(self) -> List[str]:
         """

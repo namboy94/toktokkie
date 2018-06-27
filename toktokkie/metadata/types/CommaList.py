@@ -49,6 +49,22 @@ class CommaList(MetaPrimitive):
                 element = self.meta_type.parse(str(element))
             self.list.append(element)
 
+    def append(self, element: MetaPrimitive):
+        """
+        Appends an element to the list
+        :param element: The element to add
+        :return: None
+        """
+        self.list.append(element)
+
+    def pop(self, index: int) -> MetaPrimitive:
+        """
+        Pops an element off the list
+        :param index: The index at which to pop the element off
+        :return: The popped element
+        """
+        return self.list.pop(index)
+
     @classmethod
     def parse(cls, string: str):
         """

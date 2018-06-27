@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import Dict, Any
+from typing import Dict, Any, Callable
 from colorama import Fore, Style
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.AnimeSeries import AnimeSeries
@@ -153,6 +153,35 @@ class Verificator:
         while response not in ["y", "n"]:
             response = self.prompt(prompt)
         return response == "y"
+
+    def prompt_until_verified(self, error_message, instruction_message: str,
+                              prompt_message: str, y_error_message: str,
+                              subverification: Callable = None):
+        """
+        Prompts the user a y/n question until verified
+        :param error_message: The error message to display
+        :param instruction_message: The instructuon message to show
+        :param prompt_message: The message to display during the prompt
+        :param y_error_message: The error message to show if the user answered
+                                with 'y' but the verify() method still returns
+                                False
+        :param subverification: A custom verification function that will be
+                                used instead of the self.verify() method
+        :return: None
+        """
+        self.print_err(error_message)
+        self.print_ins(instruction_message)
+        verified = False
+        while not verified:
+            if self.prompt_yn(prompt_message):
+
+                if subverification is None:
+                    verified = self.verify()
+                else:
+                    verified = subverification()
+
+                if not verified:
+                    self.print_err(y_error_message)
 
 
 # noinspection PyAbstractClass
