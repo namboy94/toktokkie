@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from unittest import TestCase
+from toktokkie.verification.lib.anilist.AnilistDate import AnilistDate
 from toktokkie.verification.lib.anilist.Cache import Cache
 from toktokkie.verification.lib.anilist.enums import WatchingState, AiringState
 from toktokkie.verification.lib.anilist.AnilistHandler import AnilistHandler
@@ -57,6 +58,7 @@ class TestAnilistApi(TestCase):
         self.assertEqual(steinsgate.airing_status, AiringState.FINISHED)
         self.assertTrue(steinsgate.start_date.valid())
         self.assertTrue(steinsgate.completion_date.valid())
+        self.assertTrue(steinsgate.has_valid_date_entries())
 
         for relation in steinsgate.relations:
             if relation.mal_id in [32188, 30484]:  # Steins;Gate 0
@@ -65,6 +67,23 @@ class TestAnilistApi(TestCase):
                 self.assertFalse(relation.is_important())
             else:
                 self.assertTrue(relation.is_important())
+
+            if relation.is_important():
+                self.assertTrue(
+                    relation in steinsgate.get_important_relations()
+                )
+
+        steinsgate.watching_status = WatchingState.DROPPED
+        self.assertFalse(steinsgate.has_valid_date_entries())
+        # noinspection PyTypeChecker
+        steinsgate.completion_date = AnilistDate(None, None, None)
+        self.assertTrue(steinsgate.has_valid_date_entries())
+
+        steinsgate.watching_status = WatchingState.PLANNING
+        self.assertFalse(steinsgate.has_valid_date_entries())
+        # noinspection PyTypeChecker
+        steinsgate.start_date = AnilistDate(None, None, None)
+        self.assertTrue(steinsgate.has_valid_date_entries())
 
     def test_cache(self):
         """

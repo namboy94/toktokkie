@@ -100,7 +100,6 @@ class TestTVDBEpisodeCountVerificator(TestVerificator):
         )
         self.assertTrue(verificator.verify())
 
-
     def test_fixing(self):
         """
         Tests fixing the incorrect amount of tvdb episode files
