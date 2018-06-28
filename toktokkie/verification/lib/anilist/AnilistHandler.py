@@ -79,6 +79,32 @@ class AnilistHandler:
             else:
                 return data["data"]["Media"]["id"]
 
+    def get_all_related_entries_of_entry(
+            self, entry: AnilistEntry, important: bool = True
+    ) -> Dict[int, AnilistEntry]:
+        """
+        Retrieves all related entries of a list entry.
+        Entries that are not in the user's list are replaced by None
+        :param entry: The entry for whcih to retrieve the related entries
+        :param important: Specifies if only important relations should be
+                          retrieved
+        :return: A dictionary mapping the mal IDs to the related entries
+        """
+        entries = {entry.mal_id: entry}
+        for related in entry.get_relation_edges(important):
+            if related.mal_id not in entries:
+                if related.mal_id in self.entries:
+                    related_entries = self.get_all_related_entries_of_entry(
+                        self.entries[related.mal_id], important
+                    )
+                    for mal_id, entry in related_entries:
+                        if mal_id not in entries:
+                            entries[mal_id] = entry
+                else:
+                    if self.get_anilist_id(related.mal_id) is not None:
+                        entries[related.mal_id] = None
+        return entries
+
     def __fetch_data(self) -> Dict[str, Any]:
         """
         Fetches the relevant list entry data from the anilist API

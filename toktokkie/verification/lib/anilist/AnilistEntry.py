@@ -88,10 +88,17 @@ class AnilistEntry:
             return not self.start_date.valid() and \
                    not self.completion_date.valid()
 
-    def get_important_relations(self) -> List[AnilistRelation]:
+    def get_relation_edges(self, important: bool = True) \
+            -> List[AnilistRelation]:
         """
-        Retrieves any relations that are not adaptation, character or
-        alternative relations.
-        :return: The list of important relations
+        Retrieves the relations of the entry, optionally filtered
+        by important. Important relations are relations that are neither
+        an adaptation, a character relation or an alternative relation
+        :param important: Specifies if only important relations
+                          should be retrieved
+        :return: The list of relations
         """
-        return list(filter(lambda x: x.is_important(), self.relations))
+        return list(filter(
+            lambda x: x.is_important() or not important,
+            self.relations
+        ))
