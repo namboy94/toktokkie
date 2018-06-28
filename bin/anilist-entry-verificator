@@ -49,9 +49,11 @@ def main():
             if not condition:
                 print(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
 
-        for relation in entry.get_important_relations():
-            if relation.mal_id not in handler.entries:
-                print(Fore.LIGHTYELLOW_EX + "Relation " + str(relation.mal_id)
+        for mal_id, related in handler.get_all_related_entries_of_entry(
+                entry, True
+        ).items():
+            if related is None:
+                print(Fore.LIGHTYELLOW_EX + "Relation " + str(mal_id)
                       + " missing" + Style.RESET_ALL)
 
 

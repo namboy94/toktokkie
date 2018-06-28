@@ -80,7 +80,10 @@ class AnilistHandler:
                 return data["data"]["Media"]["id"]
 
     def get_all_related_entries_of_entry(
-            self, entry: AnilistEntry, important: bool = True
+            self,
+            entry: AnilistEntry,
+            important: bool = True,
+            recursive_entries: Dict[str, AnilistEntry] = {}
     ) -> Dict[int, AnilistEntry]:
         """
         Retrieves all related entries of a list entry.
@@ -90,17 +93,19 @@ class AnilistHandler:
                           retrieved
         :return: A dictionary mapping the mal IDs to the related entries
         """
-        entries = {entry.mal_id: entry}
+        entries = recursive_entries
+        entries[entry.mal_id] = entry
         for related in entry.get_relation_edges(important):
             if related.mal_id not in entries:
                 if related.mal_id in self.entries:
                     related_entries = self.get_all_related_entries_of_entry(
-                        self.entries[related.mal_id], important
+                        self.entries[related.mal_id], important, entries
                     )
-                    for mal_id, entry in related_entries:
+                    for mal_id, entry in related_entries.items():
                         if mal_id not in entries:
                             entries[mal_id] = entry
                 else:
+                    # Make sure that anilist ID actually exists
                     if self.get_anilist_id(related.mal_id) is not None:
                         entries[related.mal_id] = None
         return entries

@@ -27,13 +27,16 @@ from toktokkie.verification.EpisodeNameVerificator import \
     EpisodeNameVerificator
 from toktokkie.verification.EntriesInAnilistVerificator import \
     EntriesInAnilistVerificator
+from toktokkie.verification.TVDBEpisodeCountVerificator import \
+    TVDBEpisodeCountVerificator
 
 
 all_verificators = [
     FolderIconVerificator,
     SeasonMetadataVerificator,
     EpisodeNameVerificator,
-    EntriesInAnilistVerificator
+    EntriesInAnilistVerificator,
+    TVDBEpisodeCountVerificator
 ]
 """
 A list of all verificators

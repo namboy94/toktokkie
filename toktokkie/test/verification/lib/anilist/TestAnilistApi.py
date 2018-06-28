@@ -70,7 +70,7 @@ class TestAnilistApi(TestCase):
 
             if relation.is_important():
                 self.assertTrue(
-                    relation in steinsgate.get_important_relations()
+                    relation in steinsgate.get_relation_edges(True)
                 )
 
         steinsgate.watching_status = WatchingState.DROPPED
