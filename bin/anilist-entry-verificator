@@ -37,7 +37,7 @@ def main():
 
     handler = Cache.get_handler_for_user(username)
 
-    for _, entry in handler.entries.items():  # type: int, AnilistEntry
+    for mal_id, entry in handler.entries.items():  # type: int, AnilistEntry
         print(entry.title + " (" + str(entry.anilist_id) + ")")
 
         for message, condition in {
@@ -49,12 +49,11 @@ def main():
             if not condition:
                 print(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
 
-        for mal_id, related in handler.get_all_related_entries_of_entry(
-                entry, True
-        ).items():
-            if related is None:
-                print(Fore.LIGHTYELLOW_EX + "Relation " + str(mal_id)
-                      + " missing" + Style.RESET_ALL)
+        related = handler.get_all_related_entries_of_entry(entry)
+        if related is None:
+            anilist_base = "https://anilist.co/anime/"
+            print(Fore.LIGHTYELLOW_EX + "Relation " + anilist_base +
+                  str(mal_id) + " missing" + Style.RESET_ALL)
 
 
 if __name__ == "__main__":

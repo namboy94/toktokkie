@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import time
 import json
 import requests
-from typing import Dict, Any
+from typing import List, Dict, Any
 from toktokkie.verification.lib.anilist.AnilistDate import AnilistDate
 from toktokkie.verification.lib.anilist.AnilistRelation import AnilistRelation
 from toktokkie.verification.lib.anilist.AnilistEntry import AnilistEntry
@@ -50,14 +51,18 @@ class AnilistHandler:
         self.username = username
         self.__fill_entries()
 
-    def get_anilist_id(self, mal_id: int) -> int or None:
+    def get_anilist_id(self, mal_id: int or None) -> int or None:
         """
         Retrieves a single anilist ID for an entry
-        :param mal_id: The myanimelist ID for which to fetch the anilist ID
+        :param mal_id: The myanimelist ID for which to fetch the anilist ID.
+                       If the ID is None, None will also be returned
         :return: The anilist ID, or None if anilist.co does not have an entry
                  for the specified myanimelist ID
         """
         if mal_id in self.missing_anilist_ids:
+            return None
+
+        elif mal_id is None:
             return None
 
         elif mal_id in self.entries:
@@ -83,32 +88,40 @@ class AnilistHandler:
             self,
             entry: AnilistEntry,
             important: bool = True,
-            recursive_entries: Dict[str, AnilistEntry] = {}
-    ) -> Dict[int, AnilistEntry]:
+            __handled_ids: List[int] = None,
+    ) -> Dict[int, AnilistEntry or None]:
         """
         Retrieves all related entries of a list entry.
         Entries that are not in the user's list are replaced by None
         :param entry: The entry for whcih to retrieve the related entries
         :param important: Specifies if only important relations should be
                           retrieved
+        :param __handled_ids: Used during recursive calls to fetch ALL
+                              relations
         :return: A dictionary mapping the mal IDs to the related entries
         """
-        entries = recursive_entries
-        entries[entry.mal_id] = entry
-        for related in entry.get_relation_edges(important):
-            if related.mal_id not in entries:
-                if related.mal_id in self.entries:
-                    related_entries = self.get_all_related_entries_of_entry(
-                        self.entries[related.mal_id], important, entries
-                    )
-                    for mal_id, entry in related_entries.items():
-                        if mal_id not in entries:
-                            entries[mal_id] = entry
-                else:
-                    # Make sure that anilist ID actually exists
-                    if self.get_anilist_id(related.mal_id) is not None:
-                        entries[related.mal_id] = None
-        return entries
+        related_entries = {entry.mal_id: entry}
+
+        handled_ids = [entry.mal_id]
+        if __handled_ids is not None:
+            handled_ids += __handled_ids
+
+        for relation in entry.get_relation_edges(important):
+
+            if self.get_anilist_id(relation.mal_id) is None:
+                continue
+            elif relation.mal_id in handled_ids:
+                continue
+
+            if relation.mal_id not in self.entries:
+                related_entries[relation.mal_id] = None
+            else:
+                inner_entry = self.entries[relation.mal_id]
+                related_entries.update(self.get_all_related_entries_of_entry(
+                    inner_entry, important, handled_ids
+                ))
+
+        return related_entries
 
     def __fetch_data(self) -> Dict[str, Any]:
         """
@@ -209,4 +222,5 @@ class AnilistHandler:
         response = requests.post(
             url, json={'query': query, 'variables': variables}
         )
+        time.sleep(0.5)
         return json.loads(response.text)
