@@ -19,8 +19,8 @@ LICENSE"""
 
 from toktokkie.verification import get_all_verificator_attributes
 from toktokkie.test.verification.TestVerificator import TestVerificator
-from toktokkie.verification.EntriesInAnilistVerificator import \
-    EntriesInAnilistVerificator as SampleVerificator
+from toktokkie.verification.AnilistEntriesVerificator import \
+    AnilistEntriesVerificator as SampleVerificator
 
 
 class TestVerificatorAttributes(TestVerificator):

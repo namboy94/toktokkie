@@ -24,7 +24,7 @@ from toktokkie.verification.lib.anilist.Cache import Cache
 from toktokkie.verification.Verificator import AnilistVerificator
 
 
-class EntriesInAnilistVerificator(AnilistVerificator):
+class AnilistEntriesVerificator(AnilistVerificator):
     """
     Verificator that checks that all local metadata entries are entered
     on anilist.co

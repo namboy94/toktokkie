@@ -19,13 +19,13 @@ LICENSE"""
 
 from toktokkie.verification.lib.anilist.Cache import Cache
 from toktokkie.test.verification.TestVerificator import TestVerificator
-from toktokkie.verification.EntriesInAnilistVerificator import \
-    EntriesInAnilistVerificator
+from toktokkie.verification.AnilistEntriesVerificator import \
+    AnilistEntriesVerificator
 
 
-class TestEntriesInAnilistVerificator(TestVerificator):
+class TestAnilistEntriesVerificator(TestVerificator):
     """
-    Class that tests if the EntriesInAnilistVerificator
+    Class that tests if the AnilistEntriesVerificator
     works correctly
     """
 
@@ -39,7 +39,7 @@ class TestEntriesInAnilistVerificator(TestVerificator):
     Verification attributes
     """
 
-    verificator_cls = EntriesInAnilistVerificator
+    verificator_cls = AnilistEntriesVerificator
     """
     Verificator class to test
     """
@@ -54,7 +54,7 @@ class TestEntriesInAnilistVerificator(TestVerificator):
             self.verificators["Steins;Gate"],
             self.verificators["Kimi no Na wa. (2016)"],
             self.verificators["91 Days"]
-        ]  # type: EntriesInAnilistVerificator
+        ]  # type: AnilistEntriesVerificator
 
     def test_all_entries_in_list(self):
         """
