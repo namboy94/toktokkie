@@ -51,6 +51,18 @@ class AnilistHandler:
         self.username = username
         self.__fill_entries()
 
+    def get_entry(self, mal_id: int) -> AnilistEntry or None:
+        """
+        Retrieves an entry from the user's anilist.
+        If an entry was not found, return None
+        :param mal_id: The myanimelist ID to use
+        :return: The entry or None if not found
+        """
+        if mal_id in self.entries:
+            return self.entries[mal_id]
+        else:
+            return None
+
     def get_anilist_id(self, mal_id: int or None) -> int or None:
         """
         Retrieves a single anilist ID for an entry
@@ -100,6 +112,9 @@ class AnilistHandler:
                               relations
         :return: A dictionary mapping the mal IDs to the related entries
         """
+        if entry is None:
+            return {}
+
         related_entries = {entry.mal_id: entry}
 
         handled_ids = [entry.mal_id]
@@ -112,11 +127,8 @@ class AnilistHandler:
                 continue
             elif relation.mal_id in handled_ids:
                 continue
-
-            if relation.mal_id not in self.entries:
-                related_entries[relation.mal_id] = None
             else:
-                inner_entry = self.entries[relation.mal_id]
+                inner_entry = self.get_entry(relation.mal_id)
                 related_entries.update(self.get_all_related_entries_of_entry(
                     inner_entry, important, handled_ids
                 ))

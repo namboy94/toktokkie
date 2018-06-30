@@ -78,7 +78,7 @@ class AnilistEntriesVerificator(AnilistVerificator):
         """
         filtered = set(filter(
             lambda x: x not in self.handler.entries,
-            self.__get_mal_ids()
+            self._get_mal_ids()
         ))
         with_valid_anilist_id = []
         for mal_id in filtered:
@@ -86,22 +86,3 @@ class AnilistEntriesVerificator(AnilistVerificator):
                 with_valid_anilist_id.append(mal_id)
 
         return set(with_valid_anilist_id)
-
-    def __get_mal_ids(self) -> Set[int]:
-        """
-        Retrieves all myanimelist IDs in the metadata
-        :return: A set containing all myanimelist IDs in the metadata
-        """
-        ids = []
-
-        if self.directory.metadata.type == "anime_series":
-            for season in self.directory.metadata.seasons.list:
-                ids += season.mal_ids.to_json()
-
-        elif self.directory.metadata.type == "anime_movie":  # pragma: no cover
-            ids.append(self.directory.metadata.mal_id.to_json())
-
-        else:  # pragma: no cover
-            pass
-
-        return set(ids)

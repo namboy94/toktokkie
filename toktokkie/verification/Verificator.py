@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import Dict, Any, Callable
+from typing import Set, Dict, Any, Callable
 from colorama import Fore, Style
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.AnimeSeries import AnimeSeries
@@ -216,3 +216,22 @@ class AnilistVerificator(Verificator):
         super().__init__(directory, attributes)
         self.username = attributes["anilist_user"]
         self.handler = AnilistCache.get_handler_for_user(self.username)
+
+    def _get_mal_ids(self) -> Set[int]:
+        """
+        Retrieves all myanimelist IDs in the metadata
+        :return: A set containing all myanimelist IDs in the metadata
+        """
+        ids = []
+
+        if self.directory.metadata.type == "anime_series":
+            for season in self.directory.metadata.seasons.list:
+                ids += season.mal_ids.to_json()
+
+        elif self.directory.metadata.type == "anime_movie":  # pragma: no cover
+            ids.append(self.directory.metadata.mal_id.to_json())
+
+        else:  # pragma: no cover
+            pass
+
+        return set(ids)
