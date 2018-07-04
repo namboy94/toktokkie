@@ -19,7 +19,6 @@ LICENSE"""
 
 import os
 import shutil
-from toktokkie.Directory import Directory
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.test.verification.TestVerificator import TestVerificator
 from toktokkie.verification.SeasonMetadataVerificator import \
@@ -161,9 +160,13 @@ class TestSeasonMetadataVerificator(TestVerificator):
             self.media_dir
         ]  # type: SeasonMetadataVerificator
 
+        self.assertEqual(2, len(verificator.directory.metadata.seasons.list))
+
         one = verificator.directory.metadata.seasons.pop(0)
         two = verificator.directory.metadata.seasons.pop(0)
         verificator.directory.write_metadata()
+
+        self.assertEqual(0, len(verificator.directory.metadata.seasons.list))
 
         self.assertFalse(verificator.verify())
         self.execute_with_mocked_input(
@@ -173,15 +176,14 @@ class TestSeasonMetadataVerificator(TestVerificator):
         )
         self.assertTrue(verificator.verify())
 
-        written = Directory(verificator.directory.path)
-        written_verificator = SeasonMetadataVerificator(written, {})
-        self.assertTrue(written_verificator.verify())
+        self.assertEqual(2, len(verificator.directory.metadata.seasons.list))
 
-        self.assertEqual(
-            one.to_json(),
-            written_verificator.directory.metadata.seasons.pop(0).to_json()
-        )
-        self.assertEqual(
-            two.to_json(),
-            written_verificator.directory.metadata.seasons.pop(0).to_json()
-        )
+        new_one = verificator.directory.metadata.seasons.pop(0).to_json()
+        new_two = verificator.directory.metadata.seasons.pop(0).to_json()
+
+        if new_one == one.to_json():
+            self.assertEqual(one.to_json(), new_one)
+            self.assertEqual(two.to_json(), new_two)
+        else:
+            self.assertEqual(one.to_json(), new_two)
+            self.assertEqual(two.to_json(), new_one)
