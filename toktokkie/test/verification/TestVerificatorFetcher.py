@@ -17,10 +17,16 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.verification import get_verificators, all_verificators, \
-    AnilistRelationVerificator, FolderIconVerificator, \
-    SeasonMetadataVerificator, AnilistEntriesVerificator, \
-    TVDBEpisodeCountVerificator
+import os
+from toktokkie.Directory import Directory
+from toktokkie.verification import get_verificators, all_verificators
+from toktokkie.verification.AnilistEntriesVerificator import \
+    AnilistEntriesVerificator
+from toktokkie.verification.AnilistRelationVerificator import AnilistRelationVerificator
+from toktokkie.verification.TVDBEpisodeCountVerificator import TVDBEpisodeCountVerificator
+from toktokkie.verification.SeasonMetadataVerificator import SeasonMetadataVerificator
+from toktokkie.verification.EpisodeNameVerificator import EpisodeNameVerificator
+from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
 from toktokkie.test.verification.TestVerificator import TestVerificator
 
 
@@ -28,6 +34,11 @@ class TestVerificatorFetcher(TestVerificator):
     """
     Test class for the get_verificators method that makes it possible
     to get the correct verificators for any given metadata type
+    """
+
+    prepared_directories = ["Steins;Gate"]
+    """
+    A list of directories to prepare for testing
     """
 
     def test_fetching_verificators(self):
@@ -39,6 +50,10 @@ class TestVerificatorFetcher(TestVerificator):
         base, tv_series, anime_series, movie, anime_movie = \
             self.generate_sample_metadata()
 
+        tested = {}
+        for verificator in all_verificators:
+            tested[verificator] = False
+
         for directory, expected in {
             base: [
                 FolderIconVerificator
@@ -46,14 +61,16 @@ class TestVerificatorFetcher(TestVerificator):
             tv_series: [
                 FolderIconVerificator,
                 SeasonMetadataVerificator,
-                TVDBEpisodeCountVerificator
+                TVDBEpisodeCountVerificator,
+                EpisodeNameVerificator
             ],
             anime_series: [
                 FolderIconVerificator,
                 SeasonMetadataVerificator,
                 AnilistRelationVerificator,
                 AnilistEntriesVerificator,
-                TVDBEpisodeCountVerificator
+                TVDBEpisodeCountVerificator,
+                EpisodeNameVerificator
             ],
             movie: [
                 FolderIconVerificator
@@ -65,13 +82,36 @@ class TestVerificatorFetcher(TestVerificator):
         }.items():
             verificators = get_verificators(directory, {
                 "anilist_user": "namboy94",
-                "ignore_on_hold": True
+                "ignore_on_hold": True,
+                "naming_scheme": "plex",
+                "naming_agent": "tvdb"
             })
             verificator_types = list(map(lambda x: type(x), verificators))
 
             for verificator in expected:
+                tested[verificator] = True
+                print("-----------")
+                print(verificator)
+                print(expected)
+                print(verificator_types)
                 self.assertTrue(verificator in verificator_types)
 
             for verificator in all_verificators:
                 if verificator not in expected:
                     self.assertFalse(verificator in verificator_types)
+
+        for _, state in tested.items():
+            self.assertTrue(state)
+
+    def test_retrieving_verificator_with_missing_parameters(self):
+        """
+        Tests retrieving verificators without a required parameter
+        :return: None
+        """
+        directory = Directory(os.path.join(self.testdir, "Steins;Gate"))
+        verificators = get_verificators(directory, {})
+        verificator_types = list(map(lambda x: type(x), verificators))
+
+        self.assertTrue(FolderIconVerificator in verificator_types)
+        self.assertFalse(EpisodeNameVerificator in verificator_types)
+        self.assertFalse(AnilistEntriesVerificator in verificator_types)
