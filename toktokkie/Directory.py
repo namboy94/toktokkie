@@ -60,6 +60,13 @@ class Directory:
         if not os.path.isdir(self.icon_path):
             os.makedirs(self.icon_path)
 
+    def reload(self):
+        """
+        Reloads the metadata from the metadata file
+        :return: None
+        """
+        self.metadata = resolve_metadata(self.metadata_file)
+
     def write_metadata(self):
         """
         Updates the metadata file with the current contents of the metadata

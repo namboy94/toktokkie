@@ -175,6 +175,8 @@ class Verificator:
         while not verified:
             if self.prompt_yn(prompt_message):
 
+                self.directory.reload()
+
                 if subverification is None:
                     verified = self.verify()
                 else:
