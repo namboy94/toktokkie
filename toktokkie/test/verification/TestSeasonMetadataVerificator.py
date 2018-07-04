@@ -106,8 +106,7 @@ class TestSeasonMetadataVerificator(TestVerificator):
         Tests if missing entries in the metadata are correctly identified
         :return: None
         """
-        verificator: SeasonMetadataVerificator = \
-            self.verificators[self.media_dir]
+        verificator = self.verificators[self.media_dir]
 
         self.assertTrue(verificator.verify())
         self.assertEqual(2, len(verificator.directory.metadata.seasons.list))
@@ -135,8 +134,7 @@ class TestSeasonMetadataVerificator(TestVerificator):
         Tests the fixing procedure of this verificator for missing directories
         :return: None
         """
-        verificator: SeasonMetadataVerificator = \
-            self.verificators[self.media_dir]
+        verificator = self.verificators[self.media_dir]
 
         season_one = os.path.join(verificator.directory.path, "Season 1")
         specials = os.path.join(verificator.directory.path, "Specials")
