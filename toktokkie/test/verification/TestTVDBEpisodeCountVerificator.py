@@ -36,7 +36,7 @@ class TestTVDBEpisodeCountVerificator(TestVerificator):
     The Verificator class to test
     """
 
-    prepared_directories = ["Steins;Gate"]
+    prepared_directories = ["Steins;Gate", "Accel World"]
     """
     Prepared media directories
     """
@@ -48,6 +48,16 @@ class TestTVDBEpisodeCountVerificator(TestVerificator):
         """
         verificator = self.verificators[
             "Steins;Gate"
+        ]  # type: TVDBEpisodeCountVerificator
+        self.assertTrue(verificator.verify())
+
+    def test_multi_episodes_valid(self):
+        """
+        Tests that series with multi-episodes are identified correctly
+        :return: None
+        """
+        verificator = self.verificators[
+            "Accel World"
         ]  # type: TVDBEpisodeCountVerificator
         self.assertTrue(verificator.verify())
 
@@ -90,6 +100,7 @@ class TestTVDBEpisodeCountVerificator(TestVerificator):
         verificator.directory.metadata.tvdb_excludes.append(
             SeasonEpisode(1, 1)
         )
+        verificator.directory.write_metadata()
         self.assertTrue(verificator.verify())
 
         # Multi-Episodes
@@ -98,6 +109,7 @@ class TestTVDBEpisodeCountVerificator(TestVerificator):
         verificator.directory.metadata.tvdb_multi_episodes.append(
             EpisodeRange(SeasonEpisode(1, 2), SeasonEpisode(1, 3))
         )
+        verificator.directory.write_metadata()
         self.assertTrue(verificator.verify())
 
     def test_fixing(self):

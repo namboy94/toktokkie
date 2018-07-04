@@ -30,12 +30,19 @@ class AnilistRelationVerificator(AnilistVerificator):
       2. Exist in the local metadata
     """
 
-    required_attributes = super().required_attributes.update({
+    required_attributes = {
+        "anilist_user": {
+            "type": str,
+            "help": "The anilist.co username to use for checks"
+        },
         "ignore_on_hold": {
             "type": bool,
             "help": "Ignores 'on hold' entries during anilist relation checks"
         }
-    })
+    }
+    """
+    Allows to ignore entries that are set to "on hold"
+    """
 
     def _verify(self) -> bool:
         """
@@ -139,8 +146,14 @@ class AnilistRelationVerificator(AnilistVerificator):
                     self.handler.get_entry(mal_id), True
                 ))
 
+        print(related.keys())
+        print(self.directory.metadata.mal_check_ignores.list)
+
         for ignored in self.directory.metadata.mal_check_ignores.list:
             if ignored in related:
                 related.pop(ignored)
+
+        print(self.directory.metadata.mal_check_ignores.list)
+        print(related.keys())
 
         return related

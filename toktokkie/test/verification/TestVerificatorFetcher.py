@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
-from toktokkie.verification.SeasonMetadataVerificator import \
-    SeasonMetadataVerificator
-from toktokkie.verification import get_verificators, all_verificators
+from toktokkie.verification import get_verificators, all_verificators, \
+    AnilistRelationVerificator, FolderIconVerificator, \
+    SeasonMetadataVerificator, AnilistEntriesVerificator, \
+    TVDBEpisodeCountVerificator
 from toktokkie.test.verification.TestVerificator import TestVerificator
 
 
@@ -45,21 +45,30 @@ class TestVerificatorFetcher(TestVerificator):
             ],
             tv_series: [
                 FolderIconVerificator,
-                SeasonMetadataVerificator
+                SeasonMetadataVerificator,
+                TVDBEpisodeCountVerificator
             ],
             anime_series: [
                 FolderIconVerificator,
-                SeasonMetadataVerificator
+                SeasonMetadataVerificator,
+                AnilistRelationVerificator,
+                AnilistEntriesVerificator,
+                TVDBEpisodeCountVerificator
             ],
             movie: [
                 FolderIconVerificator
             ],
             anime_movie: [
-                FolderIconVerificator
+                FolderIconVerificator,
+                AnilistEntriesVerificator
             ]
         }.items():
-            verificators = get_verificators(directory, {})
+            verificators = get_verificators(directory, {
+                "anilist_user": "namboy94",
+                "ignore_on_hold": True
+            })
             verificator_types = list(map(lambda x: type(x), verificators))
+
             for verificator in expected:
                 self.assertTrue(verificator in verificator_types)
 

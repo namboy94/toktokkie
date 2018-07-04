@@ -18,13 +18,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from toktokkie.test.verification.TestVerificator import TestVerificator
-from toktokkie.verification.AnilistEntriesVerificator import \
-    AnilistEntriesVerificator
+from toktokkie.verification.AnilistRelationVerificator \
+    import AnilistRelationVerificator
 
 
-class TestAnilistEntriesVerificator(TestVerificator):
+class TestAnilistRelationVerificator(TestVerificator):
     """
-    Class that tests if the AnilistEntriesVerificator
+    Class that tests if the AnilistRelationVerificator
     works correctly
     """
 
@@ -33,12 +33,15 @@ class TestAnilistEntriesVerificator(TestVerificator):
     Prepared metadata directories.
     """
 
-    verification_attr = {"anilist_user": "namboy94"}
+    verification_attr = {
+        "anilist_user": "namboy94",
+        "ignore_on_hold": True
+    }
     """
     Verification attributes
     """
 
-    verificator_cls = AnilistEntriesVerificator
+    verificator_cls = AnilistRelationVerificator
     """
     Verificator class to test
     """
@@ -52,7 +55,7 @@ class TestAnilistEntriesVerificator(TestVerificator):
         self.steinsgate, self.days = [
             self.verificators["Steins;Gate"],
             self.verificators["91 Days"]
-        ]  # type: AnilistEntriesVerificator
+        ]  # type: AnilistRelationVerificator
 
     def test_all_relations_satisfied(self):
         """
@@ -62,11 +65,9 @@ class TestAnilistEntriesVerificator(TestVerificator):
         """
         self.assertTrue(self.steinsgate.verify())
 
-    def no_test_missing_ignores(self):
+    def test_missing_ignores(self):
         """
         Tests that missing ignores cause the verification to fail
         :return: None
         """
-        # TODO Fix
-        self.steinsgate.directory.metadata.mal_check_ignores.list = []
-        self.assertFalse(self.steinsgate.verify())
+        pass

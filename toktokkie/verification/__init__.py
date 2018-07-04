@@ -27,6 +27,8 @@ from toktokkie.verification.EpisodeNameVerificator import \
     EpisodeNameVerificator
 from toktokkie.verification.AnilistEntriesVerificator import \
     AnilistEntriesVerificator
+from toktokkie.verification.AnilistRelationVerificator import \
+    AnilistRelationVerificator
 from toktokkie.verification.TVDBEpisodeCountVerificator import \
     TVDBEpisodeCountVerificator
 
@@ -36,6 +38,7 @@ all_verificators = [
     SeasonMetadataVerificator,
     EpisodeNameVerificator,
     AnilistEntriesVerificator,
+    AnilistRelationVerificator,
     TVDBEpisodeCountVerificator
 ]
 """

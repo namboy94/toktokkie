@@ -108,7 +108,6 @@ class TestSeasonMetadataVerificator(TestVerificator):
         Tests if missing entries in the metadata are correctly identified
         :return: None
         """
-
         verificator: SeasonMetadataVerificator = \
             self.verificators[self.media_dir]
 
@@ -116,17 +115,21 @@ class TestSeasonMetadataVerificator(TestVerificator):
         self.assertEqual(2, len(verificator.directory.metadata.seasons.list))
 
         one = verificator.directory.metadata.seasons.pop(0)
+        verificator.directory.write_metadata()
         self.assertFalse(verificator.verify())
 
         two = verificator.directory.metadata.seasons.pop(0)
+        verificator.directory.write_metadata()
         self.assertFalse(verificator.verify())
 
         self.assertEqual(0, len(verificator.directory.metadata.seasons.list))
 
         verificator.directory.metadata.seasons.append(two)
+        verificator.directory.write_metadata()
         self.assertFalse(verificator.verify())
 
         verificator.directory.metadata.seasons.append(one)
+        verificator.directory.write_metadata()
         self.assertTrue(verificator.verify())
 
     def test_fixing_missing_directories(self):
@@ -164,6 +167,7 @@ class TestSeasonMetadataVerificator(TestVerificator):
 
         one = verificator.directory.metadata.seasons.pop(0)
         two = verificator.directory.metadata.seasons.pop(0)
+        verificator.directory.write_metadata()
 
         self.assertFalse(verificator.verify())
         self.execute_with_mocked_input(
