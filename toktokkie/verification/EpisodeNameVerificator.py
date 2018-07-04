@@ -70,7 +70,7 @@ class EpisodeNameVerificator(Verificator):
         self.scheme = list(filter(lambda x: x.name == scheme_name, schemes))[0]
         self.agent = list(filter(lambda x: x.name == agent_name, agents))[0]
 
-    def verify(self) -> bool:
+    def _verify(self) -> bool:
         """
         Checks if all episode names are correct
         :return: True if the names are correct, false otherwise

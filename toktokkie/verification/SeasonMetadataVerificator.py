@@ -36,7 +36,7 @@ class SeasonMetadataVerificator(Verificator):
     Also applicable to children of those classes
     """
 
-    def verify(self) -> bool:
+    def _verify(self) -> bool:
         """
         Checks if all required directories and metadata entries are present
         :return: True if all directories and entries are present, else False

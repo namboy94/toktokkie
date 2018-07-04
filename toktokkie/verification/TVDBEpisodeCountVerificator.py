@@ -36,7 +36,7 @@ class TVDBEpisodeCountVerificator(Verificator):
     Only applicable to tv series
     """
 
-    def verify(self) -> bool:
+    def _verify(self) -> bool:
         """
         Checks if all tvdb episodes are correctly represented by local files
         :return: True if all episodes are accounted for, False otherwise

@@ -37,7 +37,7 @@ class AnilistRelationVerificator(AnilistVerificator):
         }
     })
 
-    def verify(self) -> bool:
+    def _verify(self) -> bool:
         """
         Checks if the media directory has no invalid relations
         :return: True if everything is OK, false otherwise

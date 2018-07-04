@@ -35,7 +35,7 @@ class AnilistEntriesVerificator(AnilistVerificator):
     Applicable to both anime movies and anime series
     """
 
-    def verify(self) -> bool:
+    def _verify(self) -> bool:
         """
         Checks if all myanimelist IDs are entered on anilist.co
         :return: True if all entries are entered, False otherwise

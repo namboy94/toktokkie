@@ -28,7 +28,7 @@ class FolderIconVerificator(Verificator):
     subdirectories in the media directory
     """
 
-    def verify(self) -> bool:
+    def _verify(self) -> bool:
         """
         Checks if all required icon files exist
         :return: True if all icons are present, False if one is missing

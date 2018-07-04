@@ -97,6 +97,14 @@ class Verificator:
         Issues may be fixed using the fix() method.
         :return: True if no issues were found, False otherwise
         """
+        self.directory.reload()
+        return self._verify()
+
+    def _verify(self) -> bool:
+        """
+        The actual implementation of the public verify() method
+        :return: True if verified, False otherwise
+        """
         raise NotImplementedError()
 
     def fix(self):
@@ -174,8 +182,6 @@ class Verificator:
         verified = False
         while not verified:
             if self.prompt_yn(prompt_message):
-
-                self.directory.reload()
 
                 if subverification is None:
                     verified = self.verify()
