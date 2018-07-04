@@ -87,9 +87,7 @@ class TestSeasonMetadataVerificator(TestVerificator):
         Tests if missing directories are accurately identified
         :return: None
         """
-        verificator: SeasonMetadataVerificator = \
-            self.verificators[self.media_dir]
-
+        verificator = self.verificators[self.media_dir]
         self.assertTrue(verificator.verify())
 
         for season in ["Season 1", "Specials"]:
