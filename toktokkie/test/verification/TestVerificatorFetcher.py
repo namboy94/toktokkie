@@ -20,14 +20,18 @@ LICENSE"""
 import os
 from toktokkie.Directory import Directory
 from toktokkie.verification import get_verificators, all_verificators
-from toktokkie.verification.AnilistEntriesVerificator import \
-    AnilistEntriesVerificator
-from toktokkie.verification.AnilistRelationVerificator import AnilistRelationVerificator
-from toktokkie.verification.TVDBEpisodeCountVerificator import TVDBEpisodeCountVerificator
-from toktokkie.verification.SeasonMetadataVerificator import SeasonMetadataVerificator
-from toktokkie.verification.EpisodeNameVerificator import EpisodeNameVerificator
 from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
 from toktokkie.test.verification.TestVerificator import TestVerificator
+from toktokkie.verification.AnilistEntriesVerificator import \
+    AnilistEntriesVerificator
+from toktokkie.verification.AnilistRelationVerificator import \
+    AnilistRelationVerificator
+from toktokkie.verification.TVDBEpisodeCountVerificator import \
+    TVDBEpisodeCountVerificator
+from toktokkie.verification.SeasonMetadataVerificator import \
+    SeasonMetadataVerificator
+from toktokkie.verification.EpisodeNameVerificator import\
+    EpisodeNameVerificator
 
 
 class TestVerificatorFetcher(TestVerificator):
