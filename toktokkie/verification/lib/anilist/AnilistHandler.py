@@ -129,9 +129,15 @@ class AnilistHandler:
                 continue
             else:
                 inner_entry = self.get_entry(relation.mal_id)
-                related_entries.update(self.get_all_related_entries_of_entry(
-                    inner_entry, important, handled_ids
-                ))
+
+                if inner_entry is None:
+                    related_entries[relation.mal_id] = inner_entry
+                else:
+                    related_entries.update(
+                        self.get_all_related_entries_of_entry(
+                            inner_entry, important, handled_ids
+                        )
+                    )
 
         return related_entries
 

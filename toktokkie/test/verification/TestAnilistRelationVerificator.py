@@ -17,7 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from toktokkie.metadata.types.MetaType import Int
+from toktokkie.verification.lib.anilist.enums import RelationType
 from toktokkie.test.verification.TestVerificator import TestVerificator
+from toktokkie.verification.lib.anilist.AnilistRelation import AnilistRelation
 from toktokkie.verification.AnilistRelationVerificator \
     import AnilistRelationVerificator
 
@@ -65,9 +68,17 @@ class TestAnilistRelationVerificator(TestVerificator):
         """
         self.assertTrue(self.steinsgate.verify())
 
-    def test_missing_ignores(self):
+    def test_fictional_relation(self):
         """
-        Tests that missing ignores cause the verification to fail
+        Tests how a non-real relation is handled
         :return: None
         """
-        pass
+        steinsgate_id = \
+            self.steinsgate.directory.metadata.seasons.list[0].mal_ids.list[0]
+        self.steinsgate.handler.entries[steinsgate_id].relations.append(
+            AnilistRelation(steinsgate_id, 1, RelationType.SEQUEL)
+        )
+        self.assertFalse(self.steinsgate.verify())
+        self.steinsgate.directory.metadata.mal_check_ignores.append(Int(1))
+        self.steinsgate.directory.write_metadata()
+        self.assertTrue(self.steinsgate.verify())

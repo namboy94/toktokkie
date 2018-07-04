@@ -146,14 +146,8 @@ class AnilistRelationVerificator(AnilistVerificator):
                     self.handler.get_entry(mal_id), True
                 ))
 
-        print(related.keys())
-        print(self.directory.metadata.mal_check_ignores.list)
-
         for ignored in self.directory.metadata.mal_check_ignores.list:
             if ignored in related:
                 related.pop(ignored)
-
-        print(self.directory.metadata.mal_check_ignores.list)
-        print(related.keys())
 
         return related
