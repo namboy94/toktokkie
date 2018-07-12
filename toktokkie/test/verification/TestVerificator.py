@@ -22,6 +22,7 @@ import shutil
 from typing import Dict, List, Callable, Any, Tuple
 from unittest import TestCase, mock
 from toktokkie.test.resources import get_metadata_paths
+from toktokkie.globals import Globals
 from toktokkie.Directory import Directory
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.TvSeries import TvSeries
@@ -79,6 +80,11 @@ class TestVerificator(TestCase):
         """
         self.cleanup()
         os.makedirs(self.testdir)
+
+        Globals.cache_location = os.path.join(self.testdir, "cache")
+        self.api_cache = Globals.get_api_cache(True)
+        self.anilist_api = Globals.get_anilist_api()
+
         self.generate_structure(self.structure)
         for directory, metadata in self.metadatas.items():
 

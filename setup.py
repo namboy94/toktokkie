@@ -44,7 +44,8 @@ if __name__ == "__main__":
             "requests",
             "xdcc_dl",
             "colorama",
-            "malscraper"
+            "malscraper",
+            "anime_list_apis"
         ],
         test_suite='nose.collector',
         tests_require=['nose'],

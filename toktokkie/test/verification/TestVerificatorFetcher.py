@@ -24,8 +24,6 @@ from toktokkie.verification.FolderIconVerificator import FolderIconVerificator
 from toktokkie.test.verification.TestVerificator import TestVerificator
 from toktokkie.verification.AnilistEntriesVerificator import \
     AnilistEntriesVerificator
-from toktokkie.verification.AnilistRelationVerificator import \
-    AnilistRelationVerificator
 from toktokkie.verification.TVDBEpisodeCountVerificator import \
     TVDBEpisodeCountVerificator
 from toktokkie.verification.SeasonMetadataVerificator import \
@@ -71,7 +69,6 @@ class TestVerificatorFetcher(TestVerificator):
             anime_series: [
                 FolderIconVerificator,
                 SeasonMetadataVerificator,
-                AnilistRelationVerificator,
                 AnilistEntriesVerificator,
                 TVDBEpisodeCountVerificator,
                 EpisodeNameVerificator
@@ -94,10 +91,6 @@ class TestVerificatorFetcher(TestVerificator):
 
             for verificator in expected:
                 tested[verificator] = True
-                print("-----------")
-                print(verificator)
-                print(expected)
-                print(verificator_types)
                 self.assertTrue(verificator in verificator_types)
 
             for verificator in all_verificators:

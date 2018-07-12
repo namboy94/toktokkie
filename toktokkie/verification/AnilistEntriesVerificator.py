@@ -18,9 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Set
+
+from anime_list_apis.models.attributes.MediaType import MediaType
 from toktokkie.metadata.AnimeSeries import AnimeSeries
 from toktokkie.metadata.AnimeMovie import AnimeMovie
-from toktokkie.verification.lib.anilist.Cache import Cache
 from toktokkie.verification.Verificator import AnilistVerificator
 
 
@@ -28,6 +29,11 @@ class AnilistEntriesVerificator(AnilistVerificator):
     """
     Verificator that checks that all local metadata entries are entered
     on anilist.co
+    """
+
+    media_type = MediaType.ANIME
+    """
+    The media type to check
     """
 
     applicable_metadata_types = [AnimeMovie, AnimeSeries]
@@ -40,7 +46,7 @@ class AnilistEntriesVerificator(AnilistVerificator):
         Checks if all myanimelist IDs are entered on anilist.co
         :return: True if all entries are entered, False otherwise
         """
-        return len(self.__get_missing_ids()) <= 0
+        return len(self.__get_missing_ids_in_list()) <= 0
 
     def fix(self):
         """
@@ -48,17 +54,7 @@ class AnilistEntriesVerificator(AnilistVerificator):
         update their anilist.co list.
         :return: None
         """
-        for missing in self.__get_missing_ids():
-
-            anilist_id = self.handler.get_anilist_id(missing)
-
-            def verificate():
-                """
-                Updates the handler before the verification check
-                :return: The updated verification state
-                """
-                self.handler = Cache.get_handler_for_user(self.username, True)
-                return self.verify()
+        for anilist_id in self.__get_missing_ids_in_list():
 
             self.prompt_until_verified(
                 "Entry missing on anilist.co: " + str(anilist_id),
@@ -66,23 +62,52 @@ class AnilistEntriesVerificator(AnilistVerificator):
                 "https://anilist.co/anime/" + str(anilist_id),
                 "Has the entry been added?",
                 "No it's hasn't.",
-                verificate
+                lambda: self.api.is_in_list(
+                    self.media_type, anilist_id, self.username, True
+                )
             )
 
-    def __get_missing_ids(self) -> Set[int]:
+    def __get_missing_ids_in_list(self) -> Set[int]:
         """
-        Checks that all myanimelist IDs in the metadata is entered into the
-        anilist list. Myanimelist IDs without a corresponding anilist ID
-        are ignored.
-        :return: A set of myanimelist IDs that could not be found
+        Returns a set of anilist IDs that are not entered into the
+        anilist.co list.
+        :return: A set of anilist IDs that could not be found
         """
-        filtered = set(filter(
-            lambda x: x not in self.handler.entries,
+        anilist_ids = list(map(
+            lambda x: self.api.get_anilist_id_from_mal_id(self.media_type, x),
             self._get_mal_ids()
         ))
-        with_valid_anilist_id = []
-        for mal_id in filtered:
-            if self.handler.get_anilist_id(mal_id) is not None:
-                with_valid_anilist_id.append(mal_id)
+        no_none = list(filter(
+            lambda x: x is not None,
+            anilist_ids
+        ))
+        a = set(filter(
+            lambda x: not self.api.is_in_list(
+                self.media_type, x, self.username
+            ),
+            no_none
+        ))
+        return a
 
-        return set(with_valid_anilist_id)
+
+class AnilistAnimeEntriesVerificator(AnilistEntriesVerificator):
+    """
+    Anilist Entries Verificator for anime
+    """
+    pass
+
+
+class AnilistMangaEntriesVerificator(AnilistEntriesVerificator):
+    """
+    Anilist Entries Verificator for manga
+    """
+
+    media_type = MediaType.MANGA
+    """
+    The media type to check
+    """
+
+    applicable_metadata_types = []
+    """
+    Applicable to both anime movies and anime series
+    """

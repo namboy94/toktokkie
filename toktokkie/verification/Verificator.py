@@ -21,7 +21,7 @@ from typing import Set, Dict, Any, Callable
 from colorama import Fore, Style
 from toktokkie.metadata.Base import Base
 from toktokkie.metadata.AnimeSeries import AnimeSeries
-from toktokkie.verification.lib.anilist.Cache import Cache as AnilistCache
+from toktokkie.globals import Globals
 
 
 class Verificator:
@@ -223,7 +223,7 @@ class AnilistVerificator(Verificator):
         """
         super().__init__(directory, attributes)
         self.username = attributes["anilist_user"]
-        self.handler = AnilistCache.get_handler_for_user(self.username)
+        self.api = Globals.get_anilist_api()
 
     def _get_mal_ids(self) -> Set[int]:
         """
