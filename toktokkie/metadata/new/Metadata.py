@@ -19,9 +19,9 @@ LICENSE"""
 
 import os
 import json
-from enum import Enum
-from functools import wraps
-from typing import List, Dict, Any, Callable
+from typing import List, Dict, Any, Optional
+from toktokkie.metadata.new.wrappers import json_parameter
+from toktokkie.metadata.new.prompt.PromptType import PromptType
 from toktokkie.exceptions import InvalidMetadataException, \
     MissingMetadataException
 
@@ -41,16 +41,33 @@ class Metadata:
         """
         :return: A string that could re-generate the metadata object
         """
-        return "{}({})".format(self.__class__.__name__, self.directory_path)
+        return "{}({}, {})".format(
+            self.__class__.__name__,
+            self.directory_path,
+            str(self.json)
+        )
 
     @property
+    @json_parameter
     def name(self) -> str:
         """
         :return: The name of the media
         """
         return os.path.basename(self.directory_path)
 
+    @name.setter
+    def name(self, name: str):
+        """
+        Renames the media directory
+        :param name: The new name of the media directory
+        :return: None
+        """
+        new_path = os.path.join(os.path.dirname(self.directory_path), name)
+        os.rename(self.directory_path, new_path)
+        self.directory_path = new_path
+
     @property
+    @json_parameter
     def tags(self) -> List[str]:
         """
         :return: A list of tags
@@ -86,6 +103,7 @@ class Metadata:
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
+        self._assert_true(os.path.isdir(self.directory_path))
         for tag in self.tags:
             self._assert_true(type(tag) == str)
 
@@ -99,23 +117,6 @@ class Metadata:
         """
         if not condition:
             raise InvalidMetadataException()
-
-    @staticmethod
-    def _json_parameter(func: Callable) -> Callable:
-        """
-        Implements additional error-catching for JSON parameters
-        :param func: The function to wrap
-        :return: The wrapped function
-        """
-
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except (KeyError, ValueError):
-                raise InvalidMetadataException()
-
-        return wrapper
 
     def write(self):
         """
@@ -154,85 +155,40 @@ class Metadata:
             raise InvalidMetadataException()
 
     @classmethod
-    def prompt(cls, diretory_path: str):
+    def prompt(cls, directory_path: str):
         """
         Generates a new Metadata object using prompts for a directory
+        :param directory_path: The path to the directory for which to generate
+                               the metadata object
         :return: The generated metadata object
         """
         raise NotImplementedError()
 
-
-
-
-
-
-class GenericEpisode:
-
-    def __init__(self, json_data: Dict[Any]):
-        self.json = json_data
-
-class GenericEpisodeRange:
-
-    def __init__(self, json_data: Dict[Any]):
-        self.json = json_data
-
-class IdType(Enum):
-    TVDB = "tvdb",
-    MYANIMELIST = "myanimelist",
-
-
-class TvSeason:
-
-    def __init__(self, json_data: Dict[Any]):
-        self.json = json_data
-
-
-class TvSeries(Metadata):
-
-    @property
-    @Metadata._json_parameter
-    def seasons(self) -> List[TvSeason]:
-        return list(map(lambda x: TvSeason(x), self.json["seasons"]))
-
-    @property
-    @Metadata._json_parameter
-    def excludes(self) \
-            -> Dict[IdType, List[GenericEpisode or GenericEpisodeRange]]:
-
-        generated = {}
-
-        for _id_type in self.json.get("excludes", []):
-
-            id_type = IdType(_id_type)
-            generated[id_type] = []
-
-            for exclude in self.json["excludes"][_id_type]:
-                if "start_episode" in exclude:
-                    generated[id_type].append(GenericEpisodeRange(exclude))
-                else:
-                    generated[id_type].append(GenericEpisode(exclude))
-
-        return generated
-
-    @property
-    @Metadata._json_parameter
-    def season_start_overrides(self):
-        return
-
-    @property
-    @Metadata._json_parameter
-    def multi_episodes(self):
-        return
-
-    def validate_json(self):
+    @classmethod
+    def input(cls,
+              prompt_text: str,
+              default: Optional[PromptType],
+              _type: type(PromptType)) -> Any:
         """
-        Validates the JSON data to make sure everything has valid values
-        :raises InvalidMetadataException: If any errors were encountered
-        :return: None
+        Creates a user prompt that supports default options and automatic
+        type conversions.
+        :param prompt_text: The text to prompt the user
+        :param default: The default value to use
+        :param _type: The type of the prompted value
+        :return: The user's response
         """
-        super().validate_json()
-        self._assert_true("seasons" in self.json)
-        self._assert_true(len(self.seasons) == len(self.json["seasons"]))
-        self._assert_true(len(self.excludes) == len(self.json.get("excludes")))
+        if default is not None:
+            prompt_text += " [{}]".format(str(default))
+        prompt_text += ":"
 
+        response = input(prompt_text).strip()
+        while response == "" and default is None:
+            response = input(prompt_text).strip()
 
+        if response == "" and default is not None:
+            return default
+        else:
+            try:
+                return _type(response)
+            except (TypeError, ValueError):
+                return cls.input(prompt_text, default, _type)
