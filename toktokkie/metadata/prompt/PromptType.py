@@ -16,3 +16,33 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
+
+
+class PromptType:
+    """
+    Class that allows the automatic conversion of user-provided strings to
+    values
+    """
+
+    def __init__(self, value: str):
+        """
+        Initializes the prompt type
+        :param value: The string value to parse
+        """
+        self._value = value
+        # noinspection PyStatementEffect
+        self.value
+
+    @property
+    def value(self):
+        """
+        Converts the string value into its actual value
+        :return: The generated value
+        """
+        raise NotImplementedError()
+
+    def __str__(self) -> str:
+        """
+        :return: A string representation of this object
+        """
+        return str(self.value)

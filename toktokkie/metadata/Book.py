@@ -19,27 +19,27 @@ LICENSE"""
 
 import os
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components import MovieIdType
+from toktokkie.metadata.components import BookIdType
 
 
-class Movie(Metadata):
+class Book(Metadata):
     """
-    Metadata class that model a Movie
+    Metadata class that model a Book
     """
 
     @classmethod
-    def id_type(cls) -> type(MovieIdType):
+    def id_type(cls) -> type(BookIdType):
         """
         :return: The ID type used by this metadata object
         """
-        return MovieIdType
+        return BookIdType
 
     @classmethod
     def media_type(cls) -> str:
         """
         :return: The media type of the Metadata class
         """
-        return "movie"
+        return "book"
 
     @classmethod
     def prompt(cls, directory_path: str) -> Metadata:

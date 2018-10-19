@@ -18,186 +18,173 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import Dict, List
-from toktokkie.metadata.Base import Base
-from toktokkie.metadata.helper.prompt import prompt_user
+from typing import List, Dict
+from toktokkie.metadata.Metadata import Metadata
+from toktokkie.metadata.helper import json_parameter
+from toktokkie.metadata.components import TvSeason
+from toktokkie.metadata.components import TvIdType
+from toktokkie.metadata.components import TvEpisode
+from toktokkie.metadata.components import TvEpisodeRange
 from toktokkie.exceptions import InvalidMetadataException
-from toktokkie.metadata.types.AgentIdType import AgentIdType
-from toktokkie.metadata.types.SeasonEpisode import SeasonEpisode
-from toktokkie.metadata.types.TvSeriesSeason import TvSeriesSeason
-from toktokkie.metadata.types.MetaType import Str, MetaType, MetaList
-from toktokkie.metadata.types.CommaList import SeasonEpisodeCommaList, \
-    SeasonEpisodeRangeCommaList
-typer = type  # Little hack
 
 
-class TvSeries(Base):
+class TvSeries(Metadata):
     """
-    Metadata class that models a tv series
-    We use IDs for thetvdb.com since that's the de-facto tv series database
-    """
-
-    # -------------------------------------------------------------------------
-    # These Methods and Variables should be extended by subclasses
-    # -------------------------------------------------------------------------
-
-    type = Str("tv_series")
-    """
-    The metadata type
-    """
-
-    season_type = TvSeriesSeason
-    """
-    The type of season to use. Can be used by subclasses to add more attributes
-    to seasons
+    Metadata class that model a TV Series
     """
 
     @classmethod
-    def generate_dict_from_prompts(cls, directory: str) -> Dict[str, MetaType]:
+    def id_type(cls) -> type(TvIdType):
         """
-        Generates a TV Series from user prompts
-        :param directory: The directory to generate the metadata for
-        :return: The generated metadata dictionary
+        :return: The ID type used by this metadata object
         """
-        data = super().generate_dict_from_prompts(directory)
-        seasons = []
+        return TvIdType
 
-        for season in sorted(os.listdir(directory)):
-            season_dir = os.path.join(directory, season)
-            if os.path.isfile(season_dir) or season.startswith("."):
+    @classmethod
+    def media_type(cls) -> str:
+        """
+        :return: The media type of the Metadata class
+        """
+        return "tv series"
+
+    @classmethod
+    def prompt(cls, directory_path: str) -> Metadata:
+        """
+        Generates a new Metadata object using prompts for a directory
+        :param directory_path: The path to the directory for which to generate
+                               the metadata object
+        :return: The generated metadata object
+        """
+        print("Generating metadata for {}:"
+              .format(os.path.basename(directory_path)))
+
+        series_ids = cls.prompt_for_ids()
+        series = cls(directory_path, {
+            "seasons": [],
+            "ids": series_ids
+        })
+
+        seasons = []
+        for season_name in os.listdir(directory_path):
+
+            season_path = os.path.join(directory_path, season_name)
+            if season_name.startswith(".") or not os.path.isdir(season_path):
                 continue
 
-            if len(seasons) > 0:
-                previous = seasons[len(seasons) - 1]
-                season_obj = cls.season_type.prompt(season, previous)
-            else:
-                season_obj = cls.season_type.prompt(season)
+            print("{}:".format(season_name))
+            ids = cls.prompt_for_ids(series_ids)
 
-            seasons.append(season_obj)
+            # Remove double entries
+            for id_type, id_value in series_ids.items():
+                if id_value == ids.get(id_type, None):
+                    ids.pop(id_type)
 
-        data["seasons"] = MetaList(seasons)
-        data["tvdb_excludes"] = prompt_user(
-            "TVDB Excludes", SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+            seasons.append(TvSeason(series, {
+                "ids": ids,
+                "name": season_name
+            }))
+
+        series.seasons = seasons
+        return series
+
+    @property
+    @json_parameter
+    def seasons(self) -> List[TvSeason]:
+        """
+        :return: A list of TV seasons
+        """
+        return list(map(
+            lambda x: TvSeason(self.directory_path, x),
+            self.json["seasons"]
+        ))
+
+    @seasons.setter
+    def seasons(self, seasons: List[TvSeason]):
+        """
+        Setter method for the seasons
+        :param seasons: The seasons to set
+        :return: None
+        """
+        self.json["seasons"] = []
+        for season in seasons:
+            self.json["seasons"].append(season.json)
+
+    @property
+    @json_parameter
+    def excludes(self) -> Dict[TvIdType, List[TvEpisode]]:
+        """
+        :return: A dictionary mapping episodes to exclude in checks or renaming
+                 operations to id types
+        """
+        generated = {}
+
+        for _id_type in self.json.get("excludes", {}):
+
+            id_type = TvIdType(_id_type)
+            generated[id_type] = []
+
+            for exclude in self.json["excludes"][_id_type]:
+
+                try:
+                    episode_range = TvEpisodeRange(exclude)
+                    generated[id_type] += episode_range.episodes
+                except InvalidMetadataException:
+                    generated[id_type].append(TvEpisode(exclude))
+
+        return generated
+
+    @property
+    @json_parameter
+    def season_start_overrides(self) -> Dict[TvIdType, TvEpisode]:
+        """
+        :return: A dictionary mapping episodes that override a season starting
+                 point to ID types
+        """
+
+        generated = {}
+
+        for id_type, episode_data in \
+                self.json.get("season_start_overrides", {}):
+            generated[TvIdType(id_type)] = TvEpisode(episode_data)
+
+        return generated
+
+    @property
+    @json_parameter
+    def multi_episodes(self) -> Dict[TvIdType, List[TvEpisodeRange]]:
+        """
+        :return: A dictionary mapping lists of multi-episodes to id types
+        """
+        generated = {}
+
+        for _id_type in self.json.get("multi_episodes", {}):
+
+            id_type = TvIdType(_id_type)
+            generated[id_type] = []
+
+            for multi_episode in self.json["multi_episodes"][_id_type]:
+                generated[id_type].append(TvEpisodeRange(multi_episode))
+
+        return generated
+
+    def validate_json(self):
+        """
+        Validates the JSON data to make sure everything has valid values
+        :raises InvalidMetadataException: If any errors were encountered
+        :return: None
+        """
+        super().validate_json()
+        self._assert_true("seasons" in self.json)
+        self._assert_true(len(self.seasons) == len(self.json["seasons"]))
+        self._assert_true(
+            len(self.excludes) ==
+            len(self.json.get("excludes", []))
         )
-        data["tvdb_irregular_season_starts"] = prompt_user(
-            "TVDB Irregular Season Starts",
-            SeasonEpisodeCommaList, SeasonEpisodeCommaList([])
+        self._assert_true(
+            len(self.season_start_overrides) ==
+            len(self.json.get("season_start_overrides", []))
         )
-        data["tvdb_multi_episodes"] = prompt_user(
-            "TVDB Multi-Episodes (x episodes/1 file)",
-            SeasonEpisodeRangeCommaList, SeasonEpisodeRangeCommaList([])
+        self._assert_true(
+            len(self.multi_episodes) ==
+            len(self.json.get("multi_episodes", []))
         )
-        return data
-
-    def to_dict(self) -> Dict[str, MetaType]:
-        """
-        Turns the metadata into a dictionary
-        :return: The dictionary representation of the metadata
-        """
-        data = super().to_dict()
-        data["seasons"] = self.seasons
-        data["tvdb_excludes"] = self.tvdb_excludes
-        data["tvdb_irregular_season_starts"] = \
-            self.tvdb_irregular_season_starts
-        data["tvdb_multi_episodes"] = self.tvdb_multi_episodes
-        return data
-
-    def __init__(self, json_data: dict):
-        """
-        Initializes the metadata object
-        :param json_data: The JSON metadata to use
-        """
-        super().__init__(json_data)
-        try:
-            self.seasons = MetaList([])
-            self.tvdb_excludes = \
-                SeasonEpisodeCommaList.from_json(json_data["tvdb_excludes"])
-            self.tvdb_irregular_season_starts = \
-                SeasonEpisodeCommaList.from_json(
-                    json_data["tvdb_irregular_season_starts"]
-                )
-            self.tvdb_multi_episodes = SeasonEpisodeRangeCommaList.from_json(
-                json_data["tvdb_multi_episodes"]
-            )
-
-            for season in json_data["seasons"]:
-                self.seasons.append(self.season_type.from_json(season))
-
-        except KeyError:
-            raise InvalidMetadataException()
-
-    def get_agent_excludes(self, id_type: AgentIdType) \
-            -> List[Dict[str, int]] or None:
-        """
-        Retrieves excluded episodes using the provided agent ID type
-        :param id_type: The ID type to check for
-        :return: The excluded episode list, or None if id type not applicable
-        """
-
-        if id_type == AgentIdType.TVDB:
-            merged = self.merge_excludes(
-                self.tvdb_excludes, self.tvdb_multi_episodes
-            )
-            return SeasonEpisodeCommaList(merged).to_json()
-        else:
-            return None
-
-    def get_season_start(self, id_type: AgentIdType, season: int) -> int:
-        """
-        Retrieves irregular season episode starts for the provided agent type
-        and season
-        :param id_type: The agent ID type
-        :param season: The season to get the season start for
-        :return: The episode at which that season starts
-        """
-
-        if id_type == AgentIdType.TVDB:
-            irregulars = self.tvdb_irregular_season_starts.to_json()
-            hits = list(filter(lambda x: x["S"] == season, irregulars))
-            if len(hits) == 0:
-                return 1
-            elif len(hits) >= 1:
-                return hits[0]["E"]
-            else:  # pragma: no cover
-                pass  # Should never come to pass
-        else:
-            return 1
-
-    def get_multi_episode_ranges(self, id_type: AgentIdType) \
-            -> List[Dict[str, Dict[str, int]]] or None:
-        """
-        Retrieves ranges of multiple episodes contained within a single file
-        :param id_type: The type of ID
-        :return: A list of dictionaries representing the episode ranges
-        """
-
-        if id_type == AgentIdType.TVDB:
-            return self.tvdb_multi_episodes.to_json()
-        else:
-            return None
-
-    # -------------------------------------------------------------------------
-
-    # noinspection PyMethodMayBeStatic
-    def merge_excludes(self, excludes: SeasonEpisodeCommaList,
-                       ranges: SeasonEpisodeRangeCommaList,
-                       episode_type: typer(SeasonEpisode) = SeasonEpisode) \
-            -> List[SeasonEpisode]:
-        """
-        Merges a SeasonEpisodeCommaList and a SeasonEpisodeRangeCommaList
-        into a single SeasonEpisodeCommaList that contains all episodes to skip
-        :param excludes: The single episodes to exclude
-        :param ranges: The ranges which will be completely excluded,
-                       with the exception of the first episode
-        :param episode_type: The type of episode to generate
-        :return: The combined exclusion list
-        """
-        excluded = excludes.list
-
-        for multi in ranges.list:
-            episode = multi.start.episode + 1
-            while episode <= multi.end.episode:
-                excluded.append(episode_type(multi.start.season, episode))
-                episode += 1
-
-        return excluded

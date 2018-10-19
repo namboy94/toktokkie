@@ -16,3 +16,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
+
+from toktokkie.metadata.components import MetadataPart
+
+
+class BookVolume(MetadataPart):
+    """
+    Class that models a single book volume
+    """
+    pass

@@ -16,3 +16,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
+
+from enum import Enum
+
+
+class TvIdType(Enum):
+    """
+    Enumeration that defines various ID types for TV Series
+    """
+    TVDB = "tvdb"
+    MYANIMELIST = "myanimelist"
+    ANILIST = "anilist"
+    KITSU = "kitsu"
+
+
+class MovieIdType(Enum):
+    """
+    Enumeration that defines various ID types for Movies
+    """
+    IMDB = "imdb"
+    MYANIMELIST = "myanimelist"
+    ANILIST = "anilist"
+    KITSU = "kitsu"
+
+
+class BookIdType(Enum):
+    """
+    Enumeration that defines various ID types for Books
+    """
+    ISBN = "isbn"
+    MYANIMELIST = "myanimelist"
+    ANILIST = "anilist"
+    KITSU = "kitsu"
