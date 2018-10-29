@@ -20,11 +20,11 @@ LICENSE"""
 import os
 from typing import List, Dict
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.helper import json_parameter
-from toktokkie.metadata.components import TvSeason
-from toktokkie.metadata.components import TvIdType
-from toktokkie.metadata.components import TvEpisode
-from toktokkie.metadata.components import TvEpisodeRange
+from toktokkie.metadata.helper.wrappers import json_parameter
+from toktokkie.metadata.components.TvSeason import TvSeason
+from toktokkie.metadata.components.enums import TvIdType, MediaType
+from toktokkie.metadata.components.TvEpisode import TvEpisode
+from toktokkie.metadata.components.TvEpisodeRange import TvEpisodeRange
 from toktokkie.exceptions import InvalidMetadataException
 
 
@@ -41,11 +41,11 @@ class TvSeries(Metadata):
         return TvIdType
 
     @classmethod
-    def media_type(cls) -> str:
+    def media_type(cls) -> MediaType:
         """
         :return: The media type of the Metadata class
         """
-        return "tv series"
+        return MediaType.TV_SERIES
 
     @classmethod
     def prompt(cls, directory_path: str) -> Metadata:
@@ -109,51 +109,72 @@ class TvSeries(Metadata):
         for season in seasons:
             self.json["seasons"].append(season.json)
 
+    def get_season(self, season_name: str) -> TvSeason:
+        """
+        Retrieves a single season for a provided season name
+        :param season_name: The name of the season
+        :return: The season
+        :raises KeyError: If the season could not be found
+        """
+        for season in self.seasons:
+            if season.name == season_name:
+                return season
+        raise KeyError(season_name)
+
     @property
     @json_parameter
-    def excludes(self) -> Dict[TvIdType, List[TvEpisode]]:
+    def excludes(self) -> Dict[TvIdType, Dict[int, List[int]]]:
         """
-        :return: A dictionary mapping episodes to exclude in checks or renaming
-                 operations to id types
+        Generates data for episodes to be excluded during renaming etc.
+        :return A dictionary mapping episode info to seasons and id types
+                Form: {idtype: {season: [ep1, ep2]}}
         """
         generated = {}
 
         for _id_type in self.json.get("excludes", {}):
 
             id_type = TvIdType(_id_type)
-            generated[id_type] = []
+            generated[id_type] = {}
 
             for exclude in self.json["excludes"][_id_type]:
 
                 try:
                     episode_range = TvEpisodeRange(exclude)
-                    generated[id_type] += episode_range.episodes
+                    episodes = episode_range.episodes
                 except InvalidMetadataException:
-                    generated[id_type].append(TvEpisode(exclude))
+                    episodes = [TvEpisode(exclude)]
+
+                for episode in episodes:
+                    if episode.season not in generated[id_type]:
+                        generated[id_type][episode.season] = []
+                    generated[id_type][episode.season].append(episode.episode)
 
         return generated
 
     @property
     @json_parameter
-    def season_start_overrides(self) -> Dict[TvIdType, TvEpisode]:
+    def season_start_overrides(self) -> Dict[TvIdType, Dict[int, int]]:
         """
         :return: A dictionary mapping episodes that override a season starting
                  point to ID types
+                 Form: {idtype: {season: episode}}
         """
 
         generated = {}
 
         for id_type, episode_data in \
                 self.json.get("season_start_overrides", {}):
-            generated[TvIdType(id_type)] = TvEpisode(episode_data)
+            episode = TvEpisode(episode_data)
+            generated[TvIdType(id_type)] = {episode.season: episode.episode}
 
         return generated
 
     @property
     @json_parameter
-    def multi_episodes(self) -> Dict[TvIdType, List[TvEpisodeRange]]:
+    def multi_episodes(self) -> Dict[TvIdType, Dict[int, Dict[int, int]]]:
         """
         :return: A dictionary mapping lists of multi-episodes to id types
+                 Form: {idtype: {season: {start: end}}}
         """
         generated = {}
 
@@ -163,7 +184,13 @@ class TvSeries(Metadata):
             generated[id_type] = []
 
             for multi_episode in self.json["multi_episodes"][_id_type]:
-                generated[id_type].append(TvEpisodeRange(multi_episode))
+                episode_range = TvEpisodeRange(multi_episode)
+
+                if episode_range.season not in generated[id_type]:
+                    generated[id_type] = {}
+                generated[id_type][episode_range.season] = {
+                    episode_range.start_episode: episode_range.end_episode
+                }
 
         return generated
 

@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components import BookIdType
+from toktokkie.metadata.components.enums import BookIdType, MediaType
 
 
 class Book(Metadata):
@@ -35,11 +35,11 @@ class Book(Metadata):
         return BookIdType
 
     @classmethod
-    def media_type(cls) -> str:
+    def media_type(cls) -> MediaType:
         """
         :return: The media type of the Metadata class
         """
-        return "book"
+        return MediaType.BOOK
 
     @classmethod
     def prompt(cls, directory_path: str) -> Metadata:

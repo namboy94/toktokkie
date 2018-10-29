@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components import MovieIdType
+from toktokkie.metadata.components.enums import MovieIdType, MediaType
 
 
 class Movie(Metadata):
@@ -35,11 +35,11 @@ class Movie(Metadata):
         return MovieIdType
 
     @classmethod
-    def media_type(cls) -> str:
+    def media_type(cls) -> MediaType:
         """
         :return: The media type of the Metadata class
         """
-        return "movie"
+        return MediaType.MOVIE
 
     @classmethod
     def prompt(cls, directory_path: str) -> Metadata:

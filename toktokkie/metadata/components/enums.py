@@ -48,3 +48,13 @@ class BookIdType(Enum):
     MYANIMELIST = "myanimelist"
     ANILIST = "anilist"
     KITSU = "kitsu"
+
+
+class MediaType(Enum):
+    """
+    Enumeration that defines all possible media types
+    """
+    BOOK = "book"
+    BOOK_SERIES = "book_series"
+    MOVIE = "movie"
+    TV_SERIES = "tv"

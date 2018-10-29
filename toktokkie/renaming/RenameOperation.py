@@ -18,33 +18,31 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from toktokkie.exceptions import InvalidMetadataException
-from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 
-class TvSeason(MetadataPart):
+class RenameOperation:
     """
-    Class that models a single book volume
+    Class that models a renaming operation
     """
 
-    @property
-    def season_number(self) -> int:
+    def __init__(self, source_path: str, dest_path: str):
         """
-        :return: The season number of the season
+        Initializes the RenameOperation object
+        :param source_path: The currently existing path to the file/directory
+        :param dest_path: The new path to the file/directory
         """
+        self.source = source_path
+        self.dest = dest_path
 
-        if self.name.lower().startswith("season "):
-            return int(self.name.lower().split("season")[1])
-        else:
-            return 0
-
-    def validate(self):
+    def rename(self):
         """
-        Validates the JSON data of the tv season.
+        Renames the episode file to the new name
         :return: None
-        :raises InvalidMetadataException: If something is wrong
-                                          with the JSON data
         """
-        super().validate()
-        if not os.path.isdir(self.path):
-            raise InvalidMetadataException()
+        os.rename(self.source, self.dest)
+
+    def __str__(self) -> str:
+        """
+        :return: A string representation of the operation
+        """
+        return "{} ---> {}".format(self.source, self.dest)

@@ -21,9 +21,10 @@ import os
 import json
 from enum import Enum
 from typing import List, Dict, Any, Optional
-from toktokkie.metadata.helper import json_parameter
-from toktokkie.metadata.prompt import PromptType
-from toktokkie.metadata.prompt import CommaList
+from toktokkie.metadata.helper.wrappers import json_parameter
+from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.prompt.PromptType import PromptType
+from toktokkie.metadata.prompt.CommaList import CommaList
 from toktokkie.exceptions import InvalidMetadataException, \
     MissingMetadataException
 
@@ -109,7 +110,7 @@ class Metadata:
             self.json["ids"][id_type.value] = values
 
     @classmethod
-    def media_type(cls) -> str:
+    def media_type(cls) -> MediaType:
         """
         :return: The media type of the Metadata class
         """

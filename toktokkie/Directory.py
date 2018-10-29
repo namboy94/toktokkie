@@ -19,13 +19,12 @@ LICENSE"""
 
 import os
 import sys
-from typing import Type, Dict, Any
+from typing import Type
 from toktokkie.renaming import Renamer, Scheme, Agent
 from toktokkie.iconizing import Iconizer, Procedure
-from toktokkie.metadata import resolve_metadata, Base, TvSeries
+from toktokkie.metadata import get_metadata, create_metadata
 from toktokkie.exceptions import MissingMetadataException
 from toktokkie.xdcc_update import XDCCUpdater
-from toktokkie.verification import get_verificators
 
 
 class Directory:
@@ -34,7 +33,7 @@ class Directory:
     """
 
     def __init__(self, path: str, generate_metadata: bool = False,
-                 metadata_type: any = None):
+                 metadata_type: str = None):
         """
         Initializes the metadata of the directory
         :param path: The directory's path
@@ -55,7 +54,8 @@ class Directory:
 
         if not os.path.isfile(self.metadata_file):
             raise MissingMetadataException(self.metadata_file + " missing")
-        self.metadata = resolve_metadata(self.metadata_file)
+
+        self.metadata = get_metadata(self.path)
 
         if not os.path.isdir(self.icon_path):
             os.makedirs(self.icon_path)
@@ -65,16 +65,16 @@ class Directory:
         Reloads the metadata from the metadata file
         :return: None
         """
-        self.metadata = resolve_metadata(self.metadata_file)
+        self.metadata = get_metadata(self.path)
 
     def write_metadata(self):
         """
         Updates the metadata file with the current contents of the metadata
         :return: None
         """
-        self.metadata.write(self.metadata_file)
+        self.metadata.write()
 
-    def generate_metadata(self, metadata_type: Base):
+    def generate_metadata(self, metadata_type: str):
         """
         Prompts the user for metadata information
         :param metadata_type: The metadata type to generate
@@ -89,11 +89,8 @@ class Directory:
                 print("Aborting")
                 sys.exit(0)
 
-        metadata = metadata_type.generate_from_prompts(self.path)  # type: Base
-
-        if not os.path.isdir(self.meta_dir):
-            os.makedirs(self.meta_dir)
-        metadata.write(self.metadata_file)
+        metadata = create_metadata(self.path, metadata_type)
+        metadata.write()
 
     def rename(self, scheme: Type[Scheme], agent: Type[Agent],
                noconfirm: bool = False):
@@ -105,10 +102,8 @@ class Directory:
         :param noconfirm: Skips the confirmation phase
         :return: None
         """
-        if self.metadata.is_subclass_of(TvSeries):
-            # noinspection PyTypeChecker
-            renamer = Renamer(self.path, self.metadata, scheme, agent)
-            renamer.rename(noconfirm)
+        renamer = Renamer(self.path, self.metadata, scheme, agent)
+        renamer.rename(noconfirm)
 
     def iconize(self, procedure: Procedure):
         """
@@ -128,21 +123,6 @@ class Directory:
         :param create: Can be set to create the XDCC Update instructions
         :return: None
         """
-        if not self.metadata.is_subclass_of(TvSeries):
-            return
-
-        # noinspection PyTypeChecker
         updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
         if not create:
             updater.update()
-
-    def verify(self, verificator_attributes: Dict[str, Any]):
-        """
-        Verifies this media directory
-        :param verificator_attributes: The attributes for the verificators
-        :return: None
-        """
-        verificators = get_verificators(self, verificator_attributes)
-        for verificator in verificators:
-            if not verificator.verify():
-                verificator.fix()

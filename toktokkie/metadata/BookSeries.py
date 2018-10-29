@@ -20,9 +20,9 @@ LICENSE"""
 import os
 from typing import List
 from toktokkie.metadata.Book import Book
-from toktokkie.metadata.components import BookVolume
-from toktokkie.metadata.helper import json_parameter
-from toktokkie.metadata.components import BookIdType
+from toktokkie.metadata.components.BookVolume import BookVolume
+from toktokkie.metadata.helper.wrappers import json_parameter
+from toktokkie.metadata.components.enums import MediaType
 
 
 class BookSeries(Book):
@@ -31,18 +31,11 @@ class BookSeries(Book):
     """
 
     @classmethod
-    def id_type(cls) -> type(BookIdType):
-        """
-        :return: The ID type used by this metadata object
-        """
-        return BookIdType
-
-    @classmethod
-    def media_type(cls) -> str:
+    def media_type(cls) -> MediaType:
         """
         :return: The media type of the Metadata class
         """
-        return "book"
+        return MediaType.BOOK_SERIES
 
     @classmethod
     def prompt(cls, directory_path: str) -> Book:
