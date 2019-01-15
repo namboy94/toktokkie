@@ -18,14 +18,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import sys
-from colorama import Fore, Style
-from typing import Dict, List
+import tvdb_api
+from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
+    tvdb_shownotfound
+from typing import List, Optional
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.enums import MediaType, TvIdType
-from toktokkie.renaming.helper.resolve import resolve_season, get_episode_files
-from toktokkie.renaming.Episode import Episode
 from toktokkie.renaming.RenameOperation import RenameOperation
 
 
@@ -44,17 +43,38 @@ class Renamer:
         self.metadata = metadata
 
         if self.metadata.media_type() == MediaType.BOOK:
-            self.operations = self.generate_book_operations()
-        elif self.metadata.media_type() == MediaType.BOOK:
-            self.operations = self.generate_book_series_operations()
-        elif self.metadata.media_type() == MediaType.BOOK:
-            self.operations = self.generate_movie_operations()
-        elif self.metadata.media_type() == MediaType.BOOK:
-            self.operations = self.generate_tv_series_operations()
+            self.operations = self._generate_book_operations()
+        elif self.metadata.media_type() == MediaType.BOOK_SERIES:
+            self.operations = self._generate_book_series_operations()
+        elif self.metadata.media_type() == MediaType.MOVIE:
+            self.operations = self._generate_movie_operations()
+        elif self.metadata.media_type() == MediaType.TV_SERIES:
+            self.operations = self._generate_tv_series_operations()
         else:  # pragma: no cover
-            self.operations = []
+            self.operations = []  # type: List[RenameOperation]
 
-    def get_children(self, no_dirs: bool = False, no_files: bool = False) \
+    def rename(self, noconfirm: bool):
+        """
+        Renames the contained files according to the naming scheme.
+        :param noconfirm: Skips the confirmation phase if True
+        :return: None
+        """
+        if not noconfirm:
+            for operation in self.operations:
+                print(operation)
+
+            prompt = input("Proceed with renaming? (Y/N)\n")
+            while prompt.lower() not in ["y", "n"]:
+                prompt = input("(Y/N)")
+
+            if prompt.lower() == "n":
+                print("Renaming aborted.")
+                return
+
+        for operation in self.operations:
+            operation.rename()
+
+    def _get_children(self, no_dirs: bool = False, no_files: bool = False) \
             -> List[str]:
         """
         Retrieves a list of files and/or directories inside the media directory
@@ -66,7 +86,6 @@ class Renamer:
         """
         children = []
         for child in os.listdir(self.path):
-
             if child.startswith("."):
                 continue
             elif os.path.isdir(os.path.join(self.path, child)) and no_dirs:
@@ -78,72 +97,84 @@ class Renamer:
 
         return sorted(children)
 
-    # noinspection PyMethodMayBeStatic
-    def generate_book_operations(self) -> List[RenameOperation]:
+    def _generate_book_operations(self) -> List[RenameOperation]:
         """
         Generates rename operations for book media types
         :return: The list of rename operations
         """
-        return []
+        book_file = self._get_children(no_dirs=True)[0]
+        dest = "{}.{}".format(self.metadata.name, self._get_ext(book_file))
+        return [RenameOperation(
+            os.path.join(self.path, book_file),
+            os.path.join(self.path, dest)
+        )]
 
-    def generate_book_series_operations(self) -> List[RenameOperation]:
+    def _generate_book_series_operations(self) -> List[RenameOperation]:
         """
         Generates rename operations for book series media types
         :return: The list of rename operations
         """
-
         operations = []
+        children = self._get_children(no_dirs=True)
+        fill = len(str(len(children)))
 
-        for i, volume in enumerate(self.get_children(no_dirs=True)):
-
+        for i, volume in enumerate(children):
             new_name = "{} - Volume {}".format(
                 self.metadata.name,
-                str(i + 1).zfill(2)
+                str(i + 1).zfill(fill)
             )
 
             operations.append(RenameOperation(
                 os.path.join(self.path, volume),
                 os.path.join(self.path, new_name)
             ))
+
         return operations
 
-    # noinspection PyMethodMayBeStatic
-    def generate_movie_operations(self) -> List[RenameOperation]:
+    def _generate_movie_operations(self) -> List[RenameOperation]:
         """
         Generates rename operations for movie media types
         :return: The list of rename operations
         """
-        return []
+        movie_file = self._get_children(no_dirs=True)[0]
+        dest = "{}.{}".format(self.metadata.name, self._get_ext(movie_file))
+        return [RenameOperation(
+            os.path.join(self.path, movie_file),
+            os.path.join(self.path, dest)
+        )]
 
-    def generate_tv_series_operations(self) -> List[RenameOperation]:
+    def _generate_tv_series_operations(self) -> List[RenameOperation]:
         """
         Generates rename operations for tv series media types
+        TODO Split up in multiple methods.
         :return: The list of rename operations
         """
-        tv_series_metadata = self.metadata  # type: TvSeries
         operations = []
 
-        episodes = self.find_tv_episode_files()
-        episodes = self.resolve_tv_episodes(tv_series_metadata, episodes)
-
-    def find_tv_episode_files(self) -> Dict[int, List[str]]:
-        """
-        Finds all valid episode files inside a tv series media directory
-        :return: A dictionary mapping lists of episode files to season numbers
-                 Form: {season_number: [epifile1, epifile2]}
-        """
         tv_series_metadata = self.metadata  # type: TvSeries
-        episodes = {}
 
-        for season in self.get_children(no_files=True):
+        content_info = {}
+
+        excluded = tv_series_metadata.excludes.get(TvIdType.TVDB, {})
+        multis = tv_series_metadata.multi_episodes.get(TvIdType.TVDB, {})
+        start_overrides = \
+            tv_series_metadata.season_start_overrides.get(TvIdType.TVDB, {})
+
+        series_name = tv_series_metadata.name
+
+        for season in self._get_children(no_files=True):
 
             try:
                 season_metadata = tv_series_metadata.get_season(season)
+                tvdb_id = season_metadata.ids[TvIdType.TVDB][0]
             except KeyError:
                 continue
 
-            if season_metadata.season_number not in episodes:
-                episodes[season_metadata.season_number] = []
+            if season_metadata.season_number not in content_info:
+                content_info[season_metadata.season_number] = {
+                    "tvdb_id": tvdb_id,
+                    "episodes": []
+                }
 
             for episode in os.listdir(season_metadata.path):
                 episode_path = os.path.join(season_metadata.path, episode)
@@ -151,157 +182,104 @@ class Renamer:
                 if not os.path.isfile(episode_path) or episode.startswith("."):
                     continue
 
-                episodes[season_metadata.season_number].append(episode_path)
+                content_info[season_metadata.season_number]["episodes"] \
+                    .append(episode_path)
 
-        return episodes
+        for season_number, season_data in content_info.items():
 
-    def resolve_tv_episodes(self, episode_data: Dict[int, List[str]]) -> Dict[int, List[str]]:
+            tvdb_id = season_data["tvdb_id"]
+            episodes = season_data["episodes"]
 
-        metadata = self.metadata  # type: TvSeries
+            season_excluded = excluded.get(season_number, [])
+            season_multis = multis.get(season_number, {})
+            episode_number = start_overrides.get(season_number, 1)
 
-        operations = []
-        resolved = {}
-        excluded = metadata.excludes.get(TvIdType.TVDB, {})
-        multis = metadata.multi_episodes.get(TvIdType.TVDB, {})
-        start_overrides = \
-            metadata.season_start_overrides.get(TvIdType.TVDB, {})
+            episodes.sort(key=lambda x: os.path.basename(x))
 
+            for episode_file in episodes:
 
-        for season, episodes in episode_data.items():
-            episode_count = start_overrides.get(season, 1)
+                while episode_number in season_excluded:
+                    episode_number += 1
 
-            if season not in excluded:
-                excluded[season] = []
-            if season not in multis:
-                multis[season] = {}
+                start = episode_number
+                if episode_number in season_multis:
+                    end = season_multis[episode_number]
+                else:
+                    end = None
 
-            tvdb_id =
+                ext = self._get_ext(episode_file)
 
-            for episode in sorted(episodes):
+                if end is None:
+                    new_name = "{} - S{}E{} - {}.{}".format(
+                        series_name,
+                        str(season_number).zfill(2),
+                        str(episode_number).zfill(2),
+                        self._load_tvdb_episode_name(
+                            tvdb_id, season_number, episode_number
+                        ),
+                        ext
+                    )
+                else:
 
-                while episode_count in excluded[season]:
-                    episode_count += 1
+                    episode_names = []
+                    while episode_number < end:
+                        episode_names.append(self._load_tvdb_episode_name(
+                            tvdb_id, season_number, episode_number
+                        ))
+                        episode_number += 1
+                    episode_names = " | ".join(episode_names)
 
+                    new_name = "{} - S{}E{}-E{} - {}.{}".format(
+                        series_name,
+                        str(season_number).zfill(2),
+                        str(start).zfill(2),
+                        str(end).zfill(2),
+                        episode_names,
+                        ext
+                    )
 
-
-
-
-
-
-
-
-
-
-    def parse_directory(self) -> Dict[int, Dict[str, str or List[int]]]:
-        """
-        Parses the directory provided as self.path, searches for episode
-        content. Only files not starting with "." are included
-        :return: A dictionary keyed by season, containing information about
-                 the season's episodes by name, path and agent IDs
-        """
-
-        episodes = {}
-        for season in self.metadata.seasons.list:
-            season_path = os.path.join(self.path, season.path)
-            season_number = resolve_season(season_path)
-            season_ids = season.get_agent_ids(self.agent.id_type)
-
-            if season_ids is None:
-                raise ValueError("Invalid agent ID type")
-
-            if season_number not in episodes:
-                episodes[season_number] = []
-
-            for episode in get_episode_files(season_path):
-                episodes[season_number].append({
-                    "name": os.path.basename(episode),
-                    "path": episode,
-                    "agent_ids": season_ids
-                })
-
-        return episodes
-
-    def initialize_episodes(self) -> List[Episode]:
-        """
-        Initializes the episode objects that generate the new name for the
-        episodes
-        :return: The list of generated Episode objects
-        """
-
-        episodes = []
-
-        for season in sorted(self.raw_episodes):
-
-            eps = sorted(self.raw_episodes[season], key=lambda x: x["name"])
-            episode_count = \
-                self.metadata.get_season_start(self.agent.id_type, season)
-            excluded = self.metadata.get_agent_excludes(self.agent.id_type)
-
-            for episode in eps:
-
-                # Skip excluded episodes
-                while True:
-                    exclude = list(filter(
-                        lambda x: x["S"] == season
-                        and x["E"] == episode_count,
-                        excluded
-                    ))
-                    if len(exclude) == 0:
-                        break
-                    else:
-                        episode_count += 1
-
-                # Check for multi episodes
-                multi_range = None
-                for multi_episode in self.metadata.get_multi_episode_ranges(
-                        self.agent.id_type
-                ):
-                    multi_s = multi_episode["start"]["S"]
-                    multi_e = multi_episode["start"]["E"]
-
-                    if multi_s == season and multi_e == episode_count:
-                        multi_range = (multi_e, multi_episode["end"]["E"])
-
-                # noinspection PyTypeChecker
-                episodes.append(Episode(
-                    episode["path"],
-                    self.metadata.name,
-                    episode["agent_ids"],
-                    season,
-                    episode_count,
-                    self.scheme,
-                    self.agent,
-                    multi_range
+                operations.append(RenameOperation(
+                    episode_file,
+                    os.path.join(os.path.dirname(episode_file), new_name)
                 ))
 
-                # Skip multi-episode parts
-                if multi_range is not None:
-                    episode_count = multi_range[1]
+                episode_number += 1
 
-                episode_count += 1
+        return operations
 
-        return episodes
-
-    def rename(self, noconfirm: bool):
+    @staticmethod
+    def _load_tvdb_episode_name(
+            tvdb_id: str,
+            season_number: int,
+            episode_number: int
+    ) -> str:
         """
-        Renames the contained files according to the naming scheme.
-        :param noconfirm: Skips the confirmation phase if True
-        :return: None
+        Loads an episode name from TVDB
+        :param tvdb_id: The TVDB ID for the episode's series
+        :param season_number: The season number
+        :param episode_number: The episode number
+        :return: The TVDB name
         """
+        try:
+            tvdb = tvdb_api.Tvdb()
+            return tvdb[tvdb_id][season_number][episode_number]["episodename"]
 
-        max_current = \
-            len(max(self.episodes, key=lambda x: len(x.current)).current)
+        except (tvdb_episodenotfound, tvdb_seasonnotfound,
+                tvdb_shownotfound, ConnectionError, KeyError) as e:
+            # If not found, or other error, just return generic name
+            if str(e) == "cache_location":  # pragma: no cover
+                print("TheTVDB.com is down!")
 
-        for episode in self.episodes:
-            print(Fore.LIGHTCYAN_EX + episode.current.ljust(max_current + 1) +
-                  Style.RESET_ALL + " ---> " + Fore.LIGHTYELLOW_EX +
-                  episode.new + Style.RESET_ALL)
+            return "Episode " + str(episode_number)
 
-        if not noconfirm:
-            confirm = input("Start the renaming Process? (y/n)")
-            if confirm != "y":
-                print("Renaming aborted")
-                sys.exit(0)
-
-        for episode in self.episodes:
-            episode.rename()
+    @staticmethod
+    def _get_ext(filename: str) -> Optional[str]:
+        """
+        Gets the file extension of a file
+        :param filename: The filename for which to get the file extension
+        :return: The file extension or None if the file has no extension
+        """
+        try:
+            return filename.rsplit(".", 1)[1]
+        except IndexError:
+            return None

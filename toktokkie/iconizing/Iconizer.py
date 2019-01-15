@@ -43,7 +43,6 @@ class Iconizer:
         Iconizes the directory
         :return: None
         """
-
         self.procedure.iconize(
             self.path, os.path.join(self.icon_location, "main")
         )
