@@ -40,7 +40,7 @@ class TvEpisodeRange:
             self.season = json_data["season"]
             self.start_episode = json_data["start_episode"]
             self.end_episode = json_data["end_episode"]
-        except KeyError:
+        except (KeyError, TypeError):
             raise InvalidMetadataException()
 
     @property

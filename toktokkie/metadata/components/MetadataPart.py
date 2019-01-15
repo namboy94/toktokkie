@@ -41,7 +41,7 @@ class MetadataPart:
         self.json = json_data
 
         try:
-            self.path = os.path.join(parent.directory_path, self.json["name"])
+            self.path = os.path.join(parent.directory_path, self.name)
         except KeyError:
             raise InvalidMetadataException()
 
@@ -72,7 +72,7 @@ class MetadataPart:
         :return: A dictionary containing lists of IDs mapped to ID types
         """
         generated = self.parent.ids
-        for id_type, ids in self.json["ids"].items():
+        for id_type, ids in self.json.get("ids", {}).items():
             generated[self.parent.id_type()(id_type)] =\
                 list(map(lambda x: str(x), ids))
         return generated

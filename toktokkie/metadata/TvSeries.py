@@ -94,7 +94,7 @@ class TvSeries(Metadata):
         :return: A list of TV seasons
         """
         return list(map(
-            lambda x: TvSeason(self.directory_path, x),
+            lambda x: TvSeason(self, x),
             self.json["seasons"]
         ))
 
@@ -159,13 +159,19 @@ class TvSeries(Metadata):
                  point to ID types
                  Form: {idtype: {season: episode}}
         """
-
         generated = {}
 
-        for id_type, episode_data in \
-                self.json.get("season_start_overrides", {}):
-            episode = TvEpisode(episode_data)
-            generated[TvIdType(id_type)] = {episode.season: episode.episode}
+        for _id_type, overrides in \
+                self.json.get("season_start_overrides", {}).items():
+
+            id_type = TvIdType(_id_type)
+            if id_type not in generated:
+                generated[id_type] = {}
+
+            for override in overrides:
+
+                episode = TvEpisode(override)
+                generated[id_type][episode.season] = episode.episode
 
         return generated
 

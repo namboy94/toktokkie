@@ -19,12 +19,10 @@ LICENSE"""
 
 import os
 import sys
-from typing import Type
-from toktokkie.renaming import Renamer, Scheme, Agent
+from toktokkie.renaming import Renamer
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import get_metadata, create_metadata
 from toktokkie.exceptions import MissingMetadataException
-from toktokkie.xdcc_update import XDCCUpdater
 
 
 class Directory:
@@ -92,18 +90,13 @@ class Directory:
         metadata = create_metadata(self.path, metadata_type)
         metadata.write()
 
-    def rename(self, scheme: Type[Scheme], agent: Type[Agent],
-               noconfirm: bool = False):
+    def rename(self, noconfirm: bool = False):
         """
-        Renames the contained files according to a naming scheme.
-        If the metadata type does not support renaming, this does nothing
-        :param scheme: The naming scheme to use
-        :param agent: The data gathering agent to use
+        Renames the contained files.
         :param noconfirm: Skips the confirmation phase
         :return: None
         """
-        renamer = Renamer(self.path, self.metadata, scheme, agent)
-        renamer.rename(noconfirm)
+        Renamer(self.metadata).rename(noconfirm)
 
     def iconize(self, procedure: Procedure):
         """
@@ -114,15 +107,14 @@ class Directory:
         iconizer = Iconizer(self.path, self.icon_path, procedure)
         iconizer.iconize()
 
-    def xdcc_update(self, scheme: Type[Scheme], agent: Type[Agent],
-                    create: bool = False):
-        """
-        Performs an XDCC Update Action
-        :param scheme: The naming scheme to use
-        :param agent: The naming agent to use
-        :param create: Can be set to create the XDCC Update instructions
-        :return: None
-        """
-        updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
-        if not create:
-            updater.update()
+    # def xdcc_update(self, create: bool = False):
+    #    """
+    #    Performs an XDCC Update Action
+    #    :param scheme: The naming scheme to use
+    #    :param agent: The naming agent to use
+    #    :param create: Can be set to create the XDCC Update instructions
+    #    :return: None
+    #    """
+    #    updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
+    #    if not create:
+    #        updater.update()

@@ -17,4 +17,29 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
+import os
+import shutil
+import unittest
+from toktokkie.Directory import Directory
+
+
+class TestGameOfThrones(unittest.TestCase):
+
+    def cleanup(self):
+        if os.path.exists("test-res"):
+            shutil.rmtree("test-res")
+
+    def setUp(self):
+        self.cleanup()
+        try:
+            shutil.copytree("toktokkie/test/res", "test-res")
+        except FileNotFoundError:
+            shutil.copytree("res", "test-res")
+
+    def tearDown(self):
+        pass
+        # self.cleanup()
+
+    def test_renaming(self):
+        directory = Directory("test-res/Game of Thrones")
+        directory.rename()

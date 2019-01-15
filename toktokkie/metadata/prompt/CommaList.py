@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import List, Any
-from toktokkie.metadata.prompt import PromptType
+from toktokkie.metadata.prompt.PromptType import PromptType
 
 
 class CommaList(PromptType):

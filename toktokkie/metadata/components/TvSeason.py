@@ -24,7 +24,7 @@ from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 class TvSeason(MetadataPart):
     """
-    Class that models a single book volume
+    Class that models a single tv season
     """
 
     @property

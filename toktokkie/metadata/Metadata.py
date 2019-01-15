@@ -123,18 +123,30 @@ class Metadata:
         """
         raise NotImplementedError()
 
-    def __init__(self, directory_path: str, json_data: Dict[str, Any]):
+    def __init__(
+            self,
+            directory_path: str,
+            json_data: Optional[Dict[str, Any]] = None
+    ):
         """
         Inititalizes the metadata object using JSON data
         :param directory_path: The directory of the media for which to
                                generate the metadata
-        :param json_data: The JSON data to generate the metadata
+        :param json_data: Optional metadata JSON.
+                          Will be used instead of info.json metadata
+                          if provided
         :raises InvalidMetadataException: if the metadata could not be
                                           parsed correctly
         """
         self.directory_path = directory_path
         self.metadata_file = os.path.join(directory_path, ".meta/info.json")
-        self.json = json_data
+
+        if json_data is None:
+            with open(self.metadata_file, "r") as info:
+                self.json = json.load(info)
+        else:
+            self.json = json_data
+
         self.validate_json()
 
     def validate_json(self):
@@ -149,7 +161,7 @@ class Metadata:
         self._assert_true("ids" in self.json)
         self._assert_true(len(self.ids) == len(self.json["ids"]))
         self._assert_true(len(self.ids) > 0)
-        self._assert_true(self.media_type() == self.json["type"])
+        self._assert_true(self.media_type().value == self.json["type"])
 
     def write(self):
         """
