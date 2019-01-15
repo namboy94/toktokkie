@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import tvdb_api
-from tvdb_exceptions import tvdb_episodenotfound, tvdb_seasonnotfound, \
+from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 from typing import List, Optional
 from toktokkie.metadata.Metadata import Metadata
