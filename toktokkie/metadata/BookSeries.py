@@ -51,7 +51,8 @@ class BookSeries(Book):
         series_ids = cls.prompt_for_ids()
         series = cls(directory_path, {
             "volumes": [],
-            "ids": series_ids
+            "ids": series_ids,
+            "type": cls.media_type().value
         })
 
         volumes = []

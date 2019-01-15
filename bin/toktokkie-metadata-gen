@@ -21,7 +21,7 @@ LICENSE"""
 
 import argparse
 from toktokkie import Directory
-from toktokkie.metadata import metadata_types
+from toktokkie.metadata.components.enums import MediaType
 
 
 def main():
@@ -29,7 +29,8 @@ def main():
     The toktokkie-metadata-gen main method
     :return: None
     """
-    media_types = list(map(lambda x: x.type, metadata_types))
+    # noinspection PyTypeChecker
+    media_types = list(map(lambda x: x.value, list(MediaType)))
 
     parser = argparse.ArgumentParser()
     parser.add_argument("directory",
@@ -44,12 +45,8 @@ def main():
         directory = directory.rsplit("/", 1)[0]
 
     media_type = args.media_type
-    metadata_class = list(filter(
-        lambda x: x.type == media_type,
-        metadata_types
-    ))[0]
 
-    Directory(directory, True, metadata_class)
+    Directory(directory, generate_metadata=True, metadata_type=media_type)
 
 
 if __name__ == "__main__":

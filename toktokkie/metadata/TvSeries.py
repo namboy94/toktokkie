@@ -61,7 +61,8 @@ class TvSeries(Metadata):
         series_ids = cls.prompt_for_ids()
         series = cls(directory_path, {
             "seasons": [],
-            "ids": series_ids
+            "ids": series_ids,
+            "type": cls.media_type().value
         })
 
         seasons = []
@@ -71,7 +72,7 @@ class TvSeries(Metadata):
             if season_name.startswith(".") or not os.path.isdir(season_path):
                 continue
 
-            print("{}:".format(season_name))
+            print("\n{}:".format(season_name))
             ids = cls.prompt_for_ids(series_ids)
 
             # Remove double entries

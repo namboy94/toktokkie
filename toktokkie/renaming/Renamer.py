@@ -116,7 +116,7 @@ class Renamer:
         """
         operations = []
         children = self._get_children(no_dirs=True)
-        fill = len(str(len(children)))
+        fill = len(str(len(children))) + 1
 
         for i, volume in enumerate(children):
             new_name = "{} - Volume {}".format(
@@ -168,6 +168,7 @@ class Renamer:
                 season_metadata = tv_series_metadata.get_season(season)
                 tvdb_id = season_metadata.ids[TvIdType.TVDB][0]
             except KeyError:
+                print("No TVDB ID found for {}".format(season))
                 continue
 
             if season_metadata.season_number not in content_info:

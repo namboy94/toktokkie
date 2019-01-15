@@ -175,7 +175,7 @@ class Metadata:
         if not os.path.isdir(os.path.dirname(self.metadata_file)):
             os.makedirs(os.path.dirname(self.metadata_file))
 
-        self.json["type"] = self.media_type()
+        self.json["type"] = self.media_type().value
 
         with open(self.metadata_file, "w") as f:
             f.write(json.dumps(

@@ -51,4 +51,7 @@ class Movie(Metadata):
         """
         print("Generating metadata for {}:"
               .format(os.path.basename(directory_path)))
-        return cls(directory_path, {"ids": cls.prompt_for_ids()})
+        return cls(directory_path, {
+            "ids": cls.prompt_for_ids(),
+            "type": cls.media_type().value
+        })
