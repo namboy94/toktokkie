@@ -72,7 +72,9 @@ class MetadataPart:
         :return: A dictionary containing lists of IDs mapped to ID types
         """
         generated = self.parent.ids
-        for id_type, ids in self.json.get("ids", {}).items():
-            generated[self.parent.id_type()(id_type)] =\
-                list(map(lambda x: str(x), ids))
+        for id_type, _id in self.json.get("ids", {}).items():
+            if isinstance(_id, list):
+                generated[self.parent.id_type()(id_type)] = _id
+            else:
+                generated[self.parent.id_type()(id_type)] = [_id]
         return generated

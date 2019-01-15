@@ -222,7 +222,7 @@ class Renamer:
                 else:
 
                     episode_names = []
-                    while episode_number < end:
+                    while episode_number <= end:
                         episode_names.append(self._load_tvdb_episode_name(
                             tvdb_id, season_number, episode_number
                         ))
@@ -262,6 +262,7 @@ class Renamer:
         """
         try:
             tvdb = tvdb_api.Tvdb()
+            tvdb_id = int(tvdb_id)
             return tvdb[tvdb_id][season_number][episode_number]["episodename"]
 
         except (tvdb_episodenotfound, tvdb_seasonnotfound,

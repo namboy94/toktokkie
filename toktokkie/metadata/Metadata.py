@@ -92,9 +92,13 @@ class Metadata:
         :return: A dictionary containing lists of IDs mapped to ID types
         """
         generated = {}
-        for id_type, ids in self.json["ids"].items():
-            generated[self.id_type()(id_type)] = \
-                list(map(lambda x: str(x), ids))
+        for id_type, _id in self.json["ids"].items():
+
+            if isinstance(_id, list):
+                generated[self.id_type()(id_type)] = _id
+            else:
+                generated[self.id_type()(id_type)] = [_id]
+
         return generated
 
     @ids.setter

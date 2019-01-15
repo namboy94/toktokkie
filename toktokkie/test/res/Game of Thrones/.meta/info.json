@@ -1,7 +1,7 @@
 {
   "tags": ["HBO"],
   "type": "tv",
-  "ids": {"tvdb":  "121361"},
+  "ids": {"tvdb":  ["121361"]},
   "seasons": [
     {"name": "Season 1"},
     {"name": "Season 2"},

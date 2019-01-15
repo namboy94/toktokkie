@@ -24,12 +24,24 @@ from toktokkie.Directory import Directory
 
 
 class TestGameOfThrones(unittest.TestCase):
+    """
+    Test class that tests the 'Game of Thrones' test directory
+    """
 
-    def cleanup(self):
+    @staticmethod
+    def cleanup():
+        """
+        Deletes any generates resources
+        :return:
+        """
         if os.path.exists("test-res"):
             shutil.rmtree("test-res")
 
     def setUp(self):
+        """
+        Sets up the test resources
+        :return: None
+        """
         self.cleanup()
         try:
             shutil.copytree("toktokkie/test/res", "test-res")
@@ -37,9 +49,52 @@ class TestGameOfThrones(unittest.TestCase):
             shutil.copytree("res", "test-res")
 
     def tearDown(self):
-        pass
-        # self.cleanup()
+        """
+        Deletes the test resources
+        :return: None
+        """
+        self.cleanup()
 
     def test_renaming(self):
+        """
+        Tests renaming the contents of the Game of Thrones directory
+        :return: None
+        """
+
         directory = Directory("test-res/Game of Thrones")
-        directory.rename()
+        directory.rename(noconfirm=True)
+
+        for mode, data in {
+            True: {
+                "Season 1": [
+                    "S01E01 - Winter Is Coming.txt",
+                    "S01E09-E10 - Baelor | Fire and Blood.txt"
+                ],
+                "Season 2": [
+                    "S02E03 - What is Dead May Never Die.txt"
+                ],
+                "Season 3": [
+                    "S03E01 - No Mas.txt"
+                ],
+                "Other": [
+                    "S00E02 - 15-Minute Preview.txt"
+                ]
+            },
+            False: {
+                "Season 1": [
+                    "S01E07 - You Win or You Die.txt"
+                ]
+            }
+        }.items():
+
+            for season, episodes in data.items():
+                for episode in episodes:
+
+                    got = "Game of Thrones"
+                    episode_file = "test-res/{}/{}/{} - {}".format(
+                        got, season, got, episode
+                    )
+                    self.assertEqual(
+                        mode,
+                        os.path.isfile(episode_file)
+                    )
