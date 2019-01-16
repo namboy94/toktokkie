@@ -330,7 +330,7 @@ class XDCCUpdater:
                 except IndexError:
                     ext = ""
 
-                episode_number = episode_count - start_episode + 1
+                episode_number = episode_count - self.episode_offset
                 episode_name = "{} - S{}E{} - Episode {}{}".format(
                     self.metadata.name,
                     str(self.season.season_number).zfill(2),
