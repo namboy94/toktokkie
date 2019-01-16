@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import tvdb_api
 from typing import List, Dict
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.helper.wrappers import json_parameter
@@ -55,10 +56,13 @@ class TvSeries(Metadata):
                                the metadata object
         :return: The generated metadata object
         """
-        print("Generating metadata for {}:"
-              .format(os.path.basename(directory_path)))
+        name = os.path.basename(directory_path)
+        print("Generating metadata for {}:".format(name))
 
-        series_ids = cls.prompt_for_ids()
+        probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
+        probable_defaults = {TvIdType.TVDB.value: [probable_tvdb_id]}
+
+        series_ids = cls.prompt_for_ids(defaults=probable_defaults)
         series = cls(directory_path, {
             "seasons": [],
             "ids": series_ids,
