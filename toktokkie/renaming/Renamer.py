@@ -209,9 +209,13 @@ class Renamer:
                     end = None
 
                 ext = self._get_ext(episode_file)
+                if ext is not None:
+                    ext = "." + ext
+                else:
+                    ext = ""
 
                 if end is None:
-                    new_name = "{} - S{}E{} - {}.{}".format(
+                    new_name = "{} - S{}E{} - {}{}".format(
                         series_name,
                         str(season_number).zfill(2),
                         str(episode_number).zfill(2),
@@ -230,7 +234,7 @@ class Renamer:
                         episode_number += 1
                     episode_names = " | ".join(episode_names)
 
-                    new_name = "{} - S{}E{}-E{} - {}.{}".format(
+                    new_name = "{} - S{}E{}-E{} - {}{}".format(
                         series_name,
                         str(season_number).zfill(2),
                         str(start).zfill(2),

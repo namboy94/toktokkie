@@ -19,10 +19,12 @@ LICENSE"""
 
 import os
 import sys
-from toktokkie.renaming import Renamer
-from toktokkie.iconizing import Iconizer, Procedure
-from toktokkie.metadata import get_metadata, create_metadata
+from toktokkie.renaming.Renamer import Renamer
+from toktokkie.iconizing.Iconizer import Iconizer, Procedure
+from toktokkie.metadata.helper.functions import get_metadata, create_metadata
+from toktokkie.metadata.components.enums import MediaType
 from toktokkie.exceptions import MissingMetadata
+from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
 
 
 class Directory:
@@ -107,14 +109,13 @@ class Directory:
         iconizer = Iconizer(self.path, self.icon_path, procedure)
         iconizer.iconize()
 
-    # def xdcc_update(self, create: bool = False):
-    #    """
-    #    Performs an XDCC Update Action
-    #    :param scheme: The naming scheme to use
-    #    :param agent: The naming agent to use
-    #    :param create: Can be set to create the XDCC Update instructions
-    #    :return: None
-    #    """
-    #    updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
-    #    if not create:
-    #        updater.update()
+    def xdcc_update(self):
+        """
+        Performs an XDCC Update Action
+        :return: None
+        """
+        if self.metadata.media_type() == MediaType.TV_SERIES:
+            # noinspection PyTypeChecker
+            XDCCUpdater(self.metadata).update()
+        else:
+            print("xdcc-update is only supported for TV series")

@@ -21,6 +21,9 @@ from enum import Enum
 
 
 class Resolution(Enum):
+    """
+    Enum that models the different resolution options
+    """
     X1080p = "1080p"
     X720p = "720p"
     X480p = "480p"

@@ -18,9 +18,12 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import re
 import json
 from typing import Dict, Optional, Set, Any
+from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
+from toktokkie.renaming import Renamer
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.xdcc_update.enums import Resolution
@@ -83,7 +86,7 @@ class XDCCUpdater:
                 "Invalid Search Engine {}".format(search_engine)
             )
         else:
-            return resolved.value
+            return resolved
 
     @property
     def bot(self) -> str:
@@ -129,7 +132,7 @@ class XDCCUpdater:
         """
         :return: The amount of episodes offset from 1 when updating
         """
-        return self.xdcc_info["bot"]
+        return int(self.xdcc_info["episode_offset"])
 
     @property
     def search_pattern(self) -> str:
@@ -154,15 +157,13 @@ class XDCCUpdater:
         :param regex: Whether or not to generate a regex.
         :return: The generated search term/regex
         """
-        
+
         pattern = self.search_pattern
-        pattern = pattern.replace("@{NAM}", self.search_name)
+        pattern = pattern.replace("@{NAME}", self.search_name)
         pattern = pattern.replace("@{RES-P}", self.p_resolution)
         pattern = pattern.replace("@{RES-X}", self.x_resolution)
 
         if regex:
-            pattern = "^{}$".format(pattern)
-
             pattern = pattern.replace("[", "\\[")
             pattern = pattern.replace("]", "\\]")
             pattern = pattern.replace("(", "\\(")
@@ -177,14 +178,14 @@ class XDCCUpdater:
             pattern = pattern.replace(
                 "@{EPI-3}", str(episode).zfill(3) + "(v[0-9]+)?"
             )
-            
+
         else:
             pattern = pattern.replace("@{EPI-1}", str(episode).zfill(1))
             pattern = pattern.replace("@{EPI-2}", str(episode).zfill(2))
             pattern = pattern.replace("@{EPI-3}", str(episode).zfill(3))
             pattern = pattern.replace("[@{HASH}]", "")
             pattern = pattern.replace("@{HASH}", "")
-            
+
         return pattern
 
     # noinspection PyStatementEffect
@@ -209,13 +210,15 @@ class XDCCUpdater:
     def _input(
             prompt_text: str,
             default: Optional[str] = None,
-            choices: Optional[Set[str]] = None
-    ) -> str:
+            choices: Optional[Set[str]] = None,
+            is_int: bool = False
+    ) -> str or int:
         """
         Creates a user prompt
         :param prompt_text: The text to show the user
         :param default: An optional default parameter
         :param choices: An optional set of valid choices
+        :param is_int: If True, will make sure that the response is an integer
         :return: The user-provided response
         """
 
@@ -228,19 +231,24 @@ class XDCCUpdater:
 
         while True:
             resp = input(prompt_string)
+
             if resp == "":
                 if default is not None:
-                    return default
+                    resp = default
                 else:
                     continue
+            elif choices is not None and resp not in choices:
+                continue
             else:
-                if choices is not None:
-                    if resp in choices:
-                        return resp
-                    else:
-                        continue
-                else:
-                    return resp
+                continue
+
+            if is_int:
+                try:
+                    resp = int(resp)
+                except ValueError:
+                    print("Not an Integer")
+
+            return resp
 
     @classmethod
     def prompt(cls, metadata: TvSeries):
@@ -270,7 +278,9 @@ class XDCCUpdater:
                 default="1080p",
                 choices={"1080p", "720p", "480p"}
             ),
-            "episode_offset": cls._input("Episode Offset", default="0"),
+            "episode_offset": cls._input(
+                "Episode Offset", default="0", is_int=True
+            ),
             "search_pattern": cls._input("Search Pattern")
         }
 
@@ -288,6 +298,69 @@ class XDCCUpdater:
 
     def update(self):
         """
-
-        :return:
+        Executes the XDCC Update procedure
+        :return: None
         """
+
+        self._update_episode_names()
+
+        start_episode = 1 + len(os.listdir(self.season.path))
+        start_episode += self.episode_offset
+        packs = []
+
+        episode_count = start_episode
+
+        while True:
+            search_term = self._generate_search_term(episode_count, False)
+            search_regex = self._generate_search_term(episode_count, True)
+            search_results = self.search_engine.search(search_term)
+
+            search_regex = re.compile(search_regex)
+            search_results = list(filter(
+                lambda x: re.match(search_regex, x.filename)
+                and x.bot == self.bot,
+                search_results
+            ))
+
+            if len(search_results) > 0:
+                pack = search_results[0]
+
+                try:
+                    ext = "." + pack.filename.rsplit(".")[1]
+                except IndexError:
+                    ext = ""
+
+                episode_number = episode_count - start_episode + 1
+                episode_name = "{} - S{}E{} - Episode {}{}".format(
+                    self.metadata.name,
+                    str(self.season.season_number).zfill(2),
+                    str(episode_number).zfill(2),
+                    episode_number,
+                    ext
+                )
+
+                pack.set_directory(self.season.path)
+                pack.set_filename(episode_name, True)
+                pack.set_original_filename(
+                    pack.original_filename.replace("'", "_")
+                )  # Fixes filenames
+
+                packs.append(pack)
+                episode_count += 1
+
+            else:
+                break
+
+        download_packs(packs)
+        self._update_episode_names()
+
+    def _update_episode_names(self):
+        """
+        Renames the episodes in the season directory that's being updated
+        :return: None
+        """
+        renamer = Renamer(self.metadata)
+        for operation in renamer.operations:
+            operation_dir = os.path.basename(os.path.dirname(operation.source))
+            if operation_dir == self.season.name:
+                operation.rename()
