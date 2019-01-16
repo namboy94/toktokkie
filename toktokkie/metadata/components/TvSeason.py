@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 
@@ -47,4 +47,4 @@ class TvSeason(MetadataPart):
         """
         super().validate()
         if not os.path.isdir(self.path):
-            raise InvalidMetadataException()
+            raise InvalidMetadata()

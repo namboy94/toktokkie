@@ -25,7 +25,7 @@ from toktokkie.metadata.BookSeries import BookSeries
 from toktokkie.metadata.Movie import Movie
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.enums import MediaType
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadata
 
 
 def get_metadata(directory: str) -> Metadata:
@@ -42,7 +42,7 @@ def get_metadata(directory: str) -> Metadata:
             metadata_cls = get_metadata_class(media_type)
             return metadata_cls(directory)
     except KeyError:
-        raise InvalidMetadataException()
+        raise InvalidMetadata()
 
 
 def create_metadata(directory: str, media_type: str or MediaType) -> Metadata:

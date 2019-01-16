@@ -25,7 +25,7 @@ from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.metadata.components.enums import TvIdType, MediaType
 from toktokkie.metadata.components.TvEpisode import TvEpisode
 from toktokkie.metadata.components.TvEpisodeRange import TvEpisodeRange
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadata
 
 
 class TvSeries(Metadata):
@@ -142,7 +142,7 @@ class TvSeries(Metadata):
                 try:
                     episode_range = TvEpisodeRange(exclude)
                     episodes = episode_range.episodes
-                except InvalidMetadataException:
+                except InvalidMetadata:
                     episodes = [TvEpisode(exclude)]
 
                 for episode in episodes:

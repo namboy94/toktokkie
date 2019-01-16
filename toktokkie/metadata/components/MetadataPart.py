@@ -21,7 +21,7 @@ import os
 from enum import Enum
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadata
 
 
 class MetadataPart:
@@ -43,7 +43,7 @@ class MetadataPart:
         try:
             self.path = os.path.join(parent.directory_path, self.name)
         except KeyError:
-            raise InvalidMetadataException()
+            raise InvalidMetadata()
 
         self.validate()
 
@@ -57,7 +57,7 @@ class MetadataPart:
         if not os.path.exists(self.path) \
                 or len(self.ids) < 1 \
                 or "name" not in self.json:
-            raise InvalidMetadataException()
+            raise InvalidMetadata()
 
     @property
     def name(self) -> str:

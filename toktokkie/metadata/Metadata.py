@@ -25,8 +25,8 @@ from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.metadata.components.enums import MediaType
 from toktokkie.metadata.prompt.PromptType import PromptType
 from toktokkie.metadata.prompt.CommaList import CommaList
-from toktokkie.exceptions import InvalidMetadataException, \
-    MissingMetadataException
+from toktokkie.exceptions import InvalidMetadata, \
+    MissingMetadata
 
 
 class Metadata:
@@ -208,7 +208,7 @@ class Metadata:
         metadata_file = os.path.join(directory_path, ".meta/info.json")
 
         if not os.path.isfile(metadata_file):
-            raise MissingMetadataException()
+            raise MissingMetadata()
 
         try:
             with open(metadata_file, "r") as info_json:
@@ -216,7 +216,7 @@ class Metadata:
                 return cls(directory_path, data)
 
         except json.JSONDecodeError:
-            raise InvalidMetadataException()
+            raise InvalidMetadata()
 
     @classmethod
     def input(cls,
@@ -232,7 +232,7 @@ class Metadata:
         :return: The user's response
         """
         if default is not None:
-            prompt_text += " [{}]".format(str(default))
+            prompt_text += " {}".format(str(default))
         prompt_text += ":"
 
         response = input(prompt_text).strip()
@@ -290,4 +290,4 @@ class Metadata:
         :return: Nine
         """
         if not condition:
-            raise InvalidMetadataException()
+            raise InvalidMetadata()

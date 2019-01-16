@@ -16,23 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
-
-from typing import Callable
-from functools import wraps
-from toktokkie.exceptions import InvalidMetadata
-
-
-def json_parameter(func: Callable) -> Callable:
-    """
-    Decorator that implements additional error-catching for JSON parameters
-    :param func: The function to wrap
-    :return: The wrapped function
-    """
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except (KeyError, ValueError):
-            raise InvalidMetadata()
-
-    return wrapper

@@ -22,7 +22,7 @@ import sys
 from toktokkie.renaming import Renamer
 from toktokkie.iconizing import Iconizer, Procedure
 from toktokkie.metadata import get_metadata, create_metadata
-from toktokkie.exceptions import MissingMetadataException
+from toktokkie.exceptions import MissingMetadata
 
 
 class Directory:
@@ -51,7 +51,7 @@ class Directory:
             self.generate_metadata(metadata_type)
 
         if not os.path.isfile(self.metadata_file):
-            raise MissingMetadataException(self.metadata_file + " missing")
+            raise MissingMetadata(self.metadata_file + " missing")
 
         self.metadata = get_metadata(self.path)
 

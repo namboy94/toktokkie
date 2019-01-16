@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 
-class InvalidMetadataException(Exception):
+class InvalidMetadata(Exception):
     """
     Exception that is raised whenever metadata is invalid
     """
@@ -33,15 +33,22 @@ class MetadataMismatch(Exception):
     pass
 
 
-class MissingMetadataException(Exception):
+class MissingMetadata(Exception):
     """
     Exception that is raised whenever metadata is not found
     """
     pass
 
 
-class MissingUpdateInstructionsException(Exception):
+class MissingXDCCInstructions(Exception):
     """
-    Exception that is raised whenever update instrcution don't exist
+    Exception that is raised whenever xdcc update instructions don't exist
+    """
+    pass
+
+
+class InvalidXDCCInstructions(Exception):
+    """
+    Exception that is raised whenever xdcc update instructions are invalid
     """
     pass

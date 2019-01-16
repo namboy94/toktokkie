@@ -21,7 +21,7 @@ LICENSE"""
 
 import argparse
 from toktokkie import Directory
-from toktokkie.exceptions import MissingMetadataException
+from toktokkie.exceptions import MissingMetadata
 
 
 def main():
@@ -47,7 +47,7 @@ def main():
             directory.rename(args.noconfirm)
         except ValueError:
             print("Renaming of " + path + "failed")
-        except MissingMetadataException:
+        except MissingMetadata:
             print("{} has no metadata file.".format(path))
 
 

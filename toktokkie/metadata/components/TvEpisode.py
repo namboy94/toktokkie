@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, Any
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadata
 
 
 class TvEpisode:
@@ -38,4 +38,4 @@ class TvEpisode:
             self.season = json_data["season"]
             self.episode = json_data["episode"]
         except KeyError:
-            raise InvalidMetadataException()
+            raise InvalidMetadata()

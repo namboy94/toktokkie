@@ -19,7 +19,7 @@ LICENSE"""
 
 from typing import Dict, Any, List
 from toktokkie.metadata.components.TvEpisode import TvEpisode
-from toktokkie.exceptions import InvalidMetadataException
+from toktokkie.exceptions import InvalidMetadata
 
 
 class TvEpisodeRange:
@@ -41,7 +41,7 @@ class TvEpisodeRange:
             self.start_episode = json_data["start_episode"]
             self.end_episode = json_data["end_episode"]
         except (KeyError, TypeError):
-            raise InvalidMetadataException()
+            raise InvalidMetadata()
 
     @property
     def episodes(self) -> List[TvEpisode]:
