@@ -144,6 +144,7 @@ class Metadata:
         """
         self.directory_path = directory_path
         self.metadata_file = os.path.join(directory_path, ".meta/info.json")
+        self.icon_directory = os.path.join(directory_path, ".meta/icons")
 
         if json_data is None:
             with open(self.metadata_file, "r") as info:

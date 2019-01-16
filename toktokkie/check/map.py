@@ -16,3 +16,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
+
+from toktokkie.metadata.components.enums import MediaType
+from toktokkie.check.BookChecker import BookChecker
+from toktokkie.check.BookSeriesChecker import BookSeriesChecker
+from toktokkie.check.TvSeriesChecker import TvSeriesChecker
+from toktokkie.check.MovieChecker import MovieChecker
+
+checker_map = {
+    MediaType.BOOK: BookChecker,
+    MediaType.BOOK_SERIES: BookSeriesChecker,
+    MediaType.TV_SERIES: TvSeriesChecker,
+    MediaType.MOVIE: MovieChecker
+}
+"""
+A dictionary mapping media types to checker classes
+"""

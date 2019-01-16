@@ -25,6 +25,7 @@ from toktokkie.metadata.helper.functions import get_metadata, create_metadata
 from toktokkie.metadata.components.enums import MediaType
 from toktokkie.exceptions import MissingMetadata
 from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
+from toktokkie.check.map import checker_map
 
 
 class Directory:
@@ -43,7 +44,6 @@ class Directory:
         """
         self.path = path
         self.meta_dir = os.path.join(path, ".meta")
-        self.icon_path = os.path.join(self.meta_dir, "icons")
         self.metadata_file = os.path.join(self.meta_dir, "info.json")
 
         if generate_metadata:
@@ -57,8 +57,8 @@ class Directory:
 
         self.metadata = get_metadata(self.path)
 
-        if not os.path.isdir(self.icon_path):
-            os.makedirs(self.icon_path)
+        if not os.path.isdir(self.metadata.icon_directory):
+            os.makedirs(self.metadata.icon_directory)
 
     def reload(self):
         """
@@ -106,8 +106,19 @@ class Directory:
         :param procedure: The iconizing procedure to use
         :return: None
         """
-        iconizer = Iconizer(self.path, self.icon_path, procedure)
+        iconizer = Iconizer(self.path, self.metadata.icon_directory, procedure)
         iconizer.iconize()
+
+    def check(self, show_warnings: bool):
+        """
+        Performs a check, making sure that everything in the directory
+        is configured correctly and up-to-date
+        :param show_warnings: Whether or not to show warnings
+        :return: None
+        """
+        checker_cls = checker_map[self.metadata.media_type()]
+        checker = checker_cls(self.metadata, show_warnings)
+        checker.check()
 
     def xdcc_update(self):
         """
