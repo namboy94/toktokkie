@@ -39,6 +39,8 @@ class RenameOperation:
         Renames the episode file to the new name
         :return: None
         """
+        # TODO Take care of illegal characters and character limits
+        # Thanks Windows :(
         os.rename(self.source, self.dest)
 
     def __str__(self) -> str:

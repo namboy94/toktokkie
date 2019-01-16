@@ -68,6 +68,8 @@ class TestGameOfThrones(unittest.TestCase):
             True: {
                 "Season 1": [
                     "S01E01 - Winter Is Coming.txt",
+                    "S01E03 - Lord Snow",
+                    "S01E04 - Cripples, Bastards, and Broken Things.bin",
                     "S01E09-E10 - Baelor | Fire and Blood.txt"
                 ],
                 "Season 2": [
