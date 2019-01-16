@@ -142,7 +142,7 @@ class XDCCUpdater:
         pattern = self.xdcc_info["search_pattern"]
 
         predefined_patterns = {
-            "TEST": "test"
+            "horriblesubs": "[HorribleSubs] @{NAME} - @{EPI-2} [@{RES-P}].mkv"
         }
 
         if pattern in predefined_patterns:
