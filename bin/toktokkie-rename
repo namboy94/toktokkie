@@ -21,7 +21,7 @@ LICENSE"""
 
 import argparse
 from toktokkie import Directory
-from toktokkie.exceptions import MissingMetadata
+from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 
 
 def main():
@@ -49,6 +49,8 @@ def main():
             print("Renaming of " + path + "failed")
         except MissingMetadata:
             print("{} has no metadata file.".format(path))
+        except InvalidMetadata:
+            print("{}'s metadata is invalid.".format(path))
 
 
 if __name__ == "__main__":

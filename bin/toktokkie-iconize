@@ -22,6 +22,7 @@ LICENSE"""
 import argparse
 from toktokkie import Directory
 from toktokkie.iconizing import procedures, default_procedure
+from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 
 
 def main():
@@ -51,6 +52,10 @@ def main():
             directory.iconize(procedure)
         except ValueError:
             print("Iconizing of " + path + "failed")
+        except MissingMetadata:
+            print("{} has no metadata file.".format(path))
+        except InvalidMetadata:
+            print("{}'s metadata is invalid.".format(path))
 
 
 if __name__ == "__main__":
