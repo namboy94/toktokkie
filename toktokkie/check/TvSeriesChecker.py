@@ -21,6 +21,7 @@ import os
 import tvdb_api
 from toktokkie.check.Checker import Checker
 from toktokkie.renaming.Renamer import Renamer
+from toktokkie.renaming.RenameOperation import RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.enums import TvIdType
 
@@ -127,6 +128,9 @@ class TvSeriesChecker(Checker):
                             season_number,
                             episode_number,
                             episode_name
+                        )
+                        episode_name = RenameOperation.sanitize(
+                            metadata.directory_path, episode_name
                         )
 
                         exists = exists or self._find_file(episode_name)
