@@ -59,8 +59,11 @@ class TvSeries(Metadata):
         name = os.path.basename(directory_path)
         print("Generating metadata for {}:".format(name))
 
-        probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
-        probable_defaults = {TvIdType.TVDB.value: [probable_tvdb_id]}
+        try:
+            probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
+            probable_defaults = {TvIdType.TVDB.value: [probable_tvdb_id]}
+        except tvdb_api.tvdb_shownotfound:
+            probable_defaults = None
 
         series_ids = cls.prompt_for_ids(defaults=probable_defaults)
         series = cls(directory_path, {
