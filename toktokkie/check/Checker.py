@@ -42,6 +42,7 @@ class Checker:
         Performs sanity checks and prints out anything that's wrong
         :return: None
         """
+        print("-" * 80)
         print("Checking {}".format(self.metadata.name))
         self._check_icons()
         self._check_renaming()

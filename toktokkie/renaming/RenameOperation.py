@@ -33,6 +33,7 @@ class RenameOperation:
         """
         self.source = source_path
         self.dest = dest_path
+        self._sanitize()
 
     def rename(self):
         """

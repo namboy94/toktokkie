@@ -64,7 +64,6 @@ class TvSeriesChecker(Checker):
             return
 
         try:
-            print(tvdb_id)
             series_data = tvdb_api.Tvdb()[int(tvdb_id)]
         except tvdb_api.tvdb_shownotfound:
             self.error("Show not found on TVDB")
