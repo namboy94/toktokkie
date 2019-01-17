@@ -39,8 +39,7 @@ class RenameOperation:
         Renames the episode file to the new name
         :return: None
         """
-        # TODO Take care of illegal characters and character limits
-        # Thanks Windows :(
+        self._sanitize()
         os.rename(self.source, self.dest)
 
     def __str__(self) -> str:
@@ -48,3 +47,41 @@ class RenameOperation:
         :return: A string representation of the operation
         """
         return "{} ---> {}".format(self.source, self.dest)
+
+    def _sanitize(self):
+        """
+        Replaces all illegal file system characters with valid ones.
+        Also, limits the length of the resulting file path to 250 characters,
+        if at all possible
+        :return: The sanitized string
+        """
+        illegal_characters = {
+            "/": "ǁ",
+            "\\": "ǁ",
+            "?": "‽",
+            "<": "←",
+            ">": "→",
+            ":": "꞉",
+            "*": "∗",
+            "|": "ǁ",
+            "\"": "“"
+        }
+
+        sanitized = str(os.path.basename(self.dest))
+        for illegal_character, replacement in illegal_characters.items():
+            sanitized = sanitized.replace(illegal_character, replacement)
+
+        try:
+            name, ext = sanitized.rsplit(".", 1)
+            ext = "." + ext
+        except IndexError:
+            name, ext = [sanitized, ""]
+
+        location = os.path.dirname(self.dest)
+
+        if len(self.dest) > 250 > len(location) + len(ext):
+            max_file_length = 250 - (len(location) + len(ext))
+            name = name[0:max_file_length]
+            sanitized = os.path.join(location, name + ext)
+
+        self.dest = sanitized
