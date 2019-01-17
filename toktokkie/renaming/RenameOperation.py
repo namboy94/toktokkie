@@ -40,6 +40,7 @@ class RenameOperation:
         :return: None
         """
         self._sanitize()
+        print("Renaming: {}".format(self))
         os.rename(self.source, self.dest)
 
     def __str__(self) -> str:
