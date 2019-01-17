@@ -25,22 +25,22 @@ class RenameOperation:
     Class that models a renaming operation
     """
 
-    def __init__(self, source_path: str, dest_path: str):
+    def __init__(self, source_path: str, new_name: str):
         """
         Initializes the RenameOperation object
         :param source_path: The currently existing path to the file/directory
-        :param dest_path: The new path to the file/directory
+        :param new_name: The new name of the file/directory
         """
+        self.parent = os.path.dirname(source_path)
         self.source = source_path
-        self.dest = dest_path
-        self._sanitize()
+        sanitized = self.sanitize(self.parent, new_name)
+        self.dest = os.path.join(self.parent, sanitized)
 
     def rename(self):
         """
         Renames the episode file to the new name
         :return: None
         """
-        self._sanitize()
         print("Renaming: {}".format(self))
         os.rename(self.source, self.dest)
 
@@ -50,14 +50,16 @@ class RenameOperation:
         """
         return "{} ---> {}".format(self.source, self.dest)
 
-    def _sanitize(self):
+    @staticmethod
+    def sanitize(parent: str, filename: str) -> str:
         """
         Replaces all illegal file system characters with valid ones.
         Also, limits the length of the resulting file path to 250 characters,
         if at all possible
+        :param parent: The parent directory
+        :param filename: The filename to sanitize
         :return: The sanitized string
         """
-        print(self.dest)
         illegal_characters = {
             "/": "ǁ",
             "\\": "ǁ",
@@ -70,7 +72,7 @@ class RenameOperation:
             "\"": "“"
         }
 
-        sanitized = str(os.path.basename(self.dest))
+        sanitized = str(os.path.basename(filename))
         for illegal_character, replacement in illegal_characters.items():
             sanitized = sanitized.replace(illegal_character, replacement)
 
@@ -80,10 +82,8 @@ class RenameOperation:
         except (IndexError, ValueError):
             name, ext = [sanitized, ""]
 
-        location = os.path.dirname(self.dest)
-
-        if len(self.dest) > 250 > len(location) + len(ext):
-            max_file_length = 250 - (len(location) + len(ext))
+        if len(sanitized) > 250 > len(parent) + len(ext):
+            max_file_length = 250 - (len(parent) + len(ext))
             name = name[0:max_file_length]
 
-        self.dest = os.path.join(location, name + ext)
+        return name + ext

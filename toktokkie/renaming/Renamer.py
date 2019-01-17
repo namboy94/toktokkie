@@ -105,8 +105,7 @@ class Renamer:
         book_file = self._get_children(no_dirs=True)[0]
         dest = "{}.{}".format(self.metadata.name, self.get_ext(book_file))
         return [RenameOperation(
-            os.path.join(self.path, book_file),
-            os.path.join(self.path, dest)
+            os.path.join(self.path, book_file), dest
         )]
 
     def _generate_book_series_operations(self) -> List[RenameOperation]:
@@ -125,8 +124,7 @@ class Renamer:
             )
 
             operations.append(RenameOperation(
-                os.path.join(self.path, volume),
-                os.path.join(self.path, new_name)
+                os.path.join(self.path, volume), new_name
             ))
 
         return operations
@@ -139,8 +137,7 @@ class Renamer:
         movie_file = self._get_children(no_dirs=True)[0]
         dest = "{}.{}".format(self.metadata.name, self.get_ext(movie_file))
         return [RenameOperation(
-            os.path.join(self.path, movie_file),
-            os.path.join(self.path, dest)
+            os.path.join(self.path, movie_file), dest
         )]
 
     def _generate_tv_series_operations(self) -> List[RenameOperation]:
@@ -192,11 +189,7 @@ class Renamer:
                     end
                 )
 
-                operations.append(RenameOperation(
-                    episode_file,
-                    os.path.join(os.path.dirname(episode_file), new_name)
-                ))
-
+                operations.append(RenameOperation(episode_file, new_name))
                 episode_number += 1
 
         return operations
