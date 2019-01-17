@@ -72,7 +72,7 @@ class RenameOperation:
             "\"": "“"
         }
 
-        sanitized = str(os.path.basename(filename))
+        sanitized = filename
         for illegal_character, replacement in illegal_characters.items():
             sanitized = sanitized.replace(illegal_character, replacement)
 
