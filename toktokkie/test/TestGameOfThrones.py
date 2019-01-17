@@ -53,7 +53,6 @@ class TestGameOfThrones(unittest.TestCase):
         Deletes the test resources
         :return: None
         """
-        return
         self.cleanup()
 
     def test_renaming(self):
