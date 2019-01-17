@@ -240,7 +240,7 @@ class XDCCUpdater:
             elif choices is not None and resp not in choices:
                 continue
             else:
-                continue
+                pass
 
             if is_int:
                 try:
