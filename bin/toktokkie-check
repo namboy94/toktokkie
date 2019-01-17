@@ -36,6 +36,8 @@ def main():
                              "valid metadata configuration will be ignored.")
     parser.add_argument("--warnings", action="store_true",
                         help="Shows warnings in addition to errors")
+    parser.add_argument("--fix", action="store_true",
+                        help="Enables interactive error fixing")
     args = parser.parse_args()
 
     directories = args.directories
@@ -43,7 +45,7 @@ def main():
     for path in directories:
 
         try:
-            Directory(path).check(args.warnings)
+            Directory(path).check(args.warnings, args.fix)
         except MissingMetadata:
             print("{} has no metadata file.".format(path))
         except InvalidMetadata:

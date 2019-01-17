@@ -109,15 +109,16 @@ class Directory:
         iconizer = Iconizer(self.path, self.metadata.icon_directory, procedure)
         iconizer.iconize()
 
-    def check(self, show_warnings: bool):
+    def check(self, show_warnings: bool, fix_interactively: bool):
         """
         Performs a check, making sure that everything in the directory
         is configured correctly and up-to-date
         :param show_warnings: Whether or not to show warnings
+        :param fix_interactively: Whether or not to enable interactive fixing
         :return: None
         """
         checker_cls = checker_map[self.metadata.media_type()]
-        checker = checker_cls(self.metadata, show_warnings)
+        checker = checker_cls(self.metadata, show_warnings, fix_interactively)
         checker.check()
 
     def xdcc_update(self):

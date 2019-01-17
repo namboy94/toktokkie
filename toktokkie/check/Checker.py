@@ -28,14 +28,22 @@ class Checker:
     Class that performs checks on Metadata objects
     """
 
-    def __init__(self, metadata: Metadata, show_warnings: bool):
+    def __init__(
+            self,
+            metadata: Metadata,
+            show_warnings: bool,
+            fix_interactively: bool
+    ):
         """
         Initializes the checker
         :param metadata: The metadata to check
         :param show_warnings: Whether or not to show warnings
+        :param fix_interactively: Can be set to True to
+                                  interactively fix some errors
         """
         self.metadata = metadata
         self.show_warnings = show_warnings
+        self.fix_interactively = fix_interactively
 
     def check(self):
         """
@@ -80,9 +88,15 @@ class Checker:
         :return: None
         """
         renamer = Renamer(self.metadata)
+
+        has_errors = False
         for operation in renamer.operations:
             if operation.source != operation.dest:
                 self.error("File Mismatch: {}".format(operation))
+                has_errors = True
+
+        if has_errors and self.fix_interactively:
+            renamer.rename(False)
 
     # noinspection PyMethodMayBeStatic
     def error(self, text: str):
