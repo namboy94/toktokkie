@@ -230,3 +230,53 @@ class TvSeries(Metadata):
             len(self.multi_episodes) ==
             len(self.json.get("multi_episodes", []))
         )
+
+    def get_season_episode_map(self) -> Dict[int, Dict[str, List[str]] or str]:
+        """
+        Generates a dictionary mapping season numbers to episode files,
+        including some additional data like tvdb ids.
+        The dictionary has the following form:
+        {season_number: {
+            "tvdb_id": tvdb_id,
+            "episodes": [episode_numbers, ...]
+        }}
+        The episode lists are sorted by their episode name.
+        :return: The generated dictionary.
+        """
+        content_info = {}
+
+        for season_name in os.listdir(self.directory_path):
+
+            season_path = os.path.join(self.directory_path, season_name)
+            if season_name.startswith(".") or os.path.isfile(season_path):
+                continue
+
+            try:
+                season_metadata = self.get_season(season_name)
+                tvdb_id = season_metadata.ids[TvIdType.TVDB][0]
+            except KeyError:
+                print("No TVDB ID found for {}".format(season_name))
+                continue
+
+            if season_metadata.season_number not in content_info:
+                content_info[season_metadata.season_number] = {
+                    "tvdb_id": tvdb_id,
+                    "episodes": []
+                }
+
+            for episode in os.listdir(season_metadata.path):
+                episode_path = os.path.join(season_metadata.path, episode)
+
+                if not os.path.isfile(episode_path) or episode.startswith("."):
+                    continue
+
+                content_info[season_metadata.season_number]["episodes"] \
+                    .append(episode_path)
+
+        # Sort the episode lists
+        for season in content_info:
+            content_info[season]["episodes"].sort(
+                key=lambda x: os.path.basename(x)
+            )
+
+        return content_info

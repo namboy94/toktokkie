@@ -55,6 +55,7 @@ class RenameOperation:
         if at all possible
         :return: The sanitized string
         """
+        print(self.dest)
         illegal_characters = {
             "/": "ǁ",
             "\\": "ǁ",
@@ -74,7 +75,7 @@ class RenameOperation:
         try:
             name, ext = sanitized.rsplit(".", 1)
             ext = "." + ext
-        except IndexError:
+        except (IndexError, ValueError):
             name, ext = [sanitized, ""]
 
         location = os.path.dirname(self.dest)
@@ -82,6 +83,5 @@ class RenameOperation:
         if len(self.dest) > 250 > len(location) + len(ext):
             max_file_length = 250 - (len(location) + len(ext))
             name = name[0:max_file_length]
-            sanitized = os.path.join(location, name + ext)
 
-        self.dest = sanitized
+        self.dest = os.path.join(location, name + ext)

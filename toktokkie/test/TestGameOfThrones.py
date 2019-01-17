@@ -53,6 +53,7 @@ class TestGameOfThrones(unittest.TestCase):
         Deletes the test resources
         :return: None
         """
+        return
         self.cleanup()
 
     def test_renaming(self):
@@ -70,7 +71,7 @@ class TestGameOfThrones(unittest.TestCase):
                     "S01E01 - Winter Is Coming.txt",
                     "S01E03 - Lord Snow",
                     "S01E04 - Cripples, Bastards, and Broken Things.bin",
-                    "S01E09-E10 - Baelor | Fire and Blood.txt"
+                    "S01E09-E10 - Baelor ǁ Fire and Blood.txt"
                 ],
                 "Season 2": [
                     "S02E03 - What is Dead May Never Die.txt"
@@ -91,6 +92,8 @@ class TestGameOfThrones(unittest.TestCase):
 
             for season, episodes in data.items():
                 for episode in episodes:
+
+                    print(episode)
 
                     got = "Game of Thrones"
                     episode_file = "test-res/{}/{}/{} - {}".format(

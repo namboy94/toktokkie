@@ -103,7 +103,7 @@ class Renamer:
         :return: The list of rename operations
         """
         book_file = self._get_children(no_dirs=True)[0]
-        dest = "{}.{}".format(self.metadata.name, self._get_ext(book_file))
+        dest = "{}.{}".format(self.metadata.name, self.get_ext(book_file))
         return [RenameOperation(
             os.path.join(self.path, book_file),
             os.path.join(self.path, dest)
@@ -137,7 +137,7 @@ class Renamer:
         :return: The list of rename operations
         """
         movie_file = self._get_children(no_dirs=True)[0]
-        dest = "{}.{}".format(self.metadata.name, self._get_ext(movie_file))
+        dest = "{}.{}".format(self.metadata.name, self.get_ext(movie_file))
         return [RenameOperation(
             os.path.join(self.path, movie_file),
             os.path.join(self.path, dest)
@@ -146,45 +146,19 @@ class Renamer:
     def _generate_tv_series_operations(self) -> List[RenameOperation]:
         """
         Generates rename operations for tv series media types
-        TODO Split up in multiple methods.
         :return: The list of rename operations
         """
         operations = []
 
         tv_series_metadata = self.metadata  # type: TvSeries
 
-        content_info = {}
+        series_name = tv_series_metadata.name
+        content_info = tv_series_metadata.get_season_episode_map()
 
         excluded = tv_series_metadata.excludes.get(TvIdType.TVDB, {})
         multis = tv_series_metadata.multi_episodes.get(TvIdType.TVDB, {})
         start_overrides = \
             tv_series_metadata.season_start_overrides.get(TvIdType.TVDB, {})
-
-        series_name = tv_series_metadata.name
-
-        for season in self._get_children(no_files=True):
-
-            try:
-                season_metadata = tv_series_metadata.get_season(season)
-                tvdb_id = season_metadata.ids[TvIdType.TVDB][0]
-            except KeyError:
-                print("No TVDB ID found for {}".format(season))
-                continue
-
-            if season_metadata.season_number not in content_info:
-                content_info[season_metadata.season_number] = {
-                    "tvdb_id": tvdb_id,
-                    "episodes": []
-                }
-
-            for episode in os.listdir(season_metadata.path):
-                episode_path = os.path.join(season_metadata.path, episode)
-
-                if not os.path.isfile(episode_path) or episode.startswith("."):
-                    continue
-
-                content_info[season_metadata.season_number]["episodes"] \
-                    .append(episode_path)
 
         for season_number, season_data in content_info.items():
 
@@ -195,53 +169,28 @@ class Renamer:
             season_multis = multis.get(season_number, {})
             episode_number = start_overrides.get(season_number, 1)
 
-            episodes.sort(key=lambda x: os.path.basename(x))
-
             for episode_file in episodes:
 
                 while episode_number in season_excluded:
                     episode_number += 1
 
-                start = episode_number
                 if episode_number in season_multis:
                     end = season_multis[episode_number]
                 else:
                     end = None
 
-                ext = self._get_ext(episode_file)
-                if ext is not None:
-                    ext = "." + ext
-                else:
-                    ext = ""
+                episode_name = self.load_tvdb_episode_name(
+                    tvdb_id, season_number, episode_number, end
+                )
 
-                if end is None:
-                    new_name = "{} - S{}E{} - {}{}".format(
-                        series_name,
-                        str(season_number).zfill(2),
-                        str(episode_number).zfill(2),
-                        self._load_tvdb_episode_name(
-                            tvdb_id, season_number, episode_number
-                        ),
-                        ext
-                    )
-                else:
-
-                    episode_names = []
-                    while episode_number <= end:
-                        episode_names.append(self._load_tvdb_episode_name(
-                            tvdb_id, season_number, episode_number
-                        ))
-                        episode_number += 1
-                    episode_names = " | ".join(episode_names)
-
-                    new_name = "{} - S{}E{}-E{} - {}{}".format(
-                        series_name,
-                        str(season_number).zfill(2),
-                        str(start).zfill(2),
-                        str(end).zfill(2),
-                        episode_names,
-                        ext
-                    )
+                new_name = self.generate_tv_episode_filename(
+                    episode_file,
+                    series_name,
+                    season_number,
+                    episode_number,
+                    episode_name,
+                    end
+                )
 
                 operations.append(RenameOperation(
                     episode_file,
@@ -253,18 +202,74 @@ class Renamer:
         return operations
 
     @staticmethod
-    def _load_tvdb_episode_name(
+    def generate_tv_episode_filename(
+            original_file: str,
+            series_name: str,
+            season_number: int,
+            episode_number: int,
+            episode_name: str,
+            multi_end: Optional[int] = None
+    ):
+        """
+        Generates an episode name for a given episode
+        :param original_file: The original file. Used to get the file extension
+        :param series_name: The name of the series
+        :param season_number: The season number
+        :param episode_name: The episode name
+        :param episode_number: The episode number
+        :param multi_end: Can be provided to create a multi-episode range
+        :return: The generated episode name
+        """
+        ext = Renamer.get_ext(original_file)
+        if ext is not None:
+            ext = "." + ext
+        else:
+            ext = ""
+
+        if multi_end is None:
+            return "{} - S{}E{} - {}{}".format(
+                series_name,
+                str(season_number).zfill(2),
+                str(episode_number).zfill(2),
+                episode_name,
+                ext
+            )
+        else:
+            return "{} - S{}E{}-E{} - {}{}".format(
+                series_name,
+                str(season_number).zfill(2),
+                str(episode_number).zfill(2),
+                str(multi_end).zfill(2),
+                episode_name,
+                ext
+            )
+
+    @staticmethod
+    def load_tvdb_episode_name(
             tvdb_id: str,
             season_number: int,
-            episode_number: int
+            episode_number: int,
+            multi_end: Optional[int] = None
     ) -> str:
         """
         Loads an episode name from TVDB
         :param tvdb_id: The TVDB ID for the episode's series
         :param season_number: The season number
         :param episode_number: The episode number
+        :param multi_end: If provided,
+                          will generate a name for a range of episodes
         :return: The TVDB name
         """
+        if multi_end is not None:
+            episode_names = []
+            for episode in range(episode_number, multi_end + 1):
+                episode_names.append(Renamer.load_tvdb_episode_name(
+                    tvdb_id,
+                    season_number,
+                    episode
+                ))
+            return " | ".join(episode_names)
+
         try:
             tvdb = tvdb_api.Tvdb()
             tvdb_id = int(tvdb_id)
@@ -279,7 +284,7 @@ class Renamer:
             return "Episode " + str(episode_number)
 
     @staticmethod
-    def _get_ext(filename: str) -> Optional[str]:
+    def get_ext(filename: str) -> Optional[str]:
         """
         Gets the file extension of a file
         :param filename: The filename for which to get the file extension
