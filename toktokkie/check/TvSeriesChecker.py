@@ -94,25 +94,14 @@ class TvSeriesChecker(Checker):
 
             episode_count = len(season_data.keys())
 
-            season_content = media_content.get(season_number, {})
-            season_content_count = len(season_content.get("episodes", []))
-            season_ignores = ignores.get(season_number, [])
-            season_ignores_count = len(season_ignores)
-
-            total_present = season_content_count + season_ignores_count
-
-            if episode_count != total_present:
-                self.error("Mismatch in season {}; Should:{}; Is:{}".format(
-                    season_number, episode_count, total_present
-                ))
-
             for episode_number, episode_data in season_data.items():
 
                 airdate = episode_data["firstAired"]
                 now = datetime.now().strftime("%Y-%m-%d")
 
                 # Skip unaired episodes
-                if airdate > now:
+                if airdate > now or not airdate:
+                    episode_count -= 1
                     continue
 
                 if episode_number not in ignores:
@@ -151,3 +140,15 @@ class TvSeriesChecker(Checker):
                                 str(episode_number).zfill(2)
                                 )
                             )
+
+            season_content = media_content.get(season_number, {})
+            season_content_count = len(season_content.get("episodes", []))
+            season_ignores = ignores.get(season_number, [])
+            season_ignores_count = len(season_ignores)
+
+            total_present = season_content_count + season_ignores_count
+
+            if episode_count != total_present:
+                self.error("Mismatch in season {}; Should:{}; Is:{}".format(
+                    season_number, episode_count, total_present
+                ))
