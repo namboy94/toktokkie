@@ -19,6 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import tvdb_api
+from datetime import datetime
 from toktokkie.check.Checker import Checker
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
@@ -106,6 +107,13 @@ class TvSeriesChecker(Checker):
                 ))
 
             for episode_number, episode_data in season_data.items():
+
+                airdate = episode_data["firstAired"]
+                now = datetime.now().strftime("%Y-%m-%d")
+
+                # Skip unaired episodes
+                if airdate > now:
+                    continue
 
                 if episode_number not in ignores:
 
