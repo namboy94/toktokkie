@@ -55,7 +55,7 @@ class Metadata:
         """
         :return: The name of the media
         """
-        return os.path.basename(self.directory_path)
+        return os.path.basename(os.path.abspath(self.directory_path))
 
     @name.setter
     def name(self, name: str):
