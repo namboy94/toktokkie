@@ -41,8 +41,9 @@ class RenameOperation:
         Renames the episode file to the new name
         :return: None
         """
-        print("Renaming: {}".format(self))
-        os.rename(self.source, self.dest)
+        if self.source != self.dest:
+            print("Renaming: {}".format(self))
+            os.rename(self.source, self.dest)
 
     def __str__(self) -> str:
         """
