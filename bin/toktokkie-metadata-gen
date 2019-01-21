@@ -46,7 +46,12 @@ def main():
 
     media_type = args.media_type
 
-    Directory(directory, generate_metadata=True, metadata_type=media_type)
+    generated = Directory(
+        directory,
+        generate_metadata=True,
+        metadata_type=media_type
+    )
+    generated.metadata.print_folder_icon_source()
 
 
 if __name__ == "__main__":

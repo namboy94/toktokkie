@@ -292,3 +292,16 @@ class Metadata:
         """
         if not condition:
             raise InvalidMetadata()
+
+    def print_folder_icon_source(self):
+        """
+        Prints a message with a URL for possible folder icons on deviantart
+        :return: None
+        """
+        deviantart = "https://www.deviantart.com"
+        url = "{}/popular-all-time/?section=&global=1&q={}".format(
+            deviantart,
+            "+".join(self.name.split(" ") + ["folder", "icon"])
+        )
+        print("Search folder icons here:")
+        print(url)
