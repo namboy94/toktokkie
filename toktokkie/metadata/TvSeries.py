@@ -209,6 +209,55 @@ class TvSeries(Metadata):
 
         return generated
 
+    def add_multi_episode(
+            self,
+            id_type: TvIdType,
+            season: int,
+            start_episode: int,
+            end_episode: int
+    ):
+        """
+        Adds a multi-episode
+        :param id_type: The ID type
+        :param season: The season of the multi episode
+        :param start_episode: The start episode
+        :param end_episode: The end episode
+        :return: None
+        """
+        if "multi_episodes" not in self.json:
+            self.json["multi_episodes"] = {}
+        if id_type.value not in self.json["multi_episodes"]:
+            self.json["multi_episodes"][id_type.value] = []
+
+        self.json["multi_episodes"][id_type.value].append({
+            "season": season,
+            "start_episode": start_episode,
+            "end_episode": end_episode
+        })
+
+    def add_exclude(
+            self,
+            id_type: TvIdType,
+            season: int,
+            episode: int
+    ):
+        """
+        Adds an excluded episode
+        :param id_type: The ID type
+        :param season: The season of the excluded episode
+        :param episode: The excluded episode number
+        :return: None
+        """
+        if "excludes" not in self.json:
+            self.json["excludes"] = {}
+        if id_type.value not in self.json["excludes"]:
+            self.json["excludes"][id_type.value] = []
+
+        self.json["excludes"][id_type.value].append({
+            "season": season,
+            "episode": episode
+        })
+
     def validate_json(self):
         """
         Validates the JSON data to make sure everything has valid values

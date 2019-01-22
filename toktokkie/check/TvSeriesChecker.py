@@ -140,6 +140,7 @@ class TvSeriesChecker(Checker):
                                 str(episode_number).zfill(2)
                                 )
                             )
+                        # TODO Correctly handle multi episodes
 
             season_content = media_content.get(season_number, {})
             season_content_count = len(season_content.get("episodes", []))
@@ -152,3 +153,5 @@ class TvSeriesChecker(Checker):
                 self.error("Mismatch in season {}; Should:{}; Is:{}".format(
                     season_number, episode_count, total_present
                 ))
+
+# TODO Figure out problem with Seisen Cerberus
