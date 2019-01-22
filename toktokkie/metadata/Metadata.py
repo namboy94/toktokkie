@@ -305,3 +305,15 @@ class Metadata:
         )
         print("Search folder icons here:")
         print(url)
+
+    def get_icon_file(self, name: str) -> Optional[str]:
+        """
+        Retrieves the path to an icon file, if it exists
+        :param name: The name of the icon.
+        :return: The path to the icon file or None, if the file does not exist
+        """
+        path = os.path.join(self.icon_directory, "{}.png".format(name))
+        if os.path.isfile(path):
+            return path
+        else:
+            return None
