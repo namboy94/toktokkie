@@ -273,7 +273,7 @@ class Renamer:
         try:
             tvdb = tvdb_api.Tvdb()
             tvdb_id = int(tvdb_id)
-            return tvdb[tvdb_id][season_number][episode_number]["episodename"]
+            return tvdb[tvdb_id][season_number][episode_number]["episodeName"]
 
         except (tvdb_episodenotfound, tvdb_seasonnotfound,
                 tvdb_shownotfound, ConnectionError, KeyError) as e:
