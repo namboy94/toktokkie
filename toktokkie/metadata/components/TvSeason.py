@@ -32,7 +32,6 @@ class TvSeason(MetadataPart):
         """
         :return: The season number of the season
         """
-
         if self.name.lower().startswith("season "):
             return int(self.name.lower().split("season")[1])
         else:

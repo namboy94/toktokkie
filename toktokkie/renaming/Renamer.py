@@ -149,48 +149,61 @@ class Renamer:
 
         tv_series_metadata = self.metadata  # type: TvSeries
 
-        series_name = tv_series_metadata.name
-        content_info = tv_series_metadata.get_season_episode_map()
-
         excluded = tv_series_metadata.excludes.get(TvIdType.TVDB, {})
         multis = tv_series_metadata.multi_episodes.get(TvIdType.TVDB, {})
         start_overrides = \
             tv_series_metadata.season_start_overrides.get(TvIdType.TVDB, {})
 
-        for season_number, season_data in content_info.items():
+        try:
+            main_tvdb_id = tv_series_metadata.ids.get(TvIdType.TVDB, [])[0]
+        except IndexError:
+            print("No TVDB ID for {}".format(tv_series_metadata.name))
+            return []
 
-            tvdb_id = season_data["tvdb_id"]
-            episodes = season_data["episodes"]
+        content_info = tv_series_metadata.get_episode_files()
 
-            season_excluded = excluded.get(season_number, [])
-            season_multis = multis.get(season_number, {})
-            episode_number = start_overrides.get(season_number, 1)
+        for tvdb_id, season_data in content_info.items():
+            is_spinoff = main_tvdb_id != tvdb_id
 
-            for episode_file in episodes:
+            if is_spinoff:
+                sample_episode = season_data[list(season_data)[0]][0]
+                location = os.path.dirname(sample_episode)
+                series_name = os.path.basename(location)
+            else:
+                series_name = tv_series_metadata.name
 
-                while episode_number in season_excluded:
+            for _season_number, episodes in season_data.items():
+                season_number = _season_number if not is_spinoff else 1
+
+                season_excluded = excluded.get(season_number, [])
+                season_multis = multis.get(season_number, {})
+                episode_number = start_overrides.get(season_number, 1)
+
+                for episode_file in episodes:
+
+                    while episode_number in season_excluded:
+                        episode_number += 1
+
+                    if episode_number in season_multis:
+                        end = season_multis[episode_number]
+                    else:
+                        end = None
+
+                    episode_name = self.load_tvdb_episode_name(
+                        tvdb_id, season_number, episode_number, end
+                    )
+
+                    new_name = self.generate_tv_episode_filename(
+                        episode_file,
+                        series_name,
+                        season_number,
+                        episode_number,
+                        episode_name,
+                        end
+                    )
+
+                    operations.append(RenameOperation(episode_file, new_name))
                     episode_number += 1
-
-                if episode_number in season_multis:
-                    end = season_multis[episode_number]
-                else:
-                    end = None
-
-                episode_name = self.load_tvdb_episode_name(
-                    tvdb_id, season_number, episode_number, end
-                )
-
-                new_name = self.generate_tv_episode_filename(
-                    episode_file,
-                    series_name,
-                    season_number,
-                    episode_number,
-                    episode_name,
-                    end
-                )
-
-                operations.append(RenameOperation(episode_file, new_name))
-                episode_number += 1
 
         return operations
 

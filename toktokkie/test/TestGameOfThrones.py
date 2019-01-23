@@ -53,6 +53,7 @@ class TestGameOfThrones(unittest.TestCase):
         Deletes the test resources
         :return: None
         """
+        return
         self.cleanup()
 
     def test_renaming(self):
@@ -74,9 +75,6 @@ class TestGameOfThrones(unittest.TestCase):
                 ],
                 "Season 2": [
                     "S02E03 - What is Dead May Never Die.txt"
-                ],
-                "Season 3": [
-                    "S03E01 - No Mas.txt"
                 ],
                 "Other": [
                     "S00E02 - 15-Minute Preview.txt"
@@ -102,3 +100,8 @@ class TestGameOfThrones(unittest.TestCase):
                         mode,
                         os.path.isfile(episode_file)
                     )
+
+        breaking_bad = "Breaking Bad/Breaking Bad - S01E01 - Pilot.txt"
+        self.assertTrue(os.path.isfile(os.path.join(
+            directory.path, breaking_bad
+        )))

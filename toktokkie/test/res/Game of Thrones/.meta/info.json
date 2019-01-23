@@ -7,7 +7,7 @@
     {"name": "Season 2"},
     {"name": "Specials"},
     {"name": "Other"},
-    {"name": "Season 3", "ids":  {"tvdb": "81189"}}
+    {"name": "Breaking Bad", "ids":  {"tvdb": "81189"}}
   ],
   "excludes": {"tvdb": [{"season":  1, "episode":  7}]},
   "multi_episodes": {

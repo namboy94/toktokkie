@@ -280,17 +280,16 @@ class TvSeries(Metadata):
             len(self.json.get("multi_episodes", []))
         )
 
-    def get_season_episode_map(self) -> Dict[int, Dict[str, List[str]] or str]:
+    def get_episode_files(self) -> Dict[str, Dict[int, List[str]]]:
         """
-        Generates a dictionary mapping season numbers to episode files,
-        including some additional data like tvdb ids.
-        The dictionary has the following form:
-        {season_number: {
-            "tvdb_id": tvdb_id,
-            "episodes": [episode_numbers, ...]
-        }}
+        Generates a dictionary categorizing internal episode files for further
+        processing.
+        A current limitation is, that only a single tvdb ID per season is
+        supported. It's currently not planned to lift this limitation,
+        as no valid use case for more than one tvdb ID per season has come up.
         The episode lists are sorted by their episode name.
-        :return: The generated dictionary.
+        :return: The generated dictionary. It will have the following form:
+                    {tvdb_id: {season_number: [episode_files]}}
         """
         content_info = {}
 
@@ -307,11 +306,11 @@ class TvSeries(Metadata):
                 print("No TVDB ID found for {}".format(season_name))
                 continue
 
-            if season_metadata.season_number not in content_info:
-                content_info[season_metadata.season_number] = {
-                    "tvdb_id": tvdb_id,
-                    "episodes": []
-                }
+            if tvdb_id not in content_info:
+                content_info[tvdb_id] = {}
+
+            if season_metadata.season_number not in content_info[tvdb_id]:
+                content_info[tvdb_id][season_metadata.season_number] = []
 
             for episode in os.listdir(season_metadata.path):
                 episode_path = os.path.join(season_metadata.path, episode)
@@ -319,13 +318,22 @@ class TvSeries(Metadata):
                 if not os.path.isfile(episode_path) or episode.startswith("."):
                     continue
 
-                content_info[season_metadata.season_number]["episodes"] \
-                    .append(episode_path)
+                content_info[tvdb_id][season_metadata.season_number].append(
+                    episode_path
+                )
 
         # Sort the episode lists
-        for season in content_info:
-            content_info[season]["episodes"].sort(
-                key=lambda x: os.path.basename(x)
-            )
+        for tvdb_id in content_info:
+            for season in content_info[tvdb_id]:
+                content_info[tvdb_id][season].sort(
+                    key=lambda x: os.path.basename(x)
+                )
+
+        for tvdb_id in content_info:
+            print(tvdb_id)
+            for season in content_info[tvdb_id]:
+                print(season)
+                for episode in content_info[tvdb_id][season]:
+                    print(episode)
 
         return content_info
