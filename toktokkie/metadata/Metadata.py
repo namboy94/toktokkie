@@ -220,16 +220,20 @@ class Metadata:
             raise InvalidMetadata()
 
     @classmethod
-    def input(cls,
-              prompt_text: str,
-              default: Optional[PromptType],
-              _type: type(PromptType)) -> Any:
+    def input(
+            cls,
+            prompt_text: str,
+            default: Optional[PromptType],
+            _type: type(PromptType),
+            required: bool = False
+    ) -> Any:
         """
         Creates a user prompt that supports default options and automatic
         type conversions.
         :param prompt_text: The text to prompt the user
         :param default: The default value to use
         :param _type: The type of the prompted value
+        :param required: Whether or not a response is required
         :return: The user's response
         """
         if default is not None:
@@ -242,20 +246,28 @@ class Metadata:
 
         if response == "" and default is not None:
             return default
+        elif response == "" and required:
+            return cls.input(prompt_text, default, _type, required)
         else:
             try:
                 return _type(response)
             except (TypeError, ValueError):
-                return cls.input(prompt_text, default, _type)
+                return cls.input(prompt_text, default, _type, required)
 
     @classmethod
-    def prompt_for_ids(cls, defaults: Optional[Dict[str, List[str]]] = None) \
-            -> Dict[str, List[str]]:
+    def prompt_for_ids(
+            cls,
+            defaults: Optional[Dict[str, List[str]]] = None,
+            required: Optional[List[Enum]] = None
+    ) -> Dict[str, List[str]]:
         """
         Prompts the user for IDs
         :param defaults: The default values to use, mapped to id type names
+        :param required: A list of required ID types
         :return: The generated IDs. At least one ID will be included
         """
+        required = required if required is not None else []
+
         ids = {}
         while len(ids) < 1:
             for id_type in cls.id_type():
@@ -269,7 +281,8 @@ class Metadata:
                 prompted = cls.input(
                     "{} IDs".format(id_type.value),
                     default,
-                    CommaList
+                    CommaList,
+                    required=(id_type in required)
                 ).value
 
                 prompted = list(filter(lambda x: x != "", prompted))

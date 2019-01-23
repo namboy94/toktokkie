@@ -154,16 +154,10 @@ class Renamer:
         start_overrides = \
             tv_series_metadata.season_start_overrides.get(TvIdType.TVDB, {})
 
-        try:
-            main_tvdb_id = tv_series_metadata.ids.get(TvIdType.TVDB, [])[0]
-        except IndexError:
-            print("No TVDB ID for {}".format(tv_series_metadata.name))
-            return []
-
         content_info = tv_series_metadata.get_episode_files()
 
         for tvdb_id, season_data in content_info.items():
-            is_spinoff = main_tvdb_id != tvdb_id
+            is_spinoff = tv_series_metadata.tvdb_id != tvdb_id
 
             if is_spinoff:
                 sample_episode = season_data[list(season_data)[0]][0]

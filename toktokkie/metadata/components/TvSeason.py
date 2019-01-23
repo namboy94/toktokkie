@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 from toktokkie.exceptions import InvalidMetadata
+from toktokkie.metadata.components.enums import TvIdType
 from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 
@@ -26,6 +27,13 @@ class TvSeason(MetadataPart):
     """
     Class that models a single tv season
     """
+
+    @property
+    def tvdb_id(self) -> str:
+        """
+        :return: The TVDB ID of the TV season
+        """
+        return self.ids[TvIdType.TVDB][0]
 
     @property
     def season_number(self) -> int:
@@ -47,3 +55,14 @@ class TvSeason(MetadataPart):
         super().validate()
         if not os.path.isdir(self.path):
             raise InvalidMetadata()
+        try:
+            if not self.tvdb_id == self.ids[TvIdType.TVDB][0]:
+                raise InvalidMetadata()
+        except (KeyError, IndexError):
+            raise InvalidMetadata("Missing TVDB ID")
+
+    def is_spinoff(self) -> bool:
+        """
+        :return: Whether or not this season is a spinoff
+        """
+        return self.parent.tvdb_id == self.tvdb_id

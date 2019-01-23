@@ -65,7 +65,10 @@ class TvSeries(Metadata):
         except tvdb_api.tvdb_shownotfound:
             probable_defaults = None
 
-        series_ids = cls.prompt_for_ids(defaults=probable_defaults)
+        series_ids = cls.prompt_for_ids(
+            defaults=probable_defaults,
+            required=[TvIdType.TVDB]
+        )
         series = cls(directory_path, {
             "seasons": [],
             "ids": series_ids,
@@ -94,6 +97,14 @@ class TvSeries(Metadata):
 
         series.seasons = seasons
         return series
+
+    @property
+    @json_parameter
+    def tvdb_id(self) -> str:
+        """
+        :return: The TVDB ID of the TV Series
+        """
+        return self.ids[TvIdType.TVDB][0]
 
     @property
     @json_parameter
@@ -279,6 +290,9 @@ class TvSeries(Metadata):
             len(self.multi_episodes) ==
             len(self.json.get("multi_episodes", []))
         )
+        self._assert_true(
+            self.tvdb_id == self.ids[TvIdType.TVDB][0]
+        )
 
     def get_episode_files(self) -> Dict[str, Dict[int, List[str]]]:
         """
@@ -301,10 +315,10 @@ class TvSeries(Metadata):
 
             try:
                 season_metadata = self.get_season(season_name)
-                tvdb_id = season_metadata.ids[TvIdType.TVDB][0]
             except KeyError:
-                print("No TVDB ID found for {}".format(season_name))
+                print("No Metadata found for {}".format(season_name))
                 continue
+            tvdb_id = season_metadata.tvdb_id
 
             if tvdb_id not in content_info:
                 content_info[tvdb_id] = {}
@@ -328,12 +342,5 @@ class TvSeries(Metadata):
                 content_info[tvdb_id][season].sort(
                     key=lambda x: os.path.basename(x)
                 )
-
-        for tvdb_id in content_info:
-            print(tvdb_id)
-            for season in content_info[tvdb_id]:
-                print(season)
-                for episode in content_info[tvdb_id][season]:
-                    print(episode)
 
         return content_info

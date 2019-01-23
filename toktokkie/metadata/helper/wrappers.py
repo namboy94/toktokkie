@@ -32,7 +32,7 @@ def json_parameter(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, IndexError):
             raise InvalidMetadata()
 
     return wrapper
