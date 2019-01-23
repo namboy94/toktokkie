@@ -45,28 +45,32 @@ class Checker:
         self.show_warnings = show_warnings
         self.fix_interactively = fix_interactively
 
-    def check(self):
+    def check(self) -> bool:
         """
         Performs sanity checks and prints out anything that's wrong
-        :return: None
+        :return: The result of the check
         """
         print("-" * 80)
         print("Checking {}".format(self.metadata.name))
-        self._check_icons()
-        self._check_renaming()
+        valid = True
+        valid = valid and self._check_icons()
+        valid = valid and self._check_renaming()
+        return valid
 
-    def _check_icons(self):
+    def _check_icons(self) -> bool:
         """
         Checks that the icon directory exists and there's an icon file for
         every child directory as well as the main directory.
-        :return: None
+        :return: The result of the check
         """
+        valid = True
+
         if not os.path.isdir(self.metadata.icon_directory):
-            self.error("Missing icon directory")
+            valid = self.error("Missing icon directory")
 
         main_icon = os.path.join(self.metadata.icon_directory, "main.png")
         if not os.path.isfile(main_icon):
-            self.error("Missing main icon file for {}".format(
+            valid = self.error("Missing main icon file for {}".format(
                 self.metadata.name
             ))
 
@@ -79,33 +83,41 @@ class Checker:
                     self.metadata.icon_directory, child + ".png"
                 )
                 if not os.path.isfile(icon_file):
-                    self.error("Missing icon file for {}".format(child))
+                    valid = \
+                        self.error("Missing icon file for {}".format(child))
 
-    def _check_renaming(self):
+        return valid
+
+    def _check_renaming(self) -> bool:
         """
         Checks if the renaming of the files and directories of the
         metadata content is correct and up-to-date
-        :return: None
+        :return: The result of the check
         """
+        valid = True
         renamer = Renamer(self.metadata)
 
         has_errors = False
         for operation in renamer.operations:
             if operation.source != operation.dest:
-                self.error("File Mismatch: {}".format(operation))
+                valid = self.error("File Mismatch: {}".format(operation))
                 has_errors = True
 
         if has_errors and self.fix_interactively:
             renamer.rename(False)
+            return True
+        else:
+            return valid
 
     # noinspection PyMethodMayBeStatic
-    def error(self, text: str):
+    def error(self, text: str) -> bool:
         """
         Prints a black-on-red error message
         :param text: The text to print
-        :return: None
+        :return: False
         """
         print("{}{}{}{}".format(Back.RED, Fore.BLACK, text, Style.RESET_ALL))
+        return False
 
     def warn(self, text: str):
         """
