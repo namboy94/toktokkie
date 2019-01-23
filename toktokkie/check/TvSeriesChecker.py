@@ -160,7 +160,9 @@ class TvSeriesChecker(Checker):
 
                 # Check if file exists
                 existing_files = \
-                    metadata.get_episode_files().get(season_number, [])
+                    metadata.get_episode_files()[metadata.tvdb_id].get(
+                        season_number, []
+                    )
 
                 exists = False
                 for episode_file in existing_files:
