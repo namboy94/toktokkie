@@ -64,7 +64,7 @@ class TvSeriesChecker(Checker):
         for season_name in os.listdir(metadata.directory_path):
             season_path = os.path.join(metadata.directory_path, season_name)
 
-            if not os.path.isfile(season_path) or season_name.startswith("."):
+            if os.path.isfile(season_path) or season_name.startswith("."):
                 continue
 
             try:
@@ -118,7 +118,7 @@ class TvSeriesChecker(Checker):
                     episode_amount -= 1
 
                 # Subtract ignored episodes
-                if episode_number in ignores.get(season_number, []):
+                elif episode_number in ignores.get(season_number, []):
                     episode_amount -= 1
 
             existing = metadata.get_episode_files()
@@ -288,7 +288,8 @@ class TvSeriesChecker(Checker):
                     season_number,
                     episode_number,
                     end
-                )
+                ),
+                end
             )
         )
 

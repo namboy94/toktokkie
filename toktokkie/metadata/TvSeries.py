@@ -211,12 +211,14 @@ class TvSeries(Metadata):
             for multi_episode in self.json["multi_episodes"][_id_type]:
                 episode_range = TvEpisodeRange(multi_episode)
 
-                if episode_range.season not in generated[id_type]:
-                    generated[id_type] = {}
+                season_number = episode_range.season
+                start = episode_range.start_episode
+                end = episode_range.end_episode
 
-                generated[id_type][episode_range.season] = {
-                    episode_range.start_episode: episode_range.end_episode
-                }
+                if episode_range.season not in generated[id_type]:
+                    generated[id_type][season_number] = {}
+
+                generated[id_type][season_number][start] = end
 
         return generated
 

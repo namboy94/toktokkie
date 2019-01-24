@@ -196,6 +196,9 @@ class Renamer:
                         end
                     )
 
+                    if end is not None:
+                        episode_number = end
+
                     operations.append(RenameOperation(episode_file, new_name))
                     episode_number += 1
 
