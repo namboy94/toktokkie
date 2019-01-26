@@ -325,8 +325,12 @@ class TvSeries(Metadata):
             if tvdb_id not in content_info:
                 content_info[tvdb_id] = {}
 
-            if season_metadata.season_number not in content_info[tvdb_id]:
-                content_info[tvdb_id][season_metadata.season_number] = []
+            season_number = season_metadata.season_number
+            if season_metadata.is_spinoff():
+                season_number = 1
+
+            if season_number not in content_info[tvdb_id]:
+                content_info[tvdb_id][season_number] = []
 
             for episode in os.listdir(season_metadata.path):
                 episode_path = os.path.join(season_metadata.path, episode)
@@ -334,7 +338,7 @@ class TvSeries(Metadata):
                 if not os.path.isfile(episode_path) or episode.startswith("."):
                     continue
 
-                content_info[tvdb_id][season_metadata.season_number].append(
+                content_info[tvdb_id][season_number].append(
                     episode_path
                 )
 

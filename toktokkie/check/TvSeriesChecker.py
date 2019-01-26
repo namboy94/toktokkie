@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import tvdb_api
-from typing import Dict
+from typing import Dict, Optional
 from datetime import datetime
 from toktokkie.check.Checker import Checker
 from toktokkie.renaming.Renamer import Renamer
@@ -209,7 +209,7 @@ class TvSeriesChecker(Checker):
                     continue
 
                 name = self._generate_episode_name(
-                    season.tvdb_id, 1, episode_number
+                    season.tvdb_id, 1, episode_number, season.name
                 )
 
                 exists = False
@@ -260,17 +260,23 @@ class TvSeriesChecker(Checker):
             self,
             tvdb_id: str,
             season_number: int,
-            episode_number: int
+            episode_number: int,
+            series_name_override: Optional[str] = None
     ):
         """
         Generates an episode name
         :param tvdb_id: The TVDB ID for which to generate the name
         :param season_number: The season number for which to generate the name
         :param episode_number: The episode number for which to gen the name
+        :param series_name_override: Overrides the series name
         :return: The generated name
         """
         metadata = self.metadata  # type: TvSeries
         multis = metadata.multi_episodes.get(TvIdType.TVDB, {})
+
+        series_name = metadata.name
+        if series_name_override is not None:
+            series_name = series_name_override
 
         end = None
         if episode_number in multis.get(season_number, {}):
@@ -280,7 +286,7 @@ class TvSeriesChecker(Checker):
             metadata.directory_path,
             Renamer.generate_tv_episode_filename(
                 "",
-                metadata.name,
+                series_name,
                 season_number,
                 episode_number,
                 Renamer.load_tvdb_episode_name(
