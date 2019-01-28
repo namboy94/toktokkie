@@ -1,0 +1,70 @@
+{
+    "ids": {
+        "anilist": [
+            "849"
+        ],
+        "myanimelist": [
+            "849"
+        ],
+        "tvdb": [
+            "79414"
+        ]
+    },
+    "seasons": [
+        {
+            "ids": {
+                "anilist": [
+                    "5118"
+                ],
+                "myanimelist": [
+                    "5118"
+                ],
+                "tvdb": [
+                    "85438"
+                ]
+            },
+            "name": "Suzumiya Haruhi-chan no Yuuutsu"
+        },
+        {
+            "ids": {
+                "anilist": [
+                    "5957"
+                ],
+                "myanimelist": [
+                    "5957"
+                ],
+                "tvdb": [
+                    "95361"
+                ]
+            },
+            "name": "Nyoron! Churuya-san!"
+        },
+        {
+            "ids": {
+                "anilist": [
+                    "4382"
+                ],
+                "myanimelist": [
+                    "4382"
+                ]
+            },
+            "name": "Season 2"
+        },
+        {
+            "ids": {
+                "anilist": [
+                    "7311"
+                ],
+                "myanimelist": [
+                    "7311"
+                ]
+            },
+            "name": "Suzumiya Haruhi no Shoushitsu"
+        },
+        {
+            "ids": {},
+            "name": "Season 1"
+        }
+    ],
+    "type": "tv"
+}

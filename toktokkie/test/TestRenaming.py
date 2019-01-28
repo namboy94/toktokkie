@@ -18,43 +18,15 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import shutil
-import unittest
 from toktokkie.Directory import Directory
+from toktokkie.test.TestFramework import TestFramework
 
 
-class TestGameOfThrones(unittest.TestCase):
+class TestRenaming(TestFramework):
     """
-    Test class that tests the 'Game of Thrones' test directory
+    Test class that tests renaming and metadata structure using
+    the 'Game of Thrones' test directory
     """
-
-    @staticmethod
-    def cleanup():
-        """
-        Deletes any generates resources
-        :return:
-        """
-        if os.path.exists("test-res"):
-            shutil.rmtree("test-res")
-
-    def setUp(self):
-        """
-        Sets up the test resources
-        :return: None
-        """
-        self.cleanup()
-        try:
-            shutil.copytree("toktokkie/test/res", "test-res")
-        except FileNotFoundError:
-            shutil.copytree("res", "test-res")
-
-    def tearDown(self):
-        """
-        Deletes the test resources
-        :return: None
-        """
-        return
-        self.cleanup()
 
     def test_renaming(self):
         """

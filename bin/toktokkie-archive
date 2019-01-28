@@ -40,20 +40,21 @@ def main():
                         help="Specifies an output directory for the archived "
                              "directory/directories")
     args = parser.parse_args()
-    directories = args.directories
     output_path = args.out
 
-    if not os.path.isdir(output_path) and not os.path.exists(output_path):
-        os.makedirs(output_path)
-    if not os.path.isdir(output_path):
-        print("Could not create {}".format(output_path))
+    if output_path is not None:
+        if not os.path.isdir(output_path) and not os.path.exists(output_path):
+            os.makedirs(output_path)
+        if not os.path.isdir(output_path):
+            print("Could not create {}".format(output_path))
 
     for path in args.directories:
 
         try:
             directory = Directory(path)
-            if len(directories) == 1:
-                archive_path = output_path
+
+            if output_path is None:
+                archive_path = directory.path + ".archive"
             else:
                 archive_path = os.path.join(
                     output_path, directory.metadata.name
