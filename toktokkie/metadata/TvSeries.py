@@ -112,10 +112,14 @@ class TvSeries(Metadata):
         """
         :return: A list of TV seasons
         """
-        return list(map(
+        seasons_list = list(map(
             lambda x: TvSeason(self, x),
             self.json["seasons"]
         ))
+        seasons_list.sort(
+            key=lambda season: season.name.replace("Season ", "")
+        )
+        return seasons_list
 
     @seasons.setter
     def seasons(self, seasons: List[TvSeason]):
