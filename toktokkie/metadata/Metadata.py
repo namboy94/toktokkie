@@ -38,7 +38,17 @@ class Metadata:
         """
         :return: A string representation of the metadata
         """
-        return str(self.json)
+        json_data = json.dumps(
+            self.json,
+            sort_keys=True,
+            indent=4,
+            separators=(",", ": ")
+        )
+        return "Name: {}\nMedia Type: {}\nInfo:\n{}".format(
+            self.name,
+            self.media_type().name,
+            json_data
+        )
 
     def __repr__(self) -> str:
         """
