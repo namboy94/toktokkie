@@ -11,16 +11,15 @@ stylecheck:
     - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
     - python-codestyle-check
 
-# Skip unit tests because of old pyton version on CI server
-#unittest:
-#  stage: test
-#  tags:
-#    - python3
-#    - progstats
-#  script:
-#    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
-#    - pip install irc
-#    - python-unittest
+unittest:
+  stage: test
+  tags:
+    - python3
+    - progstats
+  script:
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - pip install irc
+    - python-unittest
 
 release_upload:
   stage: release
@@ -53,12 +52,12 @@ gitstats:
     - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
     - gitstats-gen
 
-#docgen:
-#  stage: stats
-#  tags:
-#    - python3
-#    - progstats
-#  script:
-#    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
-#    - pip install irc
-#    - sphinx-docgen
+docgen:
+  stage: stats
+  tags:
+    - python3
+    - progstats
+  script:
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - pip install irc
+    - sphinx-docgen
