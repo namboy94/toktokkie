@@ -78,3 +78,15 @@ class MetadataPart:
             else:
                 generated[self.parent.id_type()(id_type)] = [_id]
         return generated
+
+    @ids.setter
+    def ids(self, ids: Dict[Enum, List[str]]):
+        """
+        Setter method for the IDs of the metadata part object.
+        Previous IDs will be overwritten!
+        :param ids: The IDs to set
+        :return: None
+        """
+        self.json["ids"] = {}
+        for id_type, values in ids.items():
+            self.json["ids"][id_type.value] = values
