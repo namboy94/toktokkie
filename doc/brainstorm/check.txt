@@ -1,0 +1,18 @@
+list | data
+
+list only:
+    - check relations
+    - if not completed and not done:
+         if "cantfind" in tags:
+            skip
+         else:
+            error
+    - check start/end dates
+    - check score
+    
+
+both:
+    - for entry in list: check if ID in data
+    - for item in data:
+        for season in item:
+            check episode counts.
