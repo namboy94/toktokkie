@@ -82,7 +82,8 @@ def archive(source: str, dest: str):
         dest_child_path = os.path.join(dest, child)
 
         if os.path.isfile(child_path):
-            if not child_path.endswith(".json"):
+            if not child_path.endswith(".json") and \
+                    not child_path.endswith(".png"):
                 with open(dest_child_path, "w") as f:
                     f.write("")
             else:

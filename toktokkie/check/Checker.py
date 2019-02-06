@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+from typing import Dict, Any
 from colorama import Fore, Back, Style
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.renaming.Renamer import Renamer
@@ -32,7 +33,8 @@ class Checker:
             self,
             metadata: Metadata,
             show_warnings: bool,
-            fix_interactively: bool
+            fix_interactively: bool,
+            config: Dict[str, Any]
     ):
         """
         Initializes the checker
@@ -40,10 +42,12 @@ class Checker:
         :param show_warnings: Whether or not to show warnings
         :param fix_interactively: Can be set to True to
                                   interactively fix some errors
+        :param config: A dictionary containing configuration options
         """
         self.metadata = metadata
         self.show_warnings = show_warnings
         self.fix_interactively = fix_interactively
+        self.config = config
 
     def check(self) -> bool:
         """

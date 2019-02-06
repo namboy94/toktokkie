@@ -26,6 +26,10 @@ from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.enums import TvIdType
+from anime_list_apis.api.AnilistApi import AnilistApi
+from anime_list_apis.models.attributes.Id import IdType
+from anime_list_apis.models.attributes.ConsumingStatus import ConsumingStatus
+from anime_list_apis.models.attributes.ReleasingStatus import ReleasingStatus
 
 
 class TvSeriesChecker(Checker):
@@ -49,6 +53,9 @@ class TvSeriesChecker(Checker):
         valid = valid and self._check_tvdb_season_lengths()
         valid = valid and self._check_tvdb_episode_files_complete()
         valid = valid and self._check_spinoff_completeness()
+
+        if self.config.get("anilist-user") is not None:
+            valid = valid and self._check_anilist_ids()
 
         return valid
 
@@ -223,6 +230,53 @@ class TvSeriesChecker(Checker):
                         "or is incorrectly named".format(name)
                     )
         return valid
+
+    def _check_anilist_ids(self):
+        """
+        Makes sure that every season has at least one anilist ID and that
+        each anilist ID is entered as "Completed" as long as the series
+        has already aired
+        :return: None
+        """
+
+        metadata = self.metadata  # type: TvSeries
+        user = self.config["anilist_user"]
+        api = AnilistApi()
+        user_list = api.get_anime_list(user)
+        completed_ids = list(
+            map(
+                lambda x: x.id.get(IdType.ANILIST),
+                filter(
+                    lambda x: x.consuming_status == ConsumingStatus.COMPLETED,
+                    user_list
+                )
+            )
+        )
+        valid = True
+
+        for season in metadata.seasons:
+
+            if TvIdType.ANILIST not in season.ids:
+                valid = self.error("No anilist ID for {}".format(season.name))
+            if TvIdType.MYANIMELIST not in season.ids:
+                valid = \
+                    self.error("No myanimelist ID for {}".format(season.name))
+
+            ids = season.ids.get(TvIdType.ANILIST, [])
+            for _id in ids:
+                if _id not in completed_ids:
+                    data = api.get_anime_data(_id)
+                    if data.releasing_status == ReleasingStatus.FINISHED:
+                        valid = self.error(
+                            "ID {} not completed on anilist.com".format(_id)
+                        )
+
+        return valid
+
+        # TODO
+        # For each ID:
+        #   check if amount of episode files is correct
+        #   Note: Make sure to think of multi-episodes etc
 
     def _generate_ignores_map(self) -> Dict[int, int]:
         """
