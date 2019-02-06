@@ -3,6 +3,7 @@ V 0.18.0:
   - Substituted verification for Checkers
   - Is now more opinionated, removed options for renaming schemes
   - Added CLI tools for adding multi-episodes and excludes
+  - Implemented toktokkie-supercut tool
 V 0.17.0:
   - Added verification mechanisms
   - Added unit tests for metadata and verification
