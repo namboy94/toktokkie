@@ -263,6 +263,9 @@ class Renamer:
                           will generate a name for a range of episodes
         :return: The TVDB name
         """
+        if int(tvdb_id) == 0:
+            return "Episode " + str(episode_number)
+
         if multi_end is not None:
             episode_names = []
             for episode in range(episode_number, multi_end + 1):

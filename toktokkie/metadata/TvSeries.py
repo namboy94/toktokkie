@@ -62,7 +62,7 @@ class TvSeries(Metadata):
         try:
             probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
             probable_defaults = {TvIdType.TVDB.value: [probable_tvdb_id]}
-        except tvdb_api.tvdb_shownotfound:
+        except (tvdb_api.tvdb_shownotfound, TypeError):
             probable_defaults = None
 
         series_ids = cls.prompt_for_ids(
@@ -76,7 +76,7 @@ class TvSeries(Metadata):
         })
 
         seasons = []
-        for season_name in os.listdir(directory_path):
+        for season_name in sorted(os.listdir(directory_path)):
 
             season_path = os.path.join(directory_path, season_name)
             if season_name.startswith(".") or not os.path.isdir(season_path):
