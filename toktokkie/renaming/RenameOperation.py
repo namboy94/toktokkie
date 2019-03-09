@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from colorama import Fore, Style
 
 
 class RenameOperation:
@@ -49,7 +50,13 @@ class RenameOperation:
         """
         :return: A string representation of the operation
         """
-        return "{} ---> {}".format(self.source, self.dest)
+        start = ""
+        end = ""
+        if self.source != self.dest:
+            start = Fore.LIGHTYELLOW_EX
+            end = Style.RESET_ALL
+
+        return "{}{} ---> {}{}".format(start, self.source, self.dest, end)
 
     @staticmethod
     def sanitize(parent: str, filename: str) -> str:
