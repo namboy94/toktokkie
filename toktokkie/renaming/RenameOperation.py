@@ -42,6 +42,9 @@ class RenameOperation:
         Renames the episode file to the new name
         :return: None
         """
+        if self.source == self.dest:
+            return
+
         while os.path.exists(self.dest):
             print("{}Destination file '{}' already exists!{}".format(
                 Fore.LIGHTRED_EX, self.dest, Style.RESET_ALL
@@ -50,9 +53,8 @@ class RenameOperation:
             name += "_"
             self.dest = "{}.{}".format(name, ext)
 
-        if self.source != self.dest:
-            print("Renaming: {}".format(self))
-            os.rename(self.source, self.dest)
+        print("Renaming: {}".format(self))
+        os.rename(self.source, self.dest)
 
     def __str__(self) -> str:
         """
