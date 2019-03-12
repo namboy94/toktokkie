@@ -22,11 +22,15 @@ import json
 from enum import Enum
 from typing import List, Dict, Any, Optional
 from toktokkie.metadata.helper.wrappers import json_parameter
-from toktokkie.metadata.components.enums import MediaType
 from toktokkie.metadata.prompt.PromptType import PromptType
 from toktokkie.metadata.prompt.CommaList import CommaList
 from toktokkie.exceptions import InvalidMetadata, \
     MissingMetadata
+from toktokkie.metadata.components.enums import MediaType, TvIdType, \
+    MovieIdType, BookIdType
+from anime_list_apis.api.AnilistApi import AnilistApi
+from anime_list_apis.models.attributes.MediaType import MediaType as \
+    AnimeListMediaType
 
 
 class Metadata:
@@ -279,6 +283,7 @@ class Metadata:
         required = required if required is not None else []
 
         ids = {}
+        mal_updated = False
         while len(ids) < 1:
             for id_type in cls.id_type():
 
@@ -286,7 +291,25 @@ class Metadata:
                     default = defaults.get(id_type.value, [])
                     default = CommaList(",".join(default))
                 else:
-                    default = CommaList("")
+                    default = None if id_type in required else CommaList("")
+
+                if TvIdType.MYANIMELIST.value in ids and mal_updated:
+                    if id_type.value == TvIdType.ANILIST.value:
+
+                        api = AnilistApi()
+
+                        anime_list_media_type = AnimeListMediaType.ANIME
+                        if id_type == BookIdType.ANILIST:
+                            anime_list_media_type = AnimeListMediaType.MANGA
+
+                        anilist_ids = []
+                        for mal_id in ids[TvIdType.MYANIMELIST.value]:
+                            anilist_id = api.get_anilist_id_from_mal_id(
+                                anime_list_media_type,
+                                int(mal_id)
+                            )
+                            anilist_ids.append(str(anilist_id))
+                        default = CommaList(",".join(anilist_ids))
 
                 prompted = cls.input(
                     "{} IDs".format(id_type.value),
@@ -299,6 +322,11 @@ class Metadata:
 
                 if len(prompted) > 0:
                     ids[id_type.value] = prompted
+
+                    # Check if myanimelist ID was updated
+                    if id_type.value == TvIdType.MYANIMELIST.value:
+                        if default.value is not None:
+                            mal_updated = prompted != default.value
 
             if len(ids) < 1:
                 print("Please provide at least one ID")

@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from colorama import Fore, Style
 
 
 class RenameOperation:
@@ -41,15 +42,31 @@ class RenameOperation:
         Renames the episode file to the new name
         :return: None
         """
-        if self.source != self.dest:
-            print("Renaming: {}".format(self))
-            os.rename(self.source, self.dest)
+        if self.source == self.dest:
+            return
+
+        while os.path.exists(self.dest):
+            print("{}Destination file '{}' already exists!{}".format(
+                Fore.LIGHTRED_EX, self.dest, Style.RESET_ALL
+            ))
+            name, ext = self.dest.rsplit(".", 1)
+            name += "_"
+            self.dest = "{}.{}".format(name, ext)
+
+        print("Renaming: {}".format(self))
+        os.rename(self.source, self.dest)
 
     def __str__(self) -> str:
         """
         :return: A string representation of the operation
         """
-        return "{} ---> {}".format(self.source, self.dest)
+        start = ""
+        end = ""
+        if self.source != self.dest:
+            start = Fore.LIGHTYELLOW_EX
+            end = Style.RESET_ALL
+
+        return "{}{} ---> {}{}".format(start, self.source, self.dest, end)
 
     @staticmethod
     def sanitize(parent: str, filename: str) -> str:
