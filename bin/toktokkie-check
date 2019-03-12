@@ -19,9 +19,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import tvdb_api
 import argparse
 from toktokkie import Directory
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
+from anime_list_apis.api.AnilistApi import AnilistApi
 
 
 def main():
@@ -43,6 +45,15 @@ def main():
     args = parser.parse_args()
 
     directories = args.directories
+    config = {
+        "tvdb_api": tvdb_api.Tvdb(),
+        "anilist_user": args.anilist_user
+    }
+
+    if args.anilist_user is not None:
+        api = AnilistApi()
+        config["anilist_api"] = api
+        config["anilist_list"] = api.get_anime_list(args.anilist_user)
 
     for path in directories:
 
@@ -50,9 +61,7 @@ def main():
             Directory(path).check(
                 args.warnings,
                 args.fix,
-                {
-                    "anilist-user": args.anilist_user
-                }
+                config
             )
         except MissingMetadata:
             print("{} has no metadata file.".format(path))

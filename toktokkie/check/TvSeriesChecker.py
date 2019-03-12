@@ -18,9 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-import tvdb_api
+from tvdb_api import tvdb_shownotfound
 from typing import Dict, Optional
 from datetime import datetime
+from colorama import Fore, Style
 from toktokkie.check.Checker import Checker
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
@@ -28,6 +29,7 @@ from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.enums import TvIdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.Id import IdType
+from anime_list_apis.models.attributes.MediaType import MediaType
 from anime_list_apis.models.attributes.ConsumingStatus import ConsumingStatus
 from anime_list_apis.models.attributes.ReleasingStatus import ReleasingStatus
 
@@ -54,7 +56,7 @@ class TvSeriesChecker(Checker):
         valid = valid and self._check_tvdb_episode_files_complete()
         valid = valid and self._check_spinoff_completeness()
 
-        if self.config.get("anilist-user") is not None:
+        if self.config.get("anilist_user") is not None:
             valid = valid and self._check_anilist_ids()
 
         return valid
@@ -98,8 +100,8 @@ class TvSeriesChecker(Checker):
 
         for tvdb_id in ids:
             try:
-                _ = tvdb_api.Tvdb()[int(tvdb_id)]
-            except tvdb_api.tvdb_shownotfound:
+                _ = self.tvdb[int(tvdb_id)]
+            except tvdb_shownotfound:
                 valid = self.error("Entry {} not found on TVDB")
 
         return valid
@@ -114,7 +116,7 @@ class TvSeriesChecker(Checker):
         metadata = self.metadata  # type: TvSeries
 
         ignores = self._generate_ignores_map()
-        tvdb_data = tvdb_api.Tvdb()[int(metadata.tvdb_id)]
+        tvdb_data = self.tvdb[int(metadata.tvdb_id)]
 
         for season_number, season_data in tvdb_data.items():
             episode_amount = len(season_data)
@@ -149,7 +151,7 @@ class TvSeriesChecker(Checker):
         metadata = self.metadata  # type: TvSeries
 
         ignores = self._generate_ignores_map()
-        tvdb_data = tvdb_api.Tvdb()[int(metadata.tvdb_id)]
+        tvdb_data = self.tvdb[int(metadata.tvdb_id)]
 
         for season_number, season_data in tvdb_data.items():
             for episode_number, episode_data in season_data.items():
@@ -199,7 +201,7 @@ class TvSeriesChecker(Checker):
             if not season.is_spinoff():
                 continue
 
-            tvdb_data = tvdb_api.Tvdb()[int(season.tvdb_id)][1]
+            tvdb_data = self.tvdb[int(season.tvdb_id)][1]
 
             # Check Length
             should = len(episode_files[season.tvdb_id][1])
@@ -240,12 +242,11 @@ class TvSeriesChecker(Checker):
         """
 
         metadata = self.metadata  # type: TvSeries
-        user = self.config["anilist_user"]
-        api = AnilistApi()
-        user_list = api.get_anime_list(user)
+        api = self.config["anilist_api"]  # type: AnilistApi
+        user_list = self.config["anilist_list"]
         completed_ids = list(
             map(
-                lambda x: x.id.get(IdType.ANILIST),
+                lambda x: int(x.id.get(IdType.ANILIST)),
                 filter(
                     lambda x: x.consuming_status == ConsumingStatus.COMPLETED,
                     user_list
@@ -256,16 +257,48 @@ class TvSeriesChecker(Checker):
 
         for season in metadata.seasons:
 
-            if TvIdType.ANILIST not in season.ids:
-                valid = self.error("No anilist ID for {}".format(season.name))
+            mal_ids = None
             if TvIdType.MYANIMELIST not in season.ids:
                 valid = \
                     self.error("No myanimelist ID for {}".format(season.name))
+            else:
+                mal_ids = season.ids[TvIdType.MYANIMELIST]
+
+            if TvIdType.ANILIST not in season.ids:
+
+                valid = self.error("No anilist ID for {}".format(season.name))
+
+                # Fetch IDs based on myanimelist IDs
+                print(mal_ids)
+                print(self.fix_interactively)
+                if mal_ids is not None and self.fix_interactively:
+                    anilist_ids = []
+                    for mal_id in mal_ids:
+                        anilist_id = api.get_anilist_id_from_mal_id(
+                            MediaType.ANIME, int(mal_id)
+                        )
+
+                        if anilist_id is not None:
+                            anilist_ids.append(str(anilist_id))
+
+                    resp = print(
+                        "{}Set anilist IDs to {}? (y|n){}".format(
+                            Fore.LIGHTGREEN_EX, anilist_ids, Style.RESET_ALL
+                        )
+                    )#gitk
+                    # .lower().strip()
+                    resp = "y"  # TODO REMOVE
+
+                    if resp == "y":
+                        ids = season.ids
+                        ids[TvIdType.ANILIST] = anilist_ids
+                        season.ids = ids
+                        self.metadata.write()
 
             ids = season.ids.get(TvIdType.ANILIST, [])
             for _id in ids:
-                if _id not in completed_ids:
-                    data = api.get_anime_data(_id)
+                if int(_id) not in completed_ids:
+                    data = api.get_anime_data(int(_id))
                     if data.releasing_status == ReleasingStatus.FINISHED:
                         valid = self.error(
                             "ID {} not completed on anilist.com".format(_id)

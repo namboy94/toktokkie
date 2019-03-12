@@ -48,6 +48,7 @@ class Checker:
         self.show_warnings = show_warnings
         self.fix_interactively = fix_interactively
         self.config = config
+        self.tvdb = config["tvdb_api"]
 
     def check(self) -> bool:
         """
@@ -104,7 +105,17 @@ class Checker:
         has_errors = False
         for operation in renamer.operations:
             if operation.source != operation.dest:
-                valid = self.error("File Mismatch: {}".format(operation))
+                valid = self.error("File Mismatch:")
+                print("{}{}{}".format(
+                    Fore.LIGHTGREEN_EX,
+                    os.path.basename(operation.source),
+                    Style.RESET_ALL
+                ))
+                print("{}{}{}".format(
+                    Fore.LIGHTCYAN_EX,
+                    os.path.basename(operation.dest),
+                    Style.RESET_ALL
+                ))
                 has_errors = True
 
         if has_errors and self.fix_interactively:
