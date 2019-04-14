@@ -113,11 +113,16 @@ def execute_command(command: List[str]) -> int:
             return 1
 
 
-def load_titles(year: int, season: str) -> List[str]:
+def load_titles(
+        year: int,
+        season: str,
+        include_previous_season: bool = True
+) -> List[str]:
     """
     Loads a list of titles which can then be selected by the user
     :param year: The year for which to fetch titles
     :param season: The season for which to fetch titles
+    :param include_previous_season: Whether to include the previous season
     :return: The list of titles
     """
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -129,14 +134,51 @@ def load_titles(year: int, season: str) -> List[str]:
     listings = soup.find("div", {"class": "md wiki"})
 
     entries = listings.find_all("h3")
-    return list(map(lambda x: x.text, entries))
+    entries = list(map(lambda x: x.text, entries))
+
+    position = {"Winter": 1, "Spring": 2, "Summer": 3, "Fall": 4}
+    segments = segmentize(entries)
+
+    this_segment = segments[-position[season]]
+
+    if include_previous_season:
+        if season == "Winter":
+            additional_segment = load_titles(year - 1, "Fall", False)
+        else:
+            additional_segment = segments[-position[season] + 1]
+        return additional_segment + this_segment
+    else:
+        return this_segment
+
+
+def segmentize(titles: List[str]) -> List[List[str]]:
+    """
+    Segments a list of titles into segments
+    :param titles: The titles to segmentize
+    :return: The segments
+    """
+
+    segments = []
+    current_segment = []
+
+    for i, title in enumerate(titles):
+        if i > 0 \
+                and titles[i - 1] > title \
+                and titles[i - 1][0].lower() != title[0].lower():
+            segments.append(current_segment)
+            current_segment = []
+        current_segment.append(title)
+    segments.append(current_segment)
+
+    return segments
 
 
 def load_data(
         year: int,
         season: str,
         destination: str,
-        selected_series: List[str]
+        selected_series: List[str],
+        include_previous_season: bool = True
 ) -> List[Dict[str, Any]]:
     """
     Loads the Opening/Ending information from a combination of sources.
@@ -144,6 +186,7 @@ def load_data(
     :param season: The season to check
     :param destination: The destination at which to store the downloaded files
     :param selected_series: The series to consider
+    :param include_previous_season: Whether to load data from previous seasons
     :return: The information in the following format:
                 [
                     {show, type, song, link, filename,
@@ -191,7 +234,7 @@ def load_data(
 
             entry = {
                 "show": title,
-                "type": description.split(" ")[0],
+                "type": description.split("\"", 1)[0].strip(),
                 "song": description.split("\"", 1)[1].rsplit("\"", 1)[0],
                 "link": link
             }
@@ -213,7 +256,20 @@ def load_data(
 
             data.append(entry)
 
-    return data
+    if include_previous_season:
+        if season == "Winter":
+            year = year - 1
+        season = {
+            "Winter": "Fall",
+            "Fall": "Summer",
+            "Summer": "Spring",
+            "Spring": "Winter"
+        }[season]
+        previous_season_data = \
+            load_data(year, season, destination, selected_series, False)
+        return previous_season_data + data
+    else:
+        return data
 
 
 def get_seasonal_mal_ids(year: int, season: str) -> Dict[str, int]:
@@ -292,7 +348,7 @@ def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str]:
     :return: The song title, artist
     """
 
-    song_type = song["type"].upper()
+    song_type = song["type"].upper().split(" ")[0]
     if "OP" in song_type:
         theme_list = song["mal_openings"]
     elif "ED" in song_type:
@@ -335,8 +391,13 @@ def prompt_selection(shows: List[str], destination: str) -> List[str]:
             else:
                 continue
 
-    for i, show in enumerate(shows):
-        print("[{}]: {}".format(i + 1, show))
+    segments = segmentize(shows)
+    counter = 0
+    for segment in segments:
+        print("-" * 80)
+        for show in segment:
+            print("[{}]: {}".format(counter + 1, show))
+            counter += 1
 
     while True:
 
