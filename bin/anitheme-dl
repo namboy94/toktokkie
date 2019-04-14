@@ -143,6 +143,7 @@ def load_titles(
 
     if include_previous_season:
         if season == "Winter":
+            print(":WWWWWW")
             additional_segment = load_titles(year - 1, "Fall", False)
         else:
             additional_segment = segments[-position[season] + 1]
@@ -256,17 +257,10 @@ def load_data(
 
             data.append(entry)
 
-    if include_previous_season:
-        if season == "Winter":
-            year = year - 1
-        season = {
-            "Winter": "Fall",
-            "Fall": "Summer",
-            "Summer": "Spring",
-            "Spring": "Winter"
-        }[season]
+    # load data from last year if season is Winter
+    if include_previous_season and season == "Winter":
         previous_season_data = \
-            load_data(year, season, destination, selected_series, False)
+            load_data(year - 1, "Fall", destination, selected_series, False)
         return previous_season_data + data
     else:
         return data
@@ -319,7 +313,6 @@ def load_mal_data(mal_id: int) -> Dict[str, Any]:
     :param mal_id: The myanimelist ID to check
     :return: The information fetched from myanimelist
     """
-
     resp = requests.get("https://api.jikan.moe/v3/anime/{}".format(mal_id))
     info = json.loads(resp.text)
 
