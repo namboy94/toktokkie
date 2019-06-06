@@ -22,6 +22,7 @@ LICENSE"""
 import os
 import json
 import time
+import shutil
 import requests
 import argparse
 from typing import Tuple, Dict, List, Any
@@ -57,6 +58,9 @@ def main():
 
     print("Setting MP3 metadata")
     set_mp3_metadata(year, selected_songs)
+
+    print("Generating Artist/Album Structure")
+    generate_artist_album_structure(destination, selected_songs)
 
     print("Done")
 
@@ -623,6 +627,54 @@ def set_mp3_metadata(
         id3.add(APIC(3, "image/jpeg", 3, "Front cover", img))
         id3.add(TPE2(encoding=3, text=artist))
         id3.save()
+
+
+def generate_artist_album_structure(
+        destination: str,
+        selected_songs: List[Dict[str, Any]]
+):
+    """
+    Generates a folder structure for OPs and EDs following the scheme:
+        Artist
+        - Album
+          - Song
+    Songs are copied from the mp3 directory.
+    :param destination: The destination in which to store the structure
+    :param selected_songs: The song data
+    :return: None
+    """
+    structure_dir = os.path.join(destination, "structured")
+    ops_dir = os.path.join(structure_dir, "OP")
+    eds_dir = os.path.join(structure_dir, "ED")
+    if os.path.isdir(structure_dir):
+        shutil.rmtree(structure_dir)
+    for directory in [structure_dir, ops_dir, eds_dir]:
+        os.makedirs(directory)
+
+    for song in selected_songs:
+        mp3_file = song["mp3_file"]
+        artist = song["song_info"][1]
+        album = song["song"]
+        title = song["filename"]
+        oped = song["type"]
+
+        if "OP" in oped:
+            artist_dir = os.path.join(ops_dir, artist)
+        elif "ED" in oped:
+            artist_dir = os.path.join(eds_dir, artist)
+        else:
+            print("No OP/ED type for {}".format(title))
+            continue
+
+        album_dir = os.path.join(artist_dir, album)
+        song_path = os.path.join(album_dir, title + ".mp3")
+
+        if not os.path.isdir(artist_dir):
+            os.makedirs(artist_dir)
+        if not os.path.isdir(album_dir):
+            os.makedirs(album_dir)
+        if not os.path.isfile(song_path):
+            shutil.copyfile(mp3_file, song_path)
 
 
 if __name__ == "__main__":
