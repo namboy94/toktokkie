@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import tvdb_api
 from toktokkie.Directory import Directory
 from toktokkie.test.TestFramework import TestFramework
 
@@ -26,6 +27,10 @@ class TestCheck(TestFramework):
     """
     Class that checks whether or not the validity checks work as intended
     """
+
+    config = {
+        "tvdb_api": tvdb_api.Tvdb()
+    }
 
     def verify(self, should_dir: str, is_dir: str):
         """
@@ -54,4 +59,4 @@ class TestCheck(TestFramework):
         :return: None
         """
         suzu = Directory(self.get("Suzumiya Haruhi no Yuuutsu"))
-        self.assertTrue(suzu.check(False, False))
+        self.assertTrue(suzu.check(False, False, self.config))
