@@ -285,9 +285,7 @@ class TvSeriesChecker(Checker):
                         "{}Set anilist IDs to {}? (y|n){}".format(
                             Fore.LIGHTGREEN_EX, anilist_ids, Style.RESET_ALL
                         )
-                    )#gitk
-                    # .lower().strip()
-                    resp = "y"  # TODO REMOVE
+                    ).lower().strip()
 
                     if resp == "y":
                         ids = season.ids
