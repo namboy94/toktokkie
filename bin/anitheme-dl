@@ -168,7 +168,6 @@ def load_titles(
 
     if include_previous_season:
         if season == "Winter":
-            print(":WWWWWW")
             additional_segment = load_titles(year - 1, "Fall", False)
         else:
             additional_segment = segments[-position[season] + 1]
@@ -252,7 +251,11 @@ def load_data(
         for row in rows:
             columns = row.find_all("td")
             description = columns[0].text
-            link = columns[1].find("a")["href"]
+
+            try:
+                link = columns[1].find("a")["href"]
+            except TypeError:  # Avoid missing links
+                continue
 
             if not description:
                 continue
@@ -347,9 +350,14 @@ def load_mal_data(mal_id: int) -> Dict[str, Any]:
             title = song.split("\"", 2)[1]
             artist = song.split("\"", 2)[2] \
                 .replace("by ", "") \
-                .rsplit("(eps", 1)[0]\
+                .split("(")[0]\
                 .strip()
-            song_info[song_type].append((title, artist))
+            episodes = song.split("\"", 2)[2].split("(")
+            if len(episodes) > 1:
+                episodes = episodes[1].split(")")[0].strip()
+            else:
+                episodes = ""
+            song_info[song_type].append((title, artist, episodes))
 
     return {
         "mal_id": mal_id,
@@ -360,11 +368,11 @@ def load_mal_data(mal_id: int) -> Dict[str, Any]:
     }
 
 
-def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str]:
+def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str, str]:
     """
     Resolves the song information for a song
     :param song: The song to get the info for
-    :return: The song title, artist
+    :return: The song title, artist, episodes
     """
 
     song_type = song["type"].upper().split(" ")[0]
@@ -373,7 +381,7 @@ def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str]:
     elif "ED" in song_type:
         theme_list = song["mal_endings"]
     else:
-        return "Unknown", "Unknown"
+        return "Unknown", "Unknown", "Unknown"
 
     number = song_type.replace("OP", "").replace("ED", "")
     if number == "":
@@ -383,7 +391,7 @@ def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str]:
     if len(theme_list) >= number:
         return theme_list[number - 1]
     else:
-        return "Unknown", "Unknown"
+        return "Unknown", "Unknown", "Unknown"
 
 
 def prompt_selection(shows: List[str], destination: str) -> List[str]:
@@ -470,7 +478,8 @@ def handle_excludes(selected_songs: List[Dict[str, Any]], destination: str) \
 
     if not use_old:
         for i, song in enumerate(selected_songs):
-            print("[{}]: {}".format(i + 1, song["filename"]))
+            print("[{}]: {} ({})"
+                  .format(i + 1, song["filename"], song["song_info"][2]))
 
         while True:
 
@@ -617,7 +626,7 @@ def set_mp3_metadata(
         mp3["artist"] = artist
         mp3["album"] = song["song"]
         mp3["date"] = str(year)
-        mp3["genre"] = "anime"
+        mp3["genre"] = "Anime"
         mp3.save()
 
         with open(song["cover_file"], "rb") as f:
