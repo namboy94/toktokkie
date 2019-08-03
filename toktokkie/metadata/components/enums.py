@@ -50,6 +50,13 @@ class BookIdType(Enum):
     KITSU = "kitsu"
 
 
+class VisualNovelIdType(Enum):
+    """
+    Enumeration that defines various ID types for visual novels
+    """
+    VNDB = "vndb"
+
+
 class MediaType(Enum):
     """
     Enumeration that defines all possible media types
@@ -58,3 +65,4 @@ class MediaType(Enum):
     BOOK_SERIES = "book_series"
     MOVIE = "movie"
     TV_SERIES = "tv"
+    VISUAL_NOVEL = "visual_novel"

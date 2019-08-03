@@ -45,7 +45,8 @@ if __name__ == "__main__":
             "xdcc_dl",
             "colorama",
             "anime_list_apis",
-            "mutagen"
+            "mutagen",
+            "puffotter"
         ],
         test_suite='nose.collector',
         tests_require=['nose'],

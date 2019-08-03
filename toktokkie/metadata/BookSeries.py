@@ -56,13 +56,13 @@ class BookSeries(Book):
         })
 
         volumes = []
-        for volume_name in os.listdir(directory_path):
+        for i, volume_name in enumerate(sorted(os.listdir(directory_path))):
 
             volume_path = os.path.join(directory_path, volume_name)
             if volume_name.startswith(".") or not os.path.exists(volume_path):
                 continue
 
-            print("{}:".format(volume_name))
+            print("Volume {}({}):".format(i + 1, volume_name))
             ids = cls.prompt_for_ids(series_ids)
 
             # Remove double entries
@@ -90,12 +90,12 @@ class BookSeries(Book):
         ))
 
     @volumes.setter
-    def volumes(self, seasons: List[BookVolume]):
+    def volumes(self, volumes: List[BookVolume]):
         """
         Setter method for the volumes
-        :param seasons: The volumes to set
+        :param volumes: The volumes to set
         :return: None
         """
         self.json["volumes"] = []
-        for season in seasons:
+        for season in volumes:
             self.json["volumes"].append(season.json)

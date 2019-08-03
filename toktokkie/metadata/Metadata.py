@@ -27,7 +27,7 @@ from toktokkie.metadata.prompt.CommaList import CommaList
 from toktokkie.exceptions import InvalidMetadata, \
     MissingMetadata
 from toktokkie.metadata.components.enums import MediaType, TvIdType, \
-    MovieIdType, BookIdType
+    BookIdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType
