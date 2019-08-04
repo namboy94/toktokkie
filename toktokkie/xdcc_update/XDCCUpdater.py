@@ -36,6 +36,13 @@ class XDCCUpdater:
     Class that handles the configuration and execution of a xdcc-update
     """
 
+    predefined_patterns = {
+        "horriblesubs": "[HorribleSubs] @{NAME} - @{EPI-2} [@{RES-P}].mkv"
+    }
+    """
+    A collection of predefined patterns
+    """
+
     def __init__(self, metadata: TvSeries):
         """
         Initializes the XDCC Updater object
@@ -141,12 +148,8 @@ class XDCCUpdater:
         """
         pattern = self.xdcc_info["search_pattern"]
 
-        predefined_patterns = {
-            "horriblesubs": "[HorribleSubs] @{NAME} - @{EPI-2} [@{RES-P}].mkv"
-        }
-
-        if pattern in predefined_patterns:
-            return predefined_patterns[pattern]
+        if pattern in self.predefined_patterns:
+            return self.predefined_patterns[pattern]
         else:
             return pattern
 
@@ -280,9 +283,32 @@ class XDCCUpdater:
             ),
             "episode_offset": cls._input(
                 "Episode Offset", default="0", is_int=True
-            ),
-            "search_pattern": cls._input("Search Pattern")
+            )
         }
+
+        print("-" * 80)
+        print("Valid variables for search patterns:")
+
+        for variable in [
+            "@{NAME}",
+            "@{RES-P}",
+            "@{RES-X}",
+            "@{HASH}",
+            "@{EPI-1}",
+            "@{EPI-2}",
+            "@{EPI-3}"
+        ]:
+            print(variable)
+
+        print("-" * 80)
+        print("Predefined patterns:")
+
+        for pattern in cls.predefined_patterns:
+            print(pattern)
+
+        print("-" * 80)
+        json_data["search_pattern"] = \
+            cls._input("Search Pattern", default="horriblesubs")
 
         xdcc_info_file = os.path.join(
             metadata.directory_path,
