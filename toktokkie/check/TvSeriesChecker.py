@@ -99,6 +99,8 @@ class TvSeriesChecker(Checker):
             ids.append(season.tvdb_id)
 
         for tvdb_id in ids:
+            if int(tvdb_id) == 0:  # TVDB ID 0 means show not on tvdb
+                continue
             try:
                 _ = self.tvdb[int(tvdb_id)]
             except tvdb_shownotfound:

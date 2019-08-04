@@ -23,7 +23,7 @@ import json
 from typing import Dict, Optional, Set, Any
 from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
-from toktokkie.renaming import Renamer
+from toktokkie.renaming import Renamer, RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.xdcc_update.enums import Resolution
@@ -301,6 +301,7 @@ class XDCCUpdater:
         Executes the XDCC Update procedure
         :return: None
         """
+        print(self.metadata.name)
 
         self._update_episode_names()
 
@@ -337,6 +338,9 @@ class XDCCUpdater:
                     str(episode_number).zfill(2),
                     episode_number,
                     ext
+                )
+                episode_name = RenameOperation.sanitize(
+                    self.season.path, episode_name
                 )
 
                 pack.set_directory(self.season.path)
