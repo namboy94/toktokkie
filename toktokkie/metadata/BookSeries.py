@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 from typing import List
+from puffotter.os import listdir
 from toktokkie.metadata.Book import Book
 from toktokkie.metadata.components.BookVolume import BookVolume
 from toktokkie.metadata.helper.wrappers import json_parameter
@@ -55,14 +56,14 @@ class BookSeries(Book):
             "type": cls.media_type().value
         })
 
-        volumes = []
+        volumes = {}
         for i, volume_name in enumerate(sorted(os.listdir(directory_path))):
 
             volume_path = os.path.join(directory_path, volume_name)
             if volume_name.startswith(".") or not os.path.exists(volume_path):
                 continue
 
-            print("Volume {}({}):".format(i + 1, volume_name))
+            print("Volume {} ({}):".format(i + 1, volume_name))
             ids = cls.prompt_for_ids(series_ids)
 
             # Remove double entries
@@ -70,12 +71,15 @@ class BookSeries(Book):
                 if id_value == ids.get(id_type, None):
                     ids.pop(id_type)
 
-            volumes.append(BookVolume(series, {
-                "ids": ids,
-                "name": volume_name
-            }))
+            if len(ids) == 0:
+                continue
+            else:
+                volumes[i] = BookVolume(series, {
+                    "ids": ids,
+                    "name": volume_name
+                })
 
-        series.seasons = volumes
+        series.volumes = volumes
         return series
 
     @property
@@ -84,10 +88,16 @@ class BookSeries(Book):
         """
         :return: A list of book volumes for this book series
         """
-        return list(map(
-            lambda x: BookVolume(self.directory_path, x),
-            self.json["volumes"]
-        ))
+        volumes = []
+        volume_files = listdir(self.directory_path, no_dirs=True)
+
+        for i, (volume, volume_file) in enumerate(volume_files):
+            json_data = self.json["volumes"].get(i, {
+                "ids": self.ids,
+                "name": volume
+            })
+            volumes.append(BookVolume(self, json_data))
+        return volumes
 
     @volumes.setter
     def volumes(self, volumes: List[BookVolume]):
@@ -96,6 +106,6 @@ class BookSeries(Book):
         :param volumes: The volumes to set
         :return: None
         """
-        self.json["volumes"] = []
-        for season in volumes:
-            self.json["volumes"].append(season.json)
+        self.json["volumes"] = {}
+        for i, volume in enumerate(volumes):
+            self.json["volumes"][i] = volume.json

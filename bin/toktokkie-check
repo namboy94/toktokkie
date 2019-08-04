@@ -53,7 +53,8 @@ def main():
     if args.anilist_user is not None:
         api = AnilistApi()
         config["anilist_api"] = api
-        config["anilist_list"] = api.get_anime_list(args.anilist_user)
+        config["anilist_anime_list"] = api.get_anime_list(args.anilist_user)
+        config["anilist_manga_list"] = api.get_manga_list(args.anilist_user)
 
     for path in directories:
 

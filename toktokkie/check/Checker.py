@@ -57,9 +57,8 @@ class Checker:
         """
         print("-" * 80)
         print("Checking {}".format(self.metadata.name))
-        valid = True
-        valid = valid and self._check_icons()
-        valid = valid and self._check_renaming()
+        valid = self._check_icons()
+        valid = self._check_renaming() and valid
         return valid
 
     def _check_icons(self) -> bool:

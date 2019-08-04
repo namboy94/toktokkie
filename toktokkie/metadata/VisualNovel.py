@@ -82,16 +82,50 @@ class VisualNovel(Metadata):
         """
         :return: Whether or not the Visual Novel has an opening theme
         """
-        return self.json.get("has_ed", True)
+        return self.json.get("has_op", True)
 
     @has_op.setter
-    def has_op(self, has_ed: bool):
+    def has_op(self, has_op: bool):
         """
         Setter method for the has_op property
-        :param has_ed: Whether or not the VN has an opening theme
+        :param has_op: Whether or not the VN has an opening theme
         :return: None
         """
-        self.json["has_ed"] = has_ed
+        self.json["has_op"] = has_op
+
+    @property
+    @json_parameter
+    def has_cgs(self) -> bool:
+        """
+        :return: Whether or not the Visual Novel has a CG gallery
+        """
+        return self.json.get("has_cgs", True)
+
+    @has_cgs.setter
+    def has_cgs(self, has_cgs: bool):
+        """
+        Setter method for the has_cgs property
+        :param has_cgs: Whether or not the VN has a CG gallery
+        :return: None
+        """
+        self.json["has_cgs"] = has_cgs
+
+    @property
+    @json_parameter
+    def has_ost(self) -> bool:
+        """
+        :return: Whether or not the Visual Novel has an OST
+        """
+        return self.json.get("has_ost", True)
+
+    @has_ost.setter
+    def has_ost(self, has_ost: bool):
+        """
+        Setter method for the has_ost property
+        :param has_ost: Whether or not the VN has an OST
+        :return: None
+        """
+        self.json["has_ost"] = has_ost
 
     @property
     def cgs(self) -> Optional[Dict[str, str]]:
@@ -109,7 +143,10 @@ class VisualNovel(Metadata):
             for cg_dir, cg_dir_path in listdir(cg_dirs, no_files=True):
                 for _, img_path in listdir(cg_dir_path, no_dirs=True):
                     cgs[cg_dir] = img_path
-            return cgs
+            if len(cgs) == 0:
+                return None
+            else:
+                return cgs
 
     @property
     def ost(self) -> Optional[List[str]]:
@@ -117,40 +154,43 @@ class VisualNovel(Metadata):
         :return: a list of files for the OST of a visual novel
         """
         ost_dir = os.path.join(self.directory_path, ".meta/ost")
-        if not os.path.isdir(ost_dir):
-            return None
-        else:
-            ost = []
-            for _, music_file in listdir(ost_dir, no_dirs=True):
-                ost.append(music_file)
-            return ost
+        return self._get_file_list(ost_dir)
 
     @property
-    def ed(self) -> Optional[List[str]]:
+    def eds(self) -> Optional[List[str]]:
         """
         :return: a list of ending theme videos
         """
         video_dir = os.path.join(self.directory_path, ".meta/videos")
-        if not os.path.isdir(video_dir):
-            return None
-        else:
-            eds = []
-            for video, video_path in listdir(video_dir, no_dirs=True):
-                if video.startswith("ED"):
-                    eds.append(video_path)
-            return eds
+        return self._get_file_list(video_dir, "ED")
 
     @property
-    def op(self) -> Optional[List[str]]:
+    def ops(self) -> Optional[List[str]]:
         """
         :return: a list of opening theme videos
         """
         video_dir = os.path.join(self.directory_path, ".meta/videos")
-        if not os.path.isdir(video_dir):
+        return self._get_file_list(video_dir, "OP")
+
+    @staticmethod
+    def _get_file_list(path: str, prefix: Optional[str] = None) \
+            -> Optional[List[str]]:
+        """
+        Retrieves a list of files from a directory
+        :param path: The path to check
+        :param prefix: An optional prefix
+        :return: None, if no files were found or the directory does not exist,
+                 otherwise the list of files
+        """
+        if not os.path.isdir(path):
             return None
         else:
-            ops = []
-            for video, video_path in listdir(video_dir, no_dirs=True):
-                if video.startswith("OP"):
-                    ops.append(video_path)
-            return ops
+            files = []
+            for _file, file_path in listdir(path, no_dirs=True):
+                if prefix is not None and not _file.startswith(prefix):
+                    continue
+                files.append(file_path)
+            if len(files) == 0:
+                return None
+            else:
+                return files

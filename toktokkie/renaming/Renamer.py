@@ -50,6 +50,7 @@ class Renamer:
             self.operations = self._generate_movie_operations()
         elif self.metadata.media_type() == MediaType.TV_SERIES:
             self.operations = self._generate_tv_series_operations()
+        # Visual Novels don't get renamed!
         else:  # pragma: no cover
             self.operations = []  # type: List[RenameOperation]
 
@@ -118,9 +119,11 @@ class Renamer:
         fill = len(str(len(children))) + 1
 
         for i, volume in enumerate(children):
-            new_name = "{} - Volume {}".format(
+            ext = volume.rsplit(".", 1)[1]
+            new_name = "{} - Volume {}.{}".format(
                 self.metadata.name,
-                str(i + 1).zfill(fill)
+                str(i + 1).zfill(fill),
+                ext
             )
 
             operations.append(RenameOperation(
@@ -147,6 +150,7 @@ class Renamer:
         """
         operations = []
 
+        # noinspection PyTypeChecker
         tv_series_metadata = self.metadata  # type: TvSeries
 
         excluded = tv_series_metadata.excludes.get(TvIdType.TVDB, {})

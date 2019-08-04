@@ -24,6 +24,7 @@ from toktokkie.metadata.Book import Book
 from toktokkie.metadata.BookSeries import BookSeries
 from toktokkie.metadata.Movie import Movie
 from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.VisualNovel import VisualNovel
 from toktokkie.metadata.components.enums import MediaType
 from toktokkie.exceptions import InvalidMetadata
 
@@ -71,5 +72,6 @@ def get_metadata_class(media_type: str or MediaType) -> type(Metadata):
         Book.media_type(): Book,
         BookSeries.media_type(): BookSeries,
         TvSeries.media_type(): TvSeries,
-        Movie.media_type(): Movie
+        Movie.media_type(): Movie,
+        VisualNovel.media_type(): VisualNovel
     }[media_type]

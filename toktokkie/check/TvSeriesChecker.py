@@ -45,19 +45,19 @@ class TvSeriesChecker(Checker):
         :return: The result of the check
         """
         valid = super().check()
-        valid = valid and self._check_season_metadata()
-        valid = valid and self._check_tvdb_ids()
+        valid = self._check_season_metadata() and valid
+        valid = self._check_tvdb_ids() and valid
 
         # Subsequent steps need to have fully valid metadata and tvdb ids
         if not valid:
             return valid
 
-        valid = valid and self._check_tvdb_season_lengths()
-        valid = valid and self._check_tvdb_episode_files_complete()
-        valid = valid and self._check_spinoff_completeness()
+        valid = self._check_tvdb_season_lengths() and valid
+        valid = self._check_tvdb_episode_files_complete() and valid
+        valid = self._check_spinoff_completeness() and valid
 
         if self.config.get("anilist_user") is not None:
-            valid = valid and self._check_anilist_ids()
+            valid = self._check_anilist_ids() and valid
 
         return valid
 
@@ -233,17 +233,17 @@ class TvSeriesChecker(Checker):
                     )
         return valid
 
-    def _check_anilist_ids(self):
+    def _check_anilist_ids(self) -> bool:
         """
         Makes sure that every season has at least one anilist ID and that
         each anilist ID is entered as "Completed" as long as the series
         has already aired
-        :return: None
+        :return: The check result
         """
 
         metadata = self.metadata  # type: TvSeries
         api = self.config["anilist_api"]  # type: AnilistApi
-        user_list = self.config["anilist_list"]
+        user_list = self.config["anilist_anime_list"]
         completed_ids = list(
             map(
                 lambda x: int(x.id.get(IdType.ANILIST)),

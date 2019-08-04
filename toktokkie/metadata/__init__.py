@@ -22,6 +22,7 @@ from toktokkie.metadata.Book import Book
 from toktokkie.metadata.BookSeries import BookSeries
 from toktokkie.metadata.Movie import Movie
 from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.VisualNovel import VisualNovel
 from toktokkie.metadata.components.enums import MediaType
 from toktokkie.metadata.helper.functions import get_metadata, \
     get_metadata_class, create_metadata
