@@ -22,8 +22,10 @@ import tvdb_api
 from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 from typing import List, Optional
+from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import MediaType, TvIdType
 from toktokkie.renaming.RenameOperation import RenameOperation
 
@@ -50,6 +52,8 @@ class Renamer:
             self.operations = self._generate_movie_operations()
         elif self.metadata.media_type() == MediaType.TV_SERIES:
             self.operations = self._generate_tv_series_operations()
+        elif self.metadata.media_type() == MediaType.MANGA:
+            self.operations = self._generate_manga_operations()
         # Visual Novels don't get renamed!
         else:  # pragma: no cover
             self.operations = []  # type: List[RenameOperation]
@@ -109,6 +113,51 @@ class Renamer:
             os.path.join(self.path, book_file), dest
         )]
 
+    def _generate_manga_operations(self) -> List[RenameOperation]:
+        """
+        Generates rename operations for manga media types
+        :return: The list of rename operations
+        """
+        # noinspection PyTypeChecker
+        metadata = self.metadata  # type: Manga
+
+        main_content = listdir(metadata.main_path, no_dirs=True)
+        max_chapter_length = len(str(len(main_content)))
+
+        operations = []
+
+        for i, (old_name, old_path) in enumerate(main_content):
+            ext = old_name.rsplit(".", 1)[1]
+            new_name = "{} - Chapter {}.{}".format(
+                metadata.name,
+                str(i + 1).zfill(max_chapter_length),
+                ext
+            )
+            operations.append(RenameOperation(old_path, new_name))
+
+        special_content = listdir(metadata.special_path, no_dirs=True)
+
+        if len(special_content) != len(metadata.special_chapters):
+            print("Invalid amount of special chapters!!! {} != {}".format(
+                len(special_content), len(metadata.special_chapters))
+            )
+            return []
+        else:
+            special_max_length = len(max(
+                metadata.special_chapters,
+                key=lambda x: len(x)
+            ))
+            for i, (old_name, old_path) in enumerate(special_content):
+                ext = old_name.rsplit(".", 1)[1]
+                new_name = "{} - Chapter {}.{}".format(
+                    metadata.name,
+                    metadata.special_chapters[i].zfill(special_max_length),
+                    ext
+                )
+                operations.append(RenameOperation(old_path, new_name))
+
+        return operations
+
     def _generate_book_series_operations(self) -> List[RenameOperation]:
         """
         Generates rename operations for book series media types
@@ -116,7 +165,7 @@ class Renamer:
         """
         operations = []
         children = self._get_children(no_dirs=True)
-        fill = len(str(len(children))) + 1
+        fill = len(str(len(children)))
 
         for i, volume in enumerate(children):
             ext = volume.rsplit(".", 1)[1]

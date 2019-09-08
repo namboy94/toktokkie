@@ -50,6 +50,15 @@ class BookIdType(Enum):
     KITSU = "kitsu"
 
 
+class MangaIdType(Enum):
+    """
+    Enumeration that defines various ID types for Manga
+    """
+    MYANIMELIST = "myanimelist"
+    ANILIST = "anilist"
+    KITSU = "kitsu"
+
+
 class VisualNovelIdType(Enum):
     """
     Enumeration that defines various ID types for visual novels
@@ -66,3 +75,4 @@ class MediaType(Enum):
     MOVIE = "movie"
     TV_SERIES = "tv"
     VISUAL_NOVEL = "visual_novel"
+    MANGA = "manga"

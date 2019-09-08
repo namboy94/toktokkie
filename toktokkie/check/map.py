@@ -19,6 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 from toktokkie.metadata.components.enums import MediaType
 from toktokkie.check.BookChecker import BookChecker
+from toktokkie.check.MangaChecker import MangaChecker
 from toktokkie.check.BookSeriesChecker import BookSeriesChecker
 from toktokkie.check.TvSeriesChecker import TvSeriesChecker
 from toktokkie.check.MovieChecker import MovieChecker
@@ -29,7 +30,8 @@ checker_map = {
     MediaType.BOOK_SERIES: BookSeriesChecker,
     MediaType.TV_SERIES: TvSeriesChecker,
     MediaType.MOVIE: MovieChecker,
-    MediaType.VISUAL_NOVEL: VisualNovelChecker
+    MediaType.VISUAL_NOVEL: VisualNovelChecker,
+    MediaType.MANGA: MangaChecker
 }
 """
 A dictionary mapping media types to checker classes

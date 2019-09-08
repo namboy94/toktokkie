@@ -27,7 +27,7 @@ from toktokkie.metadata.prompt.CommaList import CommaList
 from toktokkie.exceptions import InvalidMetadata, \
     MissingMetadata
 from toktokkie.metadata.components.enums import MediaType, TvIdType, \
-    BookIdType
+    BookIdType, MangaIdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType
@@ -299,7 +299,10 @@ class Metadata:
                         api = AnilistApi()
 
                         anime_list_media_type = AnimeListMediaType.ANIME
-                        if id_type == BookIdType.ANILIST:
+                        if id_type in [
+                            BookIdType.ANILIST,
+                            MangaIdType.ANILIST
+                        ]:
                             anime_list_media_type = AnimeListMediaType.MANGA
 
                         anilist_ids = []

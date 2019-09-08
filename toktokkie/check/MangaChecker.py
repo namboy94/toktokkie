@@ -1,4 +1,4 @@
-"""LICENSE
+"""
 Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
 
 This file is part of toktokkie.
@@ -15,15 +15,13 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
-LICENSE"""
+"""
 
-from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.Book import Book
-from toktokkie.metadata.BookSeries import BookSeries
-from toktokkie.metadata.Movie import Movie
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.VisualNovel import VisualNovel
-from toktokkie.metadata.components.enums import MediaType
-from toktokkie.metadata.helper.functions import get_metadata, \
-    get_metadata_class, create_metadata
+from toktokkie.check.Checker import Checker
+
+
+class MangaChecker(Checker):
+    """
+    Class that check Manga media for consistency
+    """
+    pass
