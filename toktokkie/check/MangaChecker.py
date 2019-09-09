@@ -25,6 +25,8 @@ from toktokkie.check.Checker import Checker
 from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import MangaIdType
 from anime_list_apis.api.AnilistApi import AnilistApi
+from anime_list_apis.models.MediaListEntry import MangaListEntry
+from anime_list_apis.models.attributes.Id import IdType
 
 
 class MangaChecker(Checker):
@@ -68,22 +70,42 @@ class MangaChecker(Checker):
         """
         # noinspection PyTypeChecker
         metadata = self.metadata  # type: Manga
+        anilist_entries = self.config["anilist_manga_list"]
 
         local_chaptercount = len(os.listdir(metadata.main_path))
 
         try:
             anilist_id = int(metadata.ids.get(MangaIdType.ANILIST)[0])
+
+            list_entry = None
+            for entry in anilist_entries:  # type: MangaListEntry
+                if entry.id.get(IdType.ANILIST) == anilist_id:
+                    list_entry = entry
+                    break
+
+            list_chaptercount = None
+            if list_entry is not None:
+                list_chaptercount = list_entry.chapter_progress
+
             remote_chaptercount = self._guess_latest_chapter(int(anilist_id))
-            if remote_chaptercount is None:
-                return True
-            else:
-                complete = remote_chaptercount == local_chaptercount
-                if not complete:
-                    self.warn("Local chapters and available chapters "
-                              "don't match: Local: {} / Available: {}"
-                              .format(local_chaptercount, remote_chaptercount))
-                return complete
+
+            list_complete = list_chaptercount == local_chaptercount
+            remote_complete = remote_chaptercount == local_chaptercount
+
+            if not list_complete:
+                self.warn("Local chapters and list chapters "
+                          "don't match: Local: {} / List: {}"
+                          .format(local_chaptercount, list_chaptercount))
+
+            if not remote_complete:
+                self.warn("Local chapters and available chapters "
+                          "don't match: Local: {} / Available: {}"
+                          .format(local_chaptercount, remote_chaptercount))
+
+            return list_complete and remote_complete
+
         except (IndexError, ValueError):
+            self.warn("No Anilist ID for {}".format(metadata.name))
             return True
 
     def _guess_latest_chapter(self, anilist_id: int) -> Optional[int]:
@@ -96,7 +118,7 @@ class MangaChecker(Checker):
         info = api.get_manga_data(anilist_id)
 
         chapter_count = info.chapter_count
-        if chapter_count is None:
+        if chapter_count is None:  # Guess if not official data is present
             query = """
             query ($id: Int) {
               Page(page: 1) {
@@ -120,15 +142,9 @@ class MangaChecker(Checker):
                 progress = entry["progress"]
                 if progress is not None:
                     progress = entry["progress"].split(" - ")[-1]
-                    progresses.append(progress)
+                    progresses.append(int(progress))
 
             progresses.sort()
+            chapter_count = progresses[-1]
 
-            best_guess = progresses.pop(-1)
-            while progresses.count(best_guess) < 1:
-                best_guess = progresses.pop(-1)
-
-            chapter_count = best_guess
-
-        print(chapter_count)
         return chapter_count

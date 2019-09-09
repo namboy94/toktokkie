@@ -135,6 +135,9 @@ class Renamer:
             )
             operations.append(RenameOperation(old_path, new_name))
 
+        if metadata.special_path is None:
+            return operations
+
         special_content = listdir(metadata.special_path, no_dirs=True)
 
         if len(special_content) != len(metadata.special_chapters):
