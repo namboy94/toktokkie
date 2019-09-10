@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 import argparse
 from toktokkie import Directory
 from toktokkie.metadata.components.enums import MediaType
@@ -33,25 +34,31 @@ def main():
     media_types = list(map(lambda x: x.value, list(MediaType)))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory",
-                        help="The directory for which to generate "
-                             "a metadata file for")
     parser.add_argument("media_type", choices=set(media_types),
                         help="The media type of the metadata")
+    parser.add_argument("directories", nargs="+",
+                        help="The directories for which to generate "
+                             "a metadata file for")
+
     args = parser.parse_args()
 
-    directory = args.directory
-    if directory.endswith("/"):
-        directory = directory.rsplit("/", 1)[0]
+    for directory in args.directories:
 
-    media_type = args.media_type
+        if not os.path.isdir(directory):
+            print("{} is not a directory, skipping.".format(directory))
+            continue
 
-    generated = Directory(
-        directory,
-        generate_metadata=True,
-        metadata_type=media_type
-    )
-    generated.metadata.print_folder_icon_source()
+        if directory.endswith("/"):
+            directory = directory.rsplit("/", 1)[0]
+
+        media_type = args.media_type
+
+        generated = Directory(
+            directory,
+            generate_metadata=True,
+            metadata_type=media_type
+        )
+        generated.metadata.print_folder_icon_source()
 
 
 if __name__ == "__main__":
