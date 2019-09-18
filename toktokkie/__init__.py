@@ -18,3 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from toktokkie.Directory import Directory
+
+
+sentry_dsn = "https://77992bd58d9a46fc812ad491ba460a7e@sentry.namibsun.net/10"
+"""
+Sentry DSN used for exception logging
+"""

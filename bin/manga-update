@@ -1,0 +1,90 @@
+"""LICENSE
+Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
+
+This file is part of toktokkie.
+
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
+LICENSE"""
+
+import os
+import argparse
+from puffotter.init import cli_start, argparse_add_verbosity
+from toktokkie import Directory, sentry_dsn
+from toktokkie.exceptions import MissingMetadata, InvalidMetadata
+from toktokkie.metadata.Manga import Manga
+from toktokkie.metadata.components.enums import MediaType, MangaIdType
+from manga_dl.scrapers.mangadex import MangaDexScraper
+
+
+def main(args: argparse.Namespace):
+    """
+    The main function of this script
+    :param args: The command line arguments
+    :return: None
+    """
+    scraper = MangaDexScraper()
+
+    for path in args.directories:
+        try:
+            directory = Directory(path)
+            metadata = directory.metadata  # type: Manga
+            if metadata.media_type() != MediaType.MANGA:
+                print("Not a manga directory: {}".format(path))
+                continue
+
+            mangadex_id = metadata.ids.get(MangaIdType.MANGADEX)
+            if mangadex_id is None or len(mangadex_id) == 0:
+                print("No mangadex ID for {}".format(path))
+                continue
+
+            chapters = scraper.load_chapters(None, mangadex_id[0])
+            main_chapters = []
+            special_chapters = []
+
+            for chapter in chapters:
+                if "." in chapter.chapter_number:
+                    special_chapters.append(chapter)
+                else:
+                    main_chapters.append(main_chapters)
+
+            current_latest = len(os.listdir(metadata.main_path))
+            main_chapters = list(filter(
+                lambda x: int(x.chapter_number) > current_latest,
+                main_chapters
+            ))
+
+            for c in main_chapters:
+                name = "{} - Chapter {}.cbz".format(
+                    metadata.name,
+                    c.chapter_number.zfill(len(str(current_latest)))
+                )
+                dest = os.path.join(metadata.main_path, name)
+                c.dowload(dest)
+
+        except MissingMetadata:
+            print("{} has no metadata file.".format(path))
+        except InvalidMetadata:
+            print("{}'s metadata is invalid.".format(path))
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directories", nargs="+",
+                        help="The directories to update. "
+                             "Files and directories that do not contain any "
+                             "valid metadata configuration will be ignored.")
+    argparse_add_verbosity(parser)
+    cli_start(
+        main, parser, "Thanks for using toktokkie!", "toktokkie", sentry_dsn
+    )

@@ -29,6 +29,7 @@ from puffotter.os import listdir
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs="+")
+    parser.add_argument("--delete-original", action="store_true")
     args = parser.parse_args()
 
     fill = len(str(len(args.files)))
@@ -56,6 +57,8 @@ def main():
             os.rename(path, new_path)
 
         shutil.rmtree(tempdir)
+        if args.delete_original:
+            os.remove(cbz)
 
     Popen(["zip", "-j", dest_file] + src_images).wait()
     shutil.rmtree(dest_dir)

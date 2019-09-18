@@ -57,6 +57,7 @@ class MangaIdType(Enum):
     MYANIMELIST = "myanimelist"
     ANILIST = "anilist"
     KITSU = "kitsu"
+    MANGADEX = "mangadex"
 
 
 class VisualNovelIdType(Enum):

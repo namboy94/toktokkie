@@ -46,7 +46,8 @@ if __name__ == "__main__":
             "colorama",
             "anime_list_apis",
             "mutagen",
-            "puffotter"
+            "puffotter",
+            "manga-dl"
         ],
         test_suite='nose.collector',
         tests_require=['nose'],
