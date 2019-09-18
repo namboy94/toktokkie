@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 import argparse
+from colorama import Fore, Style
 from puffotter.init import cli_start, argparse_add_verbosity
 from toktokkie import Directory, sentry_dsn
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
@@ -38,6 +39,8 @@ def main(args: argparse.Namespace):
     for path in args.directories:
         try:
             directory = Directory(path)
+            print(directory.metadata.name)
+
             metadata = directory.metadata  # type: Manga
             if metadata.media_type() != MediaType.MANGA:
                 print("Not a manga directory: {}".format(path))
@@ -56,7 +59,11 @@ def main(args: argparse.Namespace):
                 if "." in chapter.chapter_number:
                     special_chapters.append(chapter)
                 else:
-                    main_chapters.append(main_chapters)
+                    try:
+                        int(chapter.chapter_number)
+                        main_chapters.append(chapter)
+                    except ValueError:
+                        special_chapters.append(chapter)
 
             current_latest = len(os.listdir(metadata.main_path))
             main_chapters = list(filter(
@@ -64,13 +71,35 @@ def main(args: argparse.Namespace):
                 main_chapters
             ))
 
+            if not args.dry_run:
+                directory.rename(noconfirm=True)
+            maxchar = max(metadata.name)
+
+            downloaded = []
             for c in main_chapters:
-                name = "{} - Chapter {}.cbz".format(
+
+                if c.chapter_number in downloaded:
+                    continue
+                downloaded.append(c.chapter_number)
+
+                name = "{}{} - Chapter {}.cbz".format(
+                    maxchar,
                     metadata.name,
                     c.chapter_number.zfill(len(str(current_latest)))
                 )
                 dest = os.path.join(metadata.main_path, name)
-                c.dowload(dest)
+                if not args.dry_run:
+                    print("Downloading Chapter {}".format(c))
+                    c.download(dest)
+                else:
+                    print("{}Found chapter: {}{}".format(
+                        Fore.LIGHTYELLOW_EX,
+                        c,
+                        Style.RESET_ALL
+                    ))
+
+            if not args.dry_run:
+                directory.rename(noconfirm=True)
 
         except MissingMetadata:
             print("{} has no metadata file.".format(path))
@@ -84,6 +113,8 @@ if __name__ == "__main__":
                         help="The directories to update. "
                              "Files and directories that do not contain any "
                              "valid metadata configuration will be ignored.")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Does not download or rename anything")
     argparse_add_verbosity(parser)
     cli_start(
         main, parser, "Thanks for using toktokkie!", "toktokkie", sentry_dsn
