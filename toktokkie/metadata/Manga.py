@@ -78,13 +78,12 @@ class Manga(Metadata):
         return os.path.join(self.directory_path, "Main")
 
     @property
-    def special_path(self) -> Optional[str]:
+    def special_path(self) -> str:
         """
         The path to the special manga directory
         :return: The path or None if it does not exist
         """
-        path = os.path.join(self.directory_path, "Special")
-        return path if os.path.isdir(path) else None
+        return os.path.join(self.directory_path, "Special")
 
     @property
     @json_parameter
@@ -102,3 +101,13 @@ class Manga(Metadata):
         :return: None
         """
         self.json["special_chapters"] = special_chapters
+
+    @property
+    def anilist_urls(self) -> List[str]:
+        """
+        :return: A list of anilist URLs for the series
+        """
+        urls = []
+        for _id in self.ids.get(MangaIdType.ANILIST, []):
+            urls.append("https://anilist.co/manga/" + str(_id))
+        return urls

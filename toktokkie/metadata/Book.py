@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from typing import List
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.enums import BookIdType, MediaType
 
@@ -55,3 +56,13 @@ class Book(Metadata):
             "ids": cls.prompt_for_ids(),
             "type": cls.media_type().value
         })
+
+    @property
+    def anilist_urls(self) -> List[str]:
+        """
+        :return: A list of anilist URLs for the series
+        """
+        urls = []
+        for _id in self.ids.get(BookIdType.ANILIST, []):
+            urls.append("https://anilist.co/manga/" + str(_id))
+        return urls

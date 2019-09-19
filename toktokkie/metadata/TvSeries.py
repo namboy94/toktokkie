@@ -354,3 +354,13 @@ class TvSeries(Metadata):
                 )
 
         return content_info
+
+    @property
+    def anilist_urls(self) -> List[str]:
+        """
+        :return: A list of anilist URLs for the series
+        """
+        urls = []
+        for _id in self.ids.get(TvIdType.ANILIST, []):
+            urls.append("https://anilist.co/anime/" + str(_id))
+        return urls

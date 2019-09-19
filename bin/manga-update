@@ -26,6 +26,7 @@ from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import MediaType, MangaIdType
 from manga_dl.scrapers.mangadex import MangaDexScraper
+from puffotter.os import makedirs
 
 
 def main(args: argparse.Namespace):
@@ -75,8 +76,19 @@ def main(args: argparse.Namespace):
                 directory.rename(noconfirm=True)
             maxchar = max(metadata.name)
 
+            total_chapters = len(main_chapters) + current_latest
+
             downloaded = []
             for c in main_chapters:
+                if current_latest + 1 != c.macro_chapter:
+                    print("{}Missing chapter {}, expected {}{}".format(
+                        Fore.LIGHTRED_EX,
+                        current_latest + 1,
+                        c.chapter_number,
+                        Style.RESET_ALL
+                    ))
+                    break
+                current_latest += 1
 
                 if c.chapter_number in downloaded:
                     continue
@@ -85,7 +97,7 @@ def main(args: argparse.Namespace):
                 name = "{}{} - Chapter {}.cbz".format(
                     maxchar,
                     metadata.name,
-                    c.chapter_number.zfill(len(str(current_latest)))
+                    c.chapter_number.zfill(len(str(total_chapters)))
                 )
                 dest = os.path.join(metadata.main_path, name)
                 if not args.dry_run:
@@ -100,6 +112,32 @@ def main(args: argparse.Namespace):
 
             if not args.dry_run:
                 directory.rename(noconfirm=True)
+
+            for c in special_chapters:
+
+                if c.chapter_number not in metadata.special_chapters:
+                    scraper.logger.info("Found unknown chapter {}"
+                                        .format(c.chapter_number))
+                    continue
+
+                else:
+                    path = os.path.join(
+                        metadata.special_path,
+                        "{} - Chapter {}.cbz"
+                        .format(metadata.name, c.chapter_number)
+                    )
+                    if os.path.exists(path):
+                        continue
+                    else:
+                        if not args.dry_run:
+                            makedirs(metadata.special_path)
+                            c.download(path)
+                        else:
+                            print("{}Found chapter: {}{}".format(
+                                Fore.LIGHTYELLOW_EX,
+                                c,
+                                Style.RESET_ALL
+                            ))
 
         except MissingMetadata:
             print("{} has no metadata file.".format(path))
