@@ -49,6 +49,9 @@ if __name__ == "__main__":
             "puffotter",
             "manga-dl"
         ],
+        extras_require={
+            "gui": ["PyQt5"]
+        },
         test_suite='nose.collector',
         tests_require=['nose'],
         include_package_data=True,

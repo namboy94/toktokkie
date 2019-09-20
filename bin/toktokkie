@@ -18,95 +18,23 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-import logging
-from typing import List, Optional
 from puffotter.init import cli_start, argparse_add_verbosity
-from toktokkie import sentry_dsn, Directory
-from toktokkie.exceptions import MissingMetadata, InvalidMetadata
-from toktokkie.metadata.components.enums import MediaType
-from subprocess import Popen
+from toktokkie import sentry_dsn
+from toktokkie.scripts import toktokkie_commands
 
 
-def main(args: argparse.Namespace, logger: logging.Logger):
+# PYTHON_ARGCOMPLETE_OK
+
+def main(args: argparse.Namespace):
     """
     The main function of this script
     :param args: The command line arguments
-    :param logger: The logger to use
     :return: None
     """
-    logger.info("toktokkie")
-    if args.mode == "anilist-open":
-        anilist_open(args, logger)
-    elif args.mode == "print":
-        toktokkie_print(args, logger)
-
-
-def anilist_open(args: argparse.Namespace, logger: logging.Logger):
-    """
-    Opens all provided anilist IDs in firefox
-    :param args: The CLI arguments
-    :param logger: The logger
-    :return: None
-    """
-    anilist_type = [
-        MediaType.MANGA,
-        MediaType.BOOK,
-        MediaType.BOOK_SERIES,
-        MediaType.TV_SERIES,
-        MediaType.MOVIE
-    ]
-    directories = load_directories(args.directories, logger, anilist_type)
-    for directory in directories:
-        urls = directory.metadata.anilist_urls
-        if len(urls) is None:
-            logger.warning("No URL for {}".format(directory.metadata.name))
-        else:
-            for url in urls:
-                Popen(["firefox", url]).wait()
-
-
-def toktokkie_print(args: argparse.Namespace, logger: logging.Logger):
-    """
-    Prints the metadata of all provided directories
-    :param args: The CLI arguments
-    :param logger: The logger
-    :return: None
-    """
-    for directory in load_directories(args.directories, logger):
-        print(directory.metadata)
-
-
-def load_directories(
-        paths: List[str],
-        logger: logging.Logger,
-        restrictions: Optional[List[MediaType]] = None
-) -> List[Directory]:
-    """
-    Loads directory objects from a list of file paths
-    :param paths: The paths to convert into objects
-    :param logger: logger for logging
-    :param restrictions: Limits the media type of directories
-    :return: The converted directories
-    """
-    directories = []  # type: List[Directory]
-    for path in paths:
-        try:
-            directory = Directory(path)
-
-            if restrictions is not None:
-                if directory.metadata.media_type() not in restrictions:
-                    logger.info(
-                        "Skipping directory {} with incorrect media type {}"
-                        .format(path, directory.metadata.media_type())
-                    )
-                    continue
-
-            directories.append(directory)
-        except MissingMetadata:
-            logger.warning("{} has no metadata file.".format(path))
-        except InvalidMetadata:
-            logger.warning("{}'s metadata is invalid.".format(path))
-    return directories
+    for command_cls in toktokkie_commands:
+        if command_cls.name() == args.command:
+            command = command_cls()
+            command.execute(args)
 
 
 def define_parser() -> argparse.ArgumentParser:
@@ -115,13 +43,11 @@ def define_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser()
     argparse_add_verbosity(parser)
-    mode_parser = parser.add_subparsers(required=True, dest="mode")
+    command_parser = parser.add_subparsers(required=True, dest="command")
 
-    anilist_open_parser = mode_parser.add_parser("anilist-open")
-    anilist_open_parser.add_argument("directories", nargs="+")
-
-    print_parser = mode_parser.add_parser("print")
-    print_parser.add_argument("directories", nargs="+")
+    for command_cls in toktokkie_commands:
+        subparser = command_parser.add_parser(command_cls.name())
+        command_cls.prepare_parser(subparser)
 
     return parser
 

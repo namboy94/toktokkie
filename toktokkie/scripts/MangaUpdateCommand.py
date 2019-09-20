@@ -20,36 +20,54 @@ LICENSE"""
 import os
 import argparse
 from colorama import Fore, Style
-from puffotter.init import cli_start, argparse_add_verbosity
-from toktokkie import Directory, sentry_dsn
-from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import MediaType, MangaIdType
 from manga_dl.scrapers.mangadex import MangaDexScraper
 from puffotter.os import makedirs
+from toktokkie.scripts.Command import Command
 
 
-def main(args: argparse.Namespace):
+class MangaUpdateCommand(Command):
     """
-    The main function of this script
-    :param args: The command line arguments
-    :return: None
+    Class that encapsulates behaviour of the manga-update command
     """
-    scraper = MangaDexScraper()
 
-    for path in args.directories:
-        try:
-            directory = Directory(path)
+    @classmethod
+    def name(cls) -> str:
+        """
+        :return: The command name
+        """
+        return "manga-update"
+
+    @classmethod
+    def prepare_parser(cls, parser: argparse.ArgumentParser):
+        """
+        Prepares an argumentparser for this command
+        :param parser: The parser to prepare
+        :return: None
+        """
+        cls.add_directories_arg(parser)
+        parser.add_argument("--dry-run", action="store_true",
+                            help="Does not download or rename anything")
+
+    def execute(self, args: argparse.Namespace):
+        """
+        Executes the commands
+        :param args: The command line arguments
+        :return: None
+        """
+        scraper = MangaDexScraper()
+
+        for directory in self.load_directories(
+                args.directories, [MediaType.MANGA]
+        ):
             print(directory.metadata.name)
 
             metadata = directory.metadata  # type: Manga
-            if metadata.media_type() != MediaType.MANGA:
-                print("Not a manga directory: {}".format(path))
-                continue
 
             mangadex_id = metadata.ids.get(MangaIdType.MANGADEX)
             if mangadex_id is None or len(mangadex_id) == 0:
-                print("No mangadex ID for {}".format(path))
+                print("No mangadex ID for {}".format(directory.path))
                 continue
 
             chapters = scraper.load_chapters(None, mangadex_id[0])
@@ -138,22 +156,3 @@ def main(args: argparse.Namespace):
                                 c,
                                 Style.RESET_ALL
                             ))
-
-        except MissingMetadata:
-            print("{} has no metadata file.".format(path))
-        except InvalidMetadata:
-            print("{}'s metadata is invalid.".format(path))
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("directories", nargs="+",
-                        help="The directories to update. "
-                             "Files and directories that do not contain any "
-                             "valid metadata configuration will be ignored.")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Does not download or rename anything")
-    argparse_add_verbosity(parser)
-    cli_start(
-        main, parser, "Thanks for using toktokkie!", "toktokkie", sentry_dsn
-    )
