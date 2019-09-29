@@ -58,12 +58,23 @@ class Renamer:
         else:  # pragma: no cover
             self.operations = []  # type: List[RenameOperation]
 
+    def get_active_operations(self) -> List[RenameOperation]:
+        """
+        :return: Any rename operations whose source and destination
+                 paths differ.
+        """
+        return list(filter(lambda x: x.source != x.dest, self.operations))
+
     def rename(self, noconfirm: bool):
         """
         Renames the contained files according to the naming scheme.
         :param noconfirm: Skips the confirmation phase if True
         :return: None
         """
+        if len(self.get_active_operations()) == 0:
+            print("Files already named correctly, skipping.")
+            return
+
         if not noconfirm:
             for operation in self.operations:
                 print(operation)
@@ -144,17 +155,33 @@ class Renamer:
             print("Invalid amount of special chapters!!! {} != {}".format(
                 len(special_content), len(metadata.special_chapters))
             )
-            return []
+            return operations
         else:
             special_max_length = len(max(
                 metadata.special_chapters,
                 key=lambda x: len(x)
             ))
             for i, (old_name, old_path) in enumerate(special_content):
-                ext = old_name.rsplit(".", 1)[1]
+                chap_guess, ext = old_name.rsplit(".", 1)
+
+                chapter_num = metadata.special_chapters[i]
+
+                # Tries to infer the chapter number from local files.
+                # Useful if a newly added chapter does not fit correctly
+                # in the lexicological order
+                try:
+                    chap_guess = chap_guess.rsplit(" - Chapter ", 1)[1]
+                    while chap_guess.startswith("0"):
+                        chap_guess = chap_guess[1:]
+                    if chap_guess in metadata.special_chapters:
+                        chapter_num = chap_guess
+
+                except IndexError:
+                    pass
+
                 new_name = "{} - Chapter {}.{}".format(
                     metadata.name,
-                    metadata.special_chapters[i].zfill(special_max_length),
+                    chapter_num.zfill(special_max_length),
                     ext
                 )
                 operations.append(RenameOperation(old_path, new_name))

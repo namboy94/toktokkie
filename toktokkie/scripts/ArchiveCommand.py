@@ -48,18 +48,17 @@ class ArchiveCommand(Command):
                             help="Specifies an output directory for the "
                                  "archived directory/directories")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
-        output_path = args.out
+        output_path = self.args.out
 
         if output_path is not None:
             makedirs(output_path)
 
-        for directory in self.load_directories(args.directories):
+        for directory in self.load_directories(self.args.directories):
             if output_path is None:
                 archive_path = directory.path + ".archive"
             else:

@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 from colorama import Fore, Style
+from puffotter.os import replace_illegal_ntfs_chars
 
 
 class RenameOperation:
@@ -78,21 +79,7 @@ class RenameOperation:
         :param filename: The filename to sanitize
         :return: The sanitized string
         """
-        illegal_characters = {
-            "/": "ǁ",
-            "\\": "ǁ",
-            "?": "‽",
-            "<": "←",
-            ">": "→",
-            ":": ";",
-            "*": "∗",
-            "|": "ǁ",
-            "\"": "“"
-        }
-
-        sanitized = filename
-        for illegal_character, replacement in illegal_characters.items():
-            sanitized = sanitized.replace(illegal_character, replacement)
+        sanitized = replace_illegal_ntfs_chars(filename)
 
         try:
             name, ext = sanitized.rsplit(".", 1)

@@ -44,14 +44,13 @@ class RenameCommand(Command):
         parser.add_argument("--noconfirm", action="store_true",
                             help="Skips the user confirmation step")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
-        for directory in self.load_directories(args.directories):
+        for directory in self.load_directories(self.args.directories):
             try:
-                directory.rename(args.noconfirm)
+                directory.rename(self.args.noconfirm)
             except ValueError:
                 print("Renaming of " + directory.path + "failed")

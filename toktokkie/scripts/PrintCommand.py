@@ -42,11 +42,10 @@ class PrintCommand(Command):
         """
         cls.add_directories_arg(parser)
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
-        for directory in self.load_directories(args.directories):
+        for directory in self.load_directories(self.args.directories):
             print(directory.metadata)

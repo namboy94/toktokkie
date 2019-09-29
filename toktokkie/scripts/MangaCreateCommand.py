@@ -53,13 +53,12 @@ class MangaCreateCommand(Command):
                             help="The anilist IDs of the manga "
                                  "series to create")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
-        for anilist_id in args.anilist_ids:
+        for anilist_id in self.args.anilist_ids:
 
             client = GraphQlClient("https://graphql.anilist.co")
 
@@ -141,7 +140,8 @@ class MangaCreateCommand(Command):
             for chapter in chapters:
 
                 try:
-                    if "." in chapter.chapter_number:
+                    chap_zero = chapter.macro_chapter == 0
+                    if "." in chapter.chapter_number or chap_zero:
                         raise ValueError()
                     int(chapter.chapter_number)
 

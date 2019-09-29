@@ -50,25 +50,24 @@ class CheckCommand(Command):
         parser.add_argument("--anilist-user",
                             help="The username used for anilist checks")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
         config = {
             "tvdb_api": tvdb_api.Tvdb(),
-            "anilist_user": args.anilist_user
+            "anilist_user": self.args.anilist_user
         }
 
-        if args.anilist_user is not None:
+        if self.args.anilist_user is not None:
             api = AnilistApi()
             config["anilist_api"] = api
 
-            anime_list = api.get_anime_list(args.anilist_user)
-            manga_list = api.get_manga_list(args.anilist_user)
+            anime_list = api.get_anime_list(self.args.anilist_user)
+            manga_list = api.get_manga_list(self.args.anilist_user)
             config["anilist_anime_list"] = anime_list
             config["anilist_manga_list"] = manga_list
 
-        for directory in self.load_directories(args.directories):
-            directory.check(args.warnings, args.fix, config)
+        for directory in self.load_directories(self.args.directories):
+            directory.check(self.args.warnings, self.args.fix, config)

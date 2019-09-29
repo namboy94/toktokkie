@@ -46,10 +46,9 @@ class AnilistOpenCommand(Command):
         parser.add_argument("--browser", default="firefox",
                             help="The browser to use for opening the URLs")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the command
-        :param args: The command line arguments
         :return: None
         """
         anilist_types = [
@@ -59,7 +58,9 @@ class AnilistOpenCommand(Command):
             MediaType.TV_SERIES,
             MediaType.MOVIE
         ]
-        directories = self.load_directories(args.directories, anilist_types)
+        directories = self.load_directories(
+            self.args.directories, anilist_types
+        )
         for directory in directories:
             urls = directory.metadata.anilist_urls
             if len(urls) is None:
@@ -68,4 +69,4 @@ class AnilistOpenCommand(Command):
                 )
             else:
                 for url in urls:
-                    Popen([args.browser, url]).wait()
+                    Popen([self.args.browser, url]).wait()

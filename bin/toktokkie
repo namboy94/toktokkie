@@ -23,8 +23,6 @@ from toktokkie import sentry_dsn
 from toktokkie.scripts import toktokkie_commands
 
 
-# PYTHON_ARGCOMPLETE_OK
-
 def main(args: argparse.Namespace):
     """
     The main function of this script
@@ -33,8 +31,8 @@ def main(args: argparse.Namespace):
     """
     for command_cls in toktokkie_commands:
         if command_cls.name() == args.command:
-            command = command_cls()
-            command.execute(args)
+            command = command_cls(args)
+            command.execute()
 
 
 def define_parser() -> argparse.ArgumentParser:
@@ -47,6 +45,7 @@ def define_parser() -> argparse.ArgumentParser:
 
     for command_cls in toktokkie_commands:
         subparser = command_parser.add_parser(command_cls.name())
+        argparse_add_verbosity(subparser)
         command_cls.prepare_parser(subparser)
 
     return parser

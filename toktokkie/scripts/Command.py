@@ -30,11 +30,13 @@ class Command:
     Class that encapsulates behaviour of a command for the toktokkie script
     """
 
-    def __init__(self):
+    def __init__(self, args: argparse.Namespace):
         """
         Initializes the command object
+        :param args: The command line arguments
         """
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.args = args
 
     @classmethod
     def name(cls) -> str:
@@ -52,10 +54,9 @@ class Command:
         """
         raise NotImplementedError()
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
         raise NotImplementedError()

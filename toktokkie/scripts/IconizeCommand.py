@@ -48,17 +48,16 @@ class IconizeCommand(Command):
                             default=default_procedure().name,
                             help="The procedure to use")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
         procedure = list(filter(
-            lambda x: x.name == args.procedure, procedures
+            lambda x: x.name == self.args.procedure, procedures
         ))[0]
 
-        for directory in self.load_directories(args.directories):
+        for directory in self.load_directories(self.args.directories):
             try:
                 directory.iconize(procedure)
             except ValueError:

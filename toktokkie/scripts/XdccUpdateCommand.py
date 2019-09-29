@@ -52,19 +52,22 @@ class XdccUpdateCommand(Command):
                             help="If this flag is set, "
                                  "will generate new xdcc update instructions")
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
-        for directory in self.load_directories(args.directories):
+        for directory in self.load_directories(self.args.directories):
             try:
-                if args.create:
+                if self.args.create:
                     XDCCUpdater.prompt(directory.metadata)
                 else:
-                    set_logging_level(args.quiet, args.verbose, args.debug)
-                    set_throttle_value(args.throttle)
+                    set_logging_level(
+                        self.args.quiet,
+                        self.args.verbose,
+                        self.args.debug
+                    )
+                    set_throttle_value(self.args.throttle)
                     directory.xdcc_update()
 
             except MissingXDCCInstructions:

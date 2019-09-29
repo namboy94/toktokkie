@@ -47,10 +47,9 @@ class GuiCommand(Command):
         """
         pass
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
         config_dir = os.path.join(os.path.expanduser("~"),

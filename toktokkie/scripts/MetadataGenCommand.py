@@ -49,13 +49,12 @@ class MetadataGenCommand(Command):
                             help="The media type of the metadata")
         cls.add_directories_arg(parser)
 
-    def execute(self, args: argparse.Namespace):
+    def execute(self):
         """
         Executes the commands
-        :param args: The command line arguments
         :return: None
         """
-        for directory in args.directories:
+        for directory in self.args.directories:
 
             if not os.path.isdir(directory):
                 print("{} is not a directory, skipping.".format(directory))
@@ -64,7 +63,7 @@ class MetadataGenCommand(Command):
             if directory.endswith("/"):
                 directory = directory.rsplit("/", 1)[0]
 
-            media_type = args.media_type
+            media_type = self.args.media_type
 
             generated = Directory(
                 directory,
