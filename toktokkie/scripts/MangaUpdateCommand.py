@@ -58,6 +58,8 @@ class MangaUpdateCommand(Command):
                             action="store_true",
                             help="Deactivates checking the latest chapter "
                                  "for completeness")
+        parser.add_argument("--skip-special", action="store_true",
+                            help="Skips updating special chapters")
 
     def execute(self):
         """
@@ -79,7 +81,9 @@ class MangaUpdateCommand(Command):
             if not self.args.no_check_newest_chapter_length:
                 self.check_latest_chapter_completeness(metadata, chapters)
             self.update_main_chapters(metadata, chapters)
-            self.update_special_chapters(metadata, chapters)
+
+            if not self.args.skip_special:
+                self.update_special_chapters(metadata, chapters)
 
             if not self.args.dry_run:
                 self.execute_rename(directory)
@@ -92,7 +96,7 @@ class MangaUpdateCommand(Command):
         :param directory: The directory whose conet should be renamed
         :return: None
         """
-        self.logger.info("Running preliminary rename")
+        self.logger.info("Running rename")
         if not self.args.dry_run:
             directory.rename(noconfirm=True)
         else:
@@ -152,17 +156,23 @@ class MangaUpdateCommand(Command):
         with ZipFile(past_file, "r") as zip_obj:
             filecount = len(zip_obj.namelist())
         pagecount = len(current_chapter.pages)
-        if filecount != pagecount:
+
+        if filecount < pagecount:
+            if not self.args.dry_run:
+                pprint("Updating chapter {}".format(current_chapter),
+                       fg="lgreen")
+                os.remove(past_file)
+                current_chapter.download(past_file)
+            else:
+                pprint("Updated Chapter found: {}".format(current_chapter),
+                       fg="lyellow")
+        elif filecount != pagecount:
             self.logger.warning(
                 "Page counts do not match for chapter {}: "
                 "Ours:{}, Theirs:{}".format(
                     current_chapter, filecount, pagecount
                 )
             )
-        if filecount < pagecount and not self.args.dry_run:
-            pprint("Updating chapter {}".format(current_chapter), fg="lgreen")
-            os.remove(past_file)
-            current_chapter.download(past_file)
 
     def update_main_chapters(self, metadata: Manga, chapters: List[Chapter]):
         """
@@ -244,9 +254,19 @@ class MangaUpdateCommand(Command):
             if os.path.exists(path):
                 continue
             elif c.chapter_number not in metadata.special_chapters:
-                self.logger.info("Found unknown chapter {}"
-                                 .format(c.chapter_number))
-                continue
+
+                if self.args.dry_run:
+                    pprint("Found unknown chapter {}".format(c.chapter_number),
+                           fg="lyellow")
+                else:
+                    pprint("Adding chapter {} to metadata".format(c),
+                           fg="lgreen")
+                    chapter_entries = metadata.special_chapters
+                    chapter_entries.append(c.chapter_number)
+                    metadata.special_chapters = chapter_entries
+                    metadata.write()
+                    makedirs(metadata.special_path)
+                    c.download(path)
             else:
                 if not self.args.dry_run:
                     makedirs(metadata.special_path)

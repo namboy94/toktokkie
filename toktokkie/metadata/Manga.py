@@ -100,6 +100,8 @@ class Manga(Metadata):
         :param special_chapters: The special chapter identifiers to set
         :return: None
         """
+        max_len = len(max(special_chapters, key=lambda x: len(x)))
+        special_chapters.sort(key=lambda x: x.zfill(max_len))
         self.json["special_chapters"] = special_chapters
 
     @property
