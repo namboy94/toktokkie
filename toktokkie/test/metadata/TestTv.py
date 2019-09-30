@@ -18,24 +18,23 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import tvdb_api
 from toktokkie.Directory import Directory
-from toktokkie.test.TestFramework import TestFramework
+from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 
-class TestRenaming(TestFramework):
+class TestTv(_TestMetadata):
     """
-    Test class that tests renaming and metadata structure using
-    the 'Game of Thrones' test directory
+    Test class for TV metadata
     """
 
     def test_renaming(self):
         """
-        Tests renaming the contents of the Game of Thrones directory
+        Tests renaming files associated with the metadata type
         :return: None
         """
-
-        directory = Directory("test-res/Game of Thrones")
-        directory.rename(noconfirm=True)
+        got = Directory(self.get("Game of Thrones"))
+        got.rename(noconfirm=True)
 
         for mode, data in {
             True: {
@@ -61,12 +60,10 @@ class TestRenaming(TestFramework):
 
             for season, episodes in data.items():
                 for episode in episodes:
-
                     print(episode)
 
-                    got = "Game of Thrones"
                     episode_file = "test-res/{}/{}/{} - {}".format(
-                        got, season, got, episode
+                        "Game of Thrones", season, got, episode
                     )
                     self.assertEqual(
                         mode,
@@ -75,5 +72,36 @@ class TestRenaming(TestFramework):
 
         breaking_bad = "Breaking Bad/Breaking Bad - S01E01 - Pilot.txt"
         self.assertTrue(os.path.isfile(os.path.join(
-            directory.path, breaking_bad
+            got.path, breaking_bad
         )))
+
+    def test_prompt(self):
+        """
+        Tests generating a new metadata object using user prompts
+        :return: None
+        """
+        pass
+
+    def test_invalid_metadata(self):
+        """
+        Tests if invalid metadata is identified correctly
+        :return: None
+        """
+        pass
+
+    def test_validation(self):
+        """
+        Tests if the validation of metadata works correctly
+        :return: None
+        """
+        pass
+
+    def test_checking(self):
+        """
+        Tests if the checking mechanisms work correctly
+        :return: None
+        """
+        suzu = Directory(self.get("Suzumiya Haruhi no Yuuutsu"))
+        self.assertTrue(suzu.check(False, False, {
+            "tvdb_api": tvdb_api.Tvdb()
+        }))

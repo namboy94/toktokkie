@@ -22,7 +22,7 @@ import shutil
 import unittest
 
 
-class TestFramework(unittest.TestCase):
+class _TestFramework(unittest.TestCase):
     """
     A class that implements standard setUp and tearDown methods for unit tests
     """
@@ -41,7 +41,7 @@ class TestFramework(unittest.TestCase):
 
     def cleanup(self):
         """
-        Deletes any generates resources
+        Deletes any generated resources
         :return:
         """
         if os.path.exists(self.test_res):
@@ -72,3 +72,24 @@ class TestFramework(unittest.TestCase):
         :return: The path to the directory
         """
         return os.path.join(self.test_res, directory)
+
+    def verify_same(self, should_dir: str, is_dir: str):
+        """
+        Makes sure that two directories share the same content.
+        :param should_dir: Directory
+        :param is_dir:
+        :return:
+        """
+        self.assertTrue(os.path.isdir(should_dir))
+        self.assertTrue(os.path.isdir(is_dir))
+        should_children = os.listdir(should_dir)
+        is_children = os.listdir(is_dir)
+
+        self.assertEqual(len(should_children), len(is_children))
+
+        for child in should_children:
+            self.assertTrue(child in is_children)
+            child_path = os.path.join(should_dir, child)
+
+            if os.path.isdir(child_path):
+                self.verify_same(child_path, os.path.join(is_dir, child))

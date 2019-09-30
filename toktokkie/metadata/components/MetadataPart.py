@@ -21,6 +21,7 @@ import os
 from enum import Enum
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
+from toktokkie.metadata.components.enums import IdType
 from toktokkie.exceptions import InvalidMetadata
 
 
@@ -74,9 +75,9 @@ class MetadataPart:
         generated = self.parent.ids
         for id_type, _id in self.json.get("ids", {}).items():
             if isinstance(_id, list):
-                generated[self.parent.id_type()(id_type)] = _id
+                generated[IdType(id_type)] = _id
             else:
-                generated[self.parent.id_type()(id_type)] = [_id]
+                generated[IdType(id_type)] = [_id]
         return generated
 
     @ids.setter
