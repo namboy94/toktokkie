@@ -20,51 +20,17 @@ LICENSE"""
 from enum import Enum
 
 
-class TvIdType(Enum):
+class IdType(Enum):
     """
-    Enumeration that defines various ID types for TV Series
+    Enumeration of all possible ID types
     """
     TVDB = "tvdb"
     MYANIMELIST = "myanimelist"
     ANILIST = "anilist"
     KITSU = "kitsu"
-
-
-class MovieIdType(Enum):
-    """
-    Enumeration that defines various ID types for Movies
-    """
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-
-
-class BookIdType(Enum):
-    """
-    Enumeration that defines various ID types for Books
-    """
     ISBN = "isbn"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-
-
-class MangaIdType(Enum):
-    """
-    Enumeration that defines various ID types for Manga
-    """
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    MANGADEX = "mangadex"
-
-
-class VisualNovelIdType(Enum):
-    """
-    Enumeration that defines various ID types for visual novels
-    """
     VNDB = "vndb"
+    MANGADEX = "mangadex"
 
 
 class MediaType(Enum):

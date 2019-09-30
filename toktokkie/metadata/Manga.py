@@ -18,9 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List, Optional
+from typing import List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType, MangaIdType
+from toktokkie.metadata.components.enums import MediaType
 from toktokkie.metadata.prompt.CommaList import CommaList
 from toktokkie.metadata.helper.wrappers import json_parameter
 
@@ -29,13 +29,6 @@ class Manga(Metadata):
     """
     Metadata class that models a Manga series
     """
-
-    @classmethod
-    def id_type(cls) -> type(MangaIdType):
-        """
-        :return: The ID type used by this metadata object
-        """
-        return MangaIdType
 
     @classmethod
     def media_type(cls) -> MediaType:
@@ -103,13 +96,3 @@ class Manga(Metadata):
         max_len = len(max(special_chapters, key=lambda x: len(x)))
         special_chapters.sort(key=lambda x: x.zfill(max_len))
         self.json["special_chapters"] = special_chapters
-
-    @property
-    def anilist_urls(self) -> List[str]:
-        """
-        :return: A list of anilist URLs for the series
-        """
-        urls = []
-        for _id in self.ids.get(MangaIdType.ANILIST, []):
-            urls.append("https://anilist.co/manga/" + str(_id))
-        return urls

@@ -19,8 +19,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 from toktokkie.check.Checker import Checker
 from toktokkie.metadata.BookSeries import BookSeries
-from toktokkie.metadata.components.enums import BookIdType
-from anime_list_apis.models.attributes.Id import IdType
+from toktokkie.metadata.components.enums import IdType
+from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType
 
 
 class BookSeriesChecker(Checker):
@@ -45,7 +45,7 @@ class BookSeriesChecker(Checker):
         """
         metadata = self.metadata  # type: BookSeries
         manga_list = self.config["anilist_manga_list"]
-        anilist_id = metadata.ids.get(BookIdType.ANILIST, [None])[0]
+        anilist_id = metadata.ids.get(IdType.ANILIST, [None])[0]
 
         if anilist_id is None:
             return self.error("No Anilist ID")
@@ -53,7 +53,7 @@ class BookSeriesChecker(Checker):
             anilist_id = int(anilist_id)
             manga = None
             for entry in manga_list:
-                if entry.id.get(IdType.ANILIST) == anilist_id:
+                if entry.id.get(AnimeListIdType.ANILIST) == anilist_id:
                     manga = entry
                     break
 

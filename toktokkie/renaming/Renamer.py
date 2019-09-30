@@ -26,7 +26,7 @@ from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import MediaType, TvIdType
+from toktokkie.metadata.components.enums import MediaType, IdType
 from toktokkie.renaming.RenameOperation import RenameOperation
 
 
@@ -232,10 +232,10 @@ class Renamer:
         # noinspection PyTypeChecker
         tv_series_metadata = self.metadata  # type: TvSeries
 
-        excluded = tv_series_metadata.excludes.get(TvIdType.TVDB, {})
-        multis = tv_series_metadata.multi_episodes.get(TvIdType.TVDB, {})
+        excluded = tv_series_metadata.excludes.get(IdType.TVDB, {})
+        multis = tv_series_metadata.multi_episodes.get(IdType.TVDB, {})
         start_overrides = \
-            tv_series_metadata.season_start_overrides.get(TvIdType.TVDB, {})
+            tv_series_metadata.season_start_overrides.get(IdType.TVDB, {})
 
         content_info = tv_series_metadata.get_episode_files()
 

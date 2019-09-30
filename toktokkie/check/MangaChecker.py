@@ -23,10 +23,10 @@ import requests
 from typing import Optional
 from toktokkie.check.Checker import Checker
 from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import MangaIdType
+from toktokkie.metadata.components.enums import IdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.MediaListEntry import MangaListEntry
-from anime_list_apis.models.attributes.Id import IdType
+from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType
 
 
 class MangaChecker(Checker):
@@ -75,11 +75,11 @@ class MangaChecker(Checker):
         local_chaptercount = len(os.listdir(metadata.main_path))
 
         try:
-            anilist_id = int(metadata.ids.get(MangaIdType.ANILIST)[0])
+            anilist_id = int(metadata.ids.get(IdType.ANILIST)[0])
 
             list_entry = None
             for entry in anilist_entries:  # type: MangaListEntry
-                if entry.id.get(IdType.ANILIST) == anilist_id:
+                if entry.id.get(AnimeListIdType.ANILIST) == anilist_id:
                     list_entry = entry
                     break
 

@@ -21,7 +21,7 @@ from subprocess import Popen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from toktokkie.metadata.Movie import Movie
-from toktokkie.metadata.components.enums import MovieIdType
+from toktokkie.metadata.components.enums import IdType
 from toktokkie.gui.pyuic.movie_widget import Ui_MovieWidget
 
 
@@ -82,7 +82,7 @@ class MovieWidget(QWidget, Ui_MovieWidget):
         """
         self.metadata.tags = self.tags_edit.text().strip().split(",")
         ids = self.metadata.ids
-        ids[MovieIdType.IMDB] = self.imdb_id_edit.text().strip()
+        ids[IdType.IMDB] = self.imdb_id_edit.text().strip()
         self.metadata.ids = ids
         self.metadata.write()
         self.set_metadata(self.metadata)

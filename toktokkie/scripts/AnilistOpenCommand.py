@@ -62,7 +62,7 @@ class AnilistOpenCommand(Command):
             self.args.directories, anilist_types
         )
         for directory in directories:
-            urls = directory.metadata.anilist_urls
+            urls = directory.metadata.get_anilist_urls()
             if len(urls) is None:
                 self.logger.warning(
                     "No URL for {}".format(directory.metadata.name)

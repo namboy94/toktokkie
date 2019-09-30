@@ -21,7 +21,7 @@ from subprocess import Popen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from toktokkie.metadata.Book import Book
-from toktokkie.metadata.components.enums import BookIdType
+from toktokkie.metadata.components.enums import IdType
 from toktokkie.gui.pyuic.book_widget import Ui_BookWidget
 
 
@@ -82,7 +82,7 @@ class BookWidget(QWidget, Ui_BookWidget):
         """
         self.metadata.tags = self.tags_edit.text().strip().split(",")
         ids = self.metadata.ids
-        ids[BookIdType.ISBN] = self.isbn_edit.text().strip()
+        ids[IdType.ISBN] = self.isbn_edit.text().strip()
         self.metadata.ids = ids
         self.metadata.write()
         self.set_metadata(self.metadata)

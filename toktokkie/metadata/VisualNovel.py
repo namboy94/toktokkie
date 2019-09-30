@@ -22,20 +22,13 @@ from typing import Optional, List, Dict
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.helper.wrappers import json_parameter
-from toktokkie.metadata.components.enums import VisualNovelIdType, MediaType
+from toktokkie.metadata.components.enums import IdType, MediaType
 
 
 class VisualNovel(Metadata):
     """
     Metadata class that model a visual novel
     """
-
-    @classmethod
-    def id_type(cls) -> type(VisualNovelIdType):
-        """
-        :return: The ID type used by this metadata object
-        """
-        return VisualNovelIdType
 
     @classmethod
     def media_type(cls) -> MediaType:
@@ -55,7 +48,7 @@ class VisualNovel(Metadata):
         print("Generating metadata for {}:"
               .format(os.path.basename(directory_path)))
         return cls(directory_path, {
-            "ids": cls.prompt_for_ids(required=[VisualNovelIdType.VNDB]),
+            "ids": cls.prompt_for_ids(required=[IdType.VNDB]),
             "type": cls.media_type().value
         })
 

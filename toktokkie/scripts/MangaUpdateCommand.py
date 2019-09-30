@@ -21,7 +21,7 @@ import os
 import argparse
 from typing import List, Optional
 from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import MediaType, MangaIdType
+from toktokkie.metadata.components.enums import MediaType, IdType
 from manga_dl.scrapers.mangadex import MangaDexScraper
 from manga_dl.entities.Chapter import Chapter
 from puffotter.os import makedirs, listdir, replace_illegal_ntfs_chars
@@ -112,7 +112,7 @@ class MangaUpdateCommand(Command):
         :return: Either a list of chapters or None if no mangadex ID was found
         """
 
-        mangadex_ids = metadata.ids.get(MangaIdType.MANGADEX)
+        mangadex_ids = metadata.ids.get(IdType.MANGADEX)
         if mangadex_ids is None or len(mangadex_ids) == 0:
             pprint("No mangadex ID for {}".format(metadata.name), fg="lred")
             return None

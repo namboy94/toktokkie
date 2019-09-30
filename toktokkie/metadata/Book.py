@@ -18,22 +18,14 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import BookIdType, MediaType
+from toktokkie.metadata.components.enums import MediaType
 
 
 class Book(Metadata):
     """
     Metadata class that model a Book
     """
-
-    @classmethod
-    def id_type(cls) -> type(BookIdType):
-        """
-        :return: The ID type used by this metadata object
-        """
-        return BookIdType
 
     @classmethod
     def media_type(cls) -> MediaType:
@@ -56,13 +48,3 @@ class Book(Metadata):
             "ids": cls.prompt_for_ids(),
             "type": cls.media_type().value
         })
-
-    @property
-    def anilist_urls(self) -> List[str]:
-        """
-        :return: A list of anilist URLs for the series
-        """
-        urls = []
-        for _id in self.ids.get(BookIdType.ANILIST, []):
-            urls.append("https://anilist.co/manga/" + str(_id))
-        return urls

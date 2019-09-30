@@ -26,9 +26,9 @@ from toktokkie.check.Checker import Checker
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.components.enums import TvIdType
+from toktokkie.metadata.components.enums import IdType
 from anime_list_apis.api.AnilistApi import AnilistApi
-from anime_list_apis.models.attributes.Id import IdType
+from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType
 from anime_list_apis.models.attributes.MediaType import MediaType
 from anime_list_apis.models.attributes.ConsumingStatus import ConsumingStatus
 from anime_list_apis.models.attributes.ReleasingStatus import ReleasingStatus
@@ -248,7 +248,7 @@ class TvSeriesChecker(Checker):
         user_list = self.config["anilist_anime_list"]
         completed_ids = list(
             map(
-                lambda x: int(x.id.get(IdType.ANILIST)),
+                lambda x: int(x.id.get(AnimeListIdType.ANILIST)),
                 filter(
                     lambda x: x.consuming_status == ConsumingStatus.COMPLETED,
                     user_list
@@ -260,13 +260,13 @@ class TvSeriesChecker(Checker):
         for season in metadata.seasons:
 
             mal_ids = None
-            if TvIdType.MYANIMELIST not in season.ids:
+            if IdType.MYANIMELIST not in season.ids:
                 valid = \
                     self.error("No myanimelist ID for {}".format(season.name))
             else:
-                mal_ids = season.ids[TvIdType.MYANIMELIST]
+                mal_ids = season.ids[IdType.MYANIMELIST]
 
-            if TvIdType.ANILIST not in season.ids:
+            if IdType.ANILIST not in season.ids:
 
                 valid = self.error("No anilist ID for {}".format(season.name))
 
@@ -291,11 +291,11 @@ class TvSeriesChecker(Checker):
 
                     if resp == "y":
                         ids = season.ids
-                        ids[TvIdType.ANILIST] = anilist_ids
+                        ids[IdType.ANILIST] = anilist_ids
                         season.ids = ids
                         self.metadata.write()
 
-            ids = season.ids.get(TvIdType.ANILIST, [])
+            ids = season.ids.get(IdType.ANILIST, [])
             for _id in ids:
                 if int(_id) not in completed_ids:
                     data = api.get_anime_data(int(_id))
@@ -321,10 +321,10 @@ class TvSeriesChecker(Checker):
         metadata = self.metadata  # type: TvSeries
         ignores = {}
 
-        excluded = metadata.excludes.get(TvIdType.TVDB, {})
-        multis = metadata.multi_episodes.get(TvIdType.TVDB, {})
+        excluded = metadata.excludes.get(IdType.TVDB, {})
+        multis = metadata.multi_episodes.get(IdType.TVDB, {})
         start_overrides = \
-            metadata.season_start_overrides.get(TvIdType.TVDB, {})
+            metadata.season_start_overrides.get(IdType.TVDB, {})
 
         # Add excluded episodes directly
         for season, episodes in excluded.items():
@@ -359,7 +359,7 @@ class TvSeriesChecker(Checker):
         :return: The generated name
         """
         metadata = self.metadata  # type: TvSeries
-        multis = metadata.multi_episodes.get(TvIdType.TVDB, {})
+        multis = metadata.multi_episodes.get(IdType.TVDB, {})
 
         series_name = metadata.name
         if series_name_override is not None:

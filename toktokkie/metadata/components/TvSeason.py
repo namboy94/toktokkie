@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.components.enums import TvIdType
+from toktokkie.metadata.components.enums import IdType
 from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 
@@ -33,7 +33,7 @@ class TvSeason(MetadataPart):
         """
         :return: The TVDB ID of the TV season
         """
-        return self.ids[TvIdType.TVDB][0]
+        return self.ids[IdType.TVDB][0]
 
     @property
     def season_number(self) -> int:
@@ -56,7 +56,7 @@ class TvSeason(MetadataPart):
         if not os.path.isdir(self.path):
             raise InvalidMetadata()
         try:
-            if not self.tvdb_id == self.ids[TvIdType.TVDB][0]:
+            if not self.tvdb_id == self.ids[IdType.TVDB][0]:
                 raise InvalidMetadata()
         except (KeyError, IndexError):
             raise InvalidMetadata("Missing TVDB ID")

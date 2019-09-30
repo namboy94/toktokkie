@@ -26,8 +26,7 @@ from toktokkie.metadata.prompt.PromptType import PromptType
 from toktokkie.metadata.prompt.CommaList import CommaList
 from toktokkie.exceptions import InvalidMetadata, \
     MissingMetadata
-from toktokkie.metadata.components.enums import MediaType, TvIdType, \
-    BookIdType, MangaIdType
+from toktokkie.metadata.components.enums import MediaType, IdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType
@@ -109,9 +108,9 @@ class Metadata:
         for id_type, _id in self.json["ids"].items():
 
             if isinstance(_id, list):
-                generated[self.id_type()(id_type)] = _id
+                generated[IdType(id_type)] = _id
             else:
-                generated[self.id_type()(id_type)] = [_id]
+                generated[IdType(id_type)] = [_id]
 
         return generated
 
@@ -135,11 +134,45 @@ class Metadata:
         raise NotImplementedError()
 
     @classmethod
-    def id_type(cls) -> type(Enum):
+    def valid_id_types(cls) -> List[IdType]:
         """
-        :return: The ID type used by this metadata object
+        :return: The types of IDs that are valid for this metadata type
         """
-        raise NotImplementedError()
+        return {
+            MediaType.MANGA: [
+                IdType.MANGADEX,
+                IdType.ANILIST,
+                IdType.MYANIMELIST,
+                IdType.KITSU
+            ],
+            MediaType.TV: [
+                IdType.ANILIST,
+                IdType.KITSU,
+                IdType.MYANIMELIST,
+                IdType.TVDB
+            ],
+            MediaType.MOVIE: [
+                IdType.ANILIST,
+                IdType.KITSU,
+                IdType.MYANIMELIST,
+                IdType.TVDB
+            ],
+            MediaType.BOOK: [
+                IdType.ISBN,
+                IdType.ANILIST,
+                IdType.KITSU,
+                IdType.MYANIMELIST
+            ],
+            MediaType.BOOK_SERIES: [
+                IdType.ISBN,
+                IdType.ANILIST,
+                IdType.KITSU,
+                IdType.MYANIMELIST
+            ],
+            MediaType.VISUAL_NOVEL: [
+                IdType.VNDB
+            ]
+        }[cls.media_type()]
 
     def __init__(
             self,
@@ -285,7 +318,7 @@ class Metadata:
         ids = {}
         mal_updated = False
         while len(ids) < 1:
-            for id_type in cls.id_type():
+            for id_type in cls.valid_id_types():
 
                 if defaults is not None:
                     default = defaults.get(id_type.value, [])
@@ -293,20 +326,21 @@ class Metadata:
                 else:
                     default = None if id_type in required else CommaList("")
 
-                if TvIdType.MYANIMELIST.value in ids and mal_updated:
-                    if id_type.value == TvIdType.ANILIST.value:
+                if IdType.MYANIMELIST.value in ids and mal_updated:
+                    if id_type.value == IdType.ANILIST.value:
 
                         api = AnilistApi()
 
                         anime_list_media_type = AnimeListMediaType.ANIME
-                        if id_type in [
-                            BookIdType.ANILIST,
-                            MangaIdType.ANILIST
+                        if cls.media_type() in [
+                            MediaType.MANGA,
+                            MediaType.BOOK_SERIES,
+                            MediaType.BOOK
                         ]:
                             anime_list_media_type = AnimeListMediaType.MANGA
 
                         anilist_ids = []
-                        for mal_id in ids[TvIdType.MYANIMELIST.value]:
+                        for mal_id in ids[IdType.MYANIMELIST.value]:
                             anilist_id = api.get_anilist_id_from_mal_id(
                                 anime_list_media_type,
                                 int(mal_id)
@@ -327,7 +361,7 @@ class Metadata:
                     ids[id_type.value] = prompted
 
                     # Check if myanimelist ID was updated
-                    if id_type.value == TvIdType.MYANIMELIST.value:
+                    if id_type.value == IdType.MYANIMELIST.value:
                         if default.value is not None:
                             mal_updated = prompted != default.value
 
@@ -371,3 +405,18 @@ class Metadata:
             return path
         else:
             return None
+
+    def get_anilist_urls(self) -> List[str]:
+        """
+        :return: A list of anilist URLs for the series
+        """
+        media_type = "anime"
+        if self.media_type() in [
+            MediaType.BOOK, MediaType.BOOK_SERIES, MediaType.MANGA
+        ]:
+            media_type = "manga"
+
+        urls = []
+        for _id in self.ids.get(IdType.ANILIST, []):
+            urls.append("https://anilist.co/{}/{}".format(media_type, _id))
+        return urls

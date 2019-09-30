@@ -27,7 +27,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget, QListWidgetItem
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.TvSeason import TvSeason
-from toktokkie.metadata.components.enums import TvIdType
+from toktokkie.metadata.components.enums import IdType
 from toktokkie.gui.pyuic.tv_season_widget import Ui_TvSeasonWidget
 
 
@@ -134,7 +134,7 @@ class TvSeasonWidget(QWidget, Ui_TvSeasonWidget):
         :return: None
         """
         ids = self.season.ids
-        ids[TvIdType.TVDB] = self.tvdb_id_edit.text()
+        ids[IdType.TVDB] = self.tvdb_id_edit.text()
         self.season.ids = ids
 
         seasons = list(filter(
