@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 from tvdb_api import tvdb_shownotfound
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from datetime import datetime
 from colorama import Fore, Style
 from toktokkie.check.Checker import Checker
@@ -68,7 +68,7 @@ class TvSeriesChecker(Checker):
         :return: The result of the check
         """
         valid = True
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
 
         for season_name in os.listdir(metadata.directory_path):
             season_path = os.path.join(metadata.directory_path, season_name)
@@ -92,7 +92,7 @@ class TvSeriesChecker(Checker):
         :return: The result of the check
         """
         valid = True
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
 
         ids = [metadata.tvdb_id]
         for season in metadata.seasons:
@@ -115,7 +115,7 @@ class TvSeriesChecker(Checker):
         :return: The result of the check
         """
         valid = True
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
 
         ignores = self._generate_ignores_map()
         tvdb_data = self.tvdb[int(metadata.tvdb_id)]
@@ -132,8 +132,8 @@ class TvSeriesChecker(Checker):
                 elif episode_number in ignores.get(season_number, []):
                     episode_amount -= 1
 
-            existing = metadata.get_episode_files()
-            existing = existing[metadata.tvdb_id].get(season_number, [])
+            _existing = metadata.get_episode_files()
+            existing = _existing[metadata.tvdb_id].get(season_number, [])
 
             if not len(existing) == episode_amount:
                 msg = "Mismatch in season {}; Should:{}; Is:{}".format(
@@ -150,7 +150,7 @@ class TvSeriesChecker(Checker):
         :return: The result of the check
         """
         valid = True
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
 
         ignores = self._generate_ignores_map()
         tvdb_data = self.tvdb[int(metadata.tvdb_id)]
@@ -196,7 +196,7 @@ class TvSeriesChecker(Checker):
         :return: The result of the check
         """
         valid = True
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
         episode_files = metadata.get_episode_files()
 
         for season in metadata.seasons:
@@ -243,7 +243,7 @@ class TvSeriesChecker(Checker):
         :return: The check result
         """
 
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
         api = self.config["anilist_api"]  # type: AnilistApi
         user_list = self.config["anilist_anime_list"]
         completed_ids = list(
@@ -283,7 +283,7 @@ class TvSeriesChecker(Checker):
                         if anilist_id is not None:
                             anilist_ids.append(str(anilist_id))
 
-                    resp = print(
+                    resp = input(
                         "{}Set anilist IDs to {}? (y|n){}".format(
                             Fore.LIGHTGREEN_EX, anilist_ids, Style.RESET_ALL
                         )
@@ -311,15 +311,14 @@ class TvSeriesChecker(Checker):
         #   check if amount of episode files is correct
         #   Note: Make sure to think of multi-episodes etc
 
-    def _generate_ignores_map(self) -> Dict[int, int]:
+    def _generate_ignores_map(self) -> Dict[int, List[int]]:
         """
         Generates a dictionary mapping the excluded episode number to their
         respective episodes.
         :return: The generated dictionary: {season: [episodes]}
         """
-
-        metadata = self.metadata  # type: TvSeries
-        ignores = {}
+        metadata = self.metadata  # type: TvSeries  # type: ignore
+        ignores = {}  # type: Dict[int, List[int]]
 
         excluded = metadata.excludes.get(IdType.TVDB, {})
         multis = metadata.multi_episodes.get(IdType.TVDB, {})
@@ -358,7 +357,7 @@ class TvSeriesChecker(Checker):
         :param series_name_override: Overrides the series name
         :return: The generated name
         """
-        metadata = self.metadata  # type: TvSeries
+        metadata = self.metadata  # type: TvSeries  # type: ignore
         multis = metadata.multi_episodes.get(IdType.TVDB, {})
 
         series_name = metadata.name

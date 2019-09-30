@@ -66,7 +66,7 @@ class VisualNovelChecker(Checker):
         file.
         :return: The check result
         """
-        metadata = self.metadata  # type: VisualNovel
+        metadata = self.metadata  # type: VisualNovel  # type: ignore
         valid = True
 
         if metadata.has_op and metadata.ops is None:

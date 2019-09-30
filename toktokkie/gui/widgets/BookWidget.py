@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import Optional
 from subprocess import Popen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget
@@ -37,7 +38,7 @@ class BookWidget(QWidget, Ui_BookWidget):
         """
         super().__init__(parent)
         self.setupUi(self)
-        self.metadata = None  # type: Book
+        self.metadata = None  # type: Optional[Book]
         self.initialize_buttons()
 
     def initialize_buttons(self):

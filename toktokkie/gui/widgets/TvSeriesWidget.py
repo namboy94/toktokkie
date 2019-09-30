@@ -19,6 +19,7 @@ LICENSE"""
 
 import tvdb_api
 import webbrowser
+from typing import Optional
 from subprocess import Popen
 from threading import Thread
 from PyQt5.QtGui import QPixmap
@@ -40,7 +41,7 @@ class TvSeriesWidget(QWidget, Ui_TvSeriesWidget):
         """
         super().__init__(parent)
         self.setupUi(self)
-        self.metadata = None  # type: TvSeries
+        self.metadata = None  # type: Optional[TvSeries]
         self.initialize_buttons()
 
     def initialize_buttons(self):

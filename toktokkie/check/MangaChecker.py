@@ -69,7 +69,7 @@ class MangaChecker(Checker):
         :return: The result of the check
         """
         # noinspection PyTypeChecker
-        metadata = self.metadata  # type: Manga
+        metadata = self.metadata  # type: Manga  # type: ignore
         anilist_entries = self.config["anilist_manga_list"]
 
         local_chaptercount = len(os.listdir(metadata.main_path))

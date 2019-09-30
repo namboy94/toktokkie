@@ -43,7 +43,7 @@ class BookSeriesChecker(Checker):
         Checks if the anilist user is up-to-date with all available volumes
         :return: The check result
         """
-        metadata = self.metadata  # type: BookSeries
+        metadata = self.metadata  # type: BookSeries  # type: ignore
         manga_list = self.config["anilist_manga_list"]
         anilist_id = metadata.ids.get(IdType.ANILIST, [None])[0]
 

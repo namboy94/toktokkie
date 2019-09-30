@@ -31,9 +31,7 @@ from toktokkie.scripts.XdccUpdateCommand import XdccUpdateCommand
 try:
     from toktokkie.scripts.GuiCommand import GuiCommand
 except ImportError as e:
-    raise e
-    print("W")
-    GuiCommand = None
+    GuiCommand = None  # type: ignore
 
 toktokkie_commands = [
     PrintCommand,

@@ -17,21 +17,31 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import Type
 from toktokkie.iconizing.procedures.Procedure import Procedure
-from toktokkie.iconizing.procedures.GnomeProcedure import GnomeProcedure
-from toktokkie.iconizing.procedures.NoopProcedure import NoopProcedure
-from toktokkie.iconizing.Iconizer import Iconizer
-
-procedures = [GnomeProcedure]
 
 
-def default_procedure() -> Type[Procedure]:
+class NoopProcedure(Procedure):
     """
-    Checks all available procedures for eligibility
-    :return: The eligible procedure or None if none were found
+    Iconizing Procedure that does nothing. Used as a fallback when no
+    other procedures are available
     """
-    for procedure in procedures:
-        if procedure.is_applicable():
-            return procedure
-    return NoopProcedure
+
+    @classmethod
+    def iconize(cls, directory: str, icon_path_no_ext):
+        """
+        Doesn't do anything
+        :param directory: The directory to iconize
+        :param icon_path_no_ext: The icon file without a file extension.
+                                 .png will be appended
+        :return: None
+        """
+        pass
+
+    @classmethod
+    def is_applicable(cls) -> bool:
+        """
+        Checks if this procedure is applicable to the current system.
+        NOOP Procedure is always applicable
+        :return: True if applicable, else False
+        """
+        return True

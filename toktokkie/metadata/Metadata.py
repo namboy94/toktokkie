@@ -34,6 +34,33 @@ class Metadata:
     Class that acts as the base class for all possible metadata types
     """
 
+    def __init__(
+            self,
+            directory_path: str,
+            json_data: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Inititalizes the metadata object using JSON data
+        :param directory_path: The directory of the media for which to
+                               generate the metadata
+        :param json_data: Optional metadata JSON.
+                          Will be used instead of info.json metadata
+                          if provided
+        :raises InvalidMetadataException: if the metadata could not be
+                                          parsed correctly
+        """
+        self.directory_path = directory_path
+        self.metadata_file = os.path.join(directory_path, ".meta/info.json")
+        self.icon_directory = os.path.join(directory_path, ".meta/icons")
+
+        if json_data is None:
+            with open(self.metadata_file, "r") as info:
+                self.json = json.load(info)
+        else:
+            self.json = json_data
+
+        self.validate_json()
+
     def __str__(self) -> str:
         """
         :return: A string representation of the metadata
@@ -60,7 +87,8 @@ class Metadata:
             str(self.json)
         )
 
-    @property
+    @property  # type: ignore
+    @json_parameter
     def name(self) -> str:
         """
         :return: The name of the media
@@ -78,7 +106,7 @@ class Metadata:
         os.rename(self.directory_path, new_path)
         self.directory_path = new_path
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def tags(self) -> List[str]:
         """
@@ -95,7 +123,7 @@ class Metadata:
         """
         self.json["tags"] = tags
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def ids(self) -> Dict[IdType, List[str]]:
         """
@@ -142,7 +170,7 @@ class Metadata:
                 IdType.MYANIMELIST,
                 IdType.KITSU
             ],
-            MediaType.TV: [
+            MediaType.TV_SERIES: [
                 IdType.ANILIST,
                 IdType.KITSU,
                 IdType.MYANIMELIST,
@@ -170,33 +198,6 @@ class Metadata:
                 IdType.VNDB
             ]
         }[cls.media_type()]
-
-    def __init__(
-            self,
-            directory_path: str,
-            json_data: Optional[Dict[str, Any]] = None
-    ):
-        """
-        Inititalizes the metadata object using JSON data
-        :param directory_path: The directory of the media for which to
-                               generate the metadata
-        :param json_data: Optional metadata JSON.
-                          Will be used instead of info.json metadata
-                          if provided
-        :raises InvalidMetadataException: if the metadata could not be
-                                          parsed correctly
-        """
-        self.directory_path = directory_path
-        self.metadata_file = os.path.join(directory_path, ".meta/info.json")
-        self.icon_directory = os.path.join(directory_path, ".meta/icons")
-
-        if json_data is None:
-            with open(self.metadata_file, "r") as info:
-                self.json = json.load(info)
-        else:
-            self.json = json_data
-
-        self.validate_json()
 
     def validate_json(self):
         """
@@ -251,14 +252,16 @@ class Metadata:
         print("Generating metadata for {}:"
               .format(os.path.basename(directory_path)))
 
-        required_ids = {
+        idmap = {
             MediaType.MANGA: [],
             MediaType.BOOK: [],
             MediaType.BOOK_SERIES: [],
             MediaType.VISUAL_NOVEL: [IdType.VNDB],
             MediaType.MOVIE: [],
             MediaType.TV_SERIES: [IdType.TVDB]
-        }[cls.media_type()]
+        }  # type: Dict[MediaType, List[IdType]]
+
+        required_ids = idmap[cls.media_type()]
 
         json_data = {
             "type": cls.media_type().value,
@@ -318,15 +321,16 @@ class Metadata:
         """
         required = required if required is not None else []
 
-        ids = {}
+        ids = {}  # type: Dict[str, List[str]]
         mal_updated = False
         while len(ids) < 1:
             for id_type in cls.valid_id_types():
 
+                default = None  # type: Optional[List[str]]
                 if defaults is not None:
                     default = defaults.get(id_type.value, [])
-                else:
-                    default = None if id_type in required else []
+                elif id_type not in required:
+                    default = []
 
                 # Load anilist ID from myanimelist ID
                 if IdType.MYANIMELIST.value in ids and mal_updated:
@@ -361,7 +365,7 @@ class Metadata:
 
                     # Check if myanimelist ID was updated
                     if id_type.value == IdType.MYANIMELIST.value:
-                        if default.value is not None:
+                        if default is not None:
                             mal_updated = prompted != default
 
             if len(ids) < 1:

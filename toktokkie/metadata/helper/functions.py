@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 import json
+from typing import Union, Type
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.Book import Book
 from toktokkie.metadata.BookSeries import BookSeries
@@ -47,7 +48,8 @@ def get_metadata(directory: str) -> Metadata:
         raise InvalidMetadata()
 
 
-def create_metadata(directory: str, media_type: str or MediaType) -> Metadata:
+def create_metadata(directory: str, media_type: Union[str, MediaType]) \
+        -> Metadata:
     """
     Generates a new metadata object using user prompts
     :param directory: The directory for which to generate the metadata
@@ -60,7 +62,7 @@ def create_metadata(directory: str, media_type: str or MediaType) -> Metadata:
     return metadata
 
 
-def get_metadata_class(media_type: str or MediaType) -> type(Metadata):
+def get_metadata_class(media_type: Union[str, MediaType]) -> Type[Metadata]:
     """
     Retrieves the metadata class for a given media type
     :param media_type: The media type for which to get the metadata class
@@ -69,7 +71,7 @@ def get_metadata_class(media_type: str or MediaType) -> type(Metadata):
     if type(media_type) == str:
         media_type = MediaType(media_type)
 
-    return {
+    return {  # type: ignore
         Book.media_type(): Book,
         BookSeries.media_type(): BookSeries,
         TvSeries.media_type(): TvSeries,

@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import re
 import json
-from typing import Dict, Optional, Set, Any
+from typing import Dict, Optional, Set, Any, Union
 from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
 from toktokkie.renaming import Renamer, RenameOperation
@@ -215,7 +215,7 @@ class XDCCUpdater:
             default: Optional[str] = None,
             choices: Optional[Set[str]] = None,
             is_int: bool = False
-    ) -> str or int:
+    ) -> Union[str, int]:
         """
         Creates a user prompt
         :param prompt_text: The text to show the user
@@ -247,11 +247,11 @@ class XDCCUpdater:
 
             if is_int:
                 try:
-                    resp = int(resp)
+                    return int(resp)
                 except ValueError:
                     print("Not an Integer")
-
-            return resp
+            else:
+                return resp
 
     @classmethod
     def prompt(cls, metadata: TvSeries):

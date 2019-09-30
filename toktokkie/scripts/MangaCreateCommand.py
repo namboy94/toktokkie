@@ -24,7 +24,8 @@ from toktokkie import Directory
 from puffotter.graphql import GraphQlClient
 from puffotter.os import makedirs
 from subprocess import Popen
-from toktokkie.metadata.Manga import Manga, MangaIdType
+from toktokkie.metadata.Manga import Manga
+from toktokkie.metadata.components.enums import IdType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from manga_dl.scrapers.mangadex import MangaDexScraper
 from toktokkie.scripts.Command import Command
@@ -89,7 +90,7 @@ class MangaCreateCommand(Command):
             try:
                 directory = Directory(title)
                 mangadex_id = \
-                    directory.metadata.ids.get(MangaIdType.MANGADEX, [None])[0]
+                    directory.metadata.ids.get(IdType.MANGADEX, [None])[0]
 
             except (MissingMetadata, InvalidMetadata):
 

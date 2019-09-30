@@ -44,6 +44,7 @@ class Renamer:
         self.path = metadata.directory_path
         self.metadata = metadata
 
+        self.operations = []  # type: List[RenameOperation]
         if self.metadata.media_type() == MediaType.BOOK:
             self.operations = self._generate_book_operations()
         elif self.metadata.media_type() == MediaType.BOOK_SERIES:
@@ -54,9 +55,6 @@ class Renamer:
             self.operations = self._generate_tv_series_operations()
         elif self.metadata.media_type() == MediaType.MANGA:
             self.operations = self._generate_manga_operations()
-        # Visual Novels don't get renamed!
-        else:  # pragma: no cover
-            self.operations = []  # type: List[RenameOperation]
 
     def get_active_operations(self) -> List[RenameOperation]:
         """
@@ -130,7 +128,7 @@ class Renamer:
         :return: The list of rename operations
         """
         # noinspection PyTypeChecker
-        metadata = self.metadata  # type: Manga
+        metadata = self.metadata  # type: Manga  # type: ignore
 
         main_content = listdir(metadata.main_path, no_dirs=True)
         max_chapter_length = len(str(len(main_content)))
@@ -230,7 +228,7 @@ class Renamer:
         operations = []
 
         # noinspection PyTypeChecker
-        tv_series_metadata = self.metadata  # type: TvSeries
+        tv_series_metadata = self.metadata  # type: TvSeries  # type: ignore
 
         excluded = tv_series_metadata.excludes.get(IdType.TVDB, {})
         multis = tv_series_metadata.multi_episodes.get(IdType.TVDB, {})
@@ -361,8 +359,8 @@ class Renamer:
 
         try:
             tvdb = tvdb_api.Tvdb()
-            tvdb_id = int(tvdb_id)
-            return tvdb[tvdb_id][season_number][episode_number]["episodeName"]
+            info = tvdb[int(tvdb_id)]
+            return info[season_number][episode_number]["episodeName"]
 
         except (tvdb_episodenotfound, tvdb_seasonnotfound,
                 tvdb_shownotfound, ConnectionError, KeyError) as e:

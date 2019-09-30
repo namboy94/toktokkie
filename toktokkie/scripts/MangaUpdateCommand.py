@@ -193,7 +193,7 @@ class MangaUpdateCommand(Command):
 
         total_chapters = len(main_chapters) + current_latest
 
-        downloaded = []
+        downloaded = []  # type: List[str]
         for c in main_chapters:
             if current_latest + 1 != c.macro_chapter:
                 pprint("Missing chapter {}, expected {}".format(

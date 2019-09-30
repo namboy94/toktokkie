@@ -62,7 +62,7 @@ class Manga(Metadata):
 
         return series.json
 
-    @property
+    @property  # type: ignore
     def main_path(self) -> str:
         """
         The path to the main manga directory
@@ -70,7 +70,7 @@ class Manga(Metadata):
         """
         return os.path.join(self.directory_path, "Main")
 
-    @property
+    @property  # type: ignore
     def special_path(self) -> str:
         """
         The path to the special manga directory
@@ -78,7 +78,7 @@ class Manga(Metadata):
         """
         return os.path.join(self.directory_path, "Special")
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def special_chapters(self) -> List[str]:
         """

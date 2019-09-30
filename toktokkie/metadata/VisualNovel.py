@@ -50,7 +50,7 @@ class VisualNovel(Metadata):
         """
         return {}
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def has_ed(self) -> bool:
         """
@@ -67,7 +67,7 @@ class VisualNovel(Metadata):
         """
         self.json["has_ed"] = has_ed
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def has_op(self) -> bool:
         """
@@ -84,7 +84,7 @@ class VisualNovel(Metadata):
         """
         self.json["has_op"] = has_op
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def has_cgs(self) -> bool:
         """
@@ -101,7 +101,7 @@ class VisualNovel(Metadata):
         """
         self.json["has_cgs"] = has_cgs
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def has_ost(self) -> bool:
         """

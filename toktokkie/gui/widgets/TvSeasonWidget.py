@@ -21,6 +21,7 @@ import os
 import tvdb_api
 import requests
 import webbrowser
+from typing import Optional
 from subprocess import Popen
 from threading import Thread
 from PyQt5.QtGui import QPixmap
@@ -43,8 +44,8 @@ class TvSeasonWidget(QWidget, Ui_TvSeasonWidget):
         """
         super().__init__(parent)
         self.setupUi(self)
-        self.metadata = None  # type: TvSeries
-        self.season = None  # type: TvSeason
+        self.metadata = None  # type: Optional[TvSeries]
+        self.season = None  # type: Optional[TvSeason]
         self.initialize_buttons()
 
     def initialize_buttons(self):

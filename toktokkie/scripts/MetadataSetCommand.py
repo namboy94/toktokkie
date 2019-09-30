@@ -19,6 +19,7 @@ LICENSE"""
 
 import argparse
 from toktokkie.scripts.Command import Command
+from toktokkie.metadata.components.enums import IdType
 
 
 class MetadataSetCommand(Command):
@@ -42,12 +43,14 @@ class MetadataSetCommand(Command):
         """
         cls.add_directories_arg(parser)
 
+        id_types = [x.value for x in IdType]
+
         subparser = parser.add_subparsers(required=True, dest="mode")
 
         multi_episode_parser = subparser.add_parser(
             "multi-episode", help="Add a multi-episode to a TV Series"
         )
-        multi_episode_parser.add_argument("id_type", choices=tv_id_types,
+        multi_episode_parser.add_argument("id_type", choices=id_types,
                                           help="The ID type")
         multi_episode_parser.add_argument("season", type=int,
                                           help="The season of the episode")
@@ -59,7 +62,7 @@ class MetadataSetCommand(Command):
         exclude_parser = subparser.add_parser(
             "exclude", help="Add an excluded episode to a TV Series"
         )
-        exclude_parser.add_argument("id_type", choices=tv_id_types,
+        exclude_parser.add_argument("id_type", choices=id_types,
                                     help="The ID type")
         exclude_parser.add_argument("season", type=int,
                                     help="The season of the episode")
@@ -71,5 +74,4 @@ class MetadataSetCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in self.load_directories(self.args.directories):
-            print(directory.metadata)
+        pass

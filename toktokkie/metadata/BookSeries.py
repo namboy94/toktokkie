@@ -82,7 +82,7 @@ class BookSeries(Book):
         series.volumes = volumes
         return series.json
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def volumes(self) -> List[BookVolume]:
         """

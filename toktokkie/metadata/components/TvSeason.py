@@ -65,4 +65,4 @@ class TvSeason(MetadataPart):
         """
         :return: Whether or not this season is a spinoff
         """
-        return self.parent.tvdb_id != self.tvdb_id
+        return self.parent.tvdb_id != self.tvdb_id  # type: ignore

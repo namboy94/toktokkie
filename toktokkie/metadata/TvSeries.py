@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import tvdb_api
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.metadata.components.TvSeason import TvSeason
@@ -53,11 +53,13 @@ class TvSeries(Metadata):
         :return: The generated metadata JSON data
         """
         name = os.path.basename(directory_path)
+
+        probable_defaults = None  # type: Optional[Dict[str, List[str]]]
         try:
             probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
             probable_defaults = {IdType.TVDB.value: [probable_tvdb_id]}
         except (tvdb_api.tvdb_shownotfound, TypeError):
-            probable_defaults = None
+            pass
 
         series_ids = cls.prompt_for_ids(
             defaults=probable_defaults,
@@ -92,7 +94,7 @@ class TvSeries(Metadata):
         series.seasons = seasons
         return series.json
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def tvdb_id(self) -> str:
         """
@@ -100,7 +102,7 @@ class TvSeries(Metadata):
         """
         return self.ids[IdType.TVDB][0]
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def seasons(self) -> List[TvSeason]:
         """
@@ -138,7 +140,7 @@ class TvSeries(Metadata):
                 return season
         raise KeyError(season_name)
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def excludes(self) -> Dict[IdType, Dict[int, List[int]]]:
         """
@@ -146,7 +148,7 @@ class TvSeries(Metadata):
         :return A dictionary mapping episode info to seasons and id types
                 Form: {idtype: {season: [ep1, ep2]}}
         """
-        generated = {}
+        generated = {}  # type: Dict[IdType, Dict[int, List[int]]]
 
         for _id_type in self.json.get("excludes", {}):
 
@@ -168,7 +170,7 @@ class TvSeries(Metadata):
 
         return generated
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def season_start_overrides(self) -> Dict[IdType, Dict[int, int]]:
         """
@@ -176,7 +178,7 @@ class TvSeries(Metadata):
                  point to ID types
                  Form: {idtype: {season: episode}}
         """
-        generated = {}
+        generated = {}  # type: Dict[IdType, Dict[int, int]]
 
         for _id_type, overrides in \
                 self.json.get("season_start_overrides", {}).items():
@@ -192,14 +194,14 @@ class TvSeries(Metadata):
 
         return generated
 
-    @property
+    @property  # type: ignore
     @json_parameter
     def multi_episodes(self) -> Dict[IdType, Dict[int, Dict[int, int]]]:
         """
         :return: A dictionary mapping lists of multi-episodes to id types
                  Form: {idtype: {season: {start: end}}}
         """
-        generated = {}
+        generated = {}  # type: Dict[IdType, Dict[int, Dict[int, int]]]
 
         for _id_type in self.json.get("multi_episodes", {}):
 
@@ -304,7 +306,7 @@ class TvSeries(Metadata):
         :return: The generated dictionary. It will have the following form:
                     {tvdb_id: {season_number: [episode_files]}}
         """
-        content_info = {}
+        content_info = {}  # type: Dict[str, Dict[int, List[str]]]
 
         for season_name in os.listdir(self.directory_path):
 
