@@ -20,6 +20,8 @@ LICENSE"""
 import os
 import tvdb_api
 from toktokkie.Directory import Directory
+from toktokkie.exceptions import InvalidMetadata
+from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 
@@ -82,19 +84,18 @@ class TestTv(_TestMetadata):
         """
         pass
 
-    def test_invalid_metadata(self):
-        """
-        Tests if invalid metadata is identified correctly
-        :return: None
-        """
-        pass
-
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly
         :return: None
         """
-        pass
+        path = self.get("Suzumiya Haruhi no Yuuutsu")
+
+        try:
+            TvSeries(path, {})
+            self.fail()
+        except InvalidMetadata:
+            pass
 
     def test_checking(self):
         """

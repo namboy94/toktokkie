@@ -39,13 +39,6 @@ class _TestMetadata(_TestFramework):
         """
         raise NotImplementedError()
 
-    def test_invalid_metadata(self):
-        """
-        Tests if invalid metadata is identified correctly
-        :return: None
-        """
-        raise NotImplementedError()
-
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly
