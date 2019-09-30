@@ -19,17 +19,14 @@ LICENSE"""
 
 import os
 import json
-from enum import Enum
 from typing import List, Dict, Any, Optional
 from toktokkie.metadata.helper.wrappers import json_parameter
-from toktokkie.metadata.prompt.PromptType import PromptType
-from toktokkie.metadata.prompt.CommaList import CommaList
-from toktokkie.exceptions import InvalidMetadata, \
-    MissingMetadata
+from toktokkie.exceptions import InvalidMetadata, MissingMetadata
 from toktokkie.metadata.components.enums import MediaType, IdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType
+from puffotter.prompt import prompt_comma_list
 
 
 class Metadata:
@@ -100,7 +97,7 @@ class Metadata:
 
     @property
     @json_parameter
-    def ids(self) -> Dict[Enum, List[str]]:
+    def ids(self) -> Dict[IdType, List[str]]:
         """
         :return: A dictionary containing lists of IDs mapped to ID types
         """
@@ -115,7 +112,7 @@ class Metadata:
         return generated
 
     @ids.setter
-    def ids(self, ids: Dict[Enum, List[str]]):
+    def ids(self, ids: Dict[IdType, List[str]]):
         """
         Setter method for the IDs of the metadata object.
         Previous IDs will be overwritten!
@@ -214,6 +211,16 @@ class Metadata:
         self._assert_true(len(self.ids) == len(self.json["ids"]))
         self._assert_true(len(self.ids) > 0)
         self._assert_true(self.media_type().value == self.json["type"])
+        self._validate_json()
+
+    def _validate_json(self):
+        """
+        Validates the JSON data to make sure everything has valid values
+        Should be implemented by child classes
+        :raises InvalidMetadataException: If any errors were encountered
+        :return: None
+        """
+        raise NotImplementedError()
 
     def write(self):
         """
@@ -234,12 +241,43 @@ class Metadata:
             ))
 
     @classmethod
-    def prompt(cls, directory_path: str):
+    def prompt(cls, directory_path: str) -> "Metadata":
         """
         Generates a new Metadata object using prompts for a directory
         :param directory_path: The path to the directory for which to generate
                                the metadata object
         :return: The generated metadata object
+        """
+        print("Generating metadata for {}:"
+              .format(os.path.basename(directory_path)))
+
+        required_ids = {
+            MediaType.MANGA: [],
+            MediaType.BOOK: [],
+            MediaType.BOOK_SERIES: [],
+            MediaType.VISUAL_NOVEL: [IdType.VNDB],
+            MediaType.MOVIE: [],
+            MediaType.TV_SERIES: [IdType.TVDB]
+        }[cls.media_type()]
+
+        json_data = {
+            "type": cls.media_type().value,
+            "tags": prompt_comma_list("Tags: "),
+            "ids": cls.prompt_for_ids(required=required_ids)
+        }
+        json_data.update(cls._prompt(directory_path, json_data))
+        return cls(directory_path, json_data)
+
+    @classmethod
+    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
+            -> Dict[str, Any]:
+        """
+        Prompts the user for metadata-type-specific information
+        Should be extended by child classes
+        :param directory_path: The path to the directory for which to generate
+                               the metadata
+        :param json_data: Previously generated JSON data
+        :return: The generated metadata JSON data
         """
         raise NotImplementedError()
 
@@ -267,45 +305,10 @@ class Metadata:
             raise InvalidMetadata()
 
     @classmethod
-    def input(
-            cls,
-            prompt_text: str,
-            default: Optional[PromptType],
-            _type: type(PromptType),
-            required: bool = False
-    ) -> Any:
-        """
-        Creates a user prompt that supports default options and automatic
-        type conversions.
-        :param prompt_text: The text to prompt the user
-        :param default: The default value to use
-        :param _type: The type of the prompted value
-        :param required: Whether or not a response is required
-        :return: The user's response
-        """
-        if default is not None:
-            prompt_text += " {}".format(str(default))
-        prompt_text += ":"
-
-        response = input(prompt_text).strip()
-        while response == "" and default is None:
-            response = input(prompt_text).strip()
-
-        if response == "" and default is not None:
-            return default
-        elif response == "" and required:
-            return cls.input(prompt_text, default, _type, required)
-        else:
-            try:
-                return _type(response)
-            except (TypeError, ValueError):
-                return cls.input(prompt_text, default, _type, required)
-
-    @classmethod
     def prompt_for_ids(
             cls,
             defaults: Optional[Dict[str, List[str]]] = None,
-            required: Optional[List[Enum]] = None
+            required: Optional[List[IdType]] = None
     ) -> Dict[str, List[str]]:
         """
         Prompts the user for IDs
@@ -322,10 +325,10 @@ class Metadata:
 
                 if defaults is not None:
                     default = defaults.get(id_type.value, [])
-                    default = CommaList(",".join(default))
                 else:
-                    default = None if id_type in required else CommaList("")
+                    default = None if id_type in required else []
 
+                # Load anilist ID from myanimelist ID
                 if IdType.MYANIMELIST.value in ids and mal_updated:
                     if id_type.value == IdType.ANILIST.value:
 
@@ -346,16 +349,12 @@ class Metadata:
                                 int(mal_id)
                             )
                             anilist_ids.append(str(anilist_id))
-                        default = CommaList(",".join(anilist_ids))
+                        default = anilist_ids
 
-                prompted = cls.input(
-                    "{} IDs".format(id_type.value),
-                    default,
-                    CommaList,
-                    required=(id_type in required)
-                ).value
-
-                prompted = list(filter(lambda x: x != "", prompted))
+                min_count = 1 if id_type in required else 0
+                prompted = prompt_comma_list(
+                    "{} IDs".format(id_type.value), min_count=min_count
+                )
 
                 if len(prompted) > 0:
                     ids[id_type.value] = prompted
@@ -363,23 +362,12 @@ class Metadata:
                     # Check if myanimelist ID was updated
                     if id_type.value == IdType.MYANIMELIST.value:
                         if default.value is not None:
-                            mal_updated = prompted != default.value
+                            mal_updated = prompted != default
 
             if len(ids) < 1:
                 print("Please provide at least one ID")
 
         return ids
-
-    @staticmethod
-    def _assert_true(condition: bool):
-        """
-        Makes sure a statement is true by raising an exception if it's not
-        :param condition: The condition to check
-        :raises InvalidMetadataException: If the condition was False
-        :return: Nine
-        """
-        if not condition:
-            raise InvalidMetadata()
 
     def print_folder_icon_source(self):
         """
@@ -420,3 +408,14 @@ class Metadata:
         for _id in self.ids.get(IdType.ANILIST, []):
             urls.append("https://anilist.co/{}/{}".format(media_type, _id))
         return urls
+
+    @staticmethod
+    def _assert_true(condition: bool):
+        """
+        Makes sure a statement is true by raising an exception if it's not
+        :param condition: The condition to check
+        :raises InvalidMetadataException: If the condition was False
+        :return: Nine
+        """
+        if not condition:
+            raise InvalidMetadata()

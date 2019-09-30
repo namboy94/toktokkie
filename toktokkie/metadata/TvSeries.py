@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import tvdb_api
-from typing import List, Dict
+from typing import List, Dict, Any
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.metadata.components.TvSeason import TvSeason
@@ -42,16 +42,17 @@ class TvSeries(Metadata):
         return MediaType.TV_SERIES
 
     @classmethod
-    def prompt(cls, directory_path: str) -> Metadata:
+    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
+            -> Dict[str, Any]:
         """
-        Generates a new Metadata object using prompts for a directory
+        Prompts the user for metadata-type-specific information
+        Should be extended by child classes
         :param directory_path: The path to the directory for which to generate
-                               the metadata object
-        :return: The generated metadata object
+                               the metadata
+        :param json_data: Previously generated JSON data
+        :return: The generated metadata JSON data
         """
         name = os.path.basename(directory_path)
-        print("Generating metadata for {}:".format(name))
-
         try:
             probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
             probable_defaults = {IdType.TVDB.value: [probable_tvdb_id]}
@@ -89,7 +90,7 @@ class TvSeries(Metadata):
             }))
 
         series.seasons = seasons
-        return series
+        return series.json
 
     @property
     @json_parameter
@@ -268,13 +269,12 @@ class TvSeries(Metadata):
             "episode": episode
         })
 
-    def validate_json(self):
+    def _validate_json(self):
         """
         Validates the JSON data to make sure everything has valid values
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        super().validate_json()
         self._assert_true("seasons" in self.json)
         self._assert_true(len(self.seasons) == len(self.json["seasons"]))
         self._assert_true(

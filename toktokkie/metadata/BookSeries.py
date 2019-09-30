@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List
+from typing import List, Dict, Any
 from puffotter.os import listdir
 from toktokkie.metadata.Book import Book
 from toktokkie.metadata.components.BookVolume import BookVolume
@@ -39,16 +39,16 @@ class BookSeries(Book):
         return MediaType.BOOK_SERIES
 
     @classmethod
-    def prompt(cls, directory_path: str) -> Book:
+    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
+            -> Dict[str, Any]:
         """
-        Generates a new Metadata object using prompts for a directory
+        Prompts the user for metadata-type-specific information
+        Should be extended by child classes
         :param directory_path: The path to the directory for which to generate
-                               the metadata object
-        :return: The generated metadata object
+                               the metadata
+        :param json_data: Previously generated JSON data
+        :return: The generated metadata JSON data
         """
-        print("Generating metadata for {}:"
-              .format(os.path.basename(directory_path)))
-
         series_ids = cls.prompt_for_ids()
         series = cls(directory_path, {
             "volumes": [],
@@ -80,7 +80,7 @@ class BookSeries(Book):
                 })
 
         series.volumes = volumes
-        return series
+        return series.json
 
     @property
     @json_parameter
@@ -109,3 +109,11 @@ class BookSeries(Book):
         self.json["volumes"] = {}
         for i, volume in enumerate(volumes):
             self.json["volumes"][i] = volume.json
+
+    def _validate_json(self):
+        """
+        Validates the JSON data to make sure everything has valid values
+        :raises InvalidMetadataException: If any errors were encountered
+        :return: None
+        """
+        raise NotImplementedError()

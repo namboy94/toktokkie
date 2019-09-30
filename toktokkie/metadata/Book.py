@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
+from typing import Dict, Any
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.enums import MediaType
 
@@ -35,16 +35,22 @@ class Book(Metadata):
         return MediaType.BOOK
 
     @classmethod
-    def prompt(cls, directory_path: str) -> Metadata:
+    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
+            -> Dict[str, Any]:
         """
-        Generates a new Metadata object using prompts for a directory
+        Prompts the user for metadata-type-specific information
+        Should be extended by child classes
         :param directory_path: The path to the directory for which to generate
-                               the metadata object
-        :return: The generated metadata object
+                               the metadata
+        :param json_data: Previously generated JSON data
+        :return: The generated metadata JSON data
         """
-        print("Generating metadata for {}:"
-              .format(os.path.basename(directory_path)))
-        return cls(directory_path, {
-            "ids": cls.prompt_for_ids(),
-            "type": cls.media_type().value
-        })
+        return {}
+
+    def _validate_json(self):
+        """
+        Validates the JSON data to make sure everything has valid values
+        :raises InvalidMetadataException: If any errors were encountered
+        :return: None
+        """
+        pass

@@ -66,8 +66,6 @@ class MetadataSetCommand(Command):
         exclude_parser.add_argument("episode", type=int,
                                     help="The episode to exclude")
 
-
-
     def execute(self):
         """
         Executes the commands
