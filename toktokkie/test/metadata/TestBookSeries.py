@@ -142,6 +142,7 @@ class TestBookSeries(_TestMetadata):
             {},
             {"type": "book_series", "ids": {"isbn": 100}, "volumes": {}},
             {"type": "book_series", "volumes": {}},
+            {"type": "book_series", "ids": {}},
             {"type": "movie", "ids": {"isbn": ["100"]}, "volumes": {}},
             {"type": "book_series", "ids": {"isbn": ["100"]}, "volumes": {
                 "1": {"ids": {"isbn": 1000}}

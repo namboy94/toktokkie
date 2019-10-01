@@ -25,6 +25,7 @@ class IdType(Enum):
     Enumeration of all possible ID types
     """
     TVDB = "tvdb"
+    IMDB = "imdb"
     MYANIMELIST = "myanimelist"
     ANILIST = "anilist"
     KITSU = "kitsu"

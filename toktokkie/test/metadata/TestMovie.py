@@ -35,25 +35,89 @@ class TestMovie(_TestMetadata):
         Tests renaming files associated with the metadata type
         :return: None
         """
-        raise NotImplementedError()
+        matrix = self.get("The Matrix (1999)")
+        correct = os.path.join(matrix, "The Matrix (1999).txt")
+        incorrect = os.path.join(matrix, "The Matrix (2000).txt")
+        os.rename(correct, incorrect)
+
+        self.assertFalse(os.path.isfile(correct))
+        self.assertTrue(os.path.isfile(incorrect))
+
+        matrix_dir = Directory(matrix)
+        matrix_dir.rename(noconfirm=True)
+
+        self.assertTrue(os.path.isfile(correct))
+        self.assertFalse(os.path.isfile(incorrect))
+
+        matrix_dir.metadata.set_ids(IdType.ANILIST, [431])
+        matrix_dir.rename(noconfirm=True)
+
+        self.assertEqual(matrix_dir.metadata.name,
+                         "Howl‘s Moving Castle (2004)")
+        self.assertFalse(os.path.isfile(correct))
+        self.assertTrue(os.path.isfile(
+            self.get("Howl‘s Moving Castle (2004)/"
+                     "Howl‘s Moving Castle (2004).txt")
+        ))
 
     def test_prompt(self):
         """
         Tests generating a new metadata object using user prompts
         :return: None
         """
-        raise NotImplementedError()
+        matrix_two = self.get("The Matrix Reloaded (2003)")
+        os.makedirs(matrix_two)
+        with mock.patch("builtins.input", side_effect=[
+            "scifi, unpopular", "tt0234215", "", "", ""
+        ]):
+            metadata = Movie.prompt(matrix_two)
+            metadata.write()
+
+        directory = Directory(matrix_two)
+
+        self.assertTrue(os.path.isdir(directory.meta_dir))
+        self.assertTrue(os.path.isfile(metadata.metadata_file))
+        self.assertEqual(metadata, directory.metadata)
+        self.assertEqual(metadata.ids[IdType.IMDB], ["tt0234215"])
+        self.assertEqual(metadata.ids[IdType.ANILIST], [])
+        self.assertEqual(metadata.ids[IdType.MYANIMELIST], [])
+        self.assertEqual(metadata.ids[IdType.KITSU], [])
+
+        for invalid in [IdType.VNDB, IdType.MANGADEX, IdType.TVDB]:
+            self.assertFalse(invalid in metadata.ids)
+
+        for tag in ["scifi", "unpopular"]:
+            self.assertTrue(tag in metadata.tags)
 
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly
         :return: None
         """
-        raise NotImplementedError()
+        valid_data = [
+            {"type": "movie", "ids": {"imdb": ["tt0234215"]}},
+            {"type": "movie", "ids": {"imdb": "tt0234215"}}
+        ]
+        invalid_data = [
+            {},
+            {"type": "movie"},
+            {"type": "movie", "ids": {}},
+            {"type": "movie", "ids": {"imdb": 100}},
+            {"type": "movie", "ids": {"anilist": "100"}},
+            {"type": "movie", "ids": {"imdb": [100]}},
+            {"type": "movie", "ids": {"isbn": ["100"]}},
+            {"type": "movie", "ids": {"imdb": "tt0234215", "other": "stuff"}},
+            {"type": "movie", "ids": {"imdb": "tt0234215", "tvdb": "stuff"}}
+        ]
+        matrix = self.get("The Matrix (1999)")
+        self.check_validation(valid_data, invalid_data, Movie, matrix)
 
     def test_checking(self):
         """
         Tests if the checking mechanisms work correctly
         :return: None
         """
-        raise NotImplementedError()
+        matrix = Directory(self.get("The Matrix (1999)"))
+        self.assertTrue(matrix.check(False, False, {}))
+        os.remove(os.path.join(matrix.meta_dir, "icons/main.png"))
+        self.assertFalse(matrix.check(False, False, {}))

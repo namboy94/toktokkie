@@ -134,6 +134,9 @@ class Renamer:
             entry = AnilistApi().get_data(media_type, anilist_id)
             should_name = entry.title.get(TitleType.ENGLISH)
 
+            if self.metadata.media_type() == MediaType.MOVIE:
+                should_name += " ({})".format(entry.releasing_start.year)
+
         return replace_illegal_ntfs_chars(should_name)
 
     def _get_children(self, no_dirs: bool = False, no_files: bool = False) \

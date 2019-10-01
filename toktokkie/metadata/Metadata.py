@@ -206,7 +206,7 @@ class Metadata:
                 IdType.ANILIST,
                 IdType.KITSU,
                 IdType.MYANIMELIST,
-                IdType.TVDB
+                IdType.IMDB
             ],
             MediaType.BOOK: [
                 IdType.ISBN,
@@ -246,6 +246,11 @@ class Metadata:
             for _, ids in self.ids.items():
                 for _id in ids:
                     self._assert_true(type(_id) == str)
+
+            for id_type in self.required_ids():
+                self._assert_true(id_type.value in self.json["ids"])
+            for id_type in self.ids:
+                self._assert_true(id_type in self.valid_id_types())
 
             self._assert_true(len(active_ids) == len(self.json["ids"]))
             self._assert_true(len(active_ids) > 0)
@@ -292,21 +297,10 @@ class Metadata:
         print("Generating metadata for {}:"
               .format(os.path.basename(directory_path)))
 
-        idmap = {
-            MediaType.MANGA: [],
-            MediaType.BOOK: [],
-            MediaType.BOOK_SERIES: [],
-            MediaType.VISUAL_NOVEL: [IdType.VNDB],
-            MediaType.MOVIE: [],
-            MediaType.TV_SERIES: [IdType.TVDB]
-        }  # type: Dict[MediaType, List[IdType]]
-
-        required_ids = idmap[cls.media_type()]
-
         json_data = {
             "type": cls.media_type().value,
             "tags": prompt_comma_list("Tags: "),
-            "ids": cls.prompt_for_ids(required=required_ids)
+            "ids": cls.prompt_for_ids()
         }
         json_data.update(cls._prompt(directory_path, json_data))
         return cls(directory_path, json_data)
@@ -350,17 +344,13 @@ class Metadata:
     @classmethod
     def prompt_for_ids(
             cls,
-            defaults: Optional[Dict[str, List[str]]] = None,
-            required: Optional[List[IdType]] = None
+            defaults: Optional[Dict[str, List[str]]] = None
     ) -> Dict[str, List[str]]:
         """
         Prompts the user for IDs
         :param defaults: The default values to use, mapped to id type names
-        :param required: A list of required ID types
         :return: The generated IDs. At least one ID will be included
         """
-        required = required if required is not None else []
-
         valid_id_types = cls.valid_id_types()
 
         ids = {}  # type: Dict[str, List[str]]
@@ -369,6 +359,7 @@ class Metadata:
 
             for id_type in [
                 IdType.TVDB,
+                IdType.IMDB,
                 IdType.ISBN,
                 IdType.VNDB,
                 IdType.MYANIMELIST,
@@ -382,7 +373,7 @@ class Metadata:
                 default = None  # type: Optional[List[str]]
                 if defaults is not None:
                     default = defaults.get(id_type.value, [])
-                elif id_type not in required:
+                elif id_type not in cls.required_ids():
                     default = []
 
                 # Load anilist ID from myanimelist ID
@@ -408,11 +399,13 @@ class Metadata:
                             anilist_ids.append(str(anilist_id))
                         default = anilist_ids
 
-                min_count = 1 if id_type in required else 0
+                min_count = 1 if id_type in cls.required_ids() else 0
 
                 primitive = int
-                if id_type in [IdType.ISBN]:  # IDs may not be ints
+                if id_type in [IdType.ISBN, IdType.IMDB]:
+                    # IDs may not be ints
                     primitive = str
+
                 prompted = prompt_comma_list(
                     "{} IDs: ".format(id_type.value),
                     min_count=min_count,
@@ -433,6 +426,22 @@ class Metadata:
                 print("Please provide at least one ID")
 
         return ids
+
+    @classmethod
+    def required_ids(cls) -> List[IdType]:
+        """
+        :return: A list of required IDs for the metadata type
+        """
+        idmap = {
+            MediaType.MANGA: [],
+            MediaType.BOOK: [],
+            MediaType.BOOK_SERIES: [],
+            MediaType.VISUAL_NOVEL: [IdType.VNDB],
+            MediaType.MOVIE: [IdType.IMDB],
+            MediaType.TV_SERIES: [IdType.TVDB]
+        }  # type: Dict[MediaType, List[IdType]]
+
+        return idmap[cls.media_type()]
 
     def print_folder_icon_source(self):
         """
