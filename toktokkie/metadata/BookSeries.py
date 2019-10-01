@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
-from typing import List, Dict, Any
+from typing import Dict, Any
 from puffotter.os import listdir
 from toktokkie.metadata.Book import Book
 from toktokkie.metadata.components.BookVolume import BookVolume
@@ -48,32 +47,25 @@ class BookSeries(Book):
         :param json_data: Previously generated JSON data
         :return: The generated metadata JSON data
         """
-        series_ids = cls.prompt_for_ids()
-        series = cls(directory_path, {
-            "volumes": [],
-            "ids": series_ids,
-            "type": cls.media_type().value
-        })
+        json_data["volumes"] = {}  # type: Dict[int, BookVolume]
+        series = BookSeries(directory_path, json_data)
 
-        volumes = {}
-        for i, volume_name in enumerate(sorted(os.listdir(directory_path))):
-
-            volume_path = os.path.join(directory_path, volume_name)
-            if volume_name.startswith(".") or not os.path.exists(volume_path):
-                continue
-
+        volumes = {}  # type: Dict[int, BookVolume]
+        for i, (volume_name, volume_path) in enumerate(
+                listdir(directory_path, no_dirs=True)
+        ):
             print("Volume {} ({}):".format(i + 1, volume_name))
-            ids = cls.prompt_for_ids(series_ids)
+            ids = cls.prompt_for_ids(json_data["ids"])
 
             # Remove double entries
-            for id_type, id_value in series_ids.items():
+            for id_type, id_value in json_data["ids"].items():
                 if id_value == ids.get(id_type, None):
                     ids.pop(id_type)
 
             if len(ids) == 0:
                 continue
             else:
-                volumes[i] = BookVolume(series, {
+                volumes[i + 1] = BookVolume(series, {
                     "ids": ids,
                     "name": volume_name
                 })
@@ -82,31 +74,31 @@ class BookSeries(Book):
         return series.json
 
     @property
-    def volumes(self) -> List[BookVolume]:
+    def volumes(self) -> Dict[int, BookVolume]:
         """
         :return: A list of book volumes for this book series
         """
-        volumes = []
+        volumes = {}  # type: Dict[int, BookVolume]
         volume_files = listdir(self.directory_path, no_dirs=True)
 
         for i, (volume, volume_file) in enumerate(volume_files):
-            json_data = self.json["volumes"].get(i, {
+            json_data = self.json["volumes"].get(str(i + 1), {
                 "ids": self.ids,
                 "name": volume
             })
-            volumes.append(BookVolume(self, json_data))
+            volumes[i + 1] = BookVolume(self, json_data)
         return volumes
 
     @volumes.setter
-    def volumes(self, volumes: List[BookVolume]):
+    def volumes(self, volumes: Dict[int, BookVolume]):
         """
         Setter method for the volumes
         :param volumes: The volumes to set
         :return: None
         """
         self.json["volumes"] = {}
-        for i, volume in enumerate(volumes):
-            self.json["volumes"][i] = volume.json
+        for i, volume in volumes.items():
+            self.json["volumes"][str(i)] = volume.json
 
     def _validate_json(self):
         """
@@ -114,4 +106,5 @@ class BookSeries(Book):
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        pass
+        files = len(listdir(self.directory_path, no_dirs=True))
+        self._assert_true(len(self.volumes) == files)

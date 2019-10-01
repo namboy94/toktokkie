@@ -361,10 +361,23 @@ class Metadata:
         """
         required = required if required is not None else []
 
+        valid_id_types = cls.valid_id_types()
+
         ids = {}  # type: Dict[str, List[str]]
         mal_updated = False
         while len(ids) < 1:
-            for id_type in cls.valid_id_types():
+
+            for id_type in [
+                IdType.TVDB,
+                IdType.ISBN,
+                IdType.VNDB,
+                IdType.MYANIMELIST,
+                IdType.ANILIST,
+                IdType.KITSU,
+                IdType.MANGADEX
+            ]:
+                if id_type not in valid_id_types:
+                    continue
 
                 default = None  # type: Optional[List[str]]
                 if defaults is not None:
@@ -396,9 +409,17 @@ class Metadata:
                         default = anilist_ids
 
                 min_count = 1 if id_type in required else 0
+
+                primitive = int
+                if id_type in [IdType.ISBN]:  # IDs may not be ints
+                    primitive = str
                 prompted = prompt_comma_list(
-                    "{} IDs: ".format(id_type.value), min_count=min_count
+                    "{} IDs: ".format(id_type.value),
+                    min_count=min_count,
+                    default=default,
+                    primitive_type=primitive
                 )
+                prompted = list(map(lambda x: str(x), prompted))
 
                 if len(prompted) > 0:
                     ids[id_type.value] = prompted

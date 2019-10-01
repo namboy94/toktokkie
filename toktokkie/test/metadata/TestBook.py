@@ -98,6 +98,7 @@ class TestBook(_TestMetadata):
         ]
         invalid_data = [
             {},
+            {"type": "book"},
             {"type": "book", "ids": {"isbn": 100}},
             {"type": "book", "ids": {"isbn": [100]}},
             {"type": "movie", "ids": {"isbn": ["100"]}}

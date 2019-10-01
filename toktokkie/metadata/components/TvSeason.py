@@ -18,8 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from typing import Dict, Any
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 
@@ -27,6 +29,32 @@ class TvSeason(MetadataPart):
     """
     Class that models a single tv season
     """
+
+    def __init__(self, parent: Metadata, json_data: Dict[str, Any]):
+        """
+        Initializes the MetadataPart object using JSON data
+        :param parent: The parent metadata
+        :param json_data: The JSON data used to generate the MetadataPart
+        :raises InvalidMetadataException: If any errors were encountered
+                                          while generating the object
+        """
+        self.parent = parent
+        self.json = json_data
+        super().__init__(parent, json_data)
+
+    @property
+    def name(self) -> str:
+        """
+        :return: The name of the season directory
+        """
+        return self.json["name"]
+
+    @property
+    def path(self) -> str:
+        """
+        :return: The path to the season directory
+        """
+        return os.path.join(self.parent.directory_path, self.name)
 
     @property
     def tvdb_id(self) -> str:
@@ -53,6 +81,10 @@ class TvSeason(MetadataPart):
                                           with the JSON data
         """
         super().validate()
+
+        if not os.path.exists(self.path) or "name" not in self.json:
+            raise InvalidMetadata()
+
         if not os.path.isdir(self.path):
             raise InvalidMetadata()
         try:
@@ -65,4 +97,5 @@ class TvSeason(MetadataPart):
         """
         :return: Whether or not this season is a spinoff
         """
+        # noinspection PyUnresolvedReferences
         return self.parent.tvdb_id != self.tvdb_id  # type: ignore

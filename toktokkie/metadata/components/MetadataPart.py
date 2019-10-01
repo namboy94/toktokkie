@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
 from enum import Enum
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
@@ -40,12 +39,6 @@ class MetadataPart:
         """
         self.parent = parent
         self.json = json_data
-
-        try:
-            self.path = os.path.join(parent.directory_path, self.name)
-        except KeyError:
-            raise InvalidMetadata()
-
         self.validate()
 
     def validate(self):
@@ -55,17 +48,12 @@ class MetadataPart:
         :raises InvalidMetadataException: If something is wrong
                                           with the JSON data
         """
-        if not os.path.exists(self.path) \
-                or len(self.ids) < 1 \
-                or "name" not in self.json:
+        if len(self.ids) < 1:
             raise InvalidMetadata()
-
-    @property
-    def name(self) -> str:
-        """
-        :return: The name of the part
-        """
-        return self.json["name"]
+        for _, ids in self.ids.items():
+            for _id in ids:
+                if not type(_id) == str:
+                    raise InvalidMetadata()
 
     @property
     def ids(self) -> Dict[Enum, List[str]]:
