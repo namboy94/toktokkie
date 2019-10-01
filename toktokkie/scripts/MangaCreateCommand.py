@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 import requests
-from toktokkie import Directory
+from toktokkie.Directory import Directory
 from puffotter.graphql import GraphQlClient
 from puffotter.os import makedirs
 from subprocess import Popen

@@ -45,7 +45,9 @@ class MetadataSetCommand(Command):
 
         id_types = [x.value for x in IdType]
 
-        subparser = parser.add_subparsers(dest="mode", required=True)
+        subparser = parser.add_subparsers(
+            dest="mode", required=True
+        )  # type: ignore
 
         multi_episode_parser = subparser.add_parser(
             "multi-episode", help="Add a multi-episode to a TV Series"

@@ -20,7 +20,7 @@ LICENSE"""
 import argparse
 import logging
 from typing import List, Optional
-from toktokkie import Directory
+from toktokkie.Directory import Directory
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.metadata.components.enums import MediaType
 

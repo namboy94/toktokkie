@@ -23,7 +23,7 @@ import time
 from threading import Thread
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QWidget
-from toktokkie import Directory
+from toktokkie.Directory import Directory
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.metadata.components.enums import MediaType
 from toktokkie.gui.pyuic.main import Ui_MainWindow

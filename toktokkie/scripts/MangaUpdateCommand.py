@@ -26,7 +26,7 @@ from manga_dl.scrapers.mangadex import MangaDexScraper
 from manga_dl.entities.Chapter import Chapter
 from puffotter.os import makedirs, listdir, replace_illegal_ntfs_chars
 from puffotter.print import pprint
-from toktokkie import Directory
+from toktokkie.Directory import Directory
 from toktokkie.scripts.Command import Command
 from toktokkie.renaming.Renamer import Renamer
 from zipfile import ZipFile
