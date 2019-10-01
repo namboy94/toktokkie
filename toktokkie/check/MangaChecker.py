@@ -20,7 +20,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import json
 import requests
-from typing import Optional
+from typing import Optional, List
 from toktokkie.check.Checker import Checker
 from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import IdType
@@ -95,7 +95,10 @@ class MangaChecker(Checker):
         local_chaptercount = len(os.listdir(metadata.main_path))
 
         try:
-            anilist_id = int(metadata.ids.get(IdType.ANILIST)[0])
+            anilist_ids = metadata.ids.get(IdType.ANILIST)
+            if anilist_ids is None:
+                raise IndexError
+            anilist_id = int(anilist_ids[0])
 
             list_entry = None
             for entry in anilist_entries:  # type: MangaListEntry

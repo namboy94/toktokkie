@@ -45,32 +45,33 @@ class BookSeriesChecker(Checker):
         """
         metadata = self.metadata  # type: BookSeries  # type: ignore
         manga_list = self.config["anilist_manga_list"]
-        anilist_id = metadata.ids.get(IdType.ANILIST, [None])[0]
 
-        if anilist_id is None:
+        try:
+            _id = metadata.ids.get(IdType.ANILIST, [])[0]
+        except IndexError:
             return self.error("No Anilist ID")
-        else:
-            anilist_id = int(anilist_id)
-            manga = None
-            for entry in manga_list:
-                if entry.id.get(AnimeListIdType.ANILIST) == anilist_id:
-                    manga = entry
-                    break
 
-            if manga is None:
-                return self.error("Not in Anilist")
-            else:
-                volumes_local = len(metadata.volumes)
-                volumes_read = manga.volume_progress
-                if volumes_read < volumes_local:
-                    return self.warn("User has only read {}/{} volumes".format(
+        anilist_id = int(_id)
+        manga = None
+        for entry in manga_list:
+            if entry.id.get(AnimeListIdType.ANILIST) == anilist_id:
+                manga = entry
+                break
+
+        if manga is None:
+            return self.error("Not in Anilist")
+        else:
+            volumes_local = len(metadata.volumes)
+            volumes_read = manga.volume_progress
+            if volumes_read < volumes_local:
+                return self.warn("User has only read {}/{} volumes".format(
+                    volumes_read, volumes_local
+                ))
+            elif volumes_local < volumes_read:
+                return self.warn(
+                    "Some read volumes do not exist locally "
+                    "(Read:{}, Local:{})".format(
                         volumes_read, volumes_local
                     ))
-                elif volumes_local < volumes_read:
-                    return self.warn(
-                        "Some read volumes do not exist locally "
-                        "(Read:{}, Local:{})".format(
-                            volumes_read, volumes_local
-                        ))
-                else:
-                    return True
+            else:
+                return True

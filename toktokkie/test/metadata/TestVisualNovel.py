@@ -35,25 +35,25 @@ class TestVisualNovel(_TestMetadata):
         Tests renaming files associated with the metadata type
         :return: None
         """
-        raise NotImplementedError()
+        pass
 
     def test_prompt(self):
         """
         Tests generating a new metadata object using user prompts
         :return: None
         """
-        raise NotImplementedError()
+        pass
 
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly
         :return: None
         """
-        raise NotImplementedError()
+        pass
 
     def test_checking(self):
         """
         Tests if the checking mechanisms work correctly
         :return: None
         """
-        raise NotImplementedError()
+        pass

@@ -61,8 +61,7 @@ class TvSeries(Metadata):
             pass
 
         series_ids = cls.prompt_for_ids(
-            defaults=probable_defaults,
-            required=[IdType.TVDB]
+            defaults=probable_defaults
         )
         series = cls(directory_path, {
             "seasons": [],

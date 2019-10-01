@@ -310,10 +310,10 @@ class Renamer:
                     while episode_number in season_excluded:
                         episode_number += 1
 
-                    if episode_number in season_multis:
-                        end = season_multis[episode_number]
+                    if episode_number not in season_multis:
+                        end = None  # type: Optional[int]
                     else:
-                        end = None
+                        end = season_multis[episode_number]
 
                     episode_name = self.load_tvdb_episode_name(
                         tvdb_id, season_number, episode_number, end

@@ -56,7 +56,7 @@ class MetadataPart:
                     raise InvalidMetadata()
 
     @property
-    def ids(self) -> Dict[Enum, List[str]]:
+    def ids(self) -> Dict[IdType, List[str]]:
         """
         :return: A dictionary containing lists of IDs mapped to ID types
         """
@@ -69,7 +69,7 @@ class MetadataPart:
         return generated
 
     @ids.setter
-    def ids(self, ids: Dict[Enum, List[str]]):
+    def ids(self, ids: Dict[IdType, List[str]]):
         """
         Setter method for the IDs of the metadata part object.
         Previous IDs will be overwritten!

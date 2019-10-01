@@ -402,17 +402,21 @@ class Metadata:
 
                 min_count = 1 if id_type in cls.required_ids() else 0
 
-                primitive = int
                 if id_type in [IdType.ISBN, IdType.IMDB]:
-                    # IDs may not be ints
-                    primitive = str
+                    prompted = prompt_comma_list(
+                        "{} IDs: ".format(id_type.value),
+                        min_count=min_count,
+                        default=default,
+                        primitive_type=str
+                    )
+                else:
+                    prompted = prompt_comma_list(
+                        "{} IDs: ".format(id_type.value),
+                        min_count=min_count,
+                        default=default,
+                        primitive_type=int
+                    )
 
-                prompted = prompt_comma_list(
-                    "{} IDs: ".format(id_type.value),
-                    min_count=min_count,
-                    default=default,
-                    primitive_type=primitive
-                )
                 prompted = list(map(lambda x: str(x), prompted))
 
                 if len(prompted) > 0:

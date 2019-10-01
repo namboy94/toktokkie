@@ -47,7 +47,7 @@ class BookSeries(Book):
         :param json_data: Previously generated JSON data
         :return: The generated metadata JSON data
         """
-        json_data["volumes"] = {}  # type: Dict[int, BookVolume]
+        json_data["volumes"] = {}
         series = BookSeries(directory_path, json_data)
 
         volumes = {}  # type: Dict[int, BookVolume]

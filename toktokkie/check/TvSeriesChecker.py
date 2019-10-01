@@ -290,9 +290,9 @@ class TvSeriesChecker(Checker):
                     ).lower().strip()
 
                     if resp == "y":
-                        ids = season.ids
-                        ids[IdType.ANILIST] = anilist_ids
-                        season.ids = ids
+                        season_ids = season.ids
+                        season_ids[IdType.ANILIST] = anilist_ids
+                        season.ids = season_ids
                         self.metadata.write()
 
             ids = season.ids.get(IdType.ANILIST, [])
