@@ -47,6 +47,8 @@ class ArchiveCommand(Command):
         parser.add_argument("--out", "-o", default=None,
                             help="Specifies an output directory for the "
                                  "archived directory/directories")
+        parser.add_argument("--remove-icons", action="store_true",
+                            help="Replaces icon files with empty files")
 
     def execute(self):
         """
@@ -69,8 +71,7 @@ class ArchiveCommand(Command):
                 os.makedirs(archive_path)
             self.archive(directory.path, archive_path)
 
-    @staticmethod
-    def archive(source: str, dest: str):
+    def archive(self, source: str, dest: str):
         """
         Creates a low-filesize archive of a directory into a new directory
         :param source: The source directory
@@ -82,15 +83,21 @@ class ArchiveCommand(Command):
             dest_child_path = os.path.join(dest, child)
 
             if os.path.isfile(child_path):
-                if not child_path.endswith(".json") and \
-                        not child_path.endswith(".png"):
+
+                if child_path.endswith(".json"):
+                    shutil.copyfile(child_path, dest_child_path)
+                elif child_path.endswith(".png"):
+                    if self.args.remove_icons:
+                        with open(dest_child_path, "w") as f:
+                            f.write("")
+                    else:
+                        shutil.copyfile(child_path, dest_child_path)
+                else:
                     with open(dest_child_path, "w") as f:
                         f.write("")
-                else:
-                    shutil.copyfile(child_path, dest_child_path)
 
             elif os.path.isdir(child_path):
                 if not os.path.isdir(dest_child_path):
                     os.makedirs(dest_child_path)
 
-                ArchiveCommand.archive(child_path, dest_child_path)
+                self.archive(child_path, dest_child_path)

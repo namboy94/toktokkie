@@ -114,4 +114,4 @@ class BookSeries(Book):
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        raise NotImplementedError()
+        pass

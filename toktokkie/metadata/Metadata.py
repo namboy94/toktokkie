@@ -111,8 +111,11 @@ class Metadata:
         :param name: The new name of the media directory
         :return: None
         """
-        new_path = os.path.join(os.path.dirname(self.directory_path), name)
-        os.rename(self.directory_path, new_path)
+        directory = self.directory_path
+        if directory.endswith("/"):
+            directory = directory.rsplit("/", 1)[0]
+        new_path = os.path.join(os.path.dirname(directory), name)
+        os.rename(directory, new_path)
         self.directory_path = new_path
 
     @property
@@ -162,6 +165,17 @@ class Metadata:
         self.json["ids"] = {}
         for id_type, values in ids.items():
             self.json["ids"][id_type.value] = values
+
+    def set_ids(self, id_type: IdType, ids: List[str]):
+        """
+        Sets IDs for one ID type to the metadata
+        :param id_type: The id type
+        :param ids: The IDs to set
+        :return: None
+        """
+        metadata_ids = self.ids
+        metadata_ids[id_type] = ids
+        self.ids = metadata_ids
 
     @classmethod
     def media_type(cls) -> MediaType:

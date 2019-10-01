@@ -22,12 +22,17 @@ import tvdb_api
 from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 from typing import List, Optional
-from puffotter.os import listdir
+from puffotter.os import listdir, replace_illegal_ntfs_chars
+from puffotter.prompt import yn_prompt
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import MediaType, IdType
 from toktokkie.renaming.RenameOperation import RenameOperation
+from anime_list_apis.api.AnilistApi import AnilistApi
+from anime_list_apis.models.attributes.Title import TitleType
+from anime_list_apis.models.attributes.MediaType import MediaType as \
+    AnilistMediaType
 
 
 class Renamer:
@@ -41,20 +46,33 @@ class Renamer:
         is encountered at any point during the initialization process
         :param metadata: The metadata to use for information
         """
-        self.path = metadata.directory_path
         self.metadata = metadata
+        self.operations = self._generate_operations()
 
-        self.operations = []  # type: List[RenameOperation]
+    @property
+    def path(self) -> str:
+        """
+        :return: The path to the media directory
+        """
+        return self.metadata.directory_path
+
+    def _generate_operations(self) -> List[RenameOperation]:
+        """
+        Generates renaming operations for the various possible media types
+        :return: The renaming operations
+        """
+        operations = []  # type: List[RenameOperation]
         if self.metadata.media_type() == MediaType.BOOK:
-            self.operations = self._generate_book_operations()
+            operations = self._generate_book_operations()
         elif self.metadata.media_type() == MediaType.BOOK_SERIES:
-            self.operations = self._generate_book_series_operations()
+            operations = self._generate_book_series_operations()
         elif self.metadata.media_type() == MediaType.MOVIE:
-            self.operations = self._generate_movie_operations()
+            operations = self._generate_movie_operations()
         elif self.metadata.media_type() == MediaType.TV_SERIES:
-            self.operations = self._generate_tv_series_operations()
+            operations = self._generate_tv_series_operations()
         elif self.metadata.media_type() == MediaType.MANGA:
-            self.operations = self._generate_manga_operations()
+            operations = self._generate_manga_operations()
+        return operations
 
     def get_active_operations(self) -> List[RenameOperation]:
         """
@@ -69,6 +87,16 @@ class Renamer:
         :param noconfirm: Skips the confirmation phase if True
         :return: None
         """
+        should_title = self.load_title_name()
+        if should_title != self.metadata.name:
+            ok = noconfirm
+            if not ok:
+                ok = yn_prompt("Rename title of series to {}?"
+                               .format(should_title))
+            if ok:
+                self.metadata.name = should_title
+                self.operations = self._generate_operations()
+
         if len(self.get_active_operations()) == 0:
             print("Files already named correctly, skipping.")
             return
@@ -87,6 +115,26 @@ class Renamer:
 
         for operation in self.operations:
             operation.rename()
+
+    def load_title_name(self) -> str:
+        """
+        Loads the title name for the metadata object
+        :return: The title the metadata should have
+        """
+        should_name = self.metadata.name
+
+        anilist = self.metadata.ids.get(IdType.ANILIST, [])
+        if len(anilist) > 0:
+            anilist_id = int(anilist[0])
+            media_type = AnilistMediaType.ANIME
+            if self.metadata.media_type() in [
+                MediaType.BOOK, MediaType.BOOK_SERIES, MediaType.MANGA
+            ]:
+                media_type = AnilistMediaType.MANGA
+            entry = AnilistApi().get_data(media_type, anilist_id)
+            should_name = entry.title.get(TitleType.ENGLISH)
+
+        return replace_illegal_ntfs_chars(should_name)
 
     def _get_children(self, no_dirs: bool = False, no_files: bool = False) \
             -> List[str]:

@@ -27,7 +27,7 @@ from toktokkie.metadata.components.enums import IdType
 
 class TestBook(_TestMetadata):
     """
-    Class that defines what a metadata test has to test
+    Class that tests the Book metadata class
     """
 
     def test_renaming(self):
@@ -48,6 +48,15 @@ class TestBook(_TestMetadata):
 
         self.assertTrue(os.path.isfile(correct))
         self.assertFalse(os.path.isfile(incorrect))
+
+        faust_dir.metadata.set_ids(IdType.ANILIST, [39115])
+        faust_dir.rename(noconfirm=True)
+
+        self.assertEqual(faust_dir.metadata.name, "Spice & Wolf")
+        self.assertFalse(os.path.isfile(correct))
+        self.assertTrue(os.path.isfile(
+            self.get("Spice & Wolf/Spice & Wolf.txt")
+        ))
 
     def test_prompt(self):
         """

@@ -100,6 +100,7 @@ class Directory:
         :return: None
         """
         Renamer(self.metadata).rename(noconfirm)
+        self.path = self.metadata.directory_path
 
     def iconize(self, procedure: Procedure):
         """
