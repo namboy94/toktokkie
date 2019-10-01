@@ -9,7 +9,6 @@ default:
   before_script:
     - echo "$SERVER_ACCESS_KEY" > ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
-    - pip install PyQt5
     # TODO Remove this once development stabilizes
     - git clone https://gitlab.namibsun.net/namibsun/python/puffotter -b develop
     - cd puffotter
@@ -44,6 +43,7 @@ unittest:
   stage: test
   tags: [docker]
   script:
+    - pip install PyQt5
     - python-unittest
 
 gitstats:
@@ -56,6 +56,7 @@ docgen:
   stage: stats
   tags: [docker]
   script:
+    - pip install PyQt5
     - sphinx-docgen
 
 release_upload:
