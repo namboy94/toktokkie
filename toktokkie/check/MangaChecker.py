@@ -40,6 +40,7 @@ class MangaChecker(Checker):
         :return: The result of the check
         """
         valid = super().check()
+        valid = self._check_special_chapter_count() and valid
         if self.config.get("anilist_user") is not None:
             valid = self._check_chapter_progress() and valid
         return valid
@@ -61,6 +62,25 @@ class MangaChecker(Checker):
             ))
 
         return valid
+
+    def _check_special_chapter_count(self) -> bool:
+        """
+        Checks if the correct amount of special chapters exist in the special
+        directory
+        :return: True if correct, False otherwise
+        """
+        # noinspection PyTypeChecker
+        metadata = self.metadata  # type: Manga  # type: ignore
+
+        should = len(os.listdir(metadata.special_path))
+        _is = len(metadata.special_chapters)
+        if should != _is:
+            self.error(
+                "Incorrect amount of special chapters: Should: {}, Is: {}"
+                .format(should, _is)
+            )
+            return False
+        return True
 
     def _check_chapter_progress(self) -> bool:
         """

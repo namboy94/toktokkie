@@ -47,13 +47,10 @@ class Manga(Metadata):
         :param json_data: Previously generated JSON data
         :return: The generated metadata JSON data
         """
-        series = cls(directory_path, {
-            "ids": cls.prompt_for_ids(),
-            "type": cls.media_type().value,
-            "special_chapters": []
-        })
+        json_data["special_chapters"] = []
+        series = Manga(directory_path, json_data)
 
-        if series.special_path is not None:
+        if os.path.isdir(series.special_path):
             print("Please enter identifiers for special chapters:")
             for _file in sorted(os.listdir(series.special_path)):
                 print(_file)
@@ -101,4 +98,4 @@ class Manga(Metadata):
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        raise NotImplementedError()
+        pass

@@ -194,7 +194,8 @@ class Metadata:
                 IdType.MANGADEX,
                 IdType.ANILIST,
                 IdType.MYANIMELIST,
-                IdType.KITSU
+                IdType.KITSU,
+                IdType.ISBN
             ],
             MediaType.TV_SERIES: [
                 IdType.ANILIST,

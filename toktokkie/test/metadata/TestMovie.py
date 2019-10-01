@@ -83,7 +83,9 @@ class TestMovie(_TestMetadata):
         self.assertEqual(metadata.ids[IdType.MYANIMELIST], [])
         self.assertEqual(metadata.ids[IdType.KITSU], [])
 
-        for invalid in [IdType.VNDB, IdType.MANGADEX, IdType.TVDB]:
+        for invalid in [
+            IdType.VNDB, IdType.MANGADEX, IdType.TVDB, IdType.ISBN
+        ]:
             self.assertFalse(invalid in metadata.ids)
 
         for tag in ["scifi", "unpopular"]:
