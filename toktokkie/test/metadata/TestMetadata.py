@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import List, Dict, Any, Type
+from toktokkie.metadata.Metadata import Metadata
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.test.TestFramework import _TestFramework
 
 
@@ -52,3 +55,30 @@ class _TestMetadata(_TestFramework):
         :return: None
         """
         raise NotImplementedError()
+
+    def check_validation(
+            self,
+            valid_data: List[Dict[str, Any]],
+            invalid_data: List[Dict[str, Any]],
+            cls: Type[Metadata],
+            directory: str
+    ):
+        """
+        Helper function that checks that any valid or invalid metadata JSON
+        is identified as such when loading metadata objects
+        :param valid_data: List of valid metadata dictionaries
+        :param invalid_data: List of invalid metadata dictionaries
+        :param cls: The metadata class to use
+        :param directory: The directory to use
+        :return: None
+        """
+        for entry in valid_data:
+            print(entry)
+            cls(directory, entry)
+        for entry in invalid_data:
+            print(entry)
+            try:
+                cls(directory, entry)
+                self.fail()
+            except InvalidMetadata:
+                pass

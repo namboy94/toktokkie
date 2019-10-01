@@ -20,7 +20,6 @@ LICENSE"""
 import os
 import json
 from typing import List, Dict, Any, Optional
-from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.exceptions import InvalidMetadata, MissingMetadata
 from toktokkie.metadata.components.enums import MediaType, IdType
 from anime_list_apis.api.AnilistApi import AnilistApi
@@ -87,8 +86,18 @@ class Metadata:
             str(self.json)
         )
 
-    @property  # type: ignore
-    @json_parameter
+    def __eq__(self, other: object) -> bool:
+        """
+        Checks equality with another object
+        :param other: The other object
+        :return: True if equal, False otherwise
+        """
+        if not isinstance(other, type(self)):
+            return False
+        else:
+            return self.json == other.json
+
+    @property
     def name(self) -> str:
         """
         :return: The name of the media
@@ -106,8 +115,7 @@ class Metadata:
         os.rename(self.directory_path, new_path)
         self.directory_path = new_path
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def tags(self) -> List[str]:
         """
         :return: A list of tags
@@ -123,8 +131,7 @@ class Metadata:
         """
         self.json["tags"] = tags
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def ids(self) -> Dict[IdType, List[str]]:
         """
         :return: A dictionary containing lists of IDs mapped to ID types
@@ -136,6 +143,11 @@ class Metadata:
                 generated[IdType(id_type)] = _id
             else:
                 generated[IdType(id_type)] = [_id]
+
+        for id_type in IdType:
+            if id_type in self.valid_id_types():
+                if id_type not in generated:
+                    generated[id_type] = []
 
         return generated
 
@@ -205,14 +217,28 @@ class Metadata:
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        self._assert_true(os.path.isdir(self.directory_path))
-        for tag in self.tags:
-            self._assert_true(type(tag) == str)
-        self._assert_true("ids" in self.json)
-        self._assert_true(len(self.ids) == len(self.json["ids"]))
-        self._assert_true(len(self.ids) > 0)
-        self._assert_true(self.media_type().value == self.json["type"])
-        self._validate_json()
+        try:
+            self._assert_true(os.path.isdir(self.directory_path))
+            for tag in self.tags:
+                self._assert_true(type(tag) == str)
+            self._assert_true("ids" in self.json)
+
+            active_ids = self.ids
+            for id_type in IdType:
+                ids = active_ids.get(id_type, [])
+                if len(ids) == 0 and id_type in active_ids:
+                    active_ids.pop(id_type)
+
+            for _, ids in self.ids.items():
+                for _id in ids:
+                    self._assert_true(type(_id) == str)
+
+            self._assert_true(len(active_ids) == len(self.json["ids"]))
+            self._assert_true(len(active_ids) > 0)
+            self._assert_true(self.media_type().value == self.json["type"])
+            self._validate_json()
+        except (ValueError, TypeError, KeyError):
+            raise InvalidMetadata()
 
     def _validate_json(self):
         """
@@ -357,7 +383,7 @@ class Metadata:
 
                 min_count = 1 if id_type in required else 0
                 prompted = prompt_comma_list(
-                    "{} IDs".format(id_type.value), min_count=min_count
+                    "{} IDs: ".format(id_type.value), min_count=min_count
                 )
 
                 if len(prompted) > 0:

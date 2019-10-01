@@ -22,7 +22,6 @@ from typing import List, Dict, Any
 from puffotter.os import listdir
 from toktokkie.metadata.Book import Book
 from toktokkie.metadata.components.BookVolume import BookVolume
-from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.metadata.components.enums import MediaType
 
 
@@ -82,8 +81,7 @@ class BookSeries(Book):
         series.volumes = volumes
         return series.json
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def volumes(self) -> List[BookVolume]:
         """
         :return: A list of book volumes for this book series

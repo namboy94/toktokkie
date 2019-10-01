@@ -21,7 +21,6 @@ import os
 import tvdb_api
 from typing import List, Dict, Any, Optional
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.metadata.components.enums import IdType, MediaType
 from toktokkie.metadata.components.TvEpisode import TvEpisode
@@ -94,16 +93,14 @@ class TvSeries(Metadata):
         series.seasons = seasons
         return series.json
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def tvdb_id(self) -> str:
         """
         :return: The TVDB ID of the TV Series
         """
         return self.ids[IdType.TVDB][0]
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def seasons(self) -> List[TvSeason]:
         """
         :return: A list of TV seasons
@@ -140,8 +137,7 @@ class TvSeries(Metadata):
                 return season
         raise KeyError(season_name)
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def excludes(self) -> Dict[IdType, Dict[int, List[int]]]:
         """
         Generates data for episodes to be excluded during renaming etc.
@@ -170,8 +166,7 @@ class TvSeries(Metadata):
 
         return generated
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def season_start_overrides(self) -> Dict[IdType, Dict[int, int]]:
         """
         :return: A dictionary mapping episodes that override a season starting
@@ -194,8 +189,7 @@ class TvSeries(Metadata):
 
         return generated
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def multi_episodes(self) -> Dict[IdType, Dict[int, Dict[int, int]]]:
         """
         :return: A dictionary mapping lists of multi-episodes to id types

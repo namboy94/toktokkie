@@ -21,7 +21,6 @@ import os
 from typing import List, Dict, Any
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.enums import MediaType
-from toktokkie.metadata.helper.wrappers import json_parameter
 from puffotter.prompt import prompt_comma_list
 
 
@@ -62,7 +61,7 @@ class Manga(Metadata):
 
         return series.json
 
-    @property  # type: ignore
+    @property
     def main_path(self) -> str:
         """
         The path to the main manga directory
@@ -70,7 +69,7 @@ class Manga(Metadata):
         """
         return os.path.join(self.directory_path, "Main")
 
-    @property  # type: ignore
+    @property
     def special_path(self) -> str:
         """
         The path to the special manga directory
@@ -78,8 +77,7 @@ class Manga(Metadata):
         """
         return os.path.join(self.directory_path, "Special")
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def special_chapters(self) -> List[str]:
         """
         :return: A list of special chapter identifiers for this series

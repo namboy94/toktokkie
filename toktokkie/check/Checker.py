@@ -18,10 +18,12 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import tvdb_api
 from typing import Dict, Any
 from colorama import Fore, Back, Style
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.renaming.Renamer import Renamer
+from anime_list_apis.api.AnilistApi import AnilistApi
 
 
 class Checker:
@@ -48,7 +50,11 @@ class Checker:
         self.show_warnings = show_warnings
         self.fix_interactively = fix_interactively
         self.config = config
-        self.tvdb = config["tvdb_api"]
+        self.tvdb = config.get("tvdb_api", tvdb_api.Tvdb())
+        self.anilist_user = config.get("anilist_user")
+        self.anilist_api = config.get("anilist_api", AnilistApi())
+        self.anilist_anime_list = config.get("anilist_anime_list", [])
+        self.anilist_manga_list = config.get("anilist_manga_list", [])
 
     def check(self) -> bool:
         """

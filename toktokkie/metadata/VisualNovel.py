@@ -21,7 +21,6 @@ import os
 from typing import Optional, List, Dict, Any
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.helper.wrappers import json_parameter
 from toktokkie.metadata.components.enums import MediaType
 
 
@@ -50,8 +49,7 @@ class VisualNovel(Metadata):
         """
         return {}
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def has_ed(self) -> bool:
         """
         :return: Whether or not the Visual Novel has an ending theme
@@ -67,8 +65,7 @@ class VisualNovel(Metadata):
         """
         self.json["has_ed"] = has_ed
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def has_op(self) -> bool:
         """
         :return: Whether or not the Visual Novel has an opening theme
@@ -84,8 +81,7 @@ class VisualNovel(Metadata):
         """
         self.json["has_op"] = has_op
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def has_cgs(self) -> bool:
         """
         :return: Whether or not the Visual Novel has a CG gallery
@@ -101,8 +97,7 @@ class VisualNovel(Metadata):
         """
         self.json["has_cgs"] = has_cgs
 
-    @property  # type: ignore
-    @json_parameter
+    @property
     def has_ost(self) -> bool:
         """
         :return: Whether or not the Visual Novel has an OST

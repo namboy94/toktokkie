@@ -25,7 +25,7 @@ from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 
-class TestTv(_TestMetadata):
+class TestTvSeries(_TestMetadata):
     """
     Test class for TV metadata
     """
