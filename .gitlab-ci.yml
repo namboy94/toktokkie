@@ -9,6 +9,9 @@ default:
   before_script:
     - echo "$SERVER_ACCESS_KEY" > ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
+    - git clone https://gitlab.namibsun.net/namibsun/python/puffotter -b develop
+    - cd puffotter
+    - python setup.py install  # TODO Remove this once development stabilizes
 
 github_mirror:
   stage: mirror
