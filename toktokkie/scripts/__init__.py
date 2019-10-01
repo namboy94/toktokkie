@@ -27,6 +27,7 @@ from toktokkie.scripts.MangaCreateCommand import MangaCreateCommand
 from toktokkie.scripts.MangaUpdateCommand import MangaUpdateCommand
 from toktokkie.scripts.MetadataGenCommand import MetadataGenCommand
 from toktokkie.scripts.XdccUpdateCommand import XdccUpdateCommand
+from toktokkie.scripts.MetadataSetCommand import MetadataSetCommand
 
 try:
     from toktokkie.scripts.GuiCommand import GuiCommand
@@ -43,7 +44,8 @@ toktokkie_commands = [
     MangaUpdateCommand,
     MangaCreateCommand,
     MetadataGenCommand,
-    XdccUpdateCommand
+    XdccUpdateCommand,
+    MetadataSetCommand
 ]
 """
 A list of commands for the toktokkie script

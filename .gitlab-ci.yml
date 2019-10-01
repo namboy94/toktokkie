@@ -9,9 +9,11 @@ default:
   before_script:
     - echo "$SERVER_ACCESS_KEY" > ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
+    - pip install PyQt5
+    # TODO Remove this once development stabilizes
     - git clone https://gitlab.namibsun.net/namibsun/python/puffotter -b develop
     - cd puffotter
-    - python setup.py install  # TODO Remove this once development stabilizes
+    - python setup.py install
     - cd ..
     - rm -rf puffotter
 

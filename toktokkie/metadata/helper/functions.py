@@ -71,11 +71,11 @@ def get_metadata_class(media_type: Union[str, MediaType]) -> Type[Metadata]:
     if type(media_type) == str:
         media_type = MediaType(media_type)
 
-    return {  # type: ignore
+    return {
         Book.media_type(): Book,
         BookSeries.media_type(): BookSeries,
         TvSeries.media_type(): TvSeries,
         Movie.media_type(): Movie,
         VisualNovel.media_type(): VisualNovel,
         Manga.media_type(): Manga
-    }[media_type]
+    }[media_type]  # type: ignore
