@@ -12,6 +12,8 @@ default:
     - git clone https://gitlab.namibsun.net/namibsun/python/puffotter -b develop
     - cd puffotter
     - python setup.py install  # TODO Remove this once development stabilizes
+    - cd ..
+    - rm -rf puffotter
 
 github_mirror:
   stage: mirror
