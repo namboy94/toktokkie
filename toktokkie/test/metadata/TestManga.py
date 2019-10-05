@@ -94,8 +94,10 @@ class TestManga(_TestMetadata):
         """
         showa = self.get("Shouwa Otome Otogibanashi")
         os.makedirs(showa)
+        os.makedirs(os.path.join(showa, "Special"))
+        create_file(os.path.join(showa, "Special/Chap 5.5.cbz"))
         with mock.patch("builtins.input", side_effect=[
-            "shouwa, romance, sequel", "", "", "106988", "", ""
+            "shouwa, romance, sequel", "", "", "106988", "", "", "5.5"
         ]):
             metadata = Manga.prompt(showa)
             metadata.write()
@@ -110,12 +112,20 @@ class TestManga(_TestMetadata):
         self.assertEqual(metadata.ids[IdType.KITSU], [])
         self.assertEqual(metadata.ids[IdType.MANGADEX], [])
         self.assertEqual(metadata.ids[IdType.ISBN], [])
+        self.assertEqual(metadata.special_chapters, ["5.5"])
 
         for invalid in [IdType.VNDB, IdType.IMDB, IdType.TVDB]:
             self.assertFalse(invalid in metadata.ids)
 
         for tag in ["shouwa", "romance", "sequel"]:
             self.assertTrue(tag in metadata.tags)
+
+        special_file = os.path.join(
+            showa, "Special/Shouwa Otome Otogibanashi - Chapter 5.5.cbz"
+        )
+        self.assertFalse(os.path.isfile(special_file))
+        directory.rename(noconfirm=True)
+        self.assertTrue(os.path.isfile(special_file))
 
     def test_validation(self):
         """

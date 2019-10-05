@@ -50,6 +50,9 @@ class Manga(Metadata):
         json_data["special_chapters"] = []
         series = Manga(directory_path, json_data)
 
+        if not os.path.isdir(series.main_path):
+            os.makedirs(series.main_path)
+
         if os.path.isdir(series.special_path):
             print("Please enter identifiers for special chapters:")
             for _file in sorted(os.listdir(series.special_path)):

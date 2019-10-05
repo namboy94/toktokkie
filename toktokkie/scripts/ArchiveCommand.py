@@ -78,26 +78,34 @@ class ArchiveCommand(Command):
         :param dest: The destination directory
         :return: None
         """
-        for child in os.listdir(source):
-            child_path = os.path.join(source, child)
-            dest_child_path = os.path.join(dest, child)
+        self.logger.info("{} -> {}".format(source, dest))
 
-            if os.path.isfile(child_path):
+        if os.path.basename(source) == ".wine":  # Ignore .wine directories
+            return
 
-                if child_path.endswith(".json"):
-                    shutil.copyfile(child_path, dest_child_path)
-                elif child_path.endswith(".png"):
-                    if self.args.remove_icons:
+        try:
+            for child in os.listdir(source):
+                child_path = os.path.join(source, child)
+                dest_child_path = os.path.join(dest, child)
+
+                if os.path.isfile(child_path):
+
+                    if child_path.endswith(".json"):
+                        shutil.copyfile(child_path, dest_child_path)
+                    elif child_path.endswith(".png"):
+                        if self.args.remove_icons:
+                            with open(dest_child_path, "w") as f:
+                                f.write("")
+                        else:
+                            shutil.copyfile(child_path, dest_child_path)
+                    else:
                         with open(dest_child_path, "w") as f:
                             f.write("")
-                    else:
-                        shutil.copyfile(child_path, dest_child_path)
-                else:
-                    with open(dest_child_path, "w") as f:
-                        f.write("")
 
-            elif os.path.isdir(child_path):
-                if not os.path.isdir(dest_child_path):
-                    os.makedirs(dest_child_path)
+                elif os.path.isdir(child_path):
+                    if not os.path.isdir(dest_child_path):
+                        os.makedirs(dest_child_path)
 
-                self.archive(child_path, dest_child_path)
+                    self.archive(child_path, dest_child_path)
+        except PermissionError:
+            pass

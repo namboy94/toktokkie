@@ -43,6 +43,24 @@ class VisualNovelChecker(Checker):
 
         return valid
 
+    def _check_icons(self) -> bool:
+        """
+        Only checks for a main.png icon file.
+        :return: The result of the check
+        """
+        valid = True
+
+        if not os.path.isdir(self.metadata.icon_directory):
+            valid = self.error("Missing icon directory")
+
+        main_icon = os.path.join(self.metadata.icon_directory, "main.png")
+        if not os.path.isfile(main_icon):
+            valid = self.error("Missing main icon file for {}".format(
+                self.metadata.name
+            ))
+
+        return valid
+
     def _check_gamefiles(self) -> bool:
         """
         Checks if the visual novel has a runscript and game files

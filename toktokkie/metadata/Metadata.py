@@ -19,6 +19,8 @@ LICENSE"""
 
 import os
 import json
+import logging
+import tvdb_api
 from typing import List, Dict, Any, Optional
 from toktokkie.exceptions import InvalidMetadata, MissingMetadata
 from toktokkie.metadata.components.enums import MediaType, IdType
@@ -51,6 +53,7 @@ class Metadata:
         self.directory_path = directory_path
         self.metadata_file = os.path.join(directory_path, ".meta/info.json")
         self.icon_directory = os.path.join(directory_path, ".meta/icons")
+        self.logger = logging.getLogger(self.__class__.__name__)
 
         if json_data is None:
             with open(self.metadata_file, "r") as info:
@@ -301,8 +304,19 @@ class Metadata:
         json_data = {
             "type": cls.media_type().value,
             "tags": prompt_comma_list("Tags: "),
-            "ids": cls.prompt_for_ids()
         }
+
+        defaults = {}  # type: Dict[str, List[str]]
+        if IdType.TVDB in cls.valid_id_types():
+            try:
+                name = os.path.basename(directory_path)
+                probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
+                defaults[IdType.TVDB.value] = [probable_tvdb_id]
+            except (tvdb_api.tvdb_shownotfound, TypeError):
+                pass
+
+        json_data["ids"] = cls.prompt_for_ids(defaults=defaults)
+
         json_data.update(cls._prompt(directory_path, json_data))
         return cls(directory_path, json_data)
 
@@ -402,7 +416,7 @@ class Metadata:
 
                 min_count = 1 if id_type in cls.required_ids() else 0
 
-                if id_type in [IdType.ISBN, IdType.IMDB]:
+                if id_type in [IdType.ISBN, IdType.IMDB, IdType.VNDB]:
                     prompted = prompt_comma_list(
                         "{} IDs: ".format(id_type.value),
                         min_count=min_count,

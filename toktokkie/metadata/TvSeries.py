@@ -18,8 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import tvdb_api
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.metadata.components.enums import IdType, MediaType
@@ -51,23 +50,8 @@ class TvSeries(Metadata):
         :param json_data: Previously generated JSON data
         :return: The generated metadata JSON data
         """
-        name = os.path.basename(directory_path)
-
-        probable_defaults = None  # type: Optional[Dict[str, List[str]]]
-        try:
-            probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
-            probable_defaults = {IdType.TVDB.value: [probable_tvdb_id]}
-        except (tvdb_api.tvdb_shownotfound, TypeError):
-            pass
-
-        series_ids = cls.prompt_for_ids(
-            defaults=probable_defaults
-        )
-        series = cls(directory_path, {
-            "seasons": [],
-            "ids": series_ids,
-            "type": cls.media_type().value
-        })
+        json_data["seasons"] = []
+        series = cls(directory_path, json_data)
 
         seasons = []
         for season_name in sorted(os.listdir(directory_path)):
@@ -77,10 +61,10 @@ class TvSeries(Metadata):
                 continue
 
             print("\n{}:".format(season_name))
-            ids = cls.prompt_for_ids(series_ids)
+            ids = cls.prompt_for_ids(json_data["ids"])
 
             # Remove double entries
-            for id_type, id_value in series_ids.items():
+            for id_type, id_value in json_data["ids"].items():
                 if id_value == ids.get(id_type, None):
                     ids.pop(id_type)
 

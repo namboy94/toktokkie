@@ -35,25 +35,63 @@ class TestVisualNovel(_TestMetadata):
         Tests renaming files associated with the metadata type
         :return: None
         """
-        pass
+        pass  # Currently no renaming functionality implemented
 
     def test_prompt(self):
         """
         Tests generating a new metadata object using user prompts
         :return: None
         """
-        pass
+        evangile = self.get("Princess Evangile")
+        os.makedirs(evangile)
+
+        with mock.patch("builtins.input", side_effect=[
+            "moege, school", "v6710"
+        ]):
+            metadata = VisualNovel.prompt(evangile)
+            metadata.write()
+
+        directory = Directory(evangile)
+
+        self.assertTrue(os.path.isdir(directory.meta_dir))
+        self.assertTrue(os.path.isfile(metadata.metadata_file))
+        self.assertEqual(metadata, directory.metadata)
+        self.assertEqual(metadata.ids[IdType.VNDB], ["v6710"])
+
+        for id_type in IdType:
+            if id_type not in [IdType.VNDB]:
+                self.assertFalse(id_type in metadata.ids)
+
+        for tag in ["school", "moege"]:
+            self.assertTrue(tag in metadata.tags)
 
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly
         :return: None
         """
-        pass
+        valid_data = [
+            {"type": "visual_novel", "ids": {"vndb": ["v6710"]}},
+            {"type": "visual_novel", "ids": {"vndb": "v6710"}}
+        ]
+        invalid_data = [
+            {},
+            {"type": "visual_novel"},
+            {"type": "visual_novel", "ids": {}},
+            {"type": "visual_novel", "ids": {"tvdb": ["6710"]}},
+            {"type": "visual_novel", "ids": {"vndb": [6710]}},
+            {"type": "visual_novel", "ids": {"vndb": 6710}},
+            {"type": "book", "ids": {"vndb": ["v6710"]}}
+        ]
+        fureraba = self.get("fureraba")
+        self.check_validation(valid_data, invalid_data, VisualNovel, fureraba)
 
     def test_checking(self):
         """
         Tests if the checking mechanisms work correctly
         :return: None
         """
-        pass
+        fureraba = Directory(self.get("Fureraba"))
+        self.assertTrue(fureraba.check(False, False, {}))
+        os.remove(os.path.join(fureraba.meta_dir, "icons/main.png"))
+        self.assertFalse(fureraba.check(False, False, {}))
