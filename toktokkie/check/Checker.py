@@ -139,13 +139,14 @@ class Checker:
         print("{}{}{}{}".format(Back.RED, Fore.BLACK, text, Style.RESET_ALL))
         return False
 
-    def warn(self, text: str):
+    def warn(self, text: str) -> bool:
         """
         Prints a black-on-yellow warning message
         :param text: The text to print
-        :return: None
+        :return: True if not showing warnings, else False
         """
         if self.show_warnings:
             print("{}{}{}{}".format(
                 Back.YELLOW, Fore.BLACK, text, Style.RESET_ALL
             ))
+        return not self.show_warnings

@@ -83,7 +83,7 @@ class TestVisualNovel(_TestMetadata):
             {"type": "visual_novel", "ids": {"vndb": 6710}},
             {"type": "book", "ids": {"vndb": ["v6710"]}}
         ]
-        fureraba = self.get("fureraba")
+        fureraba = self.get("Fureraba")
         self.check_validation(valid_data, invalid_data, VisualNovel, fureraba)
 
     def test_checking(self):
