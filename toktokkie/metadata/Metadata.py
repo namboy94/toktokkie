@@ -337,9 +337,20 @@ class Metadata:
         """
         ids = {}  # type: Dict[str, List[str]]
         mal_updated = False
+        id_order = [
+            IdType.TVDB,
+            IdType.IMDB,
+            IdType.ISBN,
+            IdType.VNDB,
+            IdType.MYANIMELIST,
+            IdType.ANILIST,
+            IdType.KITSU,
+            IdType.MANGADEX
+        ]
+
         while len(ids) < 1:
 
-            for id_type in IdType:
+            for id_type in id_order:
                 if id_type not in cls.valid_id_types():
                     continue
 
