@@ -15,20 +15,23 @@ Currently, the following media types are supported:
 - Book Series
 - Movie
 - TV Series
+- Manga
+- Visual Novels
 
 ## Structure
 
 The metadata for a Media directory is stored inside the ```.meta```
 subdirectory in a file called ```info.json```. Additionally, folder icons may
-be stored in ```.meta/icons```.
+be stored in ```.meta/icons```. Depending on the metadata type, additional
+special folder may exist.
 
 ## Generating and modifying metadata
 
-To generate metadata for a media directory, use the
-```toktokkie-metadata-gen``` script.
+To generate metadata for a media directory, run
+```toktokkie metadata-gen <media_type> <directories...>```
 
-To modify the metadata afterwards, you can use the
-```toktokkie-metadata-add``` script.
+Metadata can be modified using a text editor or the ```toktokkie metadata-add```
+utility.
 
 ## Further Information
 
