@@ -27,12 +27,9 @@ from toktokkie.scripts.MangaCreateCommand import MangaCreateCommand
 from toktokkie.scripts.MangaUpdateCommand import MangaUpdateCommand
 from toktokkie.scripts.MetadataGenCommand import MetadataGenCommand
 from toktokkie.scripts.XdccUpdateCommand import XdccUpdateCommand
-from toktokkie.scripts.MetadataSetCommand import MetadataSetCommand
-
-try:
-    from toktokkie.scripts.GuiCommand import GuiCommand
-except ImportError as e:
-    GuiCommand = None  # type: ignore
+from toktokkie.scripts.MetadataAddCommand import MetadataAddCommand
+from toktokkie.scripts.SetMangaCoverCommand import SetMangaCoverCommand
+from toktokkie.scripts.SuperCutCommand import SuperCutCommand
 
 toktokkie_commands = [
     PrintCommand,
@@ -45,11 +42,16 @@ toktokkie_commands = [
     MangaCreateCommand,
     MetadataGenCommand,
     XdccUpdateCommand,
-    MetadataSetCommand
+    MetadataAddCommand,
+    SetMangaCoverCommand,
+    SuperCutCommand
 ]
 """
 A list of commands for the toktokkie script
 """
 
-if GuiCommand is not None:
+try:
+    from toktokkie.scripts.GuiCommand import GuiCommand
     toktokkie_commands.append(GuiCommand)
+except ImportError as e:
+    pass

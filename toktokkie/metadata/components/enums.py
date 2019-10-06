@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from enum import Enum
+from typing import List, Dict
 
 
 class IdType(Enum):
@@ -44,3 +45,65 @@ class MediaType(Enum):
     TV_SERIES = "tv"
     VISUAL_NOVEL = "visual_novel"
     MANGA = "manga"
+
+
+valid_id_types = {
+    MediaType.BOOK: [
+        IdType.ISBN,
+        IdType.ANILIST,
+        IdType.MYANIMELIST,
+        IdType.KITSU
+    ],
+    MediaType.BOOK_SERIES: [
+        IdType.ISBN,
+        IdType.ANILIST,
+        IdType.MYANIMELIST,
+        IdType.KITSU
+    ],
+    MediaType.MOVIE: [
+        IdType.IMDB,
+        IdType.ANILIST,
+        IdType.MYANIMELIST,
+        IdType.KITSU
+    ],
+    MediaType.TV_SERIES: [
+        IdType.TVDB,
+        IdType.ANILIST,
+        IdType.MYANIMELIST,
+        IdType.KITSU
+    ],
+    MediaType.VISUAL_NOVEL: [
+        IdType.VNDB
+    ],
+    MediaType.MANGA: [
+        IdType.ISBN,
+        IdType.ANILIST,
+        IdType.MYANIMELIST,
+        IdType.KITSU,
+        IdType.MANGADEX
+    ]
+}  # type: Dict[MediaType, List[IdType]]
+"""
+Valid ID types for the various Media types
+"""
+
+required_id_types = {
+    MediaType.BOOK: [
+    ],
+    MediaType.BOOK_SERIES: [
+    ],
+    MediaType.MOVIE: [
+        IdType.IMDB
+    ],
+    MediaType.TV_SERIES: [
+        IdType.TVDB
+    ],
+    MediaType.VISUAL_NOVEL: [
+        IdType.VNDB
+    ],
+    MediaType.MANGA: [
+    ]
+}  # type: Dict[MediaType, List[IdType]]
+"""
+Required ID Types for the various Media Types
+"""

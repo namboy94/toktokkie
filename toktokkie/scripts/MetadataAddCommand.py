@@ -19,12 +19,14 @@ LICENSE"""
 
 import argparse
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.components.enums import IdType, MediaType
+from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.Directory import Directory
 
 
-class MetadataSetCommand(Command):
+class MetadataAddCommand(Command):
     """
-    Class that encapsulates behaviour of the metadata-set command
+    Class that encapsulates behaviour of the metadata-add command
     """
 
     @classmethod
@@ -32,7 +34,7 @@ class MetadataSetCommand(Command):
         """
         :return: The command name
         """
-        return "metadata-set"
+        return "metadata-add"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -41,17 +43,17 @@ class MetadataSetCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        cls.add_directories_arg(parser)
+        parser.add_argument("directory",
+                            help="The directory to which to add metadata")
 
-        id_types = [x.value for x in IdType]
+        subparser = parser.add_subparsers(dest="mode")
 
-        subparser = \
-            parser.add_subparsers(required=True, dest="mode")  # type: ignore
+        tv_series_ids = [x.value for x in TvSeries.valid_id_types()]
 
         multi_episode_parser = subparser.add_parser(
             "multi-episode", help="Add a multi-episode to a TV Series"
         )
-        multi_episode_parser.add_argument("id_type", choices=id_types,
+        multi_episode_parser.add_argument("id_type", choices=tv_series_ids,
                                           help="The ID type")
         multi_episode_parser.add_argument("season", type=int,
                                           help="The season of the episode")
@@ -63,7 +65,7 @@ class MetadataSetCommand(Command):
         exclude_parser = subparser.add_parser(
             "exclude", help="Add an excluded episode to a TV Series"
         )
-        exclude_parser.add_argument("id_type", choices=id_types,
+        exclude_parser.add_argument("id_type", choices=tv_series_ids,
                                     help="The ID type")
         exclude_parser.add_argument("season", type=int,
                                     help="The season of the episode")
@@ -75,4 +77,25 @@ class MetadataSetCommand(Command):
         Executes the commands
         :return: None
         """
-        pass
+        directory = Directory(self.args.directory)
+
+        if self.args.mode == "multi-episode":
+            if directory.metadata.media_type() != MediaType.TV_SERIES:
+                print("Not a TV Series Directory")
+                return
+            id_type = IdType(self.args.id_type)
+            season = self.args.season
+            start = self.args.start_episode
+            end = self.args.end_episode
+            directory.metadata.add_multi_episode(id_type, season, start, end)
+
+        elif self.args.mode == "exclude":
+            if directory.metadata.media_type() != MediaType.TV_SERIES:
+                print("Not a TV Series Directory")
+                return
+            id_type = IdType(self.args.id_type)
+            season = self.args.season
+            episode = self.args.episode
+            directory.metadata.add_exclude(id_type, season, episode)
+
+        directory.metadata.write()

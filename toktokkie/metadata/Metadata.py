@@ -23,7 +23,8 @@ import logging
 import tvdb_api
 from typing import List, Dict, Any, Optional
 from toktokkie.exceptions import InvalidMetadata, MissingMetadata
-from toktokkie.metadata.components.enums import MediaType, IdType
+from toktokkie.metadata.components.enums import MediaType, IdType, \
+    valid_id_types, required_id_types
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType
@@ -195,42 +196,7 @@ class Metadata:
         """
         :return: The types of IDs that are valid for this metadata type
         """
-        return {
-            MediaType.MANGA: [
-                IdType.MANGADEX,
-                IdType.ANILIST,
-                IdType.MYANIMELIST,
-                IdType.KITSU,
-                IdType.ISBN
-            ],
-            MediaType.TV_SERIES: [
-                IdType.ANILIST,
-                IdType.KITSU,
-                IdType.MYANIMELIST,
-                IdType.TVDB
-            ],
-            MediaType.MOVIE: [
-                IdType.ANILIST,
-                IdType.KITSU,
-                IdType.MYANIMELIST,
-                IdType.IMDB
-            ],
-            MediaType.BOOK: [
-                IdType.ISBN,
-                IdType.ANILIST,
-                IdType.KITSU,
-                IdType.MYANIMELIST
-            ],
-            MediaType.BOOK_SERIES: [
-                IdType.ISBN,
-                IdType.ANILIST,
-                IdType.KITSU,
-                IdType.MYANIMELIST
-            ],
-            MediaType.VISUAL_NOVEL: [
-                IdType.VNDB
-            ]
-        }[cls.media_type()]
+        return valid_id_types[cls.media_type()]
 
     def validate_json(self):
         """
@@ -369,23 +335,12 @@ class Metadata:
         :param defaults: The default values to use, mapped to id type names
         :return: The generated IDs. At least one ID will be included
         """
-        valid_id_types = cls.valid_id_types()
-
         ids = {}  # type: Dict[str, List[str]]
         mal_updated = False
         while len(ids) < 1:
 
-            for id_type in [
-                IdType.TVDB,
-                IdType.IMDB,
-                IdType.ISBN,
-                IdType.VNDB,
-                IdType.MYANIMELIST,
-                IdType.ANILIST,
-                IdType.KITSU,
-                IdType.MANGADEX
-            ]:
-                if id_type not in valid_id_types:
+            for id_type in IdType:
+                if id_type not in cls.valid_id_types():
                     continue
 
                 default = None  # type: Optional[List[str]]
@@ -454,16 +409,7 @@ class Metadata:
         """
         :return: A list of required IDs for the metadata type
         """
-        idmap = {
-            MediaType.MANGA: [],
-            MediaType.BOOK: [],
-            MediaType.BOOK_SERIES: [],
-            MediaType.VISUAL_NOVEL: [IdType.VNDB],
-            MediaType.MOVIE: [IdType.IMDB],
-            MediaType.TV_SERIES: [IdType.TVDB]
-        }  # type: Dict[MediaType, List[IdType]]
-
-        return idmap[cls.media_type()]
+        return required_id_types[cls.media_type()]
 
     def print_folder_icon_source(self):
         """
