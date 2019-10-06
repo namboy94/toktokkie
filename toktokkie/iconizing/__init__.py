@@ -20,12 +20,13 @@ LICENSE"""
 from typing import Type
 from toktokkie.iconizing.procedures.Procedure import Procedure
 from toktokkie.iconizing.procedures.GnomeProcedure import GnomeProcedure
+from toktokkie.iconizing.procedures.NoopProcedure import NoopProcedure
 from toktokkie.iconizing.Iconizer import Iconizer
 
 procedures = [GnomeProcedure]
 
 
-def default_procedure() -> Type[Procedure] or None:
+def default_procedure() -> Type[Procedure]:
     """
     Checks all available procedures for eligibility
     :return: The eligible procedure or None if none were found
@@ -33,4 +34,4 @@ def default_procedure() -> Type[Procedure] or None:
     for procedure in procedures:
         if procedure.is_applicable():
             return procedure
-    return None
+    return NoopProcedure

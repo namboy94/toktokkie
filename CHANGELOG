@@ -1,3 +1,14 @@
+V 0.18.0:
+  - Redid metadata to be more minimalistic and easier to maintain
+  - Substituted verification for Checkers
+  - Is now more opinionated, removed options for renaming schemes
+  - Added CLI tools for adding multi-episodes and excludes
+  - Implemented toktokkie-supercut tool
+  - Implemented manga, light novel and visual novel support
+  - Renamer now supports renaming titles for series with anilist IDs
+V 0.17.0:
+  - Added verification mechanisms
+  - Added unit tests for metadata and verification
 V 0.16.1:
   - Removed __init__ file in bin
 V 0.16.0:

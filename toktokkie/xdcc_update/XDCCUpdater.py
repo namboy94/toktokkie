@@ -18,146 +18,379 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import sys
-import logging
-from typing import Type, List
-from xdcc_dl.entities.XDCCPack import XDCCPack
-from xdcc_dl.logging.Logger import Logger
+import re
+import json
+from typing import Dict, Optional, Set, Any, Union
 from xdcc_dl.xdcc import download_packs
+from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
+from toktokkie.renaming import Renamer, RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.renaming import Renamer, Agent, Scheme
-from toktokkie.renaming.helper.resolve import resolve_season
-from toktokkie.xdcc_update.UpdateInstructions import UpdateInstructions
-from toktokkie.exceptions import MissingUpdateInstructionsException
+from toktokkie.metadata.components.TvSeason import TvSeason
+from toktokkie.xdcc_update.enums import Resolution
+from toktokkie.exceptions import MissingXDCCInstructions, \
+    InvalidXDCCInstructions
 
 
 class XDCCUpdater:
     """
-    Class that handles XDCC updates
+    Class that handles the configuration and execution of a xdcc-update
     """
 
-    def __init__(self, path: str, metadata: TvSeries,
-                 scheme: Type[Scheme], agent: Type[Agent],
-                 create: bool = False):
+    predefined_patterns = {
+        "horriblesubs": "[HorribleSubs] @{NAME} - @{EPI-2} [@{RES-P}].mkv"
+    }
+    """
+    A collection of predefined patterns
+    """
+
+    def __init__(self, metadata: TvSeries):
         """
-        Initializes the XDCCUpdater
-        :param path: The path to the directory to update
-        :param metadata: The metadata of the directory
-        :param scheme: The naming scheme to use
-        :param agent: The agent to use
-        :param create: If set to True, will prompt user to create new
-                       xdcc-update instructions
+        Initializes the XDCC Updater object
+        :param metadata: The metadata for the series for which to execute
+                         an xdcc-update
         """
-        self.path = path
         self.metadata = metadata
-        self.scheme = scheme
-        self.agent = agent
+        self.xdcc_info_file = os.path.join(
+            metadata.directory_path,
+            ".meta/xdcc-info.json"
+        )
 
-        self.update_instructions_file = \
-            os.path.join(path, ".meta", "xdcc-update.json")
+        if not os.path.isfile(self.xdcc_info_file):
+            raise MissingXDCCInstructions(self.xdcc_info_file)
 
-        if create:
+        with open(self.xdcc_info_file, "r") as xdcc_info:
+            self.xdcc_info = json.load(xdcc_info)  # type: Dict[str, Any]
 
-            if os.path.isfile(self.update_instructions_file):
-                if input("File exists. Overwrite? (y/n)") != "y":
-                    print("Aborted")
-                    sys.exit(1)
+        self._verify_json()
 
-            self.update_instructions = \
-                UpdateInstructions.generate_from_prompts(path)
-            self.update_instructions.write(self.update_instructions_file)
+    @property
+    def season(self) -> TvSeason:
+        """
+        :return: The season to update
+        """
+        season_name = self.xdcc_info["season"]
+        for season in self.metadata.seasons:
+            if season.name == season_name:
+                return season
+        raise InvalidXDCCInstructions("Invalid Season {}".format(season_name))
 
-        elif not os.path.isfile(self.update_instructions_file):
-            raise MissingUpdateInstructionsException()
+    @property
+    def search_name(self) -> str:
+        """
+        :return: The name of the series for searching purposes
+        """
+        return self.xdcc_info["search_name"]
+
+    @property
+    def search_engine(self) -> SearchEngine:
+        """
+        :return: The search engine to use
+        """
+        search_engine = self.xdcc_info["search_engine"]
+        resolved = SearchEngineType.resolve(search_engine)
+        if resolved is None:
+            raise InvalidXDCCInstructions(
+                "Invalid Search Engine {}".format(search_engine)
+            )
+        else:
+            return resolved
+
+    @property
+    def bot(self) -> str:
+        """
+        :return: The bot to use for updating
+        """
+        return self.xdcc_info["bot"]
+
+    @property
+    def resolution(self) -> Resolution:
+        """
+        :return: The resolution in which to update the series
+        """
+        resolution = self.xdcc_info["resolution"]
+        try:
+            return Resolution(resolution)
+        except ValueError:
+            raise InvalidXDCCInstructions(
+                "Invalid resolution {}".format(resolution)
+            )
+
+    @property
+    def p_resolution(self) -> str:
+        """
+        :return: The resolution in P-notation (1080p)
+        """
+        return self.resolution.value
+
+    @property
+    def x_resolution(self) -> str:
+        """
+        :return: The resolution in X-notation (1920x1080)
+        """
+        if self.resolution == Resolution.X1080p:
+            return "1920x1080"
+        elif self.resolution == Resolution.X720p:
+            return "1280x720"
+        else:  # self.resolution == Resolution.X480p
+            return "720x480"
+
+    @property
+    def episode_offset(self) -> int:
+        """
+        :return: The amount of episodes offset from 1 when updating
+        """
+        return int(self.xdcc_info["episode_offset"])
+
+    @property
+    def search_pattern(self) -> str:
+        """
+        :return: The search pattern to use
+        """
+        pattern = self.xdcc_info["search_pattern"]
+
+        if pattern in self.predefined_patterns:
+            return self.predefined_patterns[pattern]
+        else:
+            return pattern
+
+    def _generate_search_term(self, episode: int, regex: bool) -> str:
+        """
+        Generates a search term/search term regex for a specified episode
+        :param episode: The episode for which to generate the search term
+        :param regex: Whether or not to generate a regex.
+        :return: The generated search term/regex
+        """
+
+        pattern = self.search_pattern
+        pattern = pattern.replace("@{NAME}", self.search_name)
+        pattern = pattern.replace("@{RES-P}", self.p_resolution)
+        pattern = pattern.replace("@{RES-X}", self.x_resolution)
+
+        if regex:
+            pattern = pattern.replace("[", "\\[")
+            pattern = pattern.replace("]", "\\]")
+            pattern = pattern.replace("(", "\\(")
+            pattern = pattern.replace(")", "\\)")
+            pattern = pattern.replace("@{HASH}", "[a-zA-Z0-9]+")
+            pattern = pattern.replace(
+                "@{EPI-1}", str(episode).zfill(1) + "(v[0-9]+)?"
+            )
+            pattern = pattern.replace(
+                "@{EPI-2}", str(episode).zfill(2) + "(v[0-9]+)?"
+            )
+            pattern = pattern.replace(
+                "@{EPI-3}", str(episode).zfill(3) + "(v[0-9]+)?"
+            )
 
         else:
-            self.update_instructions = UpdateInstructions.from_json_file(
-                self.update_instructions_file
+            pattern = pattern.replace("@{EPI-1}", str(episode).zfill(1))
+            pattern = pattern.replace("@{EPI-2}", str(episode).zfill(2))
+            pattern = pattern.replace("@{EPI-3}", str(episode).zfill(3))
+            pattern = pattern.replace("[@{HASH}]", "")
+            pattern = pattern.replace("@{HASH}", "")
+
+        return pattern
+
+    # noinspection PyStatementEffect
+    def _verify_json(self):
+        """
+        Makes sure that all JSON properties are present and valid
+        :return: None
+        :raises InvalidXDCCInstructions if the JSON data was invalid
+        """
+        try:
+            self.season
+            self.search_name
+            self.search_engine
+            self.bot
+            self.resolution
+            self.episode_offset
+            self.search_pattern
+        except KeyError as e:
+            raise InvalidXDCCInstructions("Missing key: ".format(str(e)))
+
+    @staticmethod
+    def _input(
+            prompt_text: str,
+            default: Optional[str] = None,
+            choices: Optional[Set[str]] = None,
+            is_int: bool = False
+    ) -> Union[str, int]:
+        """
+        Creates a user prompt
+        :param prompt_text: The text to show the user
+        :param default: An optional default parameter
+        :param choices: An optional set of valid choices
+        :param is_int: If True, will make sure that the response is an integer
+        :return: The user-provided response
+        """
+
+        prompt_string = prompt_text
+        if choices is not None:
+            prompt_string = "{} {}".format(prompt_string, choices)
+        if default is not None:
+            prompt_string = "{} [{}]".format(prompt_string, default)
+        prompt_string = "{}:  ".format(prompt_string)
+
+        while True:
+            resp = input(prompt_string)
+
+            if resp == "":
+                if default is not None:
+                    resp = default
+                else:
+                    continue
+            elif choices is not None and resp not in choices:
+                continue
+            else:
+                pass
+
+            if is_int:
+                try:
+                    return int(resp)
+                except ValueError:
+                    print("Not an Integer")
+            else:
+                return resp
+
+    @classmethod
+    def prompt(cls, metadata: TvSeries):
+        """
+        Creates a new XDCC Update instruction set for a given metadata
+        :param metadata: The metadata for which to generate the instructions
+        :return: The generated XDCCUpdater object
+        """
+
+        hs = SearchEngineType.HORRIBLESUBS.name.lower()
+
+        print(
+            "Generating XDCC Update instructions for {}".format(metadata.name)
+        )
+
+        json_data = {
+            "season": cls._input("Season"),
+            "search_name": cls._input("Search Name", default=metadata.name),
+            "search_engine": cls._input(
+                "Search Engine",
+                default=hs,
+                choices=SearchEngineType.choices()
+            ),
+            "bot": cls._input("Bot", default="CR-HOLLAND|NEW"),
+            "resolution": cls._input(
+                "Resolution",
+                default="1080p",
+                choices={"1080p", "720p", "480p"}
+            ),
+            "episode_offset": cls._input(
+                "Episode Offset", default="0", is_int=True
             )
+        }
+
+        print("-" * 80)
+        print("Valid variables for search patterns:")
+
+        for variable in [
+            "@{NAME}",
+            "@{RES-P}",
+            "@{RES-X}",
+            "@{HASH}",
+            "@{EPI-1}",
+            "@{EPI-2}",
+            "@{EPI-3}"
+        ]:
+            print(variable)
+
+        print("-" * 80)
+        print("Predefined patterns:")
+
+        for pattern in cls.predefined_patterns:
+            print(pattern)
+
+        print("-" * 80)
+        json_data["search_pattern"] = \
+            cls._input("Search Pattern", default="horriblesubs")
+
+        xdcc_info_file = os.path.join(
+            metadata.directory_path,
+            ".meta/xdcc-info.json"
+        )
+        with open(xdcc_info_file, "w") as xdcc_info:
+            xdcc_info.write(json.dumps(
+                json_data,
+                sort_keys=True,
+                indent=4,
+                separators=(",", ": ")
+            ))
 
     def update(self):
         """
-        Starts the XDCC Update procedure
+        Executes the XDCC Update procedure
         :return: None
         """
-        episode_count = self.update_names()
-        packs = self.search(episode_count + 1)
+        print(self.metadata.name)
 
-        # Download
-        Logger.logging_level = logging.INFO
-        download_packs(packs)
+        self._update_episode_names()
 
-        self.update_names()
+        start_episode = 1 + len(os.listdir(self.season.path))
+        start_episode += self.episode_offset
+        packs = []
 
-    def update_names(self) -> int:
-        """
-        Updates the names of the existing episodes and returns the
-        episode number of the next missing episode.
-        :return: The episode number of the next missing episode
-        """
+        episode_count = start_episode
 
-        episode_offset = self.update_instructions.episode_offset.to_json()
-        destination = os.path.join(
-            self.path,
-            self.update_instructions.season_path.to_json()
-        )
-        episode_count = 0
-        renamer = Renamer(self.path, self.metadata, self.scheme, self.agent)
-        for episode in renamer.episodes:
-            if episode.location == destination:
+        while True:
+            search_term = self._generate_search_term(episode_count, False)
+            search_regex = self._generate_search_term(episode_count, True)
+            search_results = self.search_engine.search(search_term)
+
+            search_regex = re.compile(search_regex)
+            search_results = list(filter(
+                lambda x: re.match(search_regex, x.filename)
+                and x.bot == self.bot,
+                search_results
+            ))
+
+            if len(search_results) > 0:
+                pack = search_results[0]
+
+                try:
+                    ext = "." + pack.filename.rsplit(".")[1]
+                except IndexError:
+                    ext = ""
+
+                episode_number = episode_count - self.episode_offset
+                episode_name = "{} - S{}E{} - Episode {}{}".format(
+                    self.metadata.name,
+                    str(self.season.season_number).zfill(2),
+                    str(episode_number).zfill(2),
+                    episode_number,
+                    ext
+                )
+                episode_name = RenameOperation.sanitize(
+                    self.season.path, episode_name
+                )
+
+                pack.set_directory(self.season.path)
+                pack.set_filename(episode_name, True)
+                pack.set_original_filename(
+                    pack.original_filename.replace("'", "_")
+                )  # Fixes filenames
+
+                packs.append(pack)
                 episode_count += 1
-                if episode.current != episode.new:
-                    episode.rename()
 
-        return episode_count + episode_offset
+            else:
+                break
 
-    def search(self, episode_count: int) -> List[XDCCPack]:
+        download_packs(packs)
+        self._update_episode_names()
+
+    def _update_episode_names(self):
         """
-        Conducts a search for the next episode
-        :param episode_count: The episode to look for
-        :return: A list of XDCCPacks to download
+        Renames the episodes in the season directory that's being updated
+        :return: None
         """
-
-        # Get Metadata
-        season_path = self.update_instructions.season_path.to_json()
-        destination = os.path.join(
-            self.path, season_path
-        )
-        series_name = self.metadata.name.to_json()
-        search_name = self.update_instructions.search_name.to_json()
-        resolution = self.update_instructions.resolution
-        search_pattern = self.update_instructions.search_pattern
-        search_engine = self.update_instructions.search_engine
-        preferred_bot = self.update_instructions.preferred_bot.to_json()
-
-        # Search
-        search_term = search_pattern.generate_search_term(
-            search_name, episode_count, resolution
-        )
-        packs = search_engine.search(search_term)
-        packs = list(filter(lambda x: search_pattern.check_search_result(
-            search_name, episode_count, resolution, x.get_filename()
-        ), packs))
-        preferred = list(filter(lambda x: x.get_bot() == preferred_bot, packs))
-
-        if len(preferred) >= 1:
-            pack = preferred[0]
-        elif len(packs) >= 1:
-            pack = packs[0]
-        else:
-            return []  # Premature exit if no packs found
-
-        # Generate episode name
-        season = resolve_season(season_path)
-        episode_name = self.scheme.generate_episode_name(
-            series_name, season, episode_count, "Episode " + str(episode_count)
-        )
-
-        pack.set_directory(destination)
-        pack.set_filename(episode_name, override=True)
-        pack.set_original_filename(
-            pack.original_filename.replace("'", "_")
-        )  # Fixes filenames
-
-        # Recursively check for next episode
-        return [pack] + self.search(episode_count + 1)
+        renamer = Renamer(self.metadata)
+        for operation in renamer.operations:
+            operation_dir = os.path.basename(os.path.dirname(operation.source))
+            if operation_dir == self.season.name:
+                operation.rename()

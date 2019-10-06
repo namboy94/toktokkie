@@ -44,8 +44,16 @@ if __name__ == "__main__":
             "requests",
             "xdcc_dl",
             "colorama",
-            "malscraper"
+            "anime_list_apis",
+            "mutagen",
+            "puffotter",
+            "manga-dl"
         ],
+        extras_require={
+            "gui": ["PyQt5"]
+        },
+        test_suite='nose.collector',
+        tests_require=['nose'],
         include_package_data=True,
         zip_safe=False
     )

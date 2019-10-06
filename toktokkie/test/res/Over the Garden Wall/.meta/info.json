@@ -1,0 +1,31 @@
+{
+    "ids": {
+        "tvdb": [
+            "281643"
+        ]
+    },
+    "seasons": [
+        {
+            "ids": {},
+            "name": "Season 1"
+        }
+    ],
+    "tags": [],
+    "type": "tv",
+    "excludes": {
+        "tvdb": [
+            {
+                "episode": 1,
+                "season": 0
+            },
+            {
+                "episode": 2,
+                "season": 0
+            },
+            {
+                "episode": 3,
+                "season": 0
+            }
+        ]
+    }
+}

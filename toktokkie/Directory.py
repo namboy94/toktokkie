@@ -19,12 +19,14 @@ LICENSE"""
 
 import os
 import sys
-from typing import Type
-from toktokkie.renaming import Renamer, Scheme, Agent
-from toktokkie.iconizing import Iconizer, Procedure
-from toktokkie.metadata import resolve_metadata, Base, TvSeries
-from toktokkie.exceptions import MissingMetadataException
+from typing import Dict, Any
+from toktokkie.renaming.Renamer import Renamer
+from toktokkie.iconizing.Iconizer import Iconizer, Procedure
+from toktokkie.metadata.helper.functions import get_metadata, create_metadata
+from toktokkie.metadata.components.enums import MediaType
+from toktokkie.exceptions import MissingMetadata
 from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
+from toktokkie.check.map import checker_map
 
 
 class Directory:
@@ -33,14 +35,16 @@ class Directory:
     """
 
     def __init__(self, path: str, generate_metadata: bool = False,
-                 metadata_type: any = None):
+                 metadata_type: str = None):
         """
         Initializes the metadata of the directory
         :param path: The directory's path
+        :except MissingMetadataException,
+                InvalidMetadataException,
+                MetadataMismatch
         """
         self.path = path
         self.meta_dir = os.path.join(path, ".meta")
-        self.icon_path = os.path.join(self.meta_dir, "icons")
         self.metadata_file = os.path.join(self.meta_dir, "info.json")
 
         if generate_metadata:
@@ -50,20 +54,28 @@ class Directory:
             self.generate_metadata(metadata_type)
 
         if not os.path.isfile(self.metadata_file):
-            raise MissingMetadataException(self.metadata_file + " missing")
-        self.metadata = resolve_metadata(self.metadata_file)
+            raise MissingMetadata(self.metadata_file + " missing")
 
-        if not os.path.isdir(self.icon_path):
-            os.makedirs(self.icon_path)
+        self.metadata = get_metadata(self.path)
+
+        if not os.path.isdir(self.metadata.icon_directory):
+            os.makedirs(self.metadata.icon_directory)
+
+    def reload(self):
+        """
+        Reloads the metadata from the metadata file
+        :return: None
+        """
+        self.metadata = get_metadata(self.path)
 
     def write_metadata(self):
         """
         Updates the metadata file with the current contents of the metadata
         :return: None
         """
-        self.metadata.write(self.metadata_file)
+        self.metadata.write()
 
-    def generate_metadata(self, metadata_type: Base):
+    def generate_metadata(self, metadata_type: str):
         """
         Prompts the user for metadata information
         :param metadata_type: The metadata type to generate
@@ -78,26 +90,17 @@ class Directory:
                 print("Aborting")
                 sys.exit(0)
 
-        metadata = metadata_type.generate_from_prompts(self.path)  # type: Base
+        metadata = create_metadata(self.path, metadata_type)
+        metadata.write()
 
-        if not os.path.isdir(self.meta_dir):
-            os.makedirs(self.meta_dir)
-        metadata.write(self.metadata_file)
-
-    def rename(self, scheme: Type[Scheme], agent: Type[Agent],
-               noconfirm: bool = False):
+    def rename(self, noconfirm: bool = False):
         """
-        Renames the contained files according to a naming scheme.
-        If the metadata type does not support renaming, this does nothing
-        :param scheme: The naming scheme to use
-        :param agent: The data gathering agent to use
+        Renames the contained files.
         :param noconfirm: Skips the confirmation phase
         :return: None
         """
-        if self.metadata.is_subclass_of(TvSeries):
-            # noinspection PyTypeChecker
-            renamer = Renamer(self.path, self.metadata, scheme, agent)
-            renamer.rename(noconfirm)
+        Renamer(self.metadata).rename(noconfirm)
+        self.path = self.metadata.directory_path
 
     def iconize(self, procedure: Procedure):
         """
@@ -105,18 +108,39 @@ class Directory:
         :param procedure: The iconizing procedure to use
         :return: None
         """
-        iconizer = Iconizer(self.path, self.icon_path, procedure)
+        iconizer = Iconizer(self.path, self.metadata.icon_directory, procedure)
         iconizer.iconize()
 
-    def xdcc_update(self, scheme: Type[Scheme], agent: Type[Agent],
-                    create: bool = False):
+    def check(
+            self,
+            show_warnings: bool,
+            fix_interactively: bool,
+            config: Dict[str, Any]
+    ) -> bool:
+        """
+        Performs a check, making sure that everything in the directory
+        is configured correctly and up-to-date
+        :param show_warnings: Whether or not to show warnings
+        :param fix_interactively: Whether or not to enable interactive fixing
+        :param config: Configuration dictionary for checks
+        :return: The check result
+        """
+        checker_cls = checker_map[self.metadata.media_type()]
+        checker = checker_cls(
+            self.metadata,
+            show_warnings,
+            fix_interactively,
+            config
+        )
+        return checker.check()
+
+    def xdcc_update(self):
         """
         Performs an XDCC Update Action
-        :param scheme: The naming scheme to use
-        :param agent: The naming agent to use
-        :param create: Can be set to create the XDCC Update instructions
         :return: None
         """
-        updater = XDCCUpdater(self.path, self.metadata, scheme, agent, create)
-        if not create:
-            updater.update()
+        if self.metadata.media_type() == MediaType.TV_SERIES:
+            # noinspection PyTypeChecker
+            XDCCUpdater(self.metadata).update()
+        else:
+            print("xdcc-update is only supported for TV series")

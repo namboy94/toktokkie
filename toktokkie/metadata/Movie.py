@@ -17,73 +17,40 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import Dict
-from toktokkie.exceptions import InvalidMetadataException
-from toktokkie.metadata.Base import Base
-from toktokkie.metadata.types.MetaType import MetaType, Str
-from toktokkie.metadata.helper.prompt import prompt_user
-from toktokkie.metadata.types.Resolution import Resolution
-from toktokkie.metadata.types.Language import Language
-from toktokkie.metadata.types.CommaList import LanguageCommaList
+from typing import Dict, Any
+from toktokkie.metadata.Metadata import Metadata
+from toktokkie.metadata.components.enums import MediaType
 
 
-class Movie(Base):
+class Movie(Metadata):
     """
-    Class that models a movie
-    """
-
-    type = Str("movie")
-    """
-    The type of the Metadata
+    Metadata class that model a Movie
     """
 
     @classmethod
-    def generate_dict_from_prompts(cls, directory: str) -> Dict[str, MetaType]:
+    def media_type(cls) -> MediaType:
         """
-        Generates a Metadata dictionary based on user prompts.
-        :param directory: The path to the directory for which to generate
-                          the metadata
-        :return: The generated metadata dictionary
+        :return: The media type of the Metadata class
         """
-        data = super().generate_dict_from_prompts(directory)
-        data["imdb_id"] = prompt_user("IMDB ID (including tt)", Str)
-        data["resolution"] = prompt_user("Resolution", Resolution,
-                                         Resolution(1920, 1080))
-        data["audio_langs"] = prompt_user("Audio Languages", LanguageCommaList,
-                                          LanguageCommaList([Language("eng")]))
-        data["subtitle_langs"] = prompt_user(
-            "Subtitle Languages", LanguageCommaList, LanguageCommaList([])
-        )
-        return data
+        return MediaType.MOVIE
 
-    def to_dict(self) -> dict:
+    @classmethod
+    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
+            -> Dict[str, Any]:
         """
-        Generates a JSON-compatible dictionary representation of the
-        metadata object. Should be extended by child classes
-        :return: The dictionary representation
+        Prompts the user for metadata-type-specific information
+        Should be extended by child classes
+        :param directory_path: The path to the directory for which to generate
+                               the metadata
+        :param json_data: Previously generated JSON data
+        :return: The generated metadata JSON data
         """
-        data = super().to_dict()
-        data["imdb_id"] = self.imdb_id
-        data["resolution"] = self.resolution
-        data["audio_langs"] = self.audio_langs
-        data["subtitle_langs"] = self.subtitle_langs
-        return data
+        return {}
 
-    def __init__(self, json_data: Dict[str, any]):
+    def _validate_json(self):
         """
-        Initializes the Metadata object. If the provided JSON data is incorrect
-        (i.e. missing elements or invalid types), an InvalidMetadata exception
-        will be thrown.
-        :param json_data: The JSON dictionary to use
-                          to generate the metadata object
+        Validates the JSON data to make sure everything has valid values
+        :raises InvalidMetadataException: If any errors were encountered
+        :return: None
         """
-        super().__init__(json_data)
-        try:
-            self.imdb_id = Str.from_json(json_data["imdb_id"])
-            self.resolution = Resolution.from_json(json_data["resolution"])
-            self.audio_langs = \
-                LanguageCommaList.from_json(json_data["audio_langs"])
-            self.subtitle_langs = \
-                LanguageCommaList.from_json(json_data["subtitle_langs"])
-        except KeyError:
-            raise InvalidMetadataException()
+        pass

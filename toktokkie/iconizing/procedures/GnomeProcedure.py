@@ -79,3 +79,6 @@ class GnomeProcedure(Procedure):
                        and gvfs_installed and gvfs_check
             except KeyError:  # pragma: no cover
                 return False
+
+        else:
+            return False
