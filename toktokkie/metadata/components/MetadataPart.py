@@ -53,6 +53,8 @@ class MetadataPart:
         for _, ids in self.ids.items():
             for _id in ids:
                 if not type(_id) == str:
+                    print(type(_id))
+                    print("AAAAAAAAAAAAAAAAAA")
                     raise InvalidMetadata()
 
     @property

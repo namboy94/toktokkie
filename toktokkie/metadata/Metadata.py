@@ -38,7 +38,8 @@ class Metadata:
     def __init__(
             self,
             directory_path: str,
-            json_data: Optional[Dict[str, Any]] = None
+            json_data: Optional[Dict[str, Any]] = None,
+            no_validation: bool = False
     ):
         """
         Inititalizes the metadata object using JSON data
@@ -47,6 +48,7 @@ class Metadata:
         :param json_data: Optional metadata JSON.
                           Will be used instead of info.json metadata
                           if provided
+        :param no_validation: Skips JSON validation if True
         :raises InvalidMetadataException: if the metadata could not be
                                           parsed correctly
         """
@@ -61,7 +63,8 @@ class Metadata:
         else:
             self.json = json_data
 
-        self.validate_json()
+        if not no_validation:
+            self.validate_json()
 
     def __str__(self) -> str:
         """
@@ -309,7 +312,7 @@ class Metadata:
         defaults = {}  # type: Dict[str, List[str]]
         if IdType.TVDB in cls.valid_id_types():
             try:
-                name = os.path.basename(directory_path)
+                name = os.path.basename(os.path.abspath(directory_path))
                 probable_tvdb_id = str(tvdb_api.Tvdb()[name].data["id"])
                 defaults[IdType.TVDB.value] = [probable_tvdb_id]
             except (tvdb_api.tvdb_shownotfound, TypeError):

@@ -18,7 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
+from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.metadata.components.enums import IdType, MediaType
@@ -51,14 +52,28 @@ class TvSeries(Metadata):
         :return: The generated metadata JSON data
         """
         json_data["seasons"] = []
-        series = cls(directory_path, json_data)
+        series = cls(directory_path, json_data, no_validation=True)
 
         seasons = []
-        for season_name in sorted(os.listdir(directory_path)):
 
-            season_path = os.path.join(directory_path, season_name)
-            if season_name.startswith(".") or not os.path.isdir(season_path):
-                continue
+        # Make sure that regular Seasons are prompted first and in order
+        season_folders = []  # type: List[Tuple[str, str]]
+        special_folders = []  # type: List[Tuple[str, str]]
+        unsorted_folders = listdir(directory_path, no_files=True)
+
+        for folder, folder_path in unsorted_folders:
+            if folder.startswith("Season "):
+                try:
+                    int(folder.split("Season ")[1])
+                    season_folders.append((folder, folder_path))
+                except (ValueError, IndexError):
+                    special_folders.append((folder, folder_path))
+            else:
+                special_folders.append((folder, folder_path))
+
+        season_folders.sort(key=lambda x: int(x[0].split("Season ")[1]))
+
+        for season_name, season_path in season_folders + special_folders:
 
             print("\n{}:".format(season_name))
             ids = cls.prompt_for_ids(json_data["ids"])
@@ -74,6 +89,7 @@ class TvSeries(Metadata):
             }))
 
         series.seasons = seasons
+        series.validate_json()
         return series.json
 
     @property
@@ -256,6 +272,12 @@ class TvSeries(Metadata):
         """
         self._assert_true("seasons" in self.json)
         self._assert_true(len(self.seasons) == len(self.json["seasons"]))
+
+        foldercount = len(listdir(self.directory_path, no_files=True))
+        print(foldercount)
+        print(self.seasons)
+        self._assert_true(len(self.seasons) == foldercount)
+
         self._assert_true(
             len(self.excludes) ==
             len(self.json.get("excludes", []))
