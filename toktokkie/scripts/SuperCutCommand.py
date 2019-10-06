@@ -248,7 +248,8 @@ class SuperCutCommand(Command):
     def adjust_chapter_names(supercut_result: str, chapters: List[str]):
         """
         Changes the chapter names of a file to a given list of chapter names
-        :param supercut_result: The file of which the chapters should be renamed
+        :param supercut_result: The file of which the chapters should be
+                                renamed
         :param chapters: The chapter names
         :return: None
         """
