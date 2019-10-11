@@ -274,8 +274,6 @@ class TvSeries(Metadata):
         self._assert_true(len(self.seasons) == len(self.json["seasons"]))
 
         foldercount = len(listdir(self.directory_path, no_files=True))
-        print(foldercount)
-        print(self.seasons)
         self._assert_true(len(self.seasons) == foldercount)
 
         self._assert_true(

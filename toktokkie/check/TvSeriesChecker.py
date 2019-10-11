@@ -271,8 +271,6 @@ class TvSeriesChecker(Checker):
                 valid = self.error("No anilist ID for {}".format(season.name))
 
                 # Fetch IDs based on myanimelist IDs
-                print(mal_ids)
-                print(self.fix_interactively)
                 if mal_ids is not None and self.fix_interactively:
                     anilist_ids = []
                     for mal_id in mal_ids:

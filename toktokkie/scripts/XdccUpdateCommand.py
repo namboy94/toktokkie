@@ -65,7 +65,8 @@ class XdccUpdateCommand(Command):
                     set_logging_level(
                         self.args.quiet,
                         self.args.verbose,
-                        self.args.debug
+                        self.args.debug,
+                        False
                     )
                     set_throttle_value(self.args.throttle)
                     directory.xdcc_update()
