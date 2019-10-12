@@ -270,15 +270,19 @@ class TvSeries(Metadata):
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        self._assert_true("seasons" in self.json)
-        self._assert_true(len(self.seasons) == len(self.json["seasons"]))
+        self._assert_true("seasons" in self.json, "No data about seasons")
+        self._assert_true(
+            len(self.seasons) == len(self.json["seasons"]),
+            "Invalid amount of seasons"
+        )
 
         foldercount = len(listdir(self.directory_path, no_files=True))
         self._assert_true(len(self.seasons) == foldercount)
 
         self._assert_true(
             len(self.excludes) ==
-            len(self.json.get("excludes", []))
+            len(self.json.get("excludes", [])),
+            "Invalid amount of excludes"
         )
         self._assert_true(
             len(self.season_start_overrides) ==

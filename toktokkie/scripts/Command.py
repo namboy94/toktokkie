@@ -88,8 +88,10 @@ class Command:
                 directories.append(directory)
             except MissingMetadata:
                 self.logger.warning("{} has no metadata file.".format(path))
-            except InvalidMetadata:
-                self.logger.warning("{}'s metadata is invalid.".format(path))
+            except InvalidMetadata as e:
+                self.logger.warning("{}'s metadata is invalid. ({})".format(
+                    path, e
+                ))
         return directories
 
     @staticmethod

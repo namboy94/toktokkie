@@ -205,10 +205,13 @@ class Metadata:
         :return: None
         """
         try:
-            self._assert_true(os.path.isdir(self.directory_path))
+            self._assert_true(
+                os.path.isdir(self.directory_path),
+                "Directory path does not exist"
+            )
             for tag in self.tags:
-                self._assert_true(type(tag) == str)
-            self._assert_true("ids" in self.json)
+                self._assert_true(type(tag) == str, "Tag isn't a string")
+            self._assert_true("ids" in self.json, "No IDs in metadata")
 
             active_ids = self.ids
             for id_type in IdType:
@@ -218,19 +221,31 @@ class Metadata:
 
             for _, ids in self.ids.items():
                 for _id in ids:
-                    self._assert_true(type(_id) == str)
+                    self._assert_true(type(_id) == str, "ID is not string")
 
             for id_type in self.required_ids():
-                self._assert_true(id_type.value in self.json["ids"])
+                self._assert_true(
+                    id_type.value in self.json["ids"],
+                    "Required ID {} missing".format(id_type.value)
+                )
             for id_type in self.ids:
-                self._assert_true(id_type in self.valid_id_types())
+                self._assert_true(
+                    id_type in self.valid_id_types(),
+                    "Invalid ID type {}".format(id_type.value)
+                )
 
-            self._assert_true(len(active_ids) == len(self.json["ids"]))
-            self._assert_true(len(active_ids) > 0)
-            self._assert_true(self.media_type().value == self.json["type"])
+            self._assert_true(
+                len(active_ids) == len(self.json["ids"]),
+                "ID amount invalid"
+            )
+            self._assert_true(len(active_ids) > 0, "No IDs")
+            self._assert_true(
+                self.media_type().value == self.json["type"],
+                "Invalid Media Type"
+            )
             self._validate_json()
         except (ValueError, TypeError, KeyError):
-            raise InvalidMetadata()
+            raise InvalidMetadata("Unknown Error in Metadata")
 
     def _validate_json(self):
         """
@@ -390,7 +405,7 @@ class Metadata:
                         "{} IDs: ".format(id_type.value),
                         min_count=min_count,
                         default=default,
-                        primitive_type=str
+                        primitive_type=lambda x: str(x)
                     )
                 else:
                     prompted = prompt_comma_list(
@@ -463,12 +478,14 @@ class Metadata:
         return urls
 
     @staticmethod
-    def _assert_true(condition: bool):
+    def _assert_true(condition: bool, fail_message: str = "Unknown Error"):
         """
         Makes sure a statement is true by raising an exception if it's not
         :param condition: The condition to check
+        :param fail_message: Message displayed when False, should be indicative
+                             of the error
         :raises InvalidMetadataException: If the condition was False
         :return: Nine
         """
         if not condition:
-            raise InvalidMetadata()
+            raise InvalidMetadata(fail_message)
