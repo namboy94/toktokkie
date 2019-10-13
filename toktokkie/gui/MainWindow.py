@@ -20,6 +20,7 @@ LICENSE"""
 import os
 import json
 import time
+import logging
 from threading import Thread
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTreeWidgetItem, QWidget
@@ -42,6 +43,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         Initializes the main window
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         start = time.time()
         super().__init__(None)
         self.setupUi(self)
@@ -69,7 +72,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for _, widget in self.media_widgets.items():
             self.widget_stack.addWidget(widget)
         end = time.time()
-        print("Startup Time: {}".format(end-start))
+        self.logger.info("Startup Time: {}".format(end-start))
 
     def reload(self):
         """
@@ -151,7 +154,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for media_type in self.media:
             self.media[media_type].sort(key=lambda x: x.metadata.name)
         end = time.time()
-        print("Loaded directories in {}".format(end - start))
+        self.logger.info("Loaded directories in {}s".format(end - start))
 
     def _display_directories_in_tree(self):
         """

@@ -60,4 +60,4 @@ class SetMangaCoverCommand(Command):
                 if not os.path.isfile(target):
                     Popen(["zip", "-j", target, cover]).wait()
             else:
-                print("No cover for {}".format(directory.path))
+                self.logger.warning("No cover for {}".format(directory.path))

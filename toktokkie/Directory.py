@@ -19,7 +19,9 @@ LICENSE"""
 
 import os
 import sys
+import logging
 from typing import Dict, Any
+from puffotter.prompt import yn_prompt
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
 from toktokkie.metadata.helper.functions import get_metadata, create_metadata
@@ -43,6 +45,8 @@ class Directory:
                 InvalidMetadataException,
                 MetadataMismatch
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         self.path = path
         self.meta_dir = os.path.join(path, ".meta")
         self.metadata_file = os.path.join(self.meta_dir, "info.json")
@@ -83,11 +87,11 @@ class Directory:
         """
 
         if os.path.isfile(self.metadata_file):
-            prompt = input("Metadata File already exists. "
-                           "Continuing will delete the previous data. "
-                           "Continue? (y/n)")
-            if prompt != "y":
-                print("Aborting")
+            prompt = yn_prompt("Metadata File already exists. "
+                               "Continuing will delete the previous data. "
+                               "Continue?")
+            if not prompt:
+                self.logger.warning("Aborting")
                 sys.exit(0)
 
         metadata = create_metadata(self.path, metadata_type)
@@ -145,4 +149,4 @@ class Directory:
             # noinspection PyTypeChecker
             XDCCUpdater(self.metadata, throttle, timeout).update()
         else:
-            print("xdcc-update is only supported for TV series")
+            self.logger.warning("xdcc-update is only supported for TV series")

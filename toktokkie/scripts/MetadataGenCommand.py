@@ -57,7 +57,9 @@ class MetadataGenCommand(Command):
         for directory in self.args.directories:
 
             if not os.path.isdir(directory):
-                print("{} is not a directory, skipping.".format(directory))
+                self.logger.warning(
+                    "{} is not a directory, skipping.".format(directory)
+                )
                 continue
 
             if directory.endswith("/"):

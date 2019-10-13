@@ -53,10 +53,11 @@ class Metadata:
         :raises InvalidMetadataException: if the metadata could not be
                                           parsed correctly
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         self.directory_path = directory_path
         self.metadata_file = os.path.join(directory_path, ".meta/info.json")
         self.icon_directory = os.path.join(directory_path, ".meta/icons")
-        self.logger = logging.getLogger(self.__class__.__name__)
 
         if json_data is None:
             with open(self.metadata_file, "r") as info:

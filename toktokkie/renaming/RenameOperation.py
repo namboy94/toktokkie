@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import logging
 from colorama import Fore, Style
 from puffotter.os import replace_illegal_ntfs_chars
 
@@ -33,6 +34,7 @@ class RenameOperation:
         :param source_path: The currently existing path to the file/directory
         :param new_name: The new name of the file/directory
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.parent = os.path.dirname(source_path)
         self.source = source_path
         sanitized = self.sanitize(self.parent, new_name)
@@ -47,9 +49,11 @@ class RenameOperation:
             return
 
         while os.path.exists(self.dest):
-            print("{}Destination file '{}' already exists!{}".format(
-                Fore.LIGHTRED_EX, self.dest, Style.RESET_ALL
-            ))
+            self.logger.warning(
+                "{}Destination file '{}' already exists!{}".format(
+                    Fore.LIGHTRED_EX, self.dest, Style.RESET_ALL
+                )
+            )
             name, ext = self.dest.rsplit(".", 1)
             name += "_"
             self.dest = "{}.{}".format(name, ext)

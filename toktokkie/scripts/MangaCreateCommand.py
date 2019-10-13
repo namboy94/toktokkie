@@ -23,6 +23,7 @@ import requests
 from toktokkie.Directory import Directory
 from puffotter.graphql import GraphQlClient
 from puffotter.os import makedirs
+from puffotter.prompt import prompt
 from subprocess import Popen
 from toktokkie.metadata.Manga import Manga
 from toktokkie.metadata.components.enums import IdType
@@ -124,11 +125,11 @@ class MangaCreateCommand(Command):
             if mangadex_id is None:
                 anilist_url = "https://anilist.co/manga/" + str(anilist_id)
                 mangadex_search = "https://mangadex.org/quick_search/" + title
-                print(title)
-                print(anilist_url)
+                print("Title:" + title)
+                print("Anilist URL:" + anilist_url)
                 Popen(["firefox", mangadex_search])
 
-                mangadex_id = input("Mangadex ID/URL: ")
+                mangadex_id = prompt("Mangadex ID/URL: ")
                 if "https://mangadex.org/title/" in mangadex_id:
                     mangadex_id = mangadex_id \
                         .split("https://mangadex.org/title/")[1] \

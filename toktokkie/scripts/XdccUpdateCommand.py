@@ -68,8 +68,8 @@ class XdccUpdateCommand(Command):
                     )
 
             except MissingXDCCInstructions:
-                print("No XDCC update instructions for {}"
-                      .format(directory.path))
+                self.logger.warning("No XDCC update instructions for {}"
+                                    .format(directory.path))
             except InvalidXDCCInstructions:
-                print("Invalid XDCC update instructions for {}"
-                      .format(directory.path))
+                self.logger.warning("Invalid XDCC update instructions for {}"
+                                    .format(directory.path))

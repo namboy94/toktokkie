@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import logging
 import tvdb_api
 from typing import Dict, Any
 from colorama import Fore, Back, Style
@@ -46,6 +47,8 @@ class Checker:
                                   interactively fix some errors
         :param config: A dictionary containing configuration options
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         self.metadata = metadata
         self.show_warnings = show_warnings
         self.fix_interactively = fix_interactively
@@ -111,12 +114,12 @@ class Checker:
         for operation in renamer.operations:
             if operation.source != operation.dest:
                 valid = self.error("File Mismatch:")
-                print("{}{}{}".format(
+                self.logger.warning("{}{}{}".format(
                     Fore.LIGHTGREEN_EX,
                     os.path.basename(operation.source),
                     Style.RESET_ALL
                 ))
-                print("{}{}{}".format(
+                self.logger.warning("{}{}{}".format(
                     Fore.LIGHTCYAN_EX,
                     os.path.basename(operation.dest),
                     Style.RESET_ALL
@@ -136,7 +139,9 @@ class Checker:
         :param text: The text to print
         :return: False
         """
-        print("{}{}{}{}".format(Back.RED, Fore.BLACK, text, Style.RESET_ALL))
+        self.logger.warning(
+            "{}{}{}{}".format(Back.RED, Fore.BLACK, text, Style.RESET_ALL)
+        )
         return False
 
     def warn(self, text: str) -> bool:
@@ -146,7 +151,7 @@ class Checker:
         :return: True if not showing warnings, else False
         """
         if self.show_warnings:
-            print("{}{}{}{}".format(
+            self.logger.warning("{}{}{}{}".format(
                 Back.YELLOW, Fore.BLACK, text, Style.RESET_ALL
             ))
         return not self.show_warnings

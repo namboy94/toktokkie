@@ -318,7 +318,9 @@ class TvSeries(Metadata):
             try:
                 season_metadata = self.get_season(season_name)
             except KeyError:
-                print("No Metadata found for {}".format(season_name))
+                self.logger.warning(
+                    "No Metadata found for {}".format(season_name)
+                )
                 continue
             tvdb_id = season_metadata.tvdb_id
 

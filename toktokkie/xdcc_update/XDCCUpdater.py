@@ -20,9 +20,11 @@ LICENSE"""
 import os
 import re
 import json
-from typing import Dict, Optional, Set, Any, Union
+import logging
+from typing import Dict, Any
 from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
+from puffotter.prompt import prompt
 from toktokkie.renaming import Renamer, RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.TvSeason import TvSeason
@@ -56,6 +58,8 @@ class XDCCUpdater:
         :param throttle: The throttle value
         :param timeout: The timeout value
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         self.metadata = metadata
         self.throttle = throttle
         self.timeout = timeout
@@ -219,50 +223,6 @@ class XDCCUpdater:
         except KeyError as e:
             raise InvalidXDCCInstructions("Missing key: ".format(str(e)))
 
-    @staticmethod
-    def _input(
-            prompt_text: str,
-            default: Optional[str] = None,
-            choices: Optional[Set[str]] = None,
-            is_int: bool = False
-    ) -> Union[str, int]:
-        """
-        Creates a user prompt
-        :param prompt_text: The text to show the user
-        :param default: An optional default parameter
-        :param choices: An optional set of valid choices
-        :param is_int: If True, will make sure that the response is an integer
-        :return: The user-provided response
-        """
-
-        prompt_string = prompt_text
-        if choices is not None:
-            prompt_string = "{} {}".format(prompt_string, choices)
-        if default is not None:
-            prompt_string = "{} [{}]".format(prompt_string, default)
-        prompt_string = "{}:  ".format(prompt_string)
-
-        while True:
-            resp = input(prompt_string)
-
-            if resp == "":
-                if default is not None:
-                    resp = default
-                else:
-                    continue
-            elif choices is not None and resp not in choices:
-                continue
-            else:
-                pass
-
-            if is_int:
-                try:
-                    return int(resp)
-                except ValueError:
-                    print("Not an Integer")
-            else:
-                return resp
-
     @classmethod
     def prompt(cls, metadata: TvSeries):
         """
@@ -278,21 +238,21 @@ class XDCCUpdater:
         )
 
         json_data = {
-            "season": cls._input("Season"),
-            "search_name": cls._input("Search Name", default=metadata.name),
-            "search_engine": cls._input(
+            "season": prompt("Season"),
+            "search_name": prompt("Search Name", default=metadata.name),
+            "search_engine": prompt(
                 "Search Engine",
                 default=hs,
                 choices=SearchEngineType.choices()
             ),
-            "bot": cls._input("Bot", default="CR-HOLLAND|NEW"),
-            "resolution": cls._input(
+            "bot": prompt("Bot", default="CR-HOLLAND|NEW"),
+            "resolution": prompt(
                 "Resolution",
                 default="1080p",
                 choices={"1080p", "720p", "480p"}
             ),
-            "episode_offset": cls._input(
-                "Episode Offset", default="0", is_int=True
+            "episode_offset": prompt(
+                "Episode Offset", default="0", _type=int
             )
         }
 
@@ -318,7 +278,7 @@ class XDCCUpdater:
 
         print("-" * 80)
         json_data["search_pattern"] = \
-            cls._input("Search Pattern", default="horriblesubs")
+            prompt("Search Pattern", default="horriblesubs")
 
         xdcc_info_file = os.path.join(
             metadata.directory_path,
@@ -337,7 +297,7 @@ class XDCCUpdater:
         Executes the XDCC Update procedure
         :return: None
         """
-        print(self.metadata.name)
+        print("Updating {}:".format(self.metadata.name))
 
         self._update_episode_names()
 

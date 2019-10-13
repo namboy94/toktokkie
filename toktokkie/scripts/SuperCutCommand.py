@@ -23,6 +23,7 @@ import argparse
 from typing import List, Dict
 from datetime import datetime
 from subprocess import Popen, check_output
+from puffotter.prompt import yn_prompt
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.metadata.components.enums import MediaType
@@ -62,7 +63,9 @@ class SuperCutCommand(Command):
         """
         for command in ["ffmpeg", "mkvmerge", "mkvextract", "mkvpropedit"]:
             if not self.is_installed(command):
-                print("{} is not installed. Can not continue.".format(command))
+                self.logger.warning(
+                    "{} is not installed. Can not continue.".format(command)
+                )
                 sys.exit(1)
 
         directory = Directory(self.args.directory)
@@ -70,10 +73,11 @@ class SuperCutCommand(Command):
         supercut_file = os.path.join(supercut_dir, "supercut.txt")
 
         if directory.metadata.media_type() != MediaType.TV_SERIES:
-            print("Only TV Series support supercut instructions")
+            self.logger.warning("Only TV Series support supercut instructions")
         elif not self.args.create and not os.path.isfile(supercut_file):
-            print("Couldn't find supercut instructions. Run with --create "
-                  "to generate an instruction file")
+            self.logger.warning("Couldn't find supercut instructions. "
+                                "Run with --create to generate an instruction "
+                                "file")
         else:
             if self.args.create:
 
@@ -81,15 +85,11 @@ class SuperCutCommand(Command):
                     os.makedirs(supercut_dir)
 
                 if os.path.isfile(supercut_file):
-
-                    while True:
-                        resp = input("Instructions exist. "
+                    resp = yn_prompt("Instructions exist. "
                                      "Do you want to overwrite the "
-                                     "instructions file? (y|n)").lower()
-                        if resp in ["y", "n"]:
-                            break
+                                     "instructions file?")
 
-                    if resp == "y":
+                    if resp:
                         self.generate_instructions(directory)
                 else:
                     self.generate_instructions(directory)
@@ -149,9 +149,11 @@ class SuperCutCommand(Command):
         supercut_result = self.merge_parts(supercut_dir, files)
         self.adjust_chapter_names(supercut_result, chapters)
 
-    @staticmethod
-    def read_supercut_instructions(metadata: TvSeries, supercut_file: str) \
-            -> List[Dict[str, str]]:
+    def read_supercut_instructions(
+            self,
+            metadata:
+            TvSeries, supercut_file: str
+    ) -> List[Dict[str, str]]:
         """
         Reads the supercut instructions file and generates an easily
         processable configuration list
@@ -180,7 +182,7 @@ class SuperCutCommand(Command):
             elif episode_file is None:
                 raise ValueError("Instructions Syntax Error")
             elif not episode_file.endswith(".mkv"):
-                print("WARNING: ONLY MKV FILES ARE SUPPORTED")
+                self.logger.warning("ONLY MKV FILES ARE SUPPORTED")
             else:
                 part_count += 1
                 config.append({

@@ -61,4 +61,6 @@ class IconizeCommand(Command):
             try:
                 directory.iconize(procedure)
             except ValueError:
-                print("Iconizing of " + directory.path + "failed")
+                self.logger.warning(
+                    "Iconizing of " + directory.path + "failed"
+                )

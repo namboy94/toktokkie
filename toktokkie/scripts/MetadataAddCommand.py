@@ -81,7 +81,7 @@ class MetadataAddCommand(Command):
 
         if self.args.mode == "multi-episode":
             if directory.metadata.media_type() != MediaType.TV_SERIES:
-                print("Not a TV Series Directory")
+                self.logger.warning("Not a TV Series Directory")
                 return
             id_type = IdType(self.args.id_type)
             season = self.args.season
@@ -91,7 +91,7 @@ class MetadataAddCommand(Command):
 
         elif self.args.mode == "exclude":
             if directory.metadata.media_type() != MediaType.TV_SERIES:
-                print("Not a TV Series Directory")
+                self.logger.warning("Not a TV Series Directory")
                 return
             id_type = IdType(self.args.id_type)
             season = self.args.season

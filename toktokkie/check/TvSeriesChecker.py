@@ -27,6 +27,7 @@ from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.components.enums import IdType
+from puffotter.prompt import yn_prompt
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType
 from anime_list_apis.models.attributes.MediaType import MediaType
@@ -281,13 +282,13 @@ class TvSeriesChecker(Checker):
                         if anilist_id is not None:
                             anilist_ids.append(str(anilist_id))
 
-                    resp = input(
-                        "{}Set anilist IDs to {}? (y|n){}".format(
+                    resp = yn_prompt(
+                        "{}Set anilist IDs to {}?{}".format(
                             Fore.LIGHTGREEN_EX, anilist_ids, Style.RESET_ALL
                         )
-                    ).lower().strip()
+                    )
 
-                    if resp == "y":
+                    if resp:
                         season_ids = season.ids
                         season_ids[IdType.ANILIST] = anilist_ids
                         season.ids = season_ids

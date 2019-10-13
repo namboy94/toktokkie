@@ -18,11 +18,12 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import logging
 import tvdb_api
 from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 from typing import List, Optional
-from puffotter.os import listdir, replace_illegal_ntfs_chars
+from puffotter.os import listdir, replace_illegal_ntfs_chars, get_ext
 from puffotter.prompt import yn_prompt
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.TvSeries import TvSeries
@@ -46,6 +47,7 @@ class Renamer:
         is encountered at any point during the initialization process
         :param metadata: The metadata to use for information
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.metadata = metadata
         self.operations = self._generate_operations()
 
@@ -98,19 +100,17 @@ class Renamer:
                 self.operations = self._generate_operations()
 
         if len(self.get_active_operations()) == 0:
-            print("Files already named correctly, skipping.")
+            self.logger.info("Files already named correctly, skipping.")
             return
 
         if not noconfirm:
             for operation in self.operations:
                 print(operation)
 
-            prompt = input("Proceed with renaming? (Y/N)\n")
-            while prompt.lower() not in ["y", "n"]:
-                prompt = input("(Y/N)")
+            prompt = yn_prompt("Proceed with renaming?")
 
-            if prompt.lower() == "n":
-                print("Renaming aborted.")
+            if not prompt:
+                self.logger.warning("Renaming aborted.")
                 return
 
         for operation in self.operations:
@@ -168,7 +168,7 @@ class Renamer:
         :return: The list of rename operations
         """
         book_file = self._get_children(no_dirs=True)[0]
-        dest = "{}.{}".format(self.metadata.name, self.get_ext(book_file))
+        dest = "{}.{}".format(self.metadata.name, get_ext(book_file))
         return [RenameOperation(
             os.path.join(self.path, book_file), dest
         )]
@@ -201,8 +201,10 @@ class Renamer:
         special_content = listdir(metadata.special_path, no_dirs=True)
 
         if len(special_content) != len(metadata.special_chapters):
-            print("Invalid amount of special chapters!!! {} != {}".format(
-                len(special_content), len(metadata.special_chapters))
+            self.logger.warning(
+                "Invalid amount of special chapters!!! {} != {}".format(
+                    len(special_content), len(metadata.special_chapters)
+                )
             )
             return operations
         else:
@@ -266,7 +268,7 @@ class Renamer:
         :return: The list of rename operations
         """
         movie_file = self._get_children(no_dirs=True)[0]
-        dest = "{}.{}".format(self.metadata.name, self.get_ext(movie_file))
+        dest = "{}.{}".format(self.metadata.name, get_ext(movie_file))
         return [RenameOperation(
             os.path.join(self.path, movie_file), dest
         )]
@@ -355,7 +357,7 @@ class Renamer:
         :param multi_end: Can be provided to create a multi-episode range
         :return: The generated episode name
         """
-        ext = Renamer.get_ext(original_file)
+        ext = get_ext(original_file)
         if ext is not None:
             ext = "." + ext
         else:
@@ -417,18 +419,6 @@ class Renamer:
                 tvdb_shownotfound, ConnectionError, KeyError) as e:
             # If not found, or other error, just return generic name
             if str(e) == "cache_location":  # pragma: no cover
-                print("TheTVDB.com is down!")
+                logging.getLogger(__name__).warning("TheTVDB.com is down!")
 
             return "Episode " + str(episode_number)
-
-    @staticmethod
-    def get_ext(filename: str) -> Optional[str]:
-        """
-        Gets the file extension of a file
-        :param filename: The filename for which to get the file extension
-        :return: The file extension or None if the file has no extension
-        """
-        try:
-            return filename.rsplit(".", 1)[1]
-        except IndexError:
-            return None

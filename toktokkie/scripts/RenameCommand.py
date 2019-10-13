@@ -53,4 +53,4 @@ class RenameCommand(Command):
             try:
                 directory.rename(self.args.noconfirm)
             except ValueError:
-                print("Renaming of " + directory.path + "failed")
+                self.logger.warning("Renaming of " + directory.path + "failed")
