@@ -18,7 +18,6 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from xdcc_dl.helper import set_logging_level, set_throttle_value
 from toktokkie.scripts.Command import Command
 from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
 from toktokkie.exceptions import MissingXDCCInstructions, \
@@ -45,12 +44,14 @@ class XdccUpdateCommand(Command):
         :return: None
         """
         cls.add_directories_arg(parser)
-        parser.add_argument("-t", "--throttle",
-                            help="Limits the download speed of xdcc-dl. "
-                                 "Append K,M or G for more convenient units")
         parser.add_argument("--create", action="store_true",
                             help="If this flag is set, "
                                  "will generate new xdcc update instructions")
+        parser.add_argument("-t", "--throttle", default=-1,
+                            help="Limits the download speed of xdcc-dl. "
+                                 "Append K,M or G for more convenient units")
+        parser.add_argument("--timeout", default=120, type=int,
+                            help="Sets a timeout for starting the download")
 
     def execute(self):
         """
@@ -62,14 +63,9 @@ class XdccUpdateCommand(Command):
                 if self.args.create:
                     XDCCUpdater.prompt(directory.metadata)
                 else:
-                    set_logging_level(
-                        self.args.quiet,
-                        self.args.verbose,
-                        self.args.debug,
-                        False
+                    directory.xdcc_update(
+                        self.args.throttle, self.args.timeout
                     )
-                    set_throttle_value(self.args.throttle)
-                    directory.xdcc_update()
 
             except MissingXDCCInstructions:
                 print("No XDCC update instructions for {}"

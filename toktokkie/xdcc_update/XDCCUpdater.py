@@ -43,13 +43,23 @@ class XDCCUpdater:
     A collection of predefined patterns
     """
 
-    def __init__(self, metadata: TvSeries):
+    def __init__(
+            self,
+            metadata: TvSeries,
+            throttle: int = -1,
+            timeout: int = 120
+    ):
         """
         Initializes the XDCC Updater object
         :param metadata: The metadata for the series for which to execute
                          an xdcc-update
+        :param throttle: The throttle value
+        :param timeout: The timeout value
         """
         self.metadata = metadata
+        self.throttle = throttle
+        self.timeout = timeout
+
         self.xdcc_info_file = os.path.join(
             metadata.directory_path,
             ".meta/xdcc-info.json"
@@ -381,7 +391,7 @@ class XDCCUpdater:
             else:
                 break
 
-        download_packs(packs)
+        download_packs(packs, timeout=self.timeout, throttle=self.throttle)
         self._update_episode_names()
 
     def _update_episode_names(self):

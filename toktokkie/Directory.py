@@ -134,13 +134,15 @@ class Directory:
         )
         return checker.check()
 
-    def xdcc_update(self):
+    def xdcc_update(self, throttle: int, timeout: int):
         """
         Performs an XDCC Update Action
+        :param throttle: The throttle value
+        :param timeout: The timeout value
         :return: None
         """
         if self.metadata.media_type() == MediaType.TV_SERIES:
             # noinspection PyTypeChecker
-            XDCCUpdater(self.metadata).update()
+            XDCCUpdater(self.metadata, throttle, timeout).update()
         else:
             print("xdcc-update is only supported for TV series")
