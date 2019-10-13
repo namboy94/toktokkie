@@ -147,6 +147,9 @@ class Directory:
         """
         if self.metadata.media_type() == MediaType.TV_SERIES:
             # noinspection PyTypeChecker
-            XDCCUpdater(self.metadata, throttle, timeout).update()
+            xdcc = XDCCUpdater(
+                self.metadata, throttle, timeout  # type: ignore
+            )
+            xdcc.update()
         else:
             self.logger.warning("xdcc-update is only supported for TV series")
