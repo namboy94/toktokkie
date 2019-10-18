@@ -76,7 +76,7 @@ class TvSeries(Metadata):
         for season_name, season_path in season_folders + special_folders:
 
             print("\n{}:".format(season_name))
-            ids = cls.prompt_for_ids(json_data["ids"])
+            ids = cls.prompt_for_ids(season_path, json_data["ids"])
 
             # Remove double entries
             for id_type, id_value in json_data["ids"].items():

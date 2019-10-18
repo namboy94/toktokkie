@@ -55,7 +55,7 @@ class BookSeries(Book):
                 listdir(directory_path, no_dirs=True)
         ):
             print("Volume {} ({}):".format(i + 1, volume_name))
-            ids = cls.prompt_for_ids(json_data["ids"])
+            ids = cls.prompt_for_ids(directory_path, json_data["ids"])
 
             # Remove double entries
             for id_type, id_value in json_data["ids"].items():

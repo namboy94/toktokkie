@@ -21,7 +21,9 @@ import os
 import json
 import logging
 import tvdb_api
+import musicbrainzngs
 from typing import List, Dict, Any, Optional
+from toktokkie import version
 from toktokkie.exceptions import InvalidMetadata, MissingMetadata
 from toktokkie.metadata.components.enums import MediaType, IdType, \
     valid_id_types, required_id_types
@@ -300,7 +302,8 @@ class Metadata:
             except (tvdb_api.tvdb_shownotfound, TypeError):
                 pass
 
-        json_data["ids"] = cls.prompt_for_ids(defaults=defaults)
+        json_data["ids"] = \
+            cls.prompt_for_ids(directory_path, defaults=defaults)
 
         json_data.update(cls._prompt(directory_path, json_data))
         return cls(directory_path, json_data)
@@ -344,11 +347,15 @@ class Metadata:
     @classmethod
     def prompt_for_ids(
             cls,
-            defaults: Optional[Dict[str, List[str]]] = None
+            directory: str,
+            defaults: Optional[Dict[str, List[str]]] = None,
+            valid_options: Optional[List[IdType]] = None
     ) -> Dict[str, List[str]]:
         """
         Prompts the user for IDs
+        :param directory: The directory for which to prompt the IDs
         :param defaults: The default values to use, mapped to id type names
+        :param valid_options: Overrides valid ID type options
         :return: The generated IDs. At least one ID will be included
         """
         ids = {}  # type: Dict[str, List[str]]
@@ -358,22 +365,29 @@ class Metadata:
             IdType.IMDB,
             IdType.ISBN,
             IdType.VNDB,
+            IdType.MUSICBRAINZ,
             IdType.MYANIMELIST,
             IdType.ANILIST,
             IdType.KITSU,
             IdType.MANGADEX
         ]
+        if valid_options is None:
+            valid = cls.valid_id_types()
+            required = cls.required_ids()
+        else:
+            valid = valid_options
+            required = []
 
         while len(ids) < 1:
 
             for id_type in id_order:
-                if id_type not in cls.valid_id_types():
+                if id_type not in valid:
                     continue
 
                 default = None  # type: Optional[List[str]]
                 if defaults is not None:
                     default = defaults.get(id_type.value, [])
-                elif id_type not in cls.required_ids():
+                elif id_type not in required:
                     default = []
 
                 # Load anilist ID from myanimelist ID
@@ -399,9 +413,26 @@ class Metadata:
                             anilist_ids.append(str(anilist_id))
                         default = anilist_ids
 
-                min_count = 1 if id_type in cls.required_ids() else 0
+                min_count = 1 if id_type in required else 0
 
-                if id_type in [IdType.ISBN, IdType.IMDB, IdType.VNDB]:
+                if id_type == IdType.MUSICBRAINZ:
+                    musicbrainzngs.set_useragent(
+                        "toktokkie media manager",
+                        version,
+                        "https://gitlab.namibsun.net/namibsun/python/toktokie"
+                    )
+                    artist_guess = musicbrainzngs.search_artists(
+                        os.path.basename(directory)
+                    )
+                    if artist_guess["artist-count"] > 0:
+                        default = [artist_guess["artist-list"][0]["id"]]
+
+                if id_type in [
+                    IdType.ISBN,
+                    IdType.IMDB,
+                    IdType.VNDB,
+                    IdType.MUSICBRAINZ
+                ]:
                     prompted = prompt_comma_list(
                         "{} IDs: ".format(id_type.value),
                         min_count=min_count,

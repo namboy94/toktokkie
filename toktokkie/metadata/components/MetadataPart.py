@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.enums import IdType

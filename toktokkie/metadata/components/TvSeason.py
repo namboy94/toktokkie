@@ -30,18 +30,6 @@ class TvSeason(MetadataPart):
     Class that models a single tv season
     """
 
-    def __init__(self, parent: Metadata, json_data: Dict[str, Any]):
-        """
-        Initializes the MetadataPart object using JSON data
-        :param parent: The parent metadata
-        :param json_data: The JSON data used to generate the MetadataPart
-        :raises InvalidMetadataException: If any errors were encountered
-                                          while generating the object
-        """
-        self.parent = parent
-        self.json = json_data
-        super().__init__(parent, json_data)
-
     @property
     def name(self) -> str:
         """

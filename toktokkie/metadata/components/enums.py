@@ -33,6 +33,7 @@ class IdType(Enum):
     ISBN = "isbn"
     VNDB = "vndb"
     MANGADEX = "mangadex"
+    MUSICBRAINZ = "musicbrainz"
 
 
 class MediaType(Enum):
@@ -45,6 +46,7 @@ class MediaType(Enum):
     TV_SERIES = "tv"
     VISUAL_NOVEL = "visual_novel"
     MANGA = "manga"
+    MUSIC_ARTIST = "music"
 
 
 valid_id_types = {
@@ -81,6 +83,9 @@ valid_id_types = {
         IdType.MYANIMELIST,
         IdType.KITSU,
         IdType.MANGADEX
+    ],
+    MediaType.MUSIC_ARTIST: [
+        IdType.MUSICBRAINZ
     ]
 }  # type: Dict[MediaType, List[IdType]]
 """
@@ -102,6 +107,9 @@ required_id_types = {
         IdType.VNDB
     ],
     MediaType.MANGA: [
+    ],
+    MediaType.MUSIC_ARTIST: [
+        IdType.MUSICBRAINZ
     ]
 }  # type: Dict[MediaType, List[IdType]]
 """
