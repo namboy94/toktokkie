@@ -47,7 +47,8 @@ if __name__ == "__main__":
             "anime_list_apis",
             "mutagen",
             "puffotter",
-            "manga-dl"
+            "manga-dl",
+            "musicbrainzngs"
         ],
         extras_require={
             "gui": ["PyQt5"]

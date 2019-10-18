@@ -22,12 +22,13 @@ import logging
 import tvdb_api
 from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
-from typing import List, Optional
+from typing import List, Optional, Dict
 from puffotter.os import listdir, replace_illegal_ntfs_chars, get_ext
 from puffotter.prompt import yn_prompt
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.TvSeries import TvSeries
 from toktokkie.metadata.Manga import Manga
+from toktokkie.metadata.MusicArtist import MusicArtist
 from toktokkie.metadata.components.enums import MediaType, IdType
 from toktokkie.renaming.RenameOperation import RenameOperation
 from anime_list_apis.api.AnilistApi import AnilistApi
@@ -74,6 +75,8 @@ class Renamer:
             operations = self._generate_tv_series_operations()
         elif self.metadata.media_type() == MediaType.MANGA:
             operations = self._generate_manga_operations()
+        elif self.metadata.media_type() == MediaType.MUSIC_ARTIST:
+            operations = self._generate_music_operations()
         return operations
 
     def get_active_operations(self) -> List[RenameOperation]:
@@ -116,14 +119,20 @@ class Renamer:
         for operation in self.operations:
             operation.rename()
 
-    def load_title_name(self) -> str:
+    def load_title_name(
+            self,
+            id_override: Optional[Dict[IdType, List[str]]] = None
+    ) -> str:
         """
         Loads the title name for the metadata object
+        :param id_override: Uses other IDs than in the metadata
         :return: The title the metadata should have
         """
         should_name = self.metadata.name
 
-        anilist = self.metadata.ids.get(IdType.ANILIST, [])
+        ids = id_override if id_override is not None else self.metadata.ids
+
+        anilist = ids.get(IdType.ANILIST, [])
         if len(anilist) > 0:
             anilist_id = int(anilist[0])
             media_type = AnilistMediaType.ANIME
@@ -259,6 +268,51 @@ class Renamer:
             operations.append(RenameOperation(
                 os.path.join(self.path, volume), new_name
             ))
+
+        return operations
+
+    def _generate_music_operations(self) -> List[RenameOperation]:
+        """
+        Generates rename operations for music artist media types
+        :return: The list of rename operations
+        """
+        operations = []  # type: List[RenameOperation]
+
+        # noinspection PyTypeChecker
+        music_metadata = self.metadata  # type: MusicArtist  # type: ignore
+        music_exts = ["mp3", "flac", "wav"]
+        video_exts = ["mp4", "webm", "mkv", "avi"]
+
+        for theme_song in music_metadata.theme_songs:
+            path = os.path.join(
+                music_metadata.directory_path,
+                theme_song["name"]
+            )
+            song_files = listdir(path)
+            series_name = \
+                self.load_title_name(id_override=theme_song["series_ids"])
+
+            for song, path in song_files:
+                if song.startswith(theme_song["name"]):
+                    continue
+
+                ext = get_ext(song)
+                if ext in video_exts:
+                    new_name = "{} {} - {}-video.{}".format(
+                        series_name,
+                        theme_song["theme_type"],
+                        theme_song["name"],
+                        ext
+                    )
+                    operations.append(RenameOperation(path, new_name))
+                elif ext in music_exts:
+                    new_name = "{} {} - {}.{}".format(
+                        series_name,
+                        theme_song["theme_type"],
+                        theme_song["name"],
+                        ext
+                    )
+                    operations.append(RenameOperation(path, new_name))
 
         return operations
 

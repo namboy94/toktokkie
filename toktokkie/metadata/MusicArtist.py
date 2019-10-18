@@ -19,7 +19,8 @@ LICENSE"""
 
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType, valid_id_types
+from toktokkie.metadata.components.enums import MediaType, valid_id_types, \
+    IdType
 from puffotter.os import listdir
 from puffotter.prompt import prompt
 
@@ -73,7 +74,7 @@ class MusicArtist(Metadata):
                     choices={"OP", "ED", "Insert", "Special", "Other"}
                 )
 
-            albums.append(album)
+            albums.append(album_data)
 
         return {"albums": albums}
 
@@ -82,10 +83,22 @@ class MusicArtist(Metadata):
         """
         :return: All theme songs for this music artist
         """
-        return list(filter(
+        valid = list(set(
+            valid_id_types[MediaType.TV_SERIES]
+            + valid_id_types[MediaType.VISUAL_NOVEL]
+        ))
+
+        themes = []
+        for theme in list(filter(
             lambda x: x["album_type"] == "theme_song",
             self.json["albums"]
-        ))
+        )):
+            ids = {}
+            for id_type in valid:
+                ids[id_type] = theme["series_ids"].get(id_type.value, [])
+            theme["series_ids"] = ids
+            themes.append(theme)
+        return themes
 
     def _validate_json(self):
         """
@@ -93,6 +106,8 @@ class MusicArtist(Metadata):
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
+        album_names = [x["name"] for x in self.json["albums"]]
+
         for album, album_path in listdir(self.directory_path, no_files=True):
-            self._assert_true(album in self.json["albums"],
+            self._assert_true(album in album_names,
                               "Missing album in metadata: {}".format(album))
