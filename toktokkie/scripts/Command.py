@@ -75,6 +75,7 @@ class Command:
         directories = []  # type: List[Directory]
         for path in paths:
             try:
+                self.logger.debug("Loading directory {}".format(path))
                 directory = Directory(path)
 
                 if restrictions is not None:

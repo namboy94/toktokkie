@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from copy import deepcopy
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType, valid_id_types, \
-    IdType
+from toktokkie.metadata.components.enums import MediaType, valid_id_types
 from puffotter.os import listdir
 from puffotter.prompt import prompt
 
@@ -78,6 +78,47 @@ class MusicArtist(Metadata):
 
         return {"albums": albums}
 
+    def add_album(self, album_data: Dict[str, Any]):
+        """
+        Adds an album to the metadata
+        :param album_data: The album metadata to add
+        :return: None
+        """
+        if album_data["album_type"] == "theme_song":
+            ids = album_data["series_ids"]
+            album_data["series_ids"] = {}
+            for key, value in ids.items():
+                album_data["series_ids"][key.value] = value
+        self.logger.debug("Adding album metadata: {}".format(album_data))
+        self.json["albums"].append(album_data)
+
+    @property
+    def all_albums(self) -> List[Dict[str, Any]]:
+        """
+        :return: All album metadata
+        """
+        return self.albums + self.singles + self.theme_songs
+
+    @property
+    def albums(self) -> List[Dict[str, Any]]:
+        """
+        :return: All 'album' album metadata
+        """
+        return list(filter(
+                lambda x: x["album_type"] == "album",
+                self.json["albums"]
+        ))
+
+    @property
+    def singles(self) -> List[Dict[str, Any]]:
+        """
+        :return: All 'single' album metadata
+        """
+        return list(filter(
+            lambda x: x["album_type"] == "single",
+            self.json["albums"]
+        ))
+
     @property
     def theme_songs(self) -> List[Dict[str, Any]]:
         """
@@ -91,7 +132,7 @@ class MusicArtist(Metadata):
         themes = []
         for theme in list(filter(
             lambda x: x["album_type"] == "theme_song",
-            self.json["albums"]
+            deepcopy(self.json["albums"])
         )):
             ids = {}
             for id_type in valid:

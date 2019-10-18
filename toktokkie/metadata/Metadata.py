@@ -264,6 +264,8 @@ class Metadata:
         Writes the metadata to the metadata file
         :return: None
         """
+        self.logger.debug("Writing Metadata: {}".format(self.json))
+
         if not os.path.isdir(os.path.dirname(self.metadata_file)):
             os.makedirs(os.path.dirname(self.metadata_file))
 

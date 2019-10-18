@@ -30,6 +30,11 @@ from toktokkie.scripts.XdccUpdateCommand import XdccUpdateCommand
 from toktokkie.scripts.MetadataAddCommand import MetadataAddCommand
 from toktokkie.scripts.SetMangaCoverCommand import SetMangaCoverCommand
 from toktokkie.scripts.SuperCutCommand import SuperCutCommand
+from toktokkie.scripts.AnimeThemeDlCommand import AnimeThemeDlCommand
+from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
+from toktokkie.scripts.MusicTagCommand import MusicTagCommand
+from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
+from toktokkie.scripts.MusicMergeCommand import MusicMergeCommand
 
 toktokkie_commands = [
     PrintCommand,
@@ -44,7 +49,12 @@ toktokkie_commands = [
     XdccUpdateCommand,
     MetadataAddCommand,
     SetMangaCoverCommand,
-    SuperCutCommand
+    SuperCutCommand,
+    AnimeThemeDlCommand,
+    AlbumArtFetchCommand,
+    MusicTagCommand,
+    MusicMergeCommand,
+    PlaylistCreateCommand
 ]
 """
 A list of commands for the toktokkie script
