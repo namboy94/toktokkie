@@ -625,79 +625,82 @@ class AnimeThemeDlCommand(Command):
         :return: None
         """
         structure_dir = os.path.join(self.args.out, "structured")
-        ops_dir = os.path.join(structure_dir, "OP")
-        eds_dir = os.path.join(structure_dir, "ED")
         if os.path.isdir(structure_dir):
             shutil.rmtree(structure_dir)
-        for directory in [structure_dir, ops_dir, eds_dir]:
-            os.makedirs(directory)
+        os.makedirs(structure_dir)
 
-        for song in selected_songs:
-            mp3_file = song["mp3_file"]
-            webm_file = song["webm_file"]
-            artist = song["song_info"][1]
-            album = song["song"]
-            title = song["filename"]
-            oped = song["type"]
+        ops = list(filter(lambda x: "OP" in x["type"], selected_songs))
+        eds = list(filter(lambda x: "ED" in x["type"], selected_songs))
 
-            if "OP" in oped:
-                theme_type = "OP"
-                artist_dir = os.path.join(ops_dir, artist)
-            elif "ED" in oped:
-                theme_type = "ED"
-                artist_dir = os.path.join(eds_dir, artist)
-            else:
-                print("No OP/ED type for {}".format(title))
-                continue
+        for oped_type, songs in [("OP", ops), ("ED", eds)]:
+            oped_dir = os.path.join(structure_dir, oped_type)
+            os.makedirs(oped_dir)
 
-            album_dir = os.path.join(artist_dir, album)
-            song_path = os.path.join(album_dir, title + ".mp3")
-            vid_path = os.path.join(album_dir, title + "-video.webm")
+            artists = {}
 
-            if not os.path.isdir(artist_dir):
-                os.makedirs(artist_dir)
-            if not os.path.isdir(album_dir):
-                os.makedirs(album_dir)
-            if not os.path.isfile(song_path):
-                shutil.copyfile(mp3_file, song_path)
-            if not os.path.isfile(vid_path):
-                shutil.copyfile(webm_file, vid_path)
+            for song in songs:
+                artist = song["song_info"][1]
+                if artist in artists:
+                    artists[artist].append(song)
+                else:
+                    artists[artist] = [song]
 
-            metadir = os.path.join(artist_dir, ".meta")
-            icondir = os.path.join(metadir, "icons")
-            makedirs(metadir)
-            makedirs(icondir)
+            for artist, artist_songs in artists.items():
+                artist_dir = os.path.join(oped_dir, artist)
+                makedirs(artist_dir)
+                albums_metadata = []
 
-            musicbrainzngs.set_useragent(
-                "toktokkie media manager",
-                version,
-                "https://gitlab.namibsun.net/namibsun/python/toktokie"
-            )
-            artist_guess = musicbrainzngs.search_artists(
-                os.path.basename(directory)
-            )
-            if artist_guess["artist-count"] > 0:
-                artist_id = [artist_guess["artist-list"][0]["id"]]
-            else:
-                artist_id = ["0"]
+                for song in artist_songs:
+                    mp3_file = song["mp3_file"]
+                    webm_file = song["webm_file"]
+                    album = song["song"]
+                    title = song["filename"]
 
-            anilist_id = AnilistApi().get_anilist_id_from_mal_id(
-                MediaType.ANIME, song["mal_id"]
-            )
-            metadata = {
-                "type": "music",
-                "tags": [],
-                "ids": {"musicbrainz": artist_id},
-                "albums": [{
-                    "name": song["song"],
-                    "series_ids": {
-                        "myanimelist": [song["mal_id"]],
-                        "anilist": [anilist_id]
-                    },
-                    "genre": "Anime",
-                    "year": int(self.args.year),
-                    "album_type": "theme_song",
-                    "theme_type": theme_type
-                }]
-            }
-            MusicArtist(artist_dir, json_data=metadata).write()
+                    album_dir = os.path.join(artist_dir, album)
+                    song_path = os.path.join(album_dir, title + ".mp3")
+                    vid_path = os.path.join(album_dir, title + "-video.webm")
+
+                    makedirs(album_dir)
+                    if not os.path.isfile(song_path):
+                        shutil.copyfile(mp3_file, song_path)
+                    if not os.path.isfile(vid_path):
+                        shutil.copyfile(webm_file, vid_path)
+
+                    anilist_id = AnilistApi().get_anilist_id_from_mal_id(
+                        MediaType.ANIME, song["mal_id"]
+                    )
+                    albums_metadata.append({
+                        "name": song["song"],
+                        "series_ids": {
+                            "myanimelist": [str(song["mal_id"])],
+                            "anilist": [anilist_id]
+                        },
+                        "genre": "Anime",
+                        "year": int(self.args.year),
+                        "album_type": "theme_song",
+                        "theme_type": oped_type
+                    })
+
+                metadir = os.path.join(artist_dir, ".meta")
+                icondir = os.path.join(metadir, "icons")
+                makedirs(metadir)
+                makedirs(icondir)
+
+                musicbrainzngs.set_useragent(
+                    "toktokkie media manager",
+                    version,
+                    "https://gitlab.namibsun.net/namibsun/python/toktokie"
+                )
+                artist_guess = musicbrainzngs.search_artists(artist)
+                if artist_guess["artist-count"] > 0:
+                    artist_id = [artist_guess["artist-list"][0]["id"]]
+                else:
+                    artist_id = ["0"]
+
+                metadata = {
+                    "type": "music",
+                    "tags": [],
+                    "ids": {"musicbrainz": artist_id},
+                    "albums": albums_metadata
+                }
+                MusicArtist(artist_dir, json_data=metadata).write()
