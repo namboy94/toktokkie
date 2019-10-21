@@ -56,7 +56,7 @@ class MusicTagCommand(Command):
         for directory in self.load_directories(
                 self.args.directories, restrictions=[MediaType.MUSIC_ARTIST]
         ):
-            for album in directory.metadata.theme_songs:
+            for album in directory.metadata.all_albums:
                 for song, song_file in listdir(
                         os.path.join(directory.path, album["name"])
                 ):
@@ -64,8 +64,12 @@ class MusicTagCommand(Command):
                         self.logger.info("Not an MP3 file: " + song)
                         continue
 
+                    title = song.rsplit(".", 1)[0]
+                    if title.split(" - ", 1)[0].isnumeric():
+                        title = title.split(" - ", 1)[1]
+
                     mp3 = EasyID3(song_file)
-                    mp3["title"] = song.rsplit(".", 1)[0]
+                    mp3["title"] = title
                     mp3["artist"] = directory.metadata.name
                     mp3["album"] = album["name"]
                     mp3["date"] = str(album["year"])
@@ -77,10 +81,14 @@ class MusicTagCommand(Command):
                         album["name"] + ".png"
                     )
 
-                    with open(cover_file, "rb") as f:
-                        img = f.read()
+                    if os.path.isfile(cover_file):
+                        with open(cover_file, "rb") as f:
+                            img = f.read()
 
-                    id3 = ID3(song_file)
-                    id3.add(APIC(3, "image/jpeg", 3, "Front cover", img))
-                    id3.add(TPE2(encoding=3, text=directory.metadata.name))
-                    id3.save()
+                        id3 = ID3(song_file)
+                        id3.add(APIC(3, "image/jpeg", 3, "Front cover", img))
+                        id3.add(TPE2(encoding=3, text=directory.metadata.name))
+                        id3.save()
+                    else:
+                        self.logger.warning("No cover file for {}"
+                                            .format(album["name"]))

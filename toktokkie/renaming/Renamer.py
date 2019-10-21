@@ -283,36 +283,53 @@ class Renamer:
         music_exts = ["mp3", "flac", "wav"]
         video_exts = ["mp4", "webm", "mkv", "avi"]
 
-        for theme_song in music_metadata.theme_songs:
+        for album in music_metadata.all_albums:
             path = os.path.join(
                 music_metadata.directory_path,
-                theme_song["name"]
+                album["name"]
             )
             song_files = listdir(path)
-            series_name = \
-                self.load_title_name(id_override=theme_song["series_ids"])
 
-            for song, path in song_files:
-                if song.startswith(theme_song["name"]):
-                    continue
+            if album["album_type"] == "theme_song":
+                series_name = \
+                    self.load_title_name(id_override=album["series_ids"])
 
-                ext = get_ext(song)
-                if ext in video_exts:
-                    new_name = "{} {} - {}-video.{}".format(
-                        series_name,
-                        theme_song["theme_type"],
-                        theme_song["name"],
-                        ext
-                    )
-                    operations.append(RenameOperation(path, new_name))
-                elif ext in music_exts:
-                    new_name = "{} {} - {}.{}".format(
-                        series_name,
-                        theme_song["theme_type"],
-                        theme_song["name"],
-                        ext
-                    )
-                    operations.append(RenameOperation(path, new_name))
+                for song, path in song_files:
+                    if song.startswith(album["name"]):
+                        continue  # Skip renaming full version
+
+                    ext = get_ext(song)
+                    if ext in video_exts:
+                        new_name = "{} {} - {}-video.{}".format(
+                            series_name,
+                            album["theme_type"],
+                            album["name"],
+                            ext
+                        )
+                        operations.append(RenameOperation(path, new_name))
+                    elif ext in music_exts:
+                        new_name = "{} {} - {}.{}".format(
+                            series_name,
+                            album["theme_type"],
+                            album["name"],
+                            ext
+                        )
+                        operations.append(RenameOperation(path, new_name))
+            else:
+                for i, (song, path) in enumerate(song_files):
+                    track_number = str(i + 1).zfill(2)
+
+                    if song.split(" - ")[0].isnumeric():
+                        if not song.startswith(track_number + " - "):
+                            operations.append(RenameOperation(
+                                path,
+                                track_number + " - " + song.split(" - ", 1)[1]
+                            ))
+                    else:
+                        operations.append(RenameOperation(
+                            path,
+                            track_number + " - " + song
+                        ))
 
         return operations
 
