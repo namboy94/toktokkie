@@ -49,7 +49,7 @@ class Directory:
 
         self.path = path
         self.meta_dir = os.path.join(path, ".meta")
-        self.metadata_file = os.path.join(self.meta_dir, "info.json")
+        self.metadata_file = os.path.join(self.meta_dir, "anithemes.json")
 
         if generate_metadata:
 

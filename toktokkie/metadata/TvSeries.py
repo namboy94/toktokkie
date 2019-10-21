@@ -140,7 +140,7 @@ class TvSeries(Metadata):
     def excludes(self) -> Dict[IdType, Dict[int, List[int]]]:
         """
         Generates data for episodes to be excluded during renaming etc.
-        :return A dictionary mapping episode info to seasons and id types
+        :return A dictionary mapping episode anithemes to seasons and id types
                 Form: {idtype: {season: [ep1, ep2]}}
         """
         generated = {}  # type: Dict[IdType, Dict[int, List[int]]]

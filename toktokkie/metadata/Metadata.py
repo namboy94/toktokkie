@@ -49,7 +49,7 @@ class Metadata:
         :param directory_path: The directory of the media for which to
                                generate the metadata
         :param json_data: Optional metadata JSON.
-                          Will be used instead of info.json metadata
+                          Will be used instead of anithemes.json metadata
                           if provided
         :param no_validation: Skips JSON validation if True
         :raises InvalidMetadataException: if the metadata could not be
@@ -58,7 +58,7 @@ class Metadata:
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.directory_path = directory_path
-        self.metadata_file = os.path.join(directory_path, ".meta/info.json")
+        self.metadata_file = os.path.join(directory_path, ".meta/anithemes.json")
         self.icon_directory = os.path.join(directory_path, ".meta/icons")
 
         if json_data is None:
@@ -333,7 +333,7 @@ class Metadata:
         :raises MissingMetadataException: if no metadata file was found
         :return: The generated metadata object
         """
-        metadata_file = os.path.join(directory_path, ".meta/info.json")
+        metadata_file = os.path.join(directory_path, ".meta/anithemes.json")
 
         if not os.path.isfile(metadata_file):
             raise MissingMetadata()

@@ -508,7 +508,7 @@ class AnimeThemeDlCommand(Command):
     def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str, str]:
         """
         Resolves the song information for a song
-        :param song: The song to get the info for
+        :param song: The song to get the anithemes for
         :return: The song title, artist, episodes
         """
 

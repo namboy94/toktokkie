@@ -80,7 +80,7 @@ class VisualNovelChecker(Checker):
     def _check_extras(self) -> bool:
         """
         Makes sure that extras, like opening and ending theme videos are
-        present, unless they've been explicitly excluded using the info.json
+        present, unless they've been explicitly excluded using the anithemes.json
         file.
         :return: The check result
         """
