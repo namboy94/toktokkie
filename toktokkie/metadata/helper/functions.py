@@ -39,7 +39,7 @@ def get_metadata(directory: str) -> Metadata:
     :return: The generated metadata
     :raises InvalidMetadataException: If the metadata is invalid
     """
-    info_file = os.path.join(directory, ".meta/anithemes.json")
+    info_file = os.path.join(directory, ".meta/info.json")
     try:
         with open(info_file, "r") as f:
             media_type = json.load(f)["type"]

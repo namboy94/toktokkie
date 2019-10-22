@@ -19,25 +19,19 @@ LICENSE"""
 
 import os
 import json
-import time
 import shutil
 import argparse
-import musicbrainzngs
-from anime_list_apis.api.AnilistApi import AnilistApi
-from anime_list_apis.models.attributes.MediaType import MediaType
-from typing import Tuple, Dict, List, Any
+from typing import Dict, List
 from bs4 import BeautifulSoup
-from toktokkie import version
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MusicArtist import MusicArtist
-from puffotter.subprocess import execute_command
-from puffotter.print import pprint
 from puffotter.os import makedirs, listdir
 from puffotter.requests import aggressive_request
 from toktokkie.scripts.RenameCommand import RenameCommand
 from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
 from toktokkie.scripts.MusicTagCommand import MusicTagCommand
+from toktokkie.anithemes.AniTheme import AniTheme
 
 
 class AnimeThemeDlCommand(Command):
@@ -80,17 +74,20 @@ class AnimeThemeDlCommand(Command):
         selected_series = self.prompt_selection(series_names)
 
         self.logger.info("Loading data...")
-        selected_songs = self.load_data(
+        selected_songs = AniTheme.load_reddit_anithemes_wiki_info(
             self.args.year,
             self.args.season,
             selected_series
         )
+        selected_songs = list(filter(
+            lambda x: not x.alternate_version,
+            selected_songs
+        ))
         selected_songs = self.handle_excludes(selected_songs)
 
-        self.logger.info("Downloading Openings")
-        self.download_webms(selected_songs)
-        self.logger.info("Converting to MP3")
-        self.convert_to_mp3(selected_songs)
+        for song in selected_songs:
+            song.download_webm()
+            song.convert_to_mp3()
 
         self.logger.info("Generating Artist/Album Structure")
         self.generate_artist_album_structure(selected_songs)
@@ -248,8 +245,8 @@ class AnimeThemeDlCommand(Command):
 
     def handle_excludes(
             self,
-            selected_songs: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+            selected_songs: List[AniTheme]
+    ) -> List[AniTheme]:
         """
         Allows the user to exclude certain songs from being downloaded
         Deletes any  files that may already exist for excluded songs
@@ -276,8 +273,7 @@ class AnimeThemeDlCommand(Command):
 
         if not use_old:
             for i, song in enumerate(selected_songs):
-                print("[{}]: {} ({})"
-                      .format(i + 1, song["filename"], song["song_info"][2]))
+                print("[{}]: {}".format(i + 1, song))
 
             while True:
 
@@ -290,7 +286,7 @@ class AnimeThemeDlCommand(Command):
                 try:
                     selection = selection.strip().split(",")
                     excludes = list(map(
-                        lambda x: selected_songs[int(x) - 1]["filename"],
+                        lambda x: selected_songs[int(x) - 1].filename,
                         selection
                     ))
                 except (ValueError, IndexError):
@@ -303,232 +299,10 @@ class AnimeThemeDlCommand(Command):
 
         new_selection = []
         for song in selected_songs:
-            if song["filename"] not in excludes:
+            if song.filename not in excludes:
                 new_selection.append(song)
-            else:
-                for _file in ["webm_file", "mp3_file", "cover_file"]:
-                    if os.path.isfile(song[_file]):
-                        pprint("Deleting {}".format(song[_file]), fg="magenta")
-                        os.remove(song[_file])
 
         return new_selection
-
-    def load_data(
-            self,
-            year: int,
-            season: str,
-            selected_series: List[str],
-            include_previous_season: bool = True
-    ) -> List[Dict[str, Any]]:
-        """
-        Loads the Opening/Ending information from a combination of sources.
-        :param year: The year to check
-        :param season: The season to check
-        :param selected_series: The series to consider
-        :param include_previous_season: Whether to load data
-                                        from previous seasons
-        :return: The information in the following format:
-                    [
-                        {show, type, song, link, filename,
-                        mp3_file, webm_file, cover_file,
-                        mal_id, mal_title, mal_cover, mal_openings,
-                        mal_endings, song_info}
-                    ]
-        """
-        url = "https://old.reddit.com/r/AnimeThemes/wiki/" \
-              "{}#wiki_{}_{}_season".format(year, year, season)
-        response = aggressive_request(url)
-
-        soup = BeautifulSoup(response, "html.parser")
-        listings = soup.find("div", {"class": "md wiki"})
-
-        tablemap = {}
-        children = list(listings.children)
-
-        while children[0].name != "h3":
-            children.pop(0)
-
-        current_title = ""
-        current_tables = []
-        while len(children) > 0:
-            element = children.pop(0)
-            if element.name == "h3":
-                if current_title != "":
-                    tablemap[current_title] = current_tables
-                current_title = element.text
-                current_tables = []
-            elif element.name == "table":
-                current_tables.append(element)
-
-        data = []
-        seasonal_mal_ids = self.get_seasonal_mal_ids(year, season)
-
-        for title, tables in tablemap.items():
-
-            if title not in selected_series:
-                continue
-
-            print("Loading data for {}...".format(title))
-            mal_id = self.resolve_mal_id(title, seasonal_mal_ids)
-            mal_data = self.load_mal_data(mal_id)
-
-            rows = []
-            for table in tables:
-                rows += table.find_all("tr")
-
-            for row in rows:
-                columns = row.find_all("td")
-                if len(columns) == 0:
-                    continue
-                description = columns[0].text
-
-                try:
-                    link = columns[1].find("a")["href"]
-                except TypeError:  # Avoid missing links
-                    continue
-
-                if not description:
-                    continue
-
-                entry = {
-                    "show": title,
-                    "type": description.split("\"", 1)[0].strip(),
-                    "song": description.split("\"", 1)[1].rsplit("\"", 1)[0],
-                    "link": link
-                }
-                entry["filename"] = "{} {} - {}".format(
-                    title, entry["type"], entry["song"]
-                )
-                entry["webm_file"] = os.path.join(
-                    self.args.out, "webm", entry["filename"] + ".webm"
-                )
-                entry["mp3_file"] = os.path.join(
-                    self.args.out, "mp3", entry["filename"] + ".mp3"
-                )
-                entry["cover_file"] = os.path.join(
-                    self.args.out, "covers", entry["filename"] + ".jpg"
-                )
-
-                for key, value in mal_data.items():
-                    entry[key] = value
-
-                song_info = self.resolve_song_info(entry)
-                entry["song_info"] = song_info
-
-                data.append(entry)
-
-        # load data from last year if season is Winter
-        if include_previous_season and season == "Winter":
-            previous_season_data = \
-                self.load_data(year - 1, "Fall", selected_series, False)
-            return previous_season_data + data
-        else:
-            return data
-
-    @staticmethod
-    def get_seasonal_mal_ids(year: int, season: str) -> Dict[str, int]:
-        """
-        Retrieves the myanimelist IDs for every show in an entire season
-        :param year: The year of the season to check
-        :param season: The season to check
-        :return: A dictionary mapping series titles to myanimelist IDs
-        """
-        url = "https://api.jikan.moe/v3/season/{}/{}".format(
-            year, season.lower()
-        )
-        resp = aggressive_request(url)
-        info = json.loads(resp)["anime"]
-
-        malmap = {}
-        for entry in info:
-            malmap[entry["title"]] = entry["mal_id"]
-
-        # Special Cases:
-        if year >= 2019:
-            malmap["Fruits Basket"] = 38680
-
-        return malmap
-
-    @staticmethod
-    def resolve_mal_id(series: str, seasonal_mal_ids: Dict[str, int]) \
-            -> int:
-        """
-        Finds out the myanimelist ID of a series
-        :param series: The series for which to get the myanimelist ID for
-        :param seasonal_mal_ids: The previously fetched seasonal MAL IDs
-        :return: The myanimelist ID
-        """
-
-        mal_id = seasonal_mal_ids.get(series)
-        if mal_id is not None:
-            return mal_id
-
-        url = "https://api.jikan.moe/v3/search/anime/?q={}&page=1"\
-            .format(series)
-        resp = aggressive_request(url)
-        mal_id = json.loads(resp)["results"][0]["mal_id"]
-
-        return mal_id
-
-    @staticmethod
-    def load_mal_data(mal_id: int) -> Dict[str, Any]:
-        """
-        Loads information about a myanimelist ID
-        :param mal_id: The myanimelist ID to check
-        :return: The information fetched from myanimelist
-        """
-        url = "https://api.jikan.moe/v3/anime/{}".format(mal_id)
-        resp = aggressive_request(url)
-        info = json.loads(resp)
-
-        song_info = {"opening_themes": [], "ending_themes": []}
-        for song_type in song_info.keys():
-            for song in info[song_type]:
-                title = song.split("\"", 2)[1]
-                artist = song.split("\"", 2)[2] \
-                    .replace("by ", "") \
-                    .split("(")[0]\
-                    .strip()
-                episodes = song.split("\"", 2)[2].split("(")
-                if len(episodes) > 1:
-                    episodes = episodes[1].split(")")[0].strip()
-                else:
-                    episodes = ""
-                song_info[song_type].append((title, artist, episodes))
-
-        return {
-            "mal_id": mal_id,
-            "mal_title": info["title"],
-            "mal_cover": info["image_url"],
-            "mal_openings": song_info["opening_themes"],
-            "mal_endings": song_info["ending_themes"]
-        }
-
-    @staticmethod
-    def resolve_song_info(song: Dict[str, Any]) -> Tuple[str, str, str]:
-        """
-        Resolves the song information for a song
-        :param song: The song to get the anithemes for
-        :return: The song title, artist, episodes
-        """
-
-        song_type = song["type"].upper().split(" ")[0]
-        if "OP" in song_type:
-            theme_list = song["mal_openings"]
-        elif "ED" in song_type:
-            theme_list = song["mal_endings"]
-        else:
-            return "Unknown", "Unknown", "Unknown"
-
-        number = song_type.replace("OP", "").replace("ED", "")
-        if number == "":
-            number = "1"
-        number = int(number)
-
-        if len(theme_list) >= number:
-            return theme_list[number - 1]
-        else:
-            return "Unknown", "Unknown", "Unknown"
 
     @staticmethod
     def resolve_selected_songs(
@@ -547,73 +321,9 @@ class AnimeThemeDlCommand(Command):
             selected_songs += data[series]
         return selected_songs
 
-    @staticmethod
-    def download_webms(selected_songs: List[Dict[str, Any]]):
-        """
-        Downloads a selection of webm songs
-        :param selected_songs: The selection of songs to download
-        :return: None
-        """
-        while len(selected_songs) > 0:
-
-            retry = []
-
-            for song in selected_songs:
-                webmfile = song["webm_file"]
-                # command = ["wget", song["link"], "-O", webmfile]
-                command = ["curl", "-o", webmfile, song["link"]]
-
-                if os.path.exists(webmfile) \
-                        and os.path.getsize(webmfile) > 1000:
-                    # Skip existing files
-                    continue
-
-                time.sleep(1)
-                code = execute_command(command)
-                if code != 0:
-                    # We can circumvent 520 errors by requesting the videos in
-                    # firefox.
-                    # I have no clue why this is, I'm gussing this is due to
-                    # caching on the host side
-                    time.sleep(5)
-                    execute_command(["firefox", song["link"]])
-                    time.sleep(5)
-                    code = execute_command(command)
-                    if code != 0:
-                        retry.append(song)
-
-            selected_songs = retry
-
-            if len(retry) > 0:
-                print("Waiting 15s")
-                time.sleep(15)
-
-    @staticmethod
-    def convert_to_mp3(selected_songs: List[Dict[str, Any]]):
-        """
-        Converts a selection of webm songs to mp3
-        :param selected_songs: The selection of songs to convert
-        :return: None
-        """
-        for entry in selected_songs:
-
-            webm_file = entry["webm_file"]
-            mp3_file = entry["mp3_file"]
-            command = [
-                "ffmpeg",
-                "-i", webm_file,
-                "-vn",
-                "-ab", "160k",
-                "-ar", "44100",
-                "-y", mp3_file
-            ]
-
-            if not os.path.exists(mp3_file):
-                execute_command(command)
-
     def generate_artist_album_structure(
             self,
-            selected_songs: List[Dict[str, Any]]
+            selected_songs: List[AniTheme]
     ):
         """
         Generates a folder structure for OPs and EDs following the scheme:
@@ -629,8 +339,8 @@ class AnimeThemeDlCommand(Command):
             shutil.rmtree(structure_dir)
         os.makedirs(structure_dir)
 
-        ops = list(filter(lambda x: "OP" in x["type"], selected_songs))
-        eds = list(filter(lambda x: "ED" in x["type"], selected_songs))
+        ops = list(filter(lambda x: "OP" in x.theme_type, selected_songs))
+        eds = list(filter(lambda x: "ED" in x.theme_type, selected_songs))
 
         for oped_type, songs in [("OP", ops), ("ED", eds)]:
             oped_dir = os.path.join(structure_dir, oped_type)
@@ -639,11 +349,10 @@ class AnimeThemeDlCommand(Command):
             artists = {}
 
             for song in songs:
-                artist = song["song_info"][1]
-                if artist in artists:
-                    artists[artist].append(song)
+                if song.artist in artists:
+                    artists[song.artist].append(song)
                 else:
-                    artists[artist] = [song]
+                    artists[song.artist] = [song]
 
             for artist, artist_songs in artists.items():
                 artist_dir = os.path.join(oped_dir, artist)
@@ -651,10 +360,10 @@ class AnimeThemeDlCommand(Command):
                 albums_metadata = []
 
                 for song in artist_songs:
-                    mp3_file = song["mp3_file"]
-                    webm_file = song["webm_file"]
-                    album = song["song"]
-                    title = song["filename"]
+                    mp3_file = song.temp_mp3_file
+                    webm_file = song.temp_webm_file
+                    album = song.song_name
+                    title = song.filename
 
                     album_dir = os.path.join(artist_dir, album)
                     song_path = os.path.join(album_dir, title + ".mp3")
@@ -666,14 +375,11 @@ class AnimeThemeDlCommand(Command):
                     if not os.path.isfile(vid_path):
                         shutil.copyfile(webm_file, vid_path)
 
-                    anilist_id = AnilistApi().get_anilist_id_from_mal_id(
-                        MediaType.ANIME, song["mal_id"]
-                    )
                     albums_metadata.append({
-                        "name": song["song"],
+                        "name": song.song_name,
                         "series_ids": {
-                            "myanimelist": [str(song["mal_id"])],
-                            "anilist": [anilist_id]
+                            "myanimelist": [str(song.mal_id)],
+                            "anilist": [str(song.anilist_id)]
                         },
                         "genre": "Anime",
                         "year": int(self.args.year),
@@ -686,21 +392,10 @@ class AnimeThemeDlCommand(Command):
                 makedirs(metadir)
                 makedirs(icondir)
 
-                musicbrainzngs.set_useragent(
-                    "toktokkie media manager",
-                    version,
-                    "https://gitlab.namibsun.net/namibsun/python/toktokie"
-                )
-                artist_guess = musicbrainzngs.search_artists(artist)
-                if artist_guess["artist-count"] > 0:
-                    artist_id = [artist_guess["artist-list"][0]["id"]]
-                else:
-                    artist_id = ["0"]
-
                 metadata = {
                     "type": "music",
                     "tags": [],
-                    "ids": {"musicbrainz": artist_id},
+                    "ids": {"musicbrainz": ["0"]},
                     "albums": albums_metadata
                 }
                 MusicArtist(artist_dir, json_data=metadata).write()

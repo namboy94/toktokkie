@@ -66,7 +66,7 @@ class XDCCUpdater:
 
         self.xdcc_info_file = os.path.join(
             metadata.directory_path,
-            ".meta/xdcc-anithemes.json"
+            ".meta/xdcc-info.json"
         )
 
         if not os.path.isfile(self.xdcc_info_file):
@@ -282,7 +282,7 @@ class XDCCUpdater:
 
         xdcc_info_file = os.path.join(
             metadata.directory_path,
-            ".meta/xdcc-anithemes.json"
+            ".meta/xdcc-info.json"
         )
         with open(xdcc_info_file, "w") as xdcc_info:
             xdcc_info.write(json.dumps(
