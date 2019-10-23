@@ -124,9 +124,7 @@ class TestTvSeries(_TestMetadata):
         """
         valid_data = [
             {"type": "tv", "ids": {"tvdb": ["281643"]},
-             "seasons": [{"name": "Season 1", "ids": {}}]},
-            {"type": "tv", "ids": {"tvdb": "281643"},
-             "seasons": [{"name": "Season 1", "ids": {}}]},
+             "seasons": [{"name": "Season 1", "ids": {}}]}
         ]
         invalid_data = [
             {},
@@ -139,6 +137,8 @@ class TestTvSeries(_TestMetadata):
             {"type": "movie", "ids": {"tvdb": ["281643"]},
              "seasons": [{"name": "Season 1", "ids": {}}]},
             {"type": "tv", "ids": {"tvdb": 281643},
+             "seasons": [{"name": "Season 1", "ids": {}}]},
+            {"type": "tv", "ids": {"tvdb": "281643"},
              "seasons": [{"name": "Season 1", "ids": {}}]},
             {"type": "tv", "ids": {"tvdb": [281643]},
              "seasons": [{"name": "Season 1", "ids": {}}]},

@@ -8,5 +8,9 @@
         ]
     },
     "type": "book_series",
-    "volumes": {}
+    "volumes": {
+        "1": {
+            "ids": {"isbn":  ["test"]}
+        }
+    }
 }

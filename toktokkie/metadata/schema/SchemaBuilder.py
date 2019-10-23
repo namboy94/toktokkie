@@ -57,7 +57,10 @@ class SchemaBuilder:
                     "items": {"type": "string"}
                 },
                 "ids": ids,
-                "type": self.media_type.value
+                "type": {
+                    "type": "string",
+                    "pattern": "^" + str(self.media_type.value) + "$"
+                }
             }
         }
 
@@ -87,7 +90,11 @@ class SchemaBuilder:
         :param valid_ids: The valid ID types
         :return: The "ids" object in JSON schema format
         """
-        ids = {"type": "object", "properties": {}}
+        ids = {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": False
+        }
         for id_type in valid_ids:
             ids["properties"][id_type.value] = {
                 "type": "array",
@@ -110,14 +117,16 @@ class SchemaBuilder:
         ids = self.__create_ids_schema(valid_id_types[self.media_type])
         return {
             "volumes": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "ids": ids,
-                        "name": {"type": "string"}
+                "type": "object",
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "type": "object",
+                        "properties": {
+                            "ids": ids
+                        }
                     }
-                }
+                },
+                "additionalProperties": False
             }
         }
 
@@ -240,3 +249,9 @@ class SchemaBuilder:
         :return: The additional properties
         """
         return {}
+
+
+if __name__ == "__main__":
+    for media_type in MediaType:
+        print(SchemaBuilder(media_type).build_schema())
+        print()

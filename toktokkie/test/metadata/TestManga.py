@@ -133,8 +133,7 @@ class TestManga(_TestMetadata):
         :return: None
         """
         valid_data = [
-            {"type": "manga", "ids": {"anilist": ["106988"]}},
-            {"type": "manga", "ids": {"anilist": "106988"}},
+            {"type": "manga", "ids": {"anilist": ["106988"]}}
         ]
         invalid_data = [
             {},
@@ -142,6 +141,7 @@ class TestManga(_TestMetadata):
             {"type": "manga", "ids": {}},
             {"type": "manga", "ids": {"anilist": 1}},
             {"type": "manga", "ids": {"anilist": [1]}},
+            {"type": "manga", "ids": {"anilist": "106988"}},
             {"type": "manga", "ids": {"tvdb": ["106988"]}},
             {"type": "tv_series", "ids": {"anilist": ["106988"]}}
         ]

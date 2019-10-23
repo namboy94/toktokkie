@@ -97,8 +97,7 @@ class TestMovie(_TestMetadata):
         :return: None
         """
         valid_data = [
-            {"type": "movie", "ids": {"imdb": ["tt0234215"]}},
-            {"type": "movie", "ids": {"imdb": "tt0234215"}}
+            {"type": "movie", "ids": {"imdb": ["tt0234215"]}}
         ]
         invalid_data = [
             {},
@@ -108,6 +107,7 @@ class TestMovie(_TestMetadata):
             {"type": "movie", "ids": {"anilist": "100"}},
             {"type": "movie", "ids": {"imdb": [100]}},
             {"type": "movie", "ids": {"isbn": ["100"]}},
+            {"type": "movie", "ids": {"imdb": "tt0234215"}},
             {"type": "movie", "ids": {"imdb": "tt0234215", "other": "stuff"}},
             {"type": "movie", "ids": {"imdb": "tt0234215", "tvdb": "stuff"}}
         ]

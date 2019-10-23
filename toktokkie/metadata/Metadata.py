@@ -23,8 +23,10 @@ import logging
 import tvdb_api
 import musicbrainzngs
 from typing import List, Dict, Any, Optional
+from jsonschema import validate, ValidationError
 from toktokkie import version
 from toktokkie.exceptions import InvalidMetadata, MissingMetadata
+from toktokkie.metadata.schema.SchemaBuilder import SchemaBuilder
 from toktokkie.metadata.components.enums import MediaType, IdType, \
     valid_id_types, required_id_types
 from anime_list_apis.api.AnilistApi import AnilistApi
@@ -207,6 +209,12 @@ class Metadata:
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
+        schema = SchemaBuilder(self.media_type()).build_schema()
+        try:
+            validate(instance=self.json, schema=schema)
+        except ValidationError as e:
+            raise InvalidMetadata(str(e))
+
         try:
             self._assert_true(
                 os.path.isdir(self.directory_path),

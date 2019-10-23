@@ -71,8 +71,7 @@ class TestVisualNovel(_TestMetadata):
         :return: None
         """
         valid_data = [
-            {"type": "visual_novel", "ids": {"vndb": ["v6710"]}},
-            {"type": "visual_novel", "ids": {"vndb": "v6710"}}
+            {"type": "visual_novel", "ids": {"vndb": ["v6710"]}}
         ]
         invalid_data = [
             {},
@@ -81,7 +80,8 @@ class TestVisualNovel(_TestMetadata):
             {"type": "visual_novel", "ids": {"tvdb": ["6710"]}},
             {"type": "visual_novel", "ids": {"vndb": [6710]}},
             {"type": "visual_novel", "ids": {"vndb": 6710}},
-            {"type": "book", "ids": {"vndb": ["v6710"]}}
+            {"type": "book", "ids": {"vndb": ["v6710"]}},
+            {"type": "visual_novel", "ids": {"vndb": "v6710"}}
         ]
         fureraba = self.get("Fureraba")
         self.check_validation(valid_data, invalid_data, VisualNovel, fureraba)
