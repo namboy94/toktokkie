@@ -24,7 +24,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC, TPE2
 from puffotter.os import listdir, get_ext
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 
 
 class MusicTagCommand(Command):

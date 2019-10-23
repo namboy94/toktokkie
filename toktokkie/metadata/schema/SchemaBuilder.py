@@ -19,8 +19,9 @@ LICENSE"""
 
 import logging
 from typing import Dict, Any, List
-from toktokkie.metadata.components.enums import MediaType, IdType, \
-    valid_id_types
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.ids.mappings import valid_id_types
+from toktokkie.metadata.MediaType import MediaType
 
 
 # noinspection PyMethodMayBeStatic

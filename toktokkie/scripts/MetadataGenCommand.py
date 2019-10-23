@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 from toktokkie.Directory import Directory
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.scripts.Command import Command
 
 

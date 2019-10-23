@@ -21,14 +21,14 @@ import os
 import json
 from typing import Union, Type
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.Book import Book
-from toktokkie.metadata.BookSeries import BookSeries
-from toktokkie.metadata.Movie import Movie
-from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.VisualNovel import VisualNovel
-from toktokkie.metadata.MusicArtist import MusicArtist
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.types.Book import Book
+from toktokkie.metadata.types.BookSeries import BookSeries
+from toktokkie.metadata.types.Movie import Movie
+from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.types.VisualNovel import VisualNovel
+from toktokkie.metadata.types.MusicArtist import MusicArtist
+from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.exceptions import InvalidMetadata
 
 

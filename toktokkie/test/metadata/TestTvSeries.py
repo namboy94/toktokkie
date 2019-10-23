@@ -18,12 +18,11 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List, Dict, Any
 from unittest import mock
 from puffotter.os import listdir
 from toktokkie.Directory import Directory
-from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 

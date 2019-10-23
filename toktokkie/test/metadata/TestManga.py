@@ -21,8 +21,8 @@ import os
 from unittest import mock
 from puffotter.os import listdir, create_file
 from toktokkie.Directory import Directory
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 

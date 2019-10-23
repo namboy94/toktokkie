@@ -20,8 +20,9 @@ LICENSE"""
 import os
 import argparse
 from typing import List, Optional
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import MediaType, IdType
+from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.MediaType import MediaType
 from manga_dl.scrapers.mangadex import MangaDexScraper
 from manga_dl.entities.Chapter import Chapter
 from puffotter.os import makedirs, listdir, replace_illegal_ntfs_chars

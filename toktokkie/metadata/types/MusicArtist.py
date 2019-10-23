@@ -20,7 +20,8 @@ LICENSE"""
 from copy import deepcopy
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType, valid_id_types
+from toktokkie.metadata.ids.mappings import valid_id_types
+from toktokkie.metadata.MediaType import MediaType
 from puffotter.os import listdir
 from puffotter.prompt import prompt
 

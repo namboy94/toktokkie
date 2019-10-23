@@ -24,8 +24,8 @@ from subprocess import Popen
 from threading import Thread
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget
-from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.gui.pyuic.tv_show_widget import Ui_TvSeriesWidget
 
 

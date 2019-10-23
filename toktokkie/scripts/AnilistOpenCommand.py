@@ -20,7 +20,7 @@ LICENSE"""
 import argparse
 from subprocess import Popen
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 
 
 class AnilistOpenCommand(Command):

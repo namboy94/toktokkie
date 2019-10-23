@@ -26,7 +26,7 @@ from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
 from puffotter.prompt import prompt
 from toktokkie.renaming import Renamer, RenameOperation
-from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.metadata.components.TvSeason import TvSeason
 from toktokkie.xdcc_update.enums import Resolution
 from toktokkie.exceptions import MissingXDCCInstructions, \

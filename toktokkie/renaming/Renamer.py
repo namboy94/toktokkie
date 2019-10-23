@@ -26,10 +26,11 @@ from typing import List, Optional, Dict
 from puffotter.os import listdir, replace_illegal_ntfs_chars, get_ext
 from puffotter.prompt import yn_prompt
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.MusicArtist import MusicArtist
-from toktokkie.metadata.components.enums import MediaType, IdType
+from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.types.MusicArtist import MusicArtist
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.renaming.RenameOperation import RenameOperation
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.Title import TitleType

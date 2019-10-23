@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.check.BookChecker import BookChecker
 from toktokkie.check.MangaChecker import MangaChecker
 from toktokkie.check.BookSeriesChecker import BookSeriesChecker

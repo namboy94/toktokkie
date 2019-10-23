@@ -18,10 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import Dict, Any
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.components.enums import IdType
-from toktokkie.metadata.Metadata import Metadata
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.components.MetadataPart import MetadataPart
 
 

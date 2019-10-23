@@ -25,7 +25,7 @@ from puffotter.prompt import yn_prompt
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
 from toktokkie.metadata.helper.functions import get_metadata, create_metadata
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.exceptions import MissingMetadata
 from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
 from toktokkie.check.map import checker_map

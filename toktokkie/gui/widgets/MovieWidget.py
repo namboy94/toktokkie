@@ -21,8 +21,8 @@ from typing import Optional
 from subprocess import Popen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget
-from toktokkie.metadata.Movie import Movie
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.Movie import Movie
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.gui.pyuic.movie_widget import Ui_MovieWidget
 
 

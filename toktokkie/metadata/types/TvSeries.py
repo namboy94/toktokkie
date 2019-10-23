@@ -22,7 +22,8 @@ from typing import List, Dict, Any, Tuple
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.TvSeason import TvSeason
-from toktokkie.metadata.components.enums import IdType, MediaType
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.components.TvEpisode import TvEpisode
 from toktokkie.metadata.components.TvEpisodeRange import TvEpisodeRange
 from toktokkie.exceptions import InvalidMetadata

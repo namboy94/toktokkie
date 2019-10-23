@@ -25,8 +25,8 @@ from puffotter.graphql import GraphQlClient
 from puffotter.os import makedirs
 from puffotter.prompt import prompt
 from subprocess import Popen
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from manga_dl.scrapers.mangadex import MangaDexScraper
 from toktokkie.scripts.Command import Command

@@ -26,8 +26,8 @@ from subprocess import Popen, check_output
 from puffotter.prompt import yn_prompt
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
-from toktokkie.metadata.components.enums import MediaType
-from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.types.TvSeries import TvSeries
 
 
 class SuperCutCommand(Command):

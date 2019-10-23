@@ -20,8 +20,8 @@ LICENSE"""
 import os
 from unittest import mock
 from toktokkie.Directory import Directory
-from toktokkie.metadata.VisualNovel import VisualNovel
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.VisualNovel import VisualNovel
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 

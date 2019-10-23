@@ -24,7 +24,7 @@ import argparse
 from typing import Dict, List
 from bs4 import BeautifulSoup
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.MusicArtist import MusicArtist
+from toktokkie.metadata.types.MusicArtist import MusicArtist
 from puffotter.os import makedirs, listdir
 from puffotter.requests import aggressive_request
 from toktokkie.scripts.RenameCommand import RenameCommand

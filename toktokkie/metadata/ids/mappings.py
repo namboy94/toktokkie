@@ -17,36 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
 from typing import List, Dict
-
-
-class IdType(Enum):
-    """
-    Enumeration of all possible ID types
-    """
-    TVDB = "tvdb"
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    ISBN = "isbn"
-    VNDB = "vndb"
-    MANGADEX = "mangadex"
-    MUSICBRAINZ = "musicbrainz"
-
-
-class MediaType(Enum):
-    """
-    Enumeration that defines all possible media types
-    """
-    BOOK = "book"
-    BOOK_SERIES = "book_series"
-    MOVIE = "movie"
-    TV_SERIES = "tv"
-    VISUAL_NOVEL = "visual_novel"
-    MANGA = "manga"
-    MUSIC_ARTIST = "music"
+from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.ids.IdType import IdType
 
 
 valid_id_types = {
@@ -92,6 +65,7 @@ valid_id_types = {
 Valid ID types for the various Media types
 """
 
+
 required_id_types = {
     MediaType.BOOK: [
     ],
@@ -114,4 +88,53 @@ required_id_types = {
 }  # type: Dict[MediaType, List[IdType]]
 """
 Required ID Types for the various Media Types
+"""
+
+
+literature_media_types = [
+    MediaType.BOOK,
+    MediaType.BOOK_SERIES,
+    MediaType.MANGA
+]
+"""
+Media types that represent literature
+"""
+
+
+int_id_types = [
+    IdType.MYANIMELIST,
+    IdType.ANILIST,
+    IdType.KITSU,
+    IdType.TVDB
+]
+"""
+ID Types that are always integer values
+"""
+
+
+id_prompt_order = [
+    IdType.TVDB,
+    IdType.IMDB,
+    IdType.ISBN,
+    IdType.VNDB,
+    IdType.MUSICBRAINZ,
+    IdType.MYANIMELIST,
+    IdType.ANILIST,
+    IdType.KITSU,
+    IdType.MANGADEX
+]
+"""
+The order in which ID types should be prompted
+"""
+
+
+theme_song_ids = [
+    IdType.TVDB,
+    IdType.MYANIMELIST,
+    IdType.ANILIST,
+    IdType.KITSU,
+    IdType.VNDB
+]
+"""
+ID types that can be associated with theme songs
 """

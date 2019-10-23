@@ -21,8 +21,8 @@ import os
 from unittest import mock
 from toktokkie.Directory import Directory
 from toktokkie.test.metadata.TestMetadata import _TestMetadata
-from toktokkie.metadata.Book import Book
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.Book import Book
+from toktokkie.metadata.ids.IdType import IdType
 
 
 class TestBook(_TestMetadata):

@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 from puffotter.os import listdir
 
 

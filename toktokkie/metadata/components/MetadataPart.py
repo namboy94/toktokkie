@@ -19,7 +19,7 @@ LICENSE"""
 
 from typing import Dict, Any, List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.exceptions import InvalidMetadata
 
 

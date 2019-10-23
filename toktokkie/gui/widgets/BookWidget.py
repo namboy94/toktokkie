@@ -21,8 +21,8 @@ from typing import Optional
 from subprocess import Popen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget
-from toktokkie.metadata.Book import Book
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.Book import Book
+from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.gui.pyuic.book_widget import Ui_BookWidget
 
 

@@ -25,8 +25,8 @@ from colorama import Fore, Style
 from toktokkie.check.Checker import Checker
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
-from toktokkie.metadata.TvSeries import TvSeries
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.ids.IdType import IdType
 from puffotter.prompt import yn_prompt
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType

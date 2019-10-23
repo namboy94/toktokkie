@@ -22,7 +22,8 @@ import requests
 import argparse
 from PIL import Image
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.components.enums import MediaType, IdType
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.MediaType import MediaType
 from puffotter.graphql import GraphQlClient
 
 

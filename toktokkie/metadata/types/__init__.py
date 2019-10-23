@@ -16,14 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
-
-from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.types.Book import Book
-from toktokkie.metadata.types.BookSeries import BookSeries
-from toktokkie.metadata.types.Movie import Movie
-from toktokkie.metadata.types.Manga import Manga
-from toktokkie.metadata.types.TvSeries import TvSeries
-from toktokkie.metadata.types.VisualNovel import VisualNovel
-from toktokkie.metadata.MediaType import MediaType
-from toktokkie.metadata.helper.functions import get_metadata, \
-    get_metadata_class, create_metadata

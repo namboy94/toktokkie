@@ -20,7 +20,7 @@ LICENSE"""
 import os
 from typing import List, Dict, Any
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 from puffotter.prompt import prompt_comma_list
 
 

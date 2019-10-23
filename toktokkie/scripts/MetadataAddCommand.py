@@ -19,8 +19,9 @@ LICENSE"""
 
 import argparse
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.components.enums import IdType, MediaType
-from toktokkie.metadata.TvSeries import TvSeries
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.Directory import Directory
 
 

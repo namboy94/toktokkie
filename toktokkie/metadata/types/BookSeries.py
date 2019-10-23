@@ -19,9 +19,9 @@ LICENSE"""
 
 from typing import Dict, Any
 from puffotter.os import listdir
-from toktokkie.metadata.Book import Book
+from toktokkie.metadata.types.Book import Book
 from toktokkie.metadata.components.BookVolume import BookVolume
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 
 
 class BookSeries(Book):

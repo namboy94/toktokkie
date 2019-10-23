@@ -20,10 +20,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import json
 import requests
-from typing import Optional, List
+from typing import Optional
 from toktokkie.check.Checker import Checker
-from toktokkie.metadata.Manga import Manga
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.ids.IdType import IdType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.MediaListEntry import MangaListEntry
 from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType

@@ -19,12 +19,12 @@ LICENSE"""
 
 from typing import Dict, Any
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 
 
-class Movie(Metadata):
+class Book(Metadata):
     """
-    Metadata class that model a Movie
+    Metadata class that model a Book
     """
 
     @classmethod
@@ -32,7 +32,7 @@ class Movie(Metadata):
         """
         :return: The media type of the Metadata class
         """
-        return MediaType.MOVIE
+        return MediaType.BOOK
 
     @classmethod
     def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \

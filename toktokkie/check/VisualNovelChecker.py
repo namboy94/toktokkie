@@ -19,7 +19,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 from toktokkie.check.Checker import Checker
-from toktokkie.metadata.VisualNovel import VisualNovel
+from toktokkie.metadata.types.VisualNovel import VisualNovel
 
 
 class VisualNovelChecker(Checker):

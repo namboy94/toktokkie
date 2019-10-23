@@ -18,8 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from toktokkie.check.Checker import Checker
-from toktokkie.metadata.BookSeries import BookSeries
-from toktokkie.metadata.components.enums import IdType
+from toktokkie.metadata.types.BookSeries import BookSeries
+from toktokkie.metadata.ids.IdType import IdType
 from anime_list_apis.models.attributes.Id import IdType as AnimeListIdType
 
 

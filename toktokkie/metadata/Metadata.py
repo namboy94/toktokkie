@@ -27,8 +27,9 @@ from jsonschema import validate, ValidationError
 from toktokkie import version
 from toktokkie.exceptions import InvalidMetadata, MissingMetadata
 from toktokkie.metadata.schema.SchemaBuilder import SchemaBuilder
-from toktokkie.metadata.components.enums import MediaType, IdType, \
-    valid_id_types, required_id_types
+from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.ids.mappings import valid_id_types, required_id_types
+from toktokkie.metadata.MediaType import MediaType
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType

@@ -21,7 +21,7 @@ import os
 from typing import Optional, List, Dict, Any
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.enums import MediaType
+from toktokkie.metadata.MediaType import MediaType
 
 
 class VisualNovel(Metadata):
