@@ -221,7 +221,7 @@ class XDCCUpdater:
             self.episode_offset
             self.search_pattern
         except KeyError as e:
-            raise InvalidXDCCInstructions("Missing key: ".format(str(e)))
+            raise InvalidXDCCInstructions("Missing key: {}".format(e))
 
     @classmethod
     def prompt(cls, metadata: TvSeries):
