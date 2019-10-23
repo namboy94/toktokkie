@@ -49,7 +49,8 @@ if __name__ == "__main__":
             "puffotter",
             "manga-dl",
             "musicbrainzngs",
-            "jsonschema"
+            "jsonschema",
+            "Pillow"
         ],
         extras_require={
             "gui": ["PyQt5"]
