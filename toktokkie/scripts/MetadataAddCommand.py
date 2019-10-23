@@ -20,6 +20,7 @@ LICENSE"""
 import argparse
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.metadata.ids.mappings import valid_id_types
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.Directory import Directory
@@ -49,7 +50,8 @@ class MetadataAddCommand(Command):
 
         subparser = parser.add_subparsers(dest="mode")
 
-        tv_series_ids = [x.value for x in TvSeries.valid_id_types()]
+        valid_ids = valid_id_types[TvSeries.media_type()]
+        tv_series_ids = [x.value for x in valid_ids]
 
         multi_episode_parser = subparser.add_parser(
             "multi-episode", help="Add a multi-episode to a TV Series"

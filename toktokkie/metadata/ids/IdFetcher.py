@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import logging
 import tvdb_api
 import musicbrainzngs
 from typing import List, Dict, Optional
@@ -30,6 +31,8 @@ from anime_list_apis.models.attributes.MediaType import MediaType as \
 
 
 class IdFetcher:
+
+    logger = logging.getLogger(__name__)
 
     def __init__(self, name: str, media_type: MediaType):
         self.name = name
@@ -56,6 +59,7 @@ class IdFetcher:
             return []
 
     def __load_anilist_ids(self, mal_ids: List[str]) -> List[str]:
+        self.logger.info("Loading anilist ID from mal IDs {}".format(mal_ids))
         list_type = AnimeListMediaType.ANIME
         if self.media_type in literature_media_types:
             list_type = AnimeListMediaType.MANGA

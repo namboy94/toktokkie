@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.components.TvSeason import TvSeason
@@ -40,58 +40,6 @@ class TvSeries(Metadata):
         :return: The media type of the Metadata class
         """
         return MediaType.TV_SERIES
-
-    @classmethod
-    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
-            -> Dict[str, Any]:
-        """
-        Prompts the user for metadata-type-specific information
-        Should be extended by child classes
-        :param directory_path: The path to the directory for which to generate
-                               the metadata
-        :param json_data: Previously generated JSON data
-        :return: The generated metadata JSON data
-        """
-        json_data["seasons"] = []
-        series = cls(directory_path, json_data, no_validation=True)
-
-        seasons = []
-
-        # Make sure that regular Seasons are prompted first and in order
-        season_folders = []  # type: List[Tuple[str, str]]
-        special_folders = []  # type: List[Tuple[str, str]]
-        unsorted_folders = listdir(directory_path, no_files=True)
-
-        for folder, folder_path in unsorted_folders:
-            if folder.startswith("Season "):
-                try:
-                    int(folder.split("Season ")[1])
-                    season_folders.append((folder, folder_path))
-                except (ValueError, IndexError):
-                    special_folders.append((folder, folder_path))
-            else:
-                special_folders.append((folder, folder_path))
-
-        season_folders.sort(key=lambda x: int(x[0].split("Season ")[1]))
-
-        for season_name, season_path in season_folders + special_folders:
-
-            print("\n{}:".format(season_name))
-            ids = cls.prompt_for_ids(season_path, json_data["ids"])
-
-            # Remove double entries
-            for id_type, id_value in json_data["ids"].items():
-                if id_value == ids.get(id_type, None):
-                    ids.pop(id_type)
-
-            seasons.append(TvSeason(series, {
-                "ids": ids,
-                "name": season_name
-            }))
-
-        series.seasons = seasons
-        series.validate_json()
-        return series.json
 
     @property
     def tvdb_id(self) -> str:
@@ -265,37 +213,19 @@ class TvSeries(Metadata):
             "episode": episode
         })
 
-    def _validate_json(self):
+    def validate(self):
         """
         Validates the JSON data to make sure everything has valid values
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """
-        self._assert_true("seasons" in self.json, "No data about seasons")
-        self._assert_true(
-            len(self.seasons) == len(self.json["seasons"]),
-            "Invalid amount of seasons"
-        )
-
+        super().validate()
         foldercount = len(listdir(self.directory_path, no_files=True))
-        self._assert_true(len(self.seasons) == foldercount)
 
-        self._assert_true(
-            len(self.excludes) ==
-            len(self.json.get("excludes", [])),
-            "Invalid amount of excludes"
-        )
-        self._assert_true(
-            len(self.season_start_overrides) ==
-            len(self.json.get("season_start_overrides", []))
-        )
-        self._assert_true(
-            len(self.multi_episodes) ==
-            len(self.json.get("multi_episodes", []))
-        )
-        self._assert_true(
-            self.tvdb_id == self.ids[IdType.TVDB][0]
-        )
+        if len(self.seasons) < foldercount:
+            raise InvalidMetadata("Missing seasons in metadata")
+        elif len(self.seasons) > foldercount:
+            raise InvalidMetadata("Missing season directories")
 
     def get_episode_files(self) -> Dict[str, Dict[int, List[str]]]:
         """

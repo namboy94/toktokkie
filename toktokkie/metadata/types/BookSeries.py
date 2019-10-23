@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import Dict, Any
+from typing import Dict
 from puffotter.os import listdir
 from toktokkie.metadata.types.Book import Book
 from toktokkie.metadata.components.BookVolume import BookVolume
@@ -35,43 +35,6 @@ class BookSeries(Book):
         :return: The media type of the Metadata class
         """
         return MediaType.BOOK_SERIES
-
-    @classmethod
-    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
-            -> Dict[str, Any]:
-        """
-        Prompts the user for metadata-type-specific information
-        Should be extended by child classes
-        :param directory_path: The path to the directory for which to generate
-                               the metadata
-        :param json_data: Previously generated JSON data
-        :return: The generated metadata JSON data
-        """
-        json_data["volumes"] = {}
-        series = BookSeries(directory_path, json_data)
-
-        volumes = {}  # type: Dict[int, BookVolume]
-        for i, (volume_name, volume_path) in enumerate(
-                listdir(directory_path, no_dirs=True)
-        ):
-            print("Volume {} ({}):".format(i + 1, volume_name))
-            ids = cls.prompt_for_ids(directory_path, json_data["ids"])
-
-            # Remove double entries
-            for id_type, id_value in json_data["ids"].items():
-                if id_value == ids.get(id_type, None):
-                    ids.pop(id_type)
-
-            if len(ids) == 0:
-                continue
-            else:
-                volumes[i + 1] = BookVolume(series, {
-                    "ids": ids,
-                    "name": volume_name
-                })
-
-        series.volumes = volumes
-        return series.json
 
     @property
     def volumes(self) -> Dict[int, BookVolume]:

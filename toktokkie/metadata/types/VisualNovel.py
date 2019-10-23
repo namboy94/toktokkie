@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.MediaType import MediaType
@@ -35,19 +35,6 @@ class VisualNovel(Metadata):
         :return: The media type of the Metadata class
         """
         return MediaType.VISUAL_NOVEL
-
-    @classmethod
-    def _prompt(cls, directory_path: str, json_data: Dict[str, Any]) \
-            -> Dict[str, Any]:
-        """
-        Prompts the user for metadata-type-specific information
-        Should be extended by child classes
-        :param directory_path: The path to the directory for which to generate
-                               the metadata
-        :param json_data: Previously generated JSON data
-        :return: The generated metadata JSON data
-        """
-        return {}
 
     @property
     def has_ed(self) -> bool:
@@ -180,11 +167,3 @@ class VisualNovel(Metadata):
                 return None
             else:
                 return files
-
-    def _validate_json(self):
-        """
-        Validates the JSON data to make sure everything has valid values
-        :raises InvalidMetadataException: If any errors were encountered
-        :return: None
-        """
-        pass

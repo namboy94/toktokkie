@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import logging
 from typing import Dict, Any, List, Tuple
-from puffotter.os import listdir
+from puffotter.os import listdir, makedirs
 from puffotter.prompt import prompt, yn_prompt, prompt_comma_list
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.IdFetcher import IdFetcher
@@ -48,7 +48,7 @@ class Prompter:
         """
         self.directory = directory
         self.media_type = media_type
-        self.name = os.path.basename(self.directory)
+        self.name = os.path.basename(os.path.abspath(self.directory))
         self.id_fetcher = IdFetcher(self.name, self.media_type)
 
     def prompt(self) -> Dict[str, Any]:
@@ -90,13 +90,15 @@ class Prompter:
             self,
             valid_ids: List[IdType],
             required_ids: List[IdType],
-            defaults: Dict[str, List[str]]
+            defaults: Dict[str, List[str]],
+            mincount: int = 1
     ) -> Dict[str, List[str]]:
         """
         Prompts the user for any valid IDs the metadata may contain
         :param valid_ids: IDs that are valid for the prompt
         :param required_ids: IDs that are required to be provided
         :param defaults: Any potential default values for the IDs
+        :param mincount: Minimal amount of IDs that the user needs to provide
         :return: The IDs in a dictionary mapping the ID names to their IDs
         """
         ids = {}  # type: Dict[str, List[str]]
@@ -104,7 +106,7 @@ class Prompter:
             if id_type not in valid_ids:
                 continue
             else:
-                self.__load_default_ids(valid_ids, defaults)
+                defaults = self.__load_default_ids(valid_ids, defaults)
 
                 default = defaults.get(id_type.value)
                 is_int = id_type in int_id_types
@@ -113,21 +115,31 @@ class Prompter:
                 if id_type in required_ids:
                     min_count = 1
 
-                ids[id_type.value] = prompt_comma_list(
+                prompted = prompt_comma_list(
                     "{} IDs".format(id_type.value),
                     min_count=min_count,
                     default=default,
                     primitive_type=int if is_int else lambda x: str(x)
                 )
+                prompted = [str(x) for x in prompted]
+                non_default = prompted != default
 
-                non_default = ids[id_type.value] == default
+                if len(prompted) > 0:
+                    ids[id_type.value] = prompted
+                    defaults[id_type.value] = prompted
 
-                # Update anilist IDs if myanimelist IDs were updated
-                if id_type == IdType.MYANIMELIST and non_default:
-                    if IdType.ANILIST.value in defaults:
-                        defaults.pop(IdType.ANILIST.value)
+                    # Update anilist IDs if myanimelist IDs were updated
+                    if id_type == IdType.MYANIMELIST and non_default:
+                        if IdType.ANILIST.value in defaults:
+                            defaults.pop(IdType.ANILIST.value)
 
-        return ids
+        if len(ids) < mincount:
+            print("Please enter at least {} IDs".format(mincount))
+            return self.__prompt_ids(
+                valid_ids, required_ids, defaults, mincount
+            )
+        else:
+            return ids
 
     def __prompt_component_ids(
             self,
@@ -143,10 +155,11 @@ class Prompter:
         """
 
         defaults = previous_ids.copy()
-        ids = self.__prompt_ids(valid_ids, [], defaults)
+        ids = self.__prompt_ids(valid_ids, [], defaults, 0)
 
         # Strip unnecessary IDs
-        for key, value in ids.items():
+        for key in list(ids.keys()):
+            value = ids[key]
             if previous_ids.get(key) == value:
                 ids.pop(key)
 
@@ -156,25 +169,27 @@ class Prompter:
             self,
             valid_ids: List[IdType],
             defaults: Dict[str, List[str]]
-    ):
+    ) -> Dict[str, List[str]]:
         """
         Tries to load any missing default IDs using the name of the directory
         and/or other default IDs
         :param valid_ids: List of valid ID types
         :param defaults: The current default IDs
-        :return: None (Works in-place)
+        :return: The updated IDs
         """
         _defaults = {}
         for id_type_str, ids in defaults.items():
             _defaults[IdType(id_type_str)] = ids
 
         for id_type in valid_ids:
-            if id_type in defaults:
+            if id_type.value in defaults:
                 continue
             else:
                 ids = self.id_fetcher.fetch_ids(id_type, _defaults)
                 if ids is not None:
                     defaults[id_type.value] = ids
+
+        return defaults
 
     # noinspection PyUnusedLocal
     def __prompt_book(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -214,6 +229,8 @@ class Prompter:
         :param data: The data from the generic prompt
         :return: The additionally generated data
         """
+        main_path = os.path.join(self.directory, "Main")
+        makedirs(main_path)
         special_path = os.path.join(self.directory, "Special")
         special_chapters = []  # type: List[str]
 

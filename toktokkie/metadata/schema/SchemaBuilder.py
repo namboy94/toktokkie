@@ -20,7 +20,7 @@ LICENSE"""
 import logging
 from typing import Dict, Any, List
 from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.ids.mappings import valid_id_types
+from toktokkie.metadata.ids.mappings import valid_id_types, required_id_types
 from toktokkie.metadata.MediaType import MediaType
 
 
@@ -48,7 +48,11 @@ class SchemaBuilder:
         Generates the JSON schema
         :return: The JSON schema
         """
-        ids = self.__create_ids_schema(valid_id_types[self.media_type])
+        ids = self.__create_ids_schema(
+            valid_id_types[self.media_type],
+            required_id_types[self.media_type]
+        )
+        ids["minProperties"] = 1
 
         base = {
             "type": "object",
@@ -62,7 +66,8 @@ class SchemaBuilder:
                     "type": "string",
                     "pattern": "^" + str(self.media_type.value) + "$"
                 }
-            }
+            },
+            "required": ["type", "ids"]
         }
 
         if self.media_type == MediaType.BOOK:
@@ -75,8 +80,10 @@ class SchemaBuilder:
             base["properties"].update(self.__create_movie_properties())
         elif self.media_type == MediaType.MUSIC_ARTIST:
             base["properties"].update(self.__create_music_artist_properties())
+            base["required"].append("albums")
         elif self.media_type == MediaType.TV_SERIES:
             base["properties"].update(self.__create_tv_series_properties())
+            base["required"].append("seasons")
         elif self.media_type == MediaType.VISUAL_NOVEL:
             base["properties"].update(self.__create_visual_novel_properties())
         else:
@@ -85,22 +92,29 @@ class SchemaBuilder:
 
         return base
 
-    def __create_ids_schema(self, valid_ids: List[IdType]) -> Dict[str, Any]:
+    def __create_ids_schema(
+            self,
+            valid_ids: List[IdType],
+            required_ids: List[IdType]
+    ) -> Dict[str, Any]:
         """
         Creates an "ids" object that allows any valid ID types
         :param valid_ids: The valid ID types
+        :param required_ids: Required ID types
         :return: The "ids" object in JSON schema format
         """
         ids = {
             "type": "object",
             "properties": {},
-            "additionalProperties": False
+            "additionalProperties": False,
+            "required": [x.value for x in required_ids]
         }
         for id_type in valid_ids:
             ids["properties"][id_type.value] = {
                 "type": "array",
                 "items": {"type": "string"}
             }
+
         return ids
 
     def __create_book_properties(self) -> Dict[str, Any]:
@@ -115,7 +129,7 @@ class SchemaBuilder:
         Creates additional properties for book series metadata
         :return: The additional properties
         """
-        ids = self.__create_ids_schema(valid_id_types[self.media_type])
+        ids = self.__create_ids_schema(valid_id_types[self.media_type], [])
         return {
             "volumes": {
                 "type": "object",
@@ -192,7 +206,7 @@ class SchemaBuilder:
         :return: The additional properties
         """
         valid_ids = valid_id_types[self.media_type]
-        ids = self.__create_ids_schema(valid_ids)
+        ids = self.__create_ids_schema(valid_ids, [])
 
         excludes = {}
         multi_episodes = {}
@@ -253,6 +267,7 @@ class SchemaBuilder:
 
 
 if __name__ == "__main__":
-    for media_type in MediaType:
-        print(SchemaBuilder(media_type).build_schema())
+    for _media_type in MediaType:
+        print(_media_type.value)
+        print(SchemaBuilder(_media_type).build_schema())
         print()
