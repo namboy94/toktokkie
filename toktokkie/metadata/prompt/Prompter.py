@@ -178,8 +178,8 @@ class Prompter:
         :return: The updated IDs
         """
         _defaults = {}
-        for id_type_str, ids in defaults.items():
-            _defaults[IdType(id_type_str)] = ids
+        for id_type_str, _ids in defaults.items():
+            _defaults[IdType(id_type_str)] = _ids
 
         for id_type in valid_ids:
             if id_type.value in defaults:

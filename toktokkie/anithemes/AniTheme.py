@@ -22,22 +22,29 @@ import json
 import time
 import logging
 from bs4 import BeautifulSoup
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict, Any
 from puffotter.subprocess import execute_command
 from puffotter.requests import aggressive_request
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType
 
 
-# TODO Integrate AniDB, since it has way more info on artists etc
 class AniTheme:
     """
-    Class that contains all relevant information for anime themes
+    Class that contains all relevant information for an anime theme song.
+    Uses reddit and myanimelist to retrieve all the information
+    # TODO Integrate AniDB, since it has way more info on artists etc
     """
 
-    mal_cache = {}
+    mal_cache = {}  # type: Dict[int, Dict[str, Any]]
+    """
+    Cache for repeated myanimelist requests
+    """
 
     logger = logging.getLogger(__name__)
+    """
+    Logger for this class
+    """
 
     def __init__(
             self,
@@ -48,6 +55,16 @@ class AniTheme:
             episodes: str,
             media_url: str
     ):
+        """
+        Initializes the anime theme. Loads missing data from the internet
+        while initializing, so this might take up to a couple of seconds.
+        :param show_name: The name of the show this songe is a theme song for
+        :param mal_id: The myanimelist ID of that show
+        :param theme_type: The type of theme (example: OP, ED)
+        :param song_name: The name of the song
+        :param episodes: During which episodes the theme song played
+        :param media_url: The URL to the video of this theme song
+        """
         self.logger.info("Initializing {}".format(song_name))
 
         self.show_name = show_name
@@ -88,6 +105,9 @@ class AniTheme:
         self.logger.info(self)
 
     def __str__(self) -> str:
+        """
+        :return: A string representation of the object
+        """
         return "{} {}, Title: \"{}\", Artist: \"{}\", Eps: \"{}\"".format(
             self.show_name,
             self._theme_type,
@@ -103,6 +123,16 @@ class AniTheme:
             season: str,
             whitelist: Optional[List[str]] = None
     ) -> List["AniTheme"]:
+        """
+        Loads all theme songs for a specific season and year
+        CAUTION: Currently season does nothing, it is recommended to use
+        the whitelist parameter to limit the requests done
+        :param year: The year for which to fetch the theme songs
+        :param season: The season for which to fetch the theme songs
+        :param whitelist: If provided, will ignore any series that are not
+                          contained in the whitelist
+        :return: The fetched AniTheme objects
+        """
 
         cls.logger.info("Loading theme info for {} {}".format(season, year))
 
@@ -120,8 +150,8 @@ class AniTheme:
 
         current_title = ""
         current_mal_id = 0
-        current_tables = []
-        themes = []
+        current_tables = []  # type: List[BeautifulSoup]
+        themes = []  # type: List[AniTheme]
         while len(children) > 0:
             element = children.pop(0)
 
@@ -130,7 +160,7 @@ class AniTheme:
                         and (whitelist is None or current_title in whitelist):
                     cls.logger.info("Found series {}".format(current_title))
 
-                    data = []
+                    data = []  # type: List[AniTheme]
                     while len(current_tables) > 0:
                         data += cls.__parse_reddit_wiki_table(
                             current_title,
@@ -161,6 +191,14 @@ class AniTheme:
             mal_id: int,
             table
     ) -> List["AniTheme"]:
+        """
+        Parses a table from reddit and generates AniTheme objects from them
+        :param title: The title of the series associated with the table
+        :param mal_id: The myanimelist ID of the series
+        :param table: The table to parse
+        :return: A list of AniTheme objects parsed from the content of
+                 the table
+        """
         data = []
 
         for row in table.find_all("tr"):
@@ -188,6 +226,12 @@ class AniTheme:
         return data
 
     def __load_song_info(self) -> Tuple[str, str]:
+        """
+        Loads song information using myanimelist (like artist etc)
+        :return: A tuple consisting of the song title and the artist.
+                 If it was not possible to figure out using myanimelist data,
+                 both will be "Unknown"
+        """
         self.logger.info("Loading song data using myanimelist")
 
         url = "https://api.jikan.moe/v3/anime/{}".format(self.mal_id)
@@ -236,7 +280,10 @@ class AniTheme:
             return "Unknown", "Unknown"
 
     def download_webm(self):
-
+        """
+        Downloads the .webm video of the anime theme song to the tmp directory
+        :return: None
+        """
         command = ["curl", "-o", self.temp_webm_file, self.media_url]
 
         if os.path.exists(self.temp_webm_file) \
@@ -256,6 +303,10 @@ class AniTheme:
             time.sleep(15)
 
     def convert_to_mp3(self):
+        """
+        Converts the previously downloaded webm file to mp3
+        :return: None
+        """
         command = [
             "ffmpeg",
             "-i", self.temp_webm_file,
@@ -267,7 +318,3 @@ class AniTheme:
 
         if not os.path.exists(self.temp_mp3_file):
             execute_command(command)
-
-
-if __name__ == "__main__":
-    AniTheme.load_reddit_anithemes_wiki_info(2019, "Fall")

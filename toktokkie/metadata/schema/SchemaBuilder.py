@@ -54,43 +54,44 @@ class SchemaBuilder:
         )
         ids["minProperties"] = 1
 
-        base = {
-            "type": "object",
-            "properties": {
-                "tags": {
-                    "type": "array",
-                    "items": {"type": "string"}
-                },
-                "ids": ids,
-                "type": {
-                    "type": "string",
-                    "pattern": "^" + str(self.media_type.value) + "$"
-                }
+        properties = {
+            "tags": {
+                "type": "array",
+                "items": {"type": "string"}
             },
-            "required": ["type", "ids"]
+            "ids": ids,
+            "type": {
+                "type": "string",
+                "pattern": "^" + str(self.media_type.value) + "$"
+            }
         }
+        required = ["type", "ids"]
 
         if self.media_type == MediaType.BOOK:
-            base["properties"].update(self.__create_book_properties())
+            properties.update(self.__create_book_properties())
         elif self.media_type == MediaType.BOOK_SERIES:
-            base["properties"].update(self.__create_book_series_properties())
+            properties.update(self.__create_book_series_properties())
         elif self.media_type == MediaType.MANGA:
-            base["properties"].update(self.__create_manga_properties())
+            properties.update(self.__create_manga_properties())
         elif self.media_type == MediaType.MOVIE:
-            base["properties"].update(self.__create_movie_properties())
+            properties.update(self.__create_movie_properties())
         elif self.media_type == MediaType.MUSIC_ARTIST:
-            base["properties"].update(self.__create_music_artist_properties())
-            base["required"].append("albums")
+            properties.update(self.__create_music_artist_properties())
+            required.append("albums")
         elif self.media_type == MediaType.TV_SERIES:
-            base["properties"].update(self.__create_tv_series_properties())
-            base["required"].append("seasons")
+            properties.update(self.__create_tv_series_properties())
+            required.append("seasons")
         elif self.media_type == MediaType.VISUAL_NOVEL:
-            base["properties"].update(self.__create_visual_novel_properties())
+            properties.update(self.__create_visual_novel_properties())
         else:
             self.logger.error("Schema for media type {} not implemented"
                               .format(self.media_type.name))
 
-        return base
+        return {
+            "type": "object",
+            "properties": properties,
+            "required": required
+        }
 
     def __create_ids_schema(
             self,
@@ -103,19 +104,19 @@ class SchemaBuilder:
         :param required_ids: Required ID types
         :return: The "ids" object in JSON schema format
         """
-        ids = {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": False,
-            "required": [x.value for x in required_ids]
-        }
+        properties = {}  # type: Dict[str, Any]
         for id_type in valid_ids:
-            ids["properties"][id_type.value] = {
+            properties[id_type.value] = {
                 "type": "array",
                 "items": {"type": "string"}
             }
 
-        return ids
+        return {
+            "type": "object",
+            "properties": properties,
+            "additionalProperties": False,
+            "required": [x.value for x in required_ids]
+        }
 
     def __create_book_properties(self) -> Dict[str, Any]:
         """
@@ -225,12 +226,17 @@ class SchemaBuilder:
             excludes[id_type.value] = extra_base.copy()
             season_start_overrides[id_type.value] = extra_base.copy()
 
-            extra_base["items"]["properties"].pop("episode")
-            extra_base["items"]["properties"]["start_episode"] \
-                = {"type": "number"}
-            extra_base["items"]["properties"]["end_episode"] \
-                = {"type": "number"}
-
+            extra_base = {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "season": {"type": "number"},
+                        "start_episode": {"type": "number"},
+                        "end_episode": {"type": "number"}
+                    }
+                }
+            }
             multi_episodes[id_type.value] = extra_base.copy()
 
         return {

@@ -177,8 +177,8 @@ class AnimeThemeDlCommand(Command):
         :return: The segments
         """
 
-        segments = []
-        current_segment = []
+        segments = []  # type: List[List[str]]
+        current_segment = []  # type: List[str]
 
         for i, title in enumerate(titles):
             if i > 0 \
@@ -232,16 +232,16 @@ class AnimeThemeDlCommand(Command):
                 continue
 
             try:
-                selection = selection.strip().split(",")
-                selection = list(map(lambda x: shows[int(x) - 1], selection))
+                parts = selection.strip().split(",")
+                parts = list(map(lambda x: shows[int(x) - 1], parts))
             except (ValueError, IndexError):
                 print("Invalid Selection")
                 continue
 
             with open(selection_file, "w") as f:
-                f.write(json.dumps(selection))
+                f.write(json.dumps(parts))
 
-            return selection
+            return parts
 
     def handle_excludes(
             self,
@@ -256,7 +256,7 @@ class AnimeThemeDlCommand(Command):
         excludes_file = os.path.join(self.args.out, "excludes.json")
 
         use_old = False
-        excludes = []
+        excludes = []  # type: List[str]
 
         if os.path.isfile(excludes_file):
             with open(excludes_file, "r") as f:
@@ -284,10 +284,10 @@ class AnimeThemeDlCommand(Command):
                     excludes = []
                     break
                 try:
-                    selection = selection.strip().split(",")
+                    parts = selection.strip().split(",")
                     excludes = list(map(
                         lambda x: selected_songs[int(x) - 1].filename,
-                        selection
+                        parts
                     ))
                 except (ValueError, IndexError):
                     print("Invalid Selection")
@@ -316,7 +316,7 @@ class AnimeThemeDlCommand(Command):
         :param data: The song data from reddit
         :return: The list of selected songs
         """
-        selected_songs = []
+        selected_songs = []  # type: List[Dict[str, str]]
         for series in selected_series:
             selected_songs += data[series]
         return selected_songs
@@ -346,7 +346,7 @@ class AnimeThemeDlCommand(Command):
             oped_dir = os.path.join(structure_dir, oped_type)
             os.makedirs(oped_dir)
 
-            artists = {}
+            artists = {}   # type: Dict[str, List[AniTheme]]
 
             for song in songs:
                 if song.artist in artists:
