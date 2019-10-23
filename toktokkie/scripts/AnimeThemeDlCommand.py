@@ -326,7 +326,7 @@ class AnimeThemeDlCommand(Command):
             selected_songs: List[AniTheme]
     ):
         """
-        Generates a folder structure for OPs and EDs following the scheme:
+        Generates a folder structure for OPs and EDs following the schema:
             Artist
             - Album
               - Song

@@ -88,7 +88,7 @@ class Renamer:
 
     def rename(self, noconfirm: bool):
         """
-        Renames the contained files according to the naming scheme.
+        Renames the contained files according to the naming schema.
         :param noconfirm: Skips the confirmation phase if True
         :return: None
         """
