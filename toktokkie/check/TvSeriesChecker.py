@@ -23,7 +23,8 @@ from typing import Dict, Optional, List
 from datetime import datetime
 from colorama import Fore, Style
 from toktokkie.check.Checker import Checker
-from toktokkie.renaming.Renamer import Renamer
+from toktokkie.renaming.functions import load_tvdb_episode_name, \
+    generate_tv_episode_filename
 from toktokkie.renaming.RenameOperation import RenameOperation
 from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.metadata.ids.IdType import IdType
@@ -369,12 +370,12 @@ class TvSeriesChecker(Checker):
 
         return RenameOperation.sanitize(
             metadata.directory_path,
-            Renamer.generate_tv_episode_filename(
+            generate_tv_episode_filename(
                 "",
                 series_name,
                 season_number,
                 episode_number,
-                Renamer.load_tvdb_episode_name(
+                load_tvdb_episode_name(
                     tvdb_id,
                     season_number,
                     episode_number,

@@ -19,9 +19,6 @@ LICENSE"""
 
 import os
 import logging
-import tvdb_api
-from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
-    tvdb_shownotfound
 from typing import List, Optional, Dict
 from puffotter.os import listdir, replace_illegal_ntfs_chars, get_ext
 from puffotter.prompt import yn_prompt
@@ -32,6 +29,8 @@ from toktokkie.metadata.types.MusicArtist import MusicArtist
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.renaming.RenameOperation import RenameOperation
+from toktokkie.renaming.functions import generate_tv_episode_filename, \
+    load_tvdb_episode_name
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.Title import TitleType
 from anime_list_apis.models.attributes.MediaType import MediaType as \
@@ -78,6 +77,11 @@ class Renamer:
             operations = self._generate_manga_operations()
         elif self.metadata.media_type() == MediaType.MUSIC_ARTIST:
             operations = self._generate_music_operations()
+        elif self.metadata.media_type() == MediaType.VISUAL_NOVEL:
+            pass
+        else:
+            self.logger.error("Renaming methods for {} not implemented"
+                              .format(self.metadata.media_type().name))
         return operations
 
     def get_active_operations(self) -> List[RenameOperation]:
@@ -389,11 +393,11 @@ class Renamer:
                     else:
                         end = season_multis[episode_number]
 
-                    episode_name = self.load_tvdb_episode_name(
+                    episode_name = load_tvdb_episode_name(
                         tvdb_id, season_number, episode_number, end
                     )
 
-                    new_name = self.generate_tv_episode_filename(
+                    new_name = generate_tv_episode_filename(
                         episode_file,
                         series_name,
                         season_number,
@@ -409,88 +413,3 @@ class Renamer:
                     episode_number += 1
 
         return operations
-
-    @staticmethod
-    def generate_tv_episode_filename(
-            original_file: str,
-            series_name: str,
-            season_number: int,
-            episode_number: int,
-            episode_name: str,
-            multi_end: Optional[int] = None
-    ):
-        """
-        Generates an episode name for a given episode
-        :param original_file: The original file. Used to get the file extension
-        :param series_name: The name of the series
-        :param season_number: The season number
-        :param episode_name: The episode name
-        :param episode_number: The episode number
-        :param multi_end: Can be provided to create a multi-episode range
-        :return: The generated episode name
-        """
-        ext = get_ext(original_file)
-        if ext is not None:
-            ext = "." + ext
-        else:
-            ext = ""
-
-        if multi_end is None:
-            return "{} - S{}E{} - {}{}".format(
-                series_name,
-                str(season_number).zfill(2),
-                str(episode_number).zfill(2),
-                episode_name,
-                ext
-            )
-        else:
-            return "{} - S{}E{}-E{} - {}{}".format(
-                series_name,
-                str(season_number).zfill(2),
-                str(episode_number).zfill(2),
-                str(multi_end).zfill(2),
-                episode_name,
-                ext
-            )
-
-    @staticmethod
-    def load_tvdb_episode_name(
-            tvdb_id: str,
-            season_number: int,
-            episode_number: int,
-            multi_end: Optional[int] = None
-    ) -> str:
-        """
-        Loads an episode name from TVDB
-        :param tvdb_id: The TVDB ID for the episode's series
-        :param season_number: The season number
-        :param episode_number: The episode number
-        :param multi_end: If provided,
-                          will generate a name for a range of episodes
-        :return: The TVDB name
-        """
-        if int(tvdb_id) == 0:
-            return "Episode " + str(episode_number)
-
-        if multi_end is not None:
-            episode_names = []
-            for episode in range(episode_number, multi_end + 1):
-                episode_names.append(Renamer.load_tvdb_episode_name(
-                    tvdb_id,
-                    season_number,
-                    episode
-                ))
-            return " | ".join(episode_names)
-
-        try:
-            tvdb = tvdb_api.Tvdb()
-            info = tvdb[int(tvdb_id)]
-            return info[season_number][episode_number]["episodeName"]
-
-        except (tvdb_episodenotfound, tvdb_seasonnotfound,
-                tvdb_shownotfound, ConnectionError, KeyError) as e:
-            # If not found, or other error, just return generic name
-            if str(e) == "cache_location":  # pragma: no cover
-                logging.getLogger(__name__).warning("TheTVDB.com is down!")
-
-            return "Episode " + str(episode_number)

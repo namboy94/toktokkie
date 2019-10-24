@@ -22,10 +22,12 @@ import json
 import logging
 from typing import List, Dict, Any, Optional
 from jsonschema import validate, ValidationError
-from toktokkie.exceptions import InvalidMetadata, MissingMetadata
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.schema.SchemaBuilder import SchemaBuilder
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.mappings import valid_id_types
+from toktokkie.metadata.ids.functions import objectify_ids, stringify_ids, \
+    fill_ids, minimize_ids
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.prompt.Prompter import Prompter
 
@@ -171,29 +173,6 @@ class Metadata:
         json_data = prompter.prompt()
         return cls(directory_path, json_data)
 
-    @classmethod
-    def from_directory(cls, directory_path: str):
-        """
-        Generates metadata for an existing media directory
-        :param directory_path: The path to the media directory
-        :raises InvalidMetadataException: if the metadata could not be
-                                          parsed correctly
-        :raises MissingMetadataException: if no metadata file was found
-        :return: The generated metadata object
-        """
-        metadata_file = os.path.join(directory_path, ".meta/info.json")
-
-        if not os.path.isfile(metadata_file):
-            raise MissingMetadata()
-
-        try:
-            with open(metadata_file, "r") as info_json:
-                data = json.load(info_json)
-                return cls(directory_path, data)
-
-        except json.JSONDecodeError:
-            raise InvalidMetadata()
-
     @property
     def name(self) -> str:
         """
@@ -236,20 +215,10 @@ class Metadata:
         """
         :return: A dictionary containing lists of IDs mapped to ID types
         """
-        generated = {}
-        for id_type, _id in self.json["ids"].items():
-
-            if isinstance(_id, list):
-                generated[IdType(id_type)] = _id
-            else:
-                generated[IdType(id_type)] = [_id]
-
-        for id_type in IdType:
-            if id_type in valid_id_types[self.media_type()]:
-                if id_type not in generated:
-                    generated[id_type] = []
-
-        return generated
+        return fill_ids(
+            objectify_ids(self.json["ids"]),
+            valid_id_types[self.media_type()]
+        )
 
     @ids.setter
     def ids(self, ids: Dict[IdType, List[str]]):
@@ -259,9 +228,7 @@ class Metadata:
         :param ids: The IDs to set
         :return: None
         """
-        self.json["ids"] = {}
-        for id_type, values in ids.items():
-            self.json["ids"][id_type.value] = values
+        self.json["ids"] = stringify_ids(minimize_ids(ids))
 
     def set_ids(self, id_type: IdType, ids: List[str]):
         """

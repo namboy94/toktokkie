@@ -20,7 +20,7 @@ LICENSE"""
 from typing import Dict
 from puffotter.os import listdir
 from toktokkie.metadata.types.Book import Book
-from toktokkie.metadata.components.BookVolume import BookVolume
+from toktokkie.metadata.types.components.BookVolume import BookVolume
 from toktokkie.metadata.MediaType import MediaType
 
 
@@ -45,11 +45,11 @@ class BookSeries(Book):
         volume_files = listdir(self.directory_path, no_dirs=True)
 
         for i, (volume, volume_file) in enumerate(volume_files):
-            json_data = self.json["volumes"].get(str(i + 1), {
-                "ids": self.ids,
-                "name": volume
-            })
-            volumes[i + 1] = BookVolume(self, json_data)
+            volume_num = i + 1
+            json_data = self.json["volumes"].get(str(volume_num), {"ids": {}})
+            volumes[i + 1] = BookVolume(
+                volume_num, volume, volume_file, self.ids, json_data
+            )
         return volumes
 
     @volumes.setter
@@ -62,12 +62,3 @@ class BookSeries(Book):
         self.json["volumes"] = {}
         for i, volume in volumes.items():
             self.json["volumes"][str(i)] = volume.json
-
-    def _validate_json(self):
-        """
-        Validates the JSON data to make sure everything has valid values
-        :raises InvalidMetadataException: If any errors were encountered
-        :return: None
-        """
-        files = len(listdir(self.directory_path, no_dirs=True))
-        self._assert_true(len(self.volumes) == files)

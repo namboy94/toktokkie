@@ -22,6 +22,7 @@ import logging
 from typing import Dict, Any, List, Tuple
 from puffotter.os import listdir, makedirs
 from puffotter.prompt import prompt, yn_prompt, prompt_comma_list
+from toktokkie.metadata.ids.functions import objectify_ids
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.IdFetcher import IdFetcher
 from toktokkie.metadata.ids.mappings import valid_id_types, int_id_types, \
@@ -177,14 +178,11 @@ class Prompter:
         :param defaults: The current default IDs
         :return: The updated IDs
         """
-        _defaults = {}
-        for id_type_str, _ids in defaults.items():
-            _defaults[IdType(id_type_str)] = _ids
-
         for id_type in valid_ids:
             if id_type.value in defaults:
                 continue
             else:
+                _defaults = objectify_ids(defaults)
                 ids = self.id_fetcher.fetch_ids(id_type, _defaults)
                 if ids is not None:
                     defaults[id_type.value] = ids

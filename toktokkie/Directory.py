@@ -24,7 +24,7 @@ from typing import Dict, Any
 from puffotter.prompt import yn_prompt
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
-from toktokkie.metadata.helper.functions import get_metadata, create_metadata
+from toktokkie.metadata.functions import get_metadata, create_metadata
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.exceptions import MissingMetadata
 from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
