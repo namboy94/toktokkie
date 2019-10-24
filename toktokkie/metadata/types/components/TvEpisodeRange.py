@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, Any, List
-from toktokkie.metadata.components.TvEpisode import TvEpisode
+from toktokkie.metadata.types.components.TvEpisode import TvEpisode
 from toktokkie.exceptions import InvalidMetadata
 
 

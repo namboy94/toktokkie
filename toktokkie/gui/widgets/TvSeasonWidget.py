@@ -27,7 +27,7 @@ from threading import Thread
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QWidget, QListWidgetItem
 from toktokkie.metadata.types.TvSeries import TvSeries
-from toktokkie.metadata.components.TvSeason import TvSeason
+from toktokkie.metadata.types.components.TvSeason import TvSeason
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.gui.pyuic.tv_season_widget import Ui_TvSeasonWidget
 
@@ -69,7 +69,7 @@ class TvSeasonWidget(QWidget, Ui_TvSeasonWidget):
 
         self.name.setText(self.metadata.name)
         self.season_name.setText(self.season.name)
-        self.tvdb_id_edit.setText(str(self.season.tvdb_id))
+        self.tvdb_id_edit.setText(str(self.season.ids.get(IdType.TVDB)[0]))
         self.set_icon_image()
         self.load_episode_files()
         Thread(target=self.load_tvdb_info).start()

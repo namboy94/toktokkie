@@ -32,22 +32,22 @@ class BookVolume:
             self,
             volume_number: int,
             volume_name: str,
-            path: str,
+            volume_path: str,
             parent_ids: Dict[IdType, List[str]],
             json_data: Dict[str, Dict[str, List[str]]]
     ):
         """
         Initializes the Book Volume
         :param volume_number: The volume number
-        :param volume_name: THe volume name
-        :param path: The path to the volume file
+        :param volume_name: The volume name
+        :param volume_path: The path to the volume file
         :param parent_ids: The IDs of the parent BookSeries object
         :param json_data: The JSON data for the book volume containing the
                           IDs for this specific volume
         """
-        self.volume_number = volume_number
-        self.volume_name = volume_name
-        self.path = path
+        self.number = volume_number
+        self.name = volume_name
+        self.path = volume_path
         self.ids = fill_ids(objectify_ids(json_data["ids"]), [], parent_ids)
         self.parent_ids = parent_ids
 

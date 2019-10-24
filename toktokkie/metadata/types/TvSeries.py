@@ -21,11 +21,11 @@ import os
 from typing import List, Dict
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.components.TvSeason import TvSeason
+from toktokkie.metadata.types.components.TvSeason import TvSeason
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.MediaType import MediaType
-from toktokkie.metadata.components.TvEpisode import TvEpisode
-from toktokkie.metadata.components.TvEpisodeRange import TvEpisodeRange
+from toktokkie.metadata.types.components.TvEpisode import TvEpisode
+from toktokkie.metadata.types.components.TvEpisodeRange import TvEpisodeRange
 from toktokkie.exceptions import InvalidMetadata
 
 
@@ -42,19 +42,12 @@ class TvSeries(Metadata):
         return MediaType.TV_SERIES
 
     @property
-    def tvdb_id(self) -> str:
-        """
-        :return: The TVDB ID of the TV Series
-        """
-        return self.ids[IdType.TVDB][0]
-
-    @property
     def seasons(self) -> List[TvSeason]:
         """
         :return: A list of TV seasons
         """
         seasons_list = list(map(
-            lambda x: TvSeason(self, x),
+            lambda x: TvSeason(self.directory_path, self.ids, x),
             self.json["seasons"]
         ))
         seasons_list.sort(
