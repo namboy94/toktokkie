@@ -25,6 +25,7 @@ from mutagen.id3 import ID3, APIC, TPE2
 from puffotter.os import listdir, get_ext
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.types.MusicArtist import MusicArtist
 
 
 class MusicTagCommand(Command):
@@ -56,9 +57,10 @@ class MusicTagCommand(Command):
         for directory in self.load_directories(
                 self.args.directories, restrictions=[MediaType.MUSIC_ARTIST]
         ):
-            for album in directory.metadata.all_albums:
+            music_metadata = directory.metadata  # type: MusicArtist
+            for album in music_metadata.albums:
                 for song, song_file in listdir(
-                        os.path.join(directory.path, album["name"])
+                        os.path.join(directory.path, album.name)
                 ):
                     if get_ext(song) != "mp3":
                         self.logger.info("Not an MP3 file: " + song)
@@ -71,14 +73,14 @@ class MusicTagCommand(Command):
                     mp3 = EasyID3(song_file)
                     mp3["title"] = title
                     mp3["artist"] = directory.metadata.name
-                    mp3["album"] = album["name"]
-                    mp3["date"] = str(album["year"])
-                    mp3["genre"] = album["genre"]
+                    mp3["album"] = album.name
+                    mp3["date"] = str(album.year)
+                    mp3["genre"] = album.genre
                     mp3.save()
 
                     cover_file = os.path.join(
                         directory.metadata.icon_directory,
-                        album["name"] + ".png"
+                        album.name + ".png"
                     )
 
                     if os.path.isfile(cover_file):
@@ -91,4 +93,4 @@ class MusicTagCommand(Command):
                         id3.save()
                     else:
                         self.logger.warning("No cover file for {}"
-                                            .format(album["name"]))
+                                            .format(album.name))

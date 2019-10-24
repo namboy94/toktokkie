@@ -182,7 +182,8 @@ class SchemaBuilder:
                         "genre": {"type": "string"},
                         "year": {"type": "number"},
                         "ids": {}
-                    }
+                    },
+                    "required": ["name", "genre", "year"]
                 }
             },
             "theme_songs": {
@@ -196,7 +197,8 @@ class SchemaBuilder:
                             "type": "string",
                             "pattern": "(op|ed|insert|special|other){1}"
                         }
-                    }
+                    },
+                    "required": ["name", "theme_type"]
                 }
             }
         }
@@ -220,7 +222,8 @@ class SchemaBuilder:
                     "properties": {
                         "season": {"type": "number"},
                         "episode": {"type": "number"}
-                    }
+                    },
+                    "required": ["season", "episode"]
                 }
             }
             excludes[id_type.value] = extra_base.copy()
@@ -234,7 +237,8 @@ class SchemaBuilder:
                         "season": {"type": "number"},
                         "start_episode": {"type": "number"},
                         "end_episode": {"type": "number"}
-                    }
+                    },
+                    "required": ["season", "start_episode", "end_episode"]
                 }
             }
             multi_episodes[id_type.value] = extra_base.copy()
@@ -247,7 +251,8 @@ class SchemaBuilder:
                     "properties": {
                         "ids": ids,
                         "name": {"type": "string"}
-                    }
+                    },
+                    "required": ["name"]
                 }
             },
             "excludes": {

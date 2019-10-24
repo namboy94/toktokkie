@@ -19,12 +19,13 @@ LICENSE"""
 
 import os
 from typing import Dict, List, Any, Union
+from toktokkie.metadata.types.components.Component import Component
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.functions import minimize_ids, fill_ids, \
     objectify_ids, stringify_ids
 
 
-class TvSeason:
+class TvSeason(Component):
     """
     Class that models a season of a TV Series
     """
@@ -40,7 +41,9 @@ class TvSeason:
 
         self.name = json_data["name"]
         self.path = os.path.join(parent_path, self.name)
-        self.ids = fill_ids(objectify_ids(json_data["ids"]), [], parent_ids)
+
+        ids = objectify_ids(json_data.get("ids", {}))
+        self.ids = fill_ids(ids, [], parent_ids)
 
     @property
     def json(self) -> Dict[str, Any]:

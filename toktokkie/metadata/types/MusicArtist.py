@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from copy import deepcopy
-from typing import Dict, Any, List
+from typing import List
 from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.ids.mappings import valid_id_types
 from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
+from toktokkie.metadata.types.components.MusicThemeSong import MusicThemeSong
 
 
 class MusicArtist(Metadata):
@@ -36,65 +36,70 @@ class MusicArtist(Metadata):
         """
         return MediaType.MUSIC_ARTIST
 
-    def add_album(self, album_data: Dict[str, Any]):
+    @property
+    def albums(self) -> List[MusicAlbum]:
+        """
+        :return: All albums in the metadata, regardless if they're just normal
+                 albums or theme songs
+        """
+        return list(map(
+            lambda x: MusicAlbum(self.directory_path, self.ids, x),
+            self.json["albums"]
+        ))
+
+    @property
+    def theme_songs(self) -> List[MusicThemeSong]:
+        """
+        :return: All theme songs for this music artist
+        """
+        album_map = {}
+        for album in self.albums:
+            album_map[album.name] = album
+
+        theme_songs = []
+        for theme_song in self.json.get("theme_songs", []):
+            name = theme_song["name"]
+            album = album_map.get(name)
+            if album is None:
+                self.logger.warning("Missing album data for {}".format(name))
+                continue
+            else:
+                theme_songs.append(MusicThemeSong(album, theme_song))
+
+        return theme_songs
+
+    @property
+    def non_theme_song_albums(self) -> List[MusicAlbum]:
+        """
+        :return: Any albums that are not also theme songs
+        """
+        theme_song_names = list(map(lambda x: x.name, self.theme_songs))
+        return list(filter(
+            lambda x: x.name not in theme_song_names,
+            self.albums
+        ))
+
+    def add_album(self, album_data: MusicAlbum):
         """
         Adds an album to the metadata
         :param album_data: The album metadata to add
         :return: None
         """
-        if album_data["album_type"] == "theme_song":
-            ids = album_data["series_ids"]
-            album_data["series_ids"] = {}
-            for key, value in ids.items():
-                album_data["series_ids"][key.value] = value
-        self.logger.debug("Adding album metadata: {}".format(album_data))
-        self.json["albums"].append(album_data)
+        existing = list(map(lambda x: x.name, self.albums))
+        if album_data.name not in existing:
+            self.json["albums"].append(album_data.json)
 
-    @property
-    def all_albums(self) -> List[Dict[str, Any]]:
+    def add_theme_song(self, theme_song: MusicThemeSong):
         """
-        :return: All album metadata
+        Adds a theme song to the metadata
+        :param theme_song: The theme song to add
+        :return: None
         """
-        return self.albums + self.singles + self.theme_songs
+        existing = list(map(lambda x: x.name, self.theme_songs))
+        if theme_song.name not in existing:
+            self.add_album(theme_song.album)
 
-    @property
-    def albums(self) -> List[Dict[str, Any]]:
-        """
-        :return: All 'album' album metadata
-        """
-        return list(filter(
-                lambda x: x["album_type"] == "album",
-                self.json["albums"]
-        ))
+            if "theme_songs" not in self.json:
+                self.json["theme_songs"] = []
 
-    @property
-    def singles(self) -> List[Dict[str, Any]]:
-        """
-        :return: All 'single' album metadata
-        """
-        return list(filter(
-            lambda x: x["album_type"] == "single",
-            self.json["albums"]
-        ))
-
-    @property
-    def theme_songs(self) -> List[Dict[str, Any]]:
-        """
-        :return: All theme songs for this music artist
-        """
-        valid = list(set(
-            valid_id_types[MediaType.TV_SERIES]
-            + valid_id_types[MediaType.VISUAL_NOVEL]
-        ))
-
-        themes = []
-        for theme in list(filter(
-            lambda x: x["album_type"] == "theme_song",
-            deepcopy(self.json["albums"])
-        )):
-            ids = {}
-            for id_type in valid:
-                ids[id_type] = theme["series_ids"].get(id_type.value, [])
-            theme["series_ids"] = ids
-            themes.append(theme)
-        return themes
+            self.json["theme_songs"].append(theme_song.json)

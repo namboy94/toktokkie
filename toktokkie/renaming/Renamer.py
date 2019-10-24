@@ -26,6 +26,7 @@ from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.metadata.types.Manga import Manga
 from toktokkie.metadata.types.MusicArtist import MusicArtist
+from toktokkie.metadata.types.components.MusicThemeSong import MusicThemeSong
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.renaming.RenameOperation import RenameOperation
@@ -288,35 +289,34 @@ class Renamer:
         music_exts = ["mp3", "flac", "wav"]
         video_exts = ["mp4", "webm", "mkv", "avi"]
 
-        for album in music_metadata.all_albums:
-            path = os.path.join(
-                music_metadata.directory_path,
-                album["name"]
-            )
-            song_files = listdir(path)
+        theme_songs = {x.name: x for x in music_metadata.theme_songs}
 
-            if album["album_type"] == "theme_song":
+        for album in music_metadata.albums:
+            song_files = listdir(album.path)
+
+            if album.name in theme_songs:
+                theme_song = theme_songs[album.name]  # type: MusicThemeSong
                 series_name = \
-                    self.load_title_name(id_override=album["series_ids"])
+                    self.load_title_name(id_override=theme_song.series_ids)
 
                 for song, path in song_files:
-                    if song.startswith(album["name"]):
+                    if song.startswith(theme_song.name):
                         continue  # Skip renaming full version
 
                     ext = get_ext(song)
                     if ext in video_exts:
                         new_name = "{} {} - {}-video.{}".format(
                             series_name,
-                            album["theme_type"],
-                            album["name"],
+                            theme_song.theme_type,
+                            theme_song.name,
                             ext
                         )
                         operations.append(RenameOperation(path, new_name))
                     elif ext in music_exts:
                         new_name = "{} {} - {}.{}".format(
                             series_name,
-                            album["theme_type"],
-                            album["name"],
+                            theme_song.theme_type,
+                            theme_song.name,
                             ext
                         )
                         operations.append(RenameOperation(path, new_name))
@@ -367,7 +367,7 @@ class Renamer:
         content_info = tv_series_metadata.get_episode_files()
 
         for tvdb_id, season_data in content_info.items():
-            is_spinoff = tv_series_metadata.tvdb_id != tvdb_id
+            is_spinoff = tv_series_metadata.ids.get(IdType.TVDB)[0] != tvdb_id
 
             if is_spinoff:
                 sample_episode = season_data[list(season_data)[0]][0]

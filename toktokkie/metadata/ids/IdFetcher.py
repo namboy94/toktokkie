@@ -31,10 +31,21 @@ from anime_list_apis.models.attributes.MediaType import MediaType as \
 
 
 class IdFetcher:
+    """
+    Class that handles fetching ID types using the internet
+    """
 
     logger = logging.getLogger(__name__)
+    """
+    Logger for this class
+    """
 
     def __init__(self, name: str, media_type: MediaType):
+        """
+        Initializes the ID fetcher
+        :param name: The name of the media
+        :param media_type: The media type of the media
+        """
         self.name = name
         self.media_type = media_type
 
@@ -43,6 +54,13 @@ class IdFetcher:
             id_type: IdType,
             other_ids: Dict[IdType, List[str]]
     ) -> Optional[List[str]]:
+        """
+        Retrieves any supported IDs based on the media name and/or existing
+        IDs.
+        :param id_type: The ID Type to fetch
+        :param other_ids: Any other known IDs
+        :return: The IDs or None if no ID could be determined
+        """
         if id_type == IdType.TVDB:
             return self.__load_tvdb_ids()
         elif id_type == IdType.ANILIST and IdType.MYANIMELIST in other_ids:
@@ -53,12 +71,21 @@ class IdFetcher:
             return None
 
     def __load_tvdb_ids(self) -> List[str]:
+        """
+        Retrieves TVDB IDs based on the media name
+        :return: THe TVDB IDs
+        """
         try:
             return [str(tvdb_api.Tvdb()[self.name].data["id"])]
         except (tvdb_api.tvdb_shownotfound, TypeError):
             return []
 
     def __load_anilist_ids(self, mal_ids: List[str]) -> List[str]:
+        """
+        Loads anilist IDs based on myanimelist IDs
+        :param mal_ids: THe myanimelist IDs
+        :return: The anilist IDs
+        """
         self.logger.info("Loading anilist ID from mal IDs {}".format(mal_ids))
         list_type = AnimeListMediaType.ANIME
         if self.media_type in literature_media_types:
@@ -75,6 +102,10 @@ class IdFetcher:
         return ids
 
     def __load_musicbrainz_ids(self) -> List[str]:
+        """
+        Retrieves a musicbrainz ID based on the artist name
+        :return: The musicbrainz IDs
+        """
         musicbrainzngs.set_useragent(
             "toktokkie media manager",
             version,

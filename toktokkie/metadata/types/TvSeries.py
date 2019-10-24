@@ -220,6 +220,11 @@ class TvSeries(Metadata):
         elif len(self.seasons) > foldercount:
             raise InvalidMetadata("Missing season directories")
 
+        for season in self.seasons:
+            if not os.path.isdir(season.path):
+                raise InvalidMetadata("Missing season directory {}"
+                                      .format(season.name))
+
     def get_episode_files(self) -> Dict[str, Dict[int, List[str]]]:
         """
         Generates a dictionary categorizing internal episode files for further
@@ -246,7 +251,7 @@ class TvSeries(Metadata):
                     "No Metadata found for {}".format(season_name)
                 )
                 continue
-            tvdb_id = season_metadata.tvdb_id
+            tvdb_id = season_metadata.ids.get(IdType.TVDB)[0]
 
             if tvdb_id not in content_info:
                 content_info[tvdb_id] = {}

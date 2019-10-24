@@ -18,12 +18,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, List, Any
+from toktokkie.metadata.types.components.Component import Component
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.functions import stringify_ids, objectify_ids,\
     minimize_ids, fill_ids
 
 
-class BookVolume:
+class BookVolume(Component):
     """
     Class that models a Volume in a Book Series
     """
@@ -48,7 +49,9 @@ class BookVolume:
         self.number = volume_number
         self.name = volume_name
         self.path = volume_path
-        self.ids = fill_ids(objectify_ids(json_data["ids"]), [], parent_ids)
+
+        ids = objectify_ids(json_data.get("ids", {}))
+        self.ids = fill_ids(ids, [], parent_ids)
         self.parent_ids = parent_ids
 
     @property

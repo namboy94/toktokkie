@@ -96,9 +96,9 @@ class TvSeriesChecker(Checker):
         valid = True
         metadata = self.metadata  # type: TvSeries  # type: ignore
 
-        ids = [metadata.tvdb_id]
+        ids = metadata.ids.get(IdType.TVDB, [])
         for season in metadata.seasons:
-            ids.append(season.tvdb_id)
+            ids += season.ids.get(IdType.TVDB, [])
 
         for tvdb_id in ids:
             if int(tvdb_id) == 0:  # TVDB ID 0 means show not on tvdb
@@ -118,9 +118,10 @@ class TvSeriesChecker(Checker):
         """
         valid = True
         metadata = self.metadata  # type: TvSeries  # type: ignore
+        tvdb_ids = metadata.ids.get(IdType.TVDB, [])
 
         ignores = self._generate_ignores_map()
-        tvdb_data = self.tvdb[int(metadata.tvdb_id)]
+        tvdb_data = self.tvdb[int(tvdb_ids[0])]
 
         for season_number, season_data in tvdb_data.items():
             episode_amount = len(season_data)
@@ -135,7 +136,7 @@ class TvSeriesChecker(Checker):
                     episode_amount -= 1
 
             _existing = metadata.get_episode_files()
-            existing = _existing[metadata.tvdb_id].get(season_number, [])
+            existing = _existing[tvdb_ids[0]].get(season_number, [])
 
             if not len(existing) == episode_amount:
                 msg = "Mismatch in season {}; Should:{}; Is:{}".format(
@@ -153,9 +154,10 @@ class TvSeriesChecker(Checker):
         """
         valid = True
         metadata = self.metadata  # type: TvSeries  # type: ignore
+        tvdb_ids = metadata.ids.get(IdType.TVDB, [])
 
         ignores = self._generate_ignores_map()
-        tvdb_data = self.tvdb[int(metadata.tvdb_id)]
+        tvdb_data = self.tvdb[int(tvdb_ids[0])]
 
         for season_number, season_data in tvdb_data.items():
             for episode_number, episode_data in season_data.items():
@@ -168,12 +170,14 @@ class TvSeriesChecker(Checker):
                     continue
 
                 episode_name = self._generate_episode_name(
-                    metadata.tvdb_id, season_number, episode_number
+                    tvdb_ids[0],
+                    season_number,
+                    episode_number
                 )
 
                 # Check if file exists
                 existing_files = \
-                    metadata.get_episode_files()[metadata.tvdb_id].get(
+                    metadata.get_episode_files()[tvdb_ids[0]].get(
                         season_number, []
                     )
 
@@ -205,11 +209,13 @@ class TvSeriesChecker(Checker):
             if not season.is_spinoff():
                 continue
 
-            tvdb_data = self.tvdb[int(season.tvdb_id)][1]
+            tvdb_data = self.tvdb[int(season.ids.get(IdType.TVDB)[0])][1]
 
             # Check Length
-            should = len(episode_files[season.tvdb_id][1])
-            if not len(tvdb_data) == len(episode_files[season.tvdb_id][1]):
+            should = len(episode_files[season.ids.get(IdType.TVDB)[0]][1])
+
+            season_tvdb_id = season.ids.get(IdType.TVDB)[0]
+            if not len(tvdb_data) == len(episode_files[season_tvdb_id][1]):
                 msg = "Mismatch in spinoff {}; Should:{}; Is:{}".format(
                     season.name, should, len(tvdb_data)
                 )
@@ -222,7 +228,7 @@ class TvSeriesChecker(Checker):
                     continue
 
                 name = self._generate_episode_name(
-                    season.tvdb_id, 1, episode_number, season.name
+                    season_tvdb_id, 1, episode_number, season.name
                 )
 
                 exists = False

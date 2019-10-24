@@ -16,3 +16,25 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
+
+import logging
+from typing import Dict, Any
+
+
+class Component:
+    """
+    Specifies common features of metadata components
+    """
+
+    logger = logging.getLogger(__name__)
+    """
+    Logger for the components
+    """
+
+    @property
+    def json(self) -> Dict[str, Any]:
+        """
+        Converts the component into a JSON-compatible dictionary
+        :return: The JSON-compatible dictionary
+        """
+        raise NotImplementedError()
