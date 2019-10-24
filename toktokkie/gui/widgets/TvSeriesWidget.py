@@ -62,7 +62,8 @@ class TvSeriesWidget(QWidget, Ui_TvSeriesWidget):
         self.metadata = metadata
         self.name.setText(metadata.name)
         self.tags_edit.setText(", ".join(metadata.tags))
-        self.tvdb_id_edit.setText(str(metadata.tvdb_id))
+        tvdb_id = metadata.ids.get(IdType.TVDB, [])[0]
+        self.tvdb_id_edit.setText(str(tvdb_id))
         self.set_icon_image()
         Thread(target=self.load_tvdb_info).start()
 

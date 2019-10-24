@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import List
+from typing import List, Optional
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
@@ -52,9 +52,7 @@ class MusicArtist(Metadata):
         """
         :return: All theme songs for this music artist
         """
-        album_map = {}
-        for album in self.albums:
-            album_map[album.name] = album
+        album_map = {x.name: x for x in self.albums}
 
         theme_songs = []
         for theme_song in self.json.get("theme_songs", []):

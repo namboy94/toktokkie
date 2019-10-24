@@ -209,12 +209,12 @@ class TvSeriesChecker(Checker):
             if not season.is_spinoff():
                 continue
 
-            tvdb_data = self.tvdb[int(season.ids.get(IdType.TVDB)[0])][1]
+            tvdb_data = self.tvdb[int(season.ids.get(IdType.TVDB, [])[0])][1]
 
             # Check Length
-            should = len(episode_files[season.ids.get(IdType.TVDB)[0]][1])
+            should = len(episode_files[season.ids.get(IdType.TVDB, [])[0]][1])
 
-            season_tvdb_id = season.ids.get(IdType.TVDB)[0]
+            season_tvdb_id = season.ids.get(IdType.TVDB, [])[0]
             if not len(tvdb_data) == len(episode_files[season_tvdb_id][1]):
                 msg = "Mismatch in spinoff {}; Should:{}; Is:{}".format(
                     season.name, should, len(tvdb_data)

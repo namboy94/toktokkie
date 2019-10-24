@@ -69,7 +69,7 @@ class TvSeasonWidget(QWidget, Ui_TvSeasonWidget):
 
         self.name.setText(self.metadata.name)
         self.season_name.setText(self.season.name)
-        self.tvdb_id_edit.setText(str(self.season.ids.get(IdType.TVDB)[0]))
+        self.tvdb_id_edit.setText(str(self.season.ids.get(IdType.TVDB, [])[0]))
         self.set_icon_image()
         self.load_episode_files()
         Thread(target=self.load_tvdb_info).start()

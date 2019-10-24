@@ -251,7 +251,7 @@ class TvSeries(Metadata):
                     "No Metadata found for {}".format(season_name)
                 )
                 continue
-            tvdb_id = season_metadata.ids.get(IdType.TVDB)[0]
+            tvdb_id = season_metadata.ids.get(IdType.TVDB, [])[0]
 
             if tvdb_id not in content_info:
                 content_info[tvdb_id] = {}

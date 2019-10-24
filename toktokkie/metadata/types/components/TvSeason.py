@@ -34,15 +34,15 @@ class TvSeason(Component):
             self,
             parent_path: str,
             parent_ids: Dict[IdType, List[str]],
-            json_data: Dict[str, Union[Dict[str, List[str]], str]]
+            json_data: Dict[str, Union[str, Dict[str, List[str]]]]
     ):
         self.parent_path = parent_path
         self.parent_ids = parent_ids
 
-        self.name = json_data["name"]
+        self.name = str(json_data["name"])
         self.path = os.path.join(parent_path, self.name)
 
-        ids = objectify_ids(json_data.get("ids", {}))
+        ids = objectify_ids(json_data.get("ids", {}))  # type: ignore
         self.ids = fill_ids(ids, [], parent_ids)
 
     @property

@@ -367,7 +367,8 @@ class Renamer:
         content_info = tv_series_metadata.get_episode_files()
 
         for tvdb_id, season_data in content_info.items():
-            is_spinoff = tv_series_metadata.ids.get(IdType.TVDB)[0] != tvdb_id
+            tvdb_ids = tv_series_metadata.ids.get(IdType.TVDB, [])
+            is_spinoff = tvdb_ids[0] != tvdb_id
 
             if is_spinoff:
                 sample_episode = season_data[list(season_data)[0]][0]

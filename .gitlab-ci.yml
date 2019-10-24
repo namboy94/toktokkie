@@ -15,6 +15,7 @@ default:
     - python setup.py install
     - cd ..
     - rm -rf puffotter
+    - apt install curl
 
 github_mirror:
   stage: mirror

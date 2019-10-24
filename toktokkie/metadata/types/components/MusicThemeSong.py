@@ -40,7 +40,7 @@ class MusicThemeSong(Component):
             self.logger.warning("Theme song {} does not match album {}"
                                 .format(self.name, self.album.name))
 
-        ids = objectify_ids(json_data.get("series_ids"))
+        ids = objectify_ids(json_data.get("series_ids"))  # type: ignore
         self.series_ids = fill_ids(ids, theme_song_ids)
 
     @property
