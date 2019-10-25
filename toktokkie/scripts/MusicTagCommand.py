@@ -19,10 +19,7 @@ LICENSE"""
 
 import os
 import argparse
-from mutagen.easyid3 import EasyID3
-# noinspection PyProtectedMember
-from mutagen.id3 import ID3, APIC, TPE2
-from puffotter.os import listdir, get_ext
+import mutagen.id3
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.MusicArtist import MusicArtist
@@ -59,24 +56,20 @@ class MusicTagCommand(Command):
         ):
             music_metadata = directory.metadata  # type: MusicArtist
             for album in music_metadata.albums:
-                for song, song_file in listdir(
-                        os.path.join(directory.path, album.name)
-                ):
-                    if get_ext(song) != "mp3":
-                        self.logger.info("Not an MP3 file: " + song)
-                        continue
+                for song in album.songs:
 
-                    title = song.rsplit(".", 1)[0]
+                    title = song.filename.rsplit(".", 1)[0]
                     if title.split(" - ", 1)[0].isnumeric():
                         title = title.split(" - ", 1)[1]
 
-                    mp3 = EasyID3(song_file)
-                    mp3["title"] = title
-                    mp3["artist"] = directory.metadata.name
-                    mp3["album"] = album.name
-                    mp3["date"] = str(album.year)
-                    mp3["genre"] = album.genre
-                    mp3.save()
+                    song.title = title
+                    song.artist_name = album.artist_name
+                    song.album_artist_name = album.artist_name
+                    song.album_name = album.name
+                    song.year = album.year
+                    song.genre = album.genre
+
+                    song.save_tags()
 
                     cover_file = os.path.join(
                         directory.metadata.icon_directory,
@@ -84,12 +77,26 @@ class MusicTagCommand(Command):
                     )
 
                     if os.path.isfile(cover_file):
-                        with open(cover_file, "rb") as f:
-                            img = f.read()
+                        id3 = mutagen.id3.ID3(song.path)
 
-                        id3 = ID3(song_file)
-                        id3.add(APIC(3, "image/jpeg", 3, "Front cover", img))
-                        id3.add(TPE2(encoding=3, text=directory.metadata.name))
+                        for key in list(id3.keys()):
+                            if str(key).startswith("APIC") \
+                                    and key != "APIC:Cover":
+                                id3.pop(key)
+
+                        if "APIC:Cover" not in id3.keys():
+                            with open(cover_file, "rb") as f:
+                                img = f.read()
+
+                            apic = mutagen.id3.APIC(
+                                3,
+                                "image/jpeg",
+                                3,
+                                "Cover",
+                                img
+                            )
+                            id3.add(apic)
+
                         id3.save()
                     else:
                         self.logger.warning("No cover file for {}"

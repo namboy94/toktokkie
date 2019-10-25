@@ -96,7 +96,6 @@ class MusicAlbum(Component):
         :param mimetype: The mime type of the files to find
         :return: The files with that mimetype
         """
-
         files = []
         for _file, path in listdir(self.path, no_dirs=True):
             guess = str(mimetypes.MimeTypes().guess_type(path)[0])
@@ -121,6 +120,8 @@ class MusicSong:
 
         self.album = album
         self.path = path
+        self.filename = str(os.path.basename(self.path))
+
         self.format = get_ext(self.path)
 
         if self.format == "mp3":
@@ -167,7 +168,7 @@ class MusicSong:
             return
 
         mp3 = EasyID3(self.path)
-        for key, tag in self._tags:
+        for key, tag in self._tags.items():
             if tag == "":
                 if key in mp3:
                     mp3.pop(key)
@@ -180,7 +181,14 @@ class MusicSong:
         """
         :return: The title of the song
         """
-        return self._tags.get("title", os.path.basename(self.path))
+        title = self._tags.get("title")
+        if title is not None:
+            return title
+        else:
+            if self.filename.split(" - ")[0].isnumeric():
+                return self.filename.split(" - ")[1]
+            else:
+                return self.filename
 
     @title.setter
     def title(self, title: str):
@@ -210,7 +218,7 @@ class MusicSong:
         """
         :return: The song's album artist name
         """
-        return self._tags.get("album_artist")
+        return self._tags.get("albumartist")
 
     @album_artist_name.setter
     def album_artist_name(self, name: str):
@@ -218,7 +226,7 @@ class MusicSong:
         :param name: The song's album artist name
         :return: None
         """
-        self._tags["album_artist"] = name
+        self._tags["albumartist"] = name
 
     @property
     def album_name(self) -> str:

@@ -21,6 +21,9 @@ import os
 import argparse
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
+from toktokkie.Directory import Directory
+from toktokkie.exceptions import MissingMetadata
+from toktokkie.metadata.types.MusicArtist import MusicArtist
 from puffotter.os import listdir
 
 
@@ -55,8 +58,19 @@ class MusicMergeCommand(Command):
         Executes the commands
         :return: None
         """
-        source_paths = list(map(lambda x: x[1], listdir(self.args.source)))
-        dest_paths = list(map(lambda x: x[1], listdir(self.args.dest)))
+        try:
+            Directory(self.args.source)
+            source_paths = [self.args.source]
+        except MissingMetadata:
+            source_paths = list(map(lambda x: x[1], listdir(self.args.source)))
+
+        try:
+            Directory(self.args.dest)
+            dest_paths = [self.args.dest]
+            dest_is_metadata_dir = True
+        except MissingMetadata:
+            dest_is_metadata_dir = False
+            dest_paths = list(map(lambda x: x[1], listdir(self.args.dest)))
 
         source_artists = self.load_directories(
             source_paths, restrictions=[MediaType.MUSIC_ARTIST]
@@ -67,30 +81,42 @@ class MusicMergeCommand(Command):
         dest_names = [x.metadata.name for x in dest_artists]
 
         for source_artist in source_artists:
-            if source_artist.metadata.name not in dest_names:
-                os.rename(
-                    source_artist.path,
-                    os.path.join(self.args.dest, source_artist.metadata.name)
-                )
+            source_metadata = source_artist.metadata  # type: MusicArtist
+            if source_metadata.name not in dest_names:
+                if dest_is_metadata_dir:
+                    self.logger.warning(
+                        "Artist names don't match: {} !+ {}".format(
+                            source_artist.path,
+                            dest_paths[0]
+                        )
+                    )
+                else:
+                    new_path = os.path.join(
+                        self.args.dest, source_metadata.name
+                    )
+                    os.rename(source_artist.path, new_path)
             else:
                 dest_artist = list(filter(
-                    lambda x: source_artist.metadata.name == x.metadata.name,
+                    lambda x: source_metadata.name == x.metadata.name,
                     dest_artists
                 ))[0]
-                source_albums = source_artist.metadata.all_albums
-                dest_albums = dest_artist.metadata.all_albums
-                dest_album_names = [x["name"] for x in dest_albums]
+                dest_metadata = dest_artist.metadata  # type: MusicArtist
+                dest_album_names = [x.name for x in dest_metadata.albums]
 
-                for source_album in source_albums:
-                    name = source_album["name"]
-
-                    if name in dest_album_names:
-                        self.logger.warning("Duplicate album: {}".format(name))
+                for source_album in source_metadata.albums:
+                    if source_album.name in dest_album_names:
+                        self.logger.warning(
+                            "Duplicate album: {}".format(source_album.name)
+                        )
                     else:
                         os.rename(
-                            os.path.join(source_artist.path, name),
-                            os.path.join(dest_artist.path, name)
+                            os.path.join(
+                                source_artist.path, source_album.name
+                            ),
+                            os.path.join(
+                                dest_artist.path, source_album.name
+                            )
                         )
-                        dest_artist.metadata.add_album(source_album)
+                        dest_metadata.add_album(source_album)
 
                 dest_artist.write_metadata()

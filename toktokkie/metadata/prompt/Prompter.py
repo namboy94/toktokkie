@@ -272,7 +272,10 @@ class Prompter:
             album_data = {
                 "name": album,
                 "genre": prompt("Genre"),
-                "year": prompt("Year", _type=int)
+                "year": prompt("Year", _type=int),
+                "ids": self.__prompt_component_ids(
+                    valid_id_types[MediaType.MUSIC_ARTIST], {}
+                )
             }
             albums.append(album_data)
 

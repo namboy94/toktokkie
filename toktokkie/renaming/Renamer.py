@@ -286,55 +286,54 @@ class Renamer:
 
         # noinspection PyTypeChecker
         music_metadata = self.metadata  # type: MusicArtist  # type: ignore
-        music_exts = ["mp3", "flac", "wav"]
-        video_exts = ["mp4", "webm", "mkv", "avi"]
 
         theme_songs = {x.name: x for x in music_metadata.theme_songs}
 
         for album in music_metadata.albums:
-            song_files = listdir(album.path)
 
             if album.name in theme_songs:
                 theme_song = theme_songs[album.name]  # type: MusicThemeSong
                 series_name = \
                     self.load_title_name(id_override=theme_song.series_ids)
 
-                for song, path in song_files:
-                    if song.startswith(theme_song.name):
+                for song in album.songs:
+                    if song.title.startswith(theme_song.name):
                         continue  # Skip renaming full version
-
-                    ext = get_ext(song)
-                    if ext in video_exts:
-                        new_name = "{} {} - {}-video.{}".format(
-                            series_name,
-                            theme_song.theme_type,
-                            theme_song.name,
-                            ext
-                        )
-                        operations.append(RenameOperation(path, new_name))
-                    elif ext in music_exts:
+                    else:
                         new_name = "{} {} - {}.{}".format(
                             series_name,
                             theme_song.theme_type,
                             theme_song.name,
-                            ext
+                            song.format
                         )
-                        operations.append(RenameOperation(path, new_name))
-            else:
-                for i, (song, path) in enumerate(song_files):
-                    track_number = str(i + 1).zfill(2)
+                        operations.append(RenameOperation(song.path, new_name))
 
-                    if song.split(" - ")[0].isnumeric():
-                        if not song.startswith(track_number + " - "):
-                            operations.append(RenameOperation(
-                                path,
-                                track_number + " - " + song.split(" - ", 1)[1]
-                            ))
+                for video in album.videos:
+                    new_name = "{} {} - {}-video.{}".format(
+                        series_name,
+                        theme_song.theme_type,
+                        theme_song.name,
+                        video.format
+                    )
+                    operations.append(RenameOperation(video.path, new_name))
+                    break
+
+            else:
+                tracks = []
+                for i, song in enumerate(album.songs):
+                    if song.tracknumber is None:
+                        track_number = str(i + 1).zfill(2)
                     else:
-                        operations.append(RenameOperation(
-                            path,
-                            track_number + " - " + song
-                        ))
+                        track_number = str(song.tracknumber[0]).zfill(2)
+                    tracks.append((track_number, song))
+
+                tracks.sort(key=lambda x: x[0])  # Sort for better UX
+
+                for track_number, song in tracks:
+                    new_name = "{} - {}.{}".format(
+                        track_number, song.title, song.format
+                    )
+                    operations.append(RenameOperation(song.path, new_name))
 
         return operations
 
