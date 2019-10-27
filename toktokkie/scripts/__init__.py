@@ -24,9 +24,8 @@ from toktokkie.scripts.RenameCommand import RenameCommand
 from toktokkie.scripts.ArchiveCommand import ArchiveCommand
 from toktokkie.scripts.CheckCommand import CheckCommand
 from toktokkie.scripts.MangaCreateCommand import MangaCreateCommand
-from toktokkie.scripts.MangaUpdateCommand import MangaUpdateCommand
 from toktokkie.scripts.MetadataGenCommand import MetadataGenCommand
-from toktokkie.scripts.XdccUpdateCommand import XdccUpdateCommand
+from toktokkie.scripts.UpdateCommand import UpdateCommand
 from toktokkie.scripts.MetadataAddCommand import MetadataAddCommand
 from toktokkie.scripts.SetMangaCoverCommand import SetMangaCoverCommand
 from toktokkie.scripts.SuperCutCommand import SuperCutCommand
@@ -43,10 +42,9 @@ toktokkie_commands = [
     RenameCommand,
     ArchiveCommand,
     CheckCommand,
-    MangaUpdateCommand,
     MangaCreateCommand,
     MetadataGenCommand,
-    XdccUpdateCommand,
+    UpdateCommand,
     MetadataAddCommand,
     SetMangaCoverCommand,
     SuperCutCommand,

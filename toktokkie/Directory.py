@@ -25,9 +25,9 @@ from puffotter.prompt import yn_prompt
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
 from toktokkie.metadata.functions import get_metadata, create_metadata
-from toktokkie.metadata.MediaType import MediaType
-from toktokkie.exceptions import MissingMetadata
-from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
+from toktokkie.exceptions import MissingMetadata, InvalidUpdateInstructions, \
+    MissingUpdateInstructions
+from toktokkie.update import updaters
 from toktokkie.check.map import checker_map
 
 
@@ -138,18 +138,32 @@ class Directory:
         )
         return checker.check()
 
-    def xdcc_update(self, throttle: int, timeout: int):
+    def update(self, args: Dict[str, Any]):
         """
-        Performs an XDCC Update Action
-        :param throttle: The throttle value
-        :param timeout: The timeout value
+        Performs an Update Action
+        :param args: Command line arguments used to configure the update
         :return: None
         """
-        if self.metadata.media_type() == MediaType.TV_SERIES:
-            # noinspection PyTypeChecker
-            xdcc = XDCCUpdater(
-                self.metadata, throttle, timeout  # type: ignore
-            )
-            xdcc.update()
-        else:
-            self.logger.warning("xdcc-update is only supported for TV series")
+        applicable_updaters = [
+            x for x in updaters
+            if self.metadata.media_type() in x.applicable_media_types()
+        ]
+        for updater_cls in applicable_updaters:
+
+            if args["create"]:
+                updater_cls.prompt(self.metadata)
+            else:
+                try:
+                    updater = updater_cls(self.metadata, args)
+                    print("Updating {} using {} updater:".format(
+                        self.metadata.name, updater.name()
+                    ))
+                    updater.update()
+                except MissingUpdateInstructions:
+                    self.logger.warning("No update instructions for {}"
+                                        .format(self.path))
+                except InvalidUpdateInstructions as e:
+                    self.logger.warning(
+                        "Update instructions for {} are invalid: {}"
+                        .format(self.path, e)
+                    )

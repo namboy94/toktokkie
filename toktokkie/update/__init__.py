@@ -17,13 +17,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
 
+from toktokkie.update.XDCCUpdater import XDCCUpdater
+from toktokkie.update.MangadexUpdater import MangadexUpdater
 
-class Resolution(Enum):
-    """
-    Enum that models the different resolution options
-    """
-    X1080p = "1080p"
-    X720p = "720p"
-    X480p = "480p"
+updaters = [MangadexUpdater, XDCCUpdater]
+"""
+List of all available updaters
+"""

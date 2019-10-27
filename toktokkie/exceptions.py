@@ -40,14 +40,14 @@ class MissingMetadata(Exception):
     pass
 
 
-class MissingXDCCInstructions(Exception):
+class MissingUpdateInstructions(Exception):
     """
     Exception that is raised whenever xdcc update instructions don't exist
     """
     pass
 
 
-class InvalidXDCCInstructions(Exception):
+class InvalidUpdateInstructions(Exception):
     """
     Exception that is raised whenever xdcc update instructions are invalid
     """

@@ -19,14 +19,11 @@ LICENSE"""
 
 import argparse
 from toktokkie.scripts.Command import Command
-from toktokkie.xdcc_update.XDCCUpdater import XDCCUpdater
-from toktokkie.exceptions import MissingXDCCInstructions, \
-    InvalidXDCCInstructions
 
 
-class XdccUpdateCommand(Command):
+class UpdateCommand(Command):
     """
-    Class that encapsulates behaviour of the xdcc-update command
+    Class that encapsulates behaviour of the update command
     """
 
     @classmethod
@@ -34,7 +31,7 @@ class XdccUpdateCommand(Command):
         """
         :return: The command name
         """
-        return "xdcc-update"
+        return "update"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -44,14 +41,28 @@ class XdccUpdateCommand(Command):
         :return: None
         """
         cls.add_directories_arg(parser)
+
+        parser.add_argument("--dry-run", action="store_true",
+                            help="Does not download or rename anything")
+
+        # xdcc
         parser.add_argument("--create", action="store_true",
                             help="If this flag is set, "
-                                 "will generate new xdcc update instructions")
+                                 "will generate new update instructions")
         parser.add_argument("-t", "--throttle", default=-1,
                             help="Limits the download speed of xdcc-dl. "
                                  "Append K,M or G for more convenient units")
         parser.add_argument("--timeout", default=120, type=int,
-                            help="Sets a timeout for starting the download")
+                            help="Sets a timeout for starting "
+                                 "the xdcc-dl download")
+
+        # manga
+        parser.add_argument("--no-check-newest-chapter-length",
+                            action="store_true",
+                            help="Deactivates checking the latest manga "
+                                 "chapter for completeness")
+        parser.add_argument("--skip-special", action="store_true",
+                            help="Skips updating special manga chapters")
 
     def execute(self):
         """
@@ -59,17 +70,4 @@ class XdccUpdateCommand(Command):
         :return: None
         """
         for directory in self.load_directories(self.args.directories):
-            try:
-                if self.args.create:
-                    XDCCUpdater.prompt(directory.metadata)
-                else:
-                    directory.xdcc_update(
-                        self.args.throttle, self.args.timeout
-                    )
-
-            except MissingXDCCInstructions:
-                self.logger.warning("No XDCC update instructions for {}"
-                                    .format(directory.path))
-            except InvalidXDCCInstructions:
-                self.logger.warning("Invalid XDCC update instructions for {}"
-                                    .format(directory.path))
+            directory.update(dict(self.args.__dict__))
