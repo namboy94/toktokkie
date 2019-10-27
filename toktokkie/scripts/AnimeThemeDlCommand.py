@@ -198,7 +198,7 @@ class AnimeThemeDlCommand(Command):
         :param shows: All series that are up for selection
         :return: A list of series names that were selected
         """
-        config = {}
+        config = {}  # type: Dict[str, List[str]]
 
         selection_file = os.path.join(self.args.out, "config.json")
         if os.path.isfile(selection_file):
@@ -259,7 +259,7 @@ class AnimeThemeDlCommand(Command):
         :return: The selected songs minus any excluded songs
         """
         excludes_file = os.path.join(self.args.out, "config.json")
-        config = {}
+        config = {}  # type: Dict[str, List[str]]
 
         use_old = False
         excludes = []  # type: List[str]

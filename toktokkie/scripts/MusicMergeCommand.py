@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 import shutil
-from typing import List
+from typing import List, cast
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.Directory import Directory
@@ -118,8 +118,8 @@ class MusicMergeCommand(Command):
         :param source_artist: The artist to merge into the target
         :return: None
         """
-        source_metadata = source_artist.metadata  # type: MusicArtist
-        target_metadata = target_artist.metadata  # type: MusicArtist
+        source_metadata = cast(MusicArtist, source_artist.metadata)
+        target_metadata = cast(MusicArtist, target_artist.metadata)
 
         target_albums = {x.name: x for x in target_metadata.albums}
         source_themes = {x.name: x for x in source_metadata.theme_songs}
