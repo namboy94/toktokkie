@@ -26,15 +26,23 @@ from toktokkie.metadata.ids.functions import objectify_ids, stringify_ids, \
 
 
 class MusicThemeSong(Component):
+    """
+    Class that collects data on music theme songs (like anime openings etc)
+    """
 
     def __init__(
             self,
             album: MusicAlbum,
             json_data: Dict[str, Any]
     ):
+        """
+        Initializes the object
+        :param album: The album object related to this theme song
+        :param json_data: The JSON data for the theme song
+        """
         self.album = album
         self.name = json_data["name"]
-        self.theme_type = json_data["theme_type"]
+        self._theme_type = json_data["theme_type"]
 
         if self.name != self.album.name:
             self.logger.warning("Theme song {} does not match album {}"
@@ -44,6 +52,13 @@ class MusicThemeSong(Component):
         self.series_ids = fill_ids(ids, theme_song_ids)
 
     @property
+    def theme_type(self) -> str:
+        """
+        :return: The theme type
+        """
+        return self._theme_type.upper()
+
+    @property
     def json(self) -> Dict[str, Any]:
         """
         Converts the component into a JSON-compatible dictionary
@@ -51,5 +66,6 @@ class MusicThemeSong(Component):
         """
         return {
             "name": self.name,
-            "series_ids": stringify_ids(minimize_ids(self.series_ids))
+            "series_ids": stringify_ids(minimize_ids(self.series_ids)),
+            "theme_type": self.theme_type.lower()
         }

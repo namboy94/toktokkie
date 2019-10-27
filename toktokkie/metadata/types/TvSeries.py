@@ -208,7 +208,7 @@ class TvSeries(Metadata):
 
     def validate(self):
         """
-        Validates the JSON data to make sure everything has valid values
+        Validates the metadata to make sure everything has valid values
         :raises InvalidMetadataException: If any errors were encountered
         :return: None
         """

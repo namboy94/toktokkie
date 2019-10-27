@@ -65,8 +65,8 @@ class IdFetcher:
             return self.__load_tvdb_ids()
         elif id_type == IdType.ANILIST and IdType.MYANIMELIST in other_ids:
             return self.__load_anilist_ids(other_ids[IdType.MYANIMELIST])
-        elif id_type == IdType.MUSICBRAINZ:
-            return self.__load_musicbrainz_ids()
+        elif id_type == IdType.MUSICBRAINZ_ARTIST:
+            return self.__load_musicbrainz_artist_ids()
         else:
             return None
 
@@ -101,7 +101,7 @@ class IdFetcher:
             ))
         return ids
 
-    def __load_musicbrainz_ids(self) -> List[str]:
+    def __load_musicbrainz_artist_ids(self) -> List[str]:
         """
         Retrieves a musicbrainz ID based on the artist name
         :return: The musicbrainz IDs

@@ -19,6 +19,8 @@ LICENSE"""
 
 import os
 import argparse
+import shutil
+from typing import List
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.Directory import Directory
@@ -46,12 +48,13 @@ class MusicMergeCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        parser.add_argument("source",
-                            help="Directory containing one half of "
-                                 "the directories to merge")
-        parser.add_argument("dest",
-                            help="Directory containing the other half "
-                                 "of the directories to merge")
+        parser.add_argument("target",
+                            help="Target directory. If not a toktokkie media"
+                                 "directory, will try to merge subfolders")
+        parser.add_argument("sources", nargs="+",
+                            help="Directores containing directories to merge")
+        parser.add_argument("--keep", action="store_true",
+                            help="If set, does not delete merged directories")
 
     def execute(self):
         """
@@ -59,64 +62,87 @@ class MusicMergeCommand(Command):
         :return: None
         """
         try:
-            Directory(self.args.source)
-            source_paths = [self.args.source]
+            Directory(self.args.target)
+            targets = [self.args.target]
+            single_artist_mode = True
         except MissingMetadata:
-            source_paths = list(map(lambda x: x[1], listdir(self.args.source)))
+            targets = [x[1] for x in listdir(self.args.target)]
+            single_artist_mode = False
 
-        try:
-            Directory(self.args.dest)
-            dest_paths = [self.args.dest]
-            dest_is_metadata_dir = True
-        except MissingMetadata:
-            dest_is_metadata_dir = False
-            dest_paths = list(map(lambda x: x[1], listdir(self.args.dest)))
+        sources = []  # type: List[str]
+        for path in self.args.sources:
+            try:
+                Directory(path)
+                sources.append(path)
+            except MissingMetadata:
+                sources += [x[1] for x in listdir(path)]
 
+        target_artists = self.load_directories(
+            targets, restrictions=[MediaType.MUSIC_ARTIST]
+        )
         source_artists = self.load_directories(
-            source_paths, restrictions=[MediaType.MUSIC_ARTIST]
+            sources, restrictions=[MediaType.MUSIC_ARTIST]
         )
-        dest_artists = self.load_directories(
-            dest_paths, restrictions=[MediaType.MUSIC_ARTIST]
-        )
-        dest_names = [x.metadata.name for x in dest_artists]
 
-        for source_artist in source_artists:
-            source_metadata = source_artist.metadata  # type: MusicArtist
-            if source_metadata.name not in dest_names:
-                if dest_is_metadata_dir:
-                    self.logger.warning(
-                        "Artist names don't match: {} !+ {}".format(
-                            source_artist.path,
-                            dest_paths[0]
-                        )
-                    )
-                else:
+        if single_artist_mode:
+            for source in source_artists:
+                self.merge_artists(target_artists[0], source)
+
+        else:
+            target_map = {x.metadata.name: x for x in target_artists}
+
+            for source_artist in source_artists:
+                source_metadata = source_artist.metadata  # type: MusicArtist
+
+                if source_metadata.name not in target_map:
                     new_path = os.path.join(
                         self.args.dest, source_metadata.name
                     )
-                    os.rename(source_artist.path, new_path)
+                    shutil.copytree(source_artist.path, new_path)
+                    if not self.args.keep:
+                        shutil.rmtree(source_artist.path)
+
+                else:
+                    target_artist = \
+                        target_map[source_metadata.name]  # type: Directory
+                    self.merge_artists(target_artist, source_artist)
+
+    def merge_artists(
+            self,
+            target_artist: Directory,
+            source_artist: Directory
+    ):
+        """
+        Merges two artists
+        :param target_artist: The target artist
+        :param source_artist: The artist to merge into the target
+        :return: None
+        """
+        source_metadata = source_artist.metadata  # type: MusicArtist
+        target_metadata = target_artist.metadata  # type: MusicArtist
+
+        target_albums = {x.name: x for x in target_metadata.albums}
+        source_themes = {x.name: x for x in source_metadata.theme_songs}
+
+        for source_album in source_metadata.albums:
+            if source_album.name in target_albums:
+                self.logger.warning(
+                    "Duplicate album: {}".format(source_album.name)
+                )
             else:
-                dest_artist = list(filter(
-                    lambda x: source_metadata.name == x.metadata.name,
-                    dest_artists
-                ))[0]
-                dest_metadata = dest_artist.metadata  # type: MusicArtist
-                dest_album_names = [x.name for x in dest_metadata.albums]
+                source_path = os.path.join(
+                    source_artist.path, source_album.name
+                )
+                target_path = os.path.join(
+                    target_artist.path, source_album.name
+                )
+                shutil.copytree(source_path, target_path)
+                target_metadata.add_album(source_album)
 
-                for source_album in source_metadata.albums:
-                    if source_album.name in dest_album_names:
-                        self.logger.warning(
-                            "Duplicate album: {}".format(source_album.name)
-                        )
-                    else:
-                        os.rename(
-                            os.path.join(
-                                source_artist.path, source_album.name
-                            ),
-                            os.path.join(
-                                dest_artist.path, source_album.name
-                            )
-                        )
-                        dest_metadata.add_album(source_album)
+                theme_song = source_themes.get(source_album.name)
+                if theme_song is not None:
+                    target_metadata.add_theme_song(theme_song)
 
-                dest_artist.write_metadata()
+        target_metadata.write()
+        if not self.args.keep:
+            shutil.rmtree(source_artist.path)

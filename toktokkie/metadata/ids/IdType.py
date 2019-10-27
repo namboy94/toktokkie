@@ -32,4 +32,6 @@ class IdType(Enum):
     ISBN = "isbn"
     VNDB = "vndb"
     MANGADEX = "mangadex"
-    MUSICBRAINZ = "musicbrainz"
+    MUSICBRAINZ_ARTIST = "musicbrainz_artist"
+    MUSICBRAINZ_RECORDING = "musicbrainz_recording"
+    MUSICBRAINZ_RELEASE = "musicbrainz_release"

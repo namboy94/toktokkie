@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import shutil
 import argparse
 from unittest import mock
 from toktokkie.test.TestFramework import _TestFramework
@@ -42,8 +43,8 @@ class TestAniThemeDl(_TestFramework):
         with mock.patch("builtins.input", side_effect=["1", ""]):
             cmd.execute()
 
-        momo = os.path.join(path, "structured/ED/Momo Asakura")
-        chico = os.path.join(path, "structured/OP/CHiCO with HoneyWorks")
+        momo = os.path.join(path, "ED/Momo Asakura")
+        chico = os.path.join(path, "OP/CHiCO with HoneyWorks")
         self.assertTrue(os.path.isdir(momo))
         self.assertTrue(os.path.isdir(chico))
         self.assertEqual(len(os.listdir(momo)), 2)
@@ -56,9 +57,21 @@ class TestAniThemeDl(_TestFramework):
 
         self.assertEqual(
             minimize_ids(momo_obj.ids),
-            {IdType.MUSICBRAINZ: ["0"]}
+            {IdType.MUSICBRAINZ_ARTIST: ["0"]}
         )
         self.assertEqual(
             minimize_ids(chico_obj.ids),
-            {IdType.MUSICBRAINZ: ["0"]}
+            {IdType.MUSICBRAINZ_ARTIST: ["0"]}
         )
+
+        shutil.rmtree(momo)
+        shutil.rmtree(chico)
+
+        self.assertFalse(os.path.isdir(momo))
+        self.assertFalse(os.path.isdir(chico))
+
+        with mock.patch("builtins.input", side_effect=["y", "y"]):
+            cmd.execute()
+
+        self.assertTrue(os.path.isdir(momo))
+        self.assertTrue(os.path.isdir(chico))

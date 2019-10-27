@@ -80,13 +80,15 @@ class AlbumArtFetchCommand(Command):
                     self.logger.info("Album art already exists, skipping")
                     continue
 
-                musicbrainz_ids = album.ids[IdType.MUSICBRAINZ]
+                musicbrainz_ids = album.ids[IdType.MUSICBRAINZ_RELEASE]
 
                 if len(musicbrainz_ids) >= 1:
+                    self.logger.debug("Using musicbrainz IDs")
                     cover_urls = self.load_musicbrainz_cover_url(
                         musicbrainz_ids[0]
                     )
                 elif theme_song is not None:
+                    self.logger.debug("Using anilist IDs")
                     anilist_ids = theme_song.series_ids[IdType.ANILIST]
                     if len(anilist_ids) < 1:
                         self.logger.warning("{} has no anilist ID, skipping"

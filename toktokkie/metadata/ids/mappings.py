@@ -58,7 +58,7 @@ valid_id_types = {
         IdType.MANGADEX
     ],
     MediaType.MUSIC_ARTIST: [
-        IdType.MUSICBRAINZ
+        IdType.MUSICBRAINZ_ARTIST
     ]
 }  # type: Dict[MediaType, List[IdType]]
 """
@@ -83,7 +83,7 @@ required_id_types = {
     MediaType.MANGA: [
     ],
     MediaType.MUSIC_ARTIST: [
-        IdType.MUSICBRAINZ
+        IdType.MUSICBRAINZ_ARTIST
     ]
 }  # type: Dict[MediaType, List[IdType]]
 """
@@ -117,7 +117,9 @@ id_prompt_order = [
     IdType.IMDB,
     IdType.ISBN,
     IdType.VNDB,
-    IdType.MUSICBRAINZ,
+    IdType.MUSICBRAINZ_ARTIST,
+    IdType.MUSICBRAINZ_RELEASE,
+    IdType.MUSICBRAINZ_RECORDING,
     IdType.MYANIMELIST,
     IdType.ANILIST,
     IdType.KITSU,
@@ -133,7 +135,8 @@ theme_song_ids = [
     IdType.MYANIMELIST,
     IdType.ANILIST,
     IdType.KITSU,
-    IdType.VNDB
+    IdType.VNDB,
+    IdType.MUSICBRAINZ_RECORDING
 ]
 """
 ID types that can be associated with theme songs

@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import json
 import logging
 from typing import Dict, Any, List
 from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.ids.mappings import valid_id_types, required_id_types
+from toktokkie.metadata.ids.mappings import valid_id_types, required_id_types,\
+    theme_song_ids
 from toktokkie.metadata.MediaType import MediaType
 
 
@@ -90,7 +92,8 @@ class SchemaBuilder:
         return {
             "type": "object",
             "properties": properties,
-            "required": required
+            "required": required,
+            "additionalProperties": False
         }
 
     def __create_ids_schema(
@@ -172,6 +175,13 @@ class SchemaBuilder:
         Creates additional properties for music artist metadata
         :return: The additional properties
         """
+        valid_album_ids = list(valid_id_types[self.media_type])
+        valid_album_ids.remove(IdType.MUSICBRAINZ_ARTIST)
+        valid_album_ids.append(IdType.MUSICBRAINZ_RELEASE)
+
+        album_ids = self.__create_ids_schema(valid_album_ids, [])
+        series_ids = self.__create_ids_schema(theme_song_ids, [])
+
         return {
             "albums": {
                 "type": "array",
@@ -181,9 +191,10 @@ class SchemaBuilder:
                         "name": {"type": "string"},
                         "genre": {"type": "string"},
                         "year": {"type": "number"},
-                        "ids": {}
+                        "ids": album_ids
                     },
-                    "required": ["name", "genre", "year"]
+                    "required": ["name", "genre", "year"],
+                    "additionalProperties": False
                 }
             },
             "theme_songs": {
@@ -192,13 +203,14 @@ class SchemaBuilder:
                     "type": "object",
                     "properties": {
                         "name": {"type": "string"},
-                        "series_ids": {},
+                        "series_ids": series_ids,
                         "theme_type": {
                             "type": "string",
                             "pattern": "(op|ed|insert|special|other){1}"
                         }
                     },
-                    "required": ["name", "theme_type"]
+                    "required": ["name", "theme_type"],
+                    "additionalProperties": False
                 }
             }
         }
@@ -252,7 +264,8 @@ class SchemaBuilder:
                         "ids": ids,
                         "name": {"type": "string"}
                     },
-                    "required": ["name"]
+                    "required": ["name"],
+                    "additionalProperties": False
                 }
             },
             "excludes": {
@@ -280,5 +293,10 @@ class SchemaBuilder:
 if __name__ == "__main__":
     for _media_type in MediaType:
         print(_media_type.value)
-        print(SchemaBuilder(_media_type).build_schema())
+        print(json.dumps(
+            SchemaBuilder(_media_type).build_schema(),
+            sort_keys=True,
+            indent=4,
+            separators=(",", ": ")
+        ))
         print()

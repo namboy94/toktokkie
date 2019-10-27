@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import List, Optional
+from typing import List
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
@@ -59,8 +60,7 @@ class MusicArtist(Metadata):
             name = theme_song["name"]
             album = album_map.get(name)
             if album is None:
-                self.logger.warning("Missing album data for {}".format(name))
-                continue
+                raise InvalidMetadata("Missing album data for {}".format(name))
             else:
                 theme_songs.append(MusicThemeSong(album, theme_song))
 
@@ -101,3 +101,16 @@ class MusicArtist(Metadata):
                 self.json["theme_songs"] = []
 
             self.json["theme_songs"].append(theme_song.json)
+
+    def validate(self):
+        """
+        Validates the metadata to make sure everything has valid values
+        :raises InvalidMetadataException: If any errors were encountered
+        :return: None
+        """
+        super().validate()
+
+        # The important thing here is that self.theme_songs is called, as
+        # it checks that all theme songs have corresponding albums
+        if len(self.theme_songs) != len(self.json.get("theme_songs", [])):
+            raise InvalidMetadata("Invalid  amount of theme songs")

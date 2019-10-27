@@ -269,13 +269,15 @@ class Prompter:
         for album, album_path in listdir(self.directory, no_files=True):
             print(album)
 
+            valid_album_ids = list(valid_id_types[MediaType.MUSIC_ARTIST])
+            valid_album_ids.remove(IdType.MUSICBRAINZ_ARTIST)
+            valid_album_ids.append(IdType.MUSICBRAINZ_RELEASE)
+
             album_data = {
                 "name": album,
                 "genre": prompt("Genre"),
                 "year": prompt("Year", _type=int),
-                "ids": self.__prompt_component_ids(
-                    valid_id_types[MediaType.MUSIC_ARTIST], {}
-                )
+                "ids": self.__prompt_component_ids(valid_album_ids, {})
             }
             albums.append(album_data)
 
@@ -285,8 +287,8 @@ class Prompter:
                     "theme_type": prompt(
                         "Theme Type",
                         choices={"OP", "ED", "Insert", "Special", "Other"}
-                    ),
-                    "series_data": self.__prompt_ids(theme_song_ids, [], {})
+                    ).lower(),
+                    "series_ids": self.__prompt_ids(theme_song_ids, [], {})
                 }
                 theme_songs.append(theme_data)
 

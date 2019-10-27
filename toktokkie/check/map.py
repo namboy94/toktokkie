@@ -23,6 +23,7 @@ from toktokkie.check.MangaChecker import MangaChecker
 from toktokkie.check.BookSeriesChecker import BookSeriesChecker
 from toktokkie.check.TvSeriesChecker import TvSeriesChecker
 from toktokkie.check.MovieChecker import MovieChecker
+from toktokkie.check.MusicArtistChecker import MusicArtistChecker
 from toktokkie.check.VisualNovelChecker import VisualNovelChecker
 
 checker_map = {
@@ -31,7 +32,8 @@ checker_map = {
     MediaType.TV_SERIES: TvSeriesChecker,
     MediaType.MOVIE: MovieChecker,
     MediaType.VISUAL_NOVEL: VisualNovelChecker,
-    MediaType.MANGA: MangaChecker
+    MediaType.MANGA: MangaChecker,
+    MediaType.MUSIC_ARTIST: MusicArtistChecker
 }
 """
 A dictionary mapping media types to checker classes

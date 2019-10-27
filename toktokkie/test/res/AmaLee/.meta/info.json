@@ -1,0 +1,112 @@
+{
+    "albums": [
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "865ba825-c163-4bc3-82fd-0a18167a883d"
+                ]
+            },
+            "name": "Nostalgia",
+            "year": 2017
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "93dcf234-dee7-4b55-8b15-68dfb17bbd5c"
+                ]
+            },
+            "name": "Nostalgia II",
+            "year": 2017
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "421f3cc9-3863-480f-9978-be297ec98ef3"
+                ]
+            },
+            "name": "Nostalgia III",
+            "year": 2018
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "b031d497-cb38-4232-bb69-0251f2ad7f5e"
+                ]
+            },
+            "name": "Nostalgia IV",
+            "year": 2018
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "a557c82b-e10e-422c-9e01-d601bfbb9874"
+                ]
+            },
+            "name": "Nostalgia V",
+            "year": 2018
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "197fd87f-121b-4fd4-8197-f9e2345ee233"
+                ]
+            },
+            "name": "Nostalgia VI",
+            "year": 2019
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "69dd9424-2675-44cb-930a-9cd211560660"
+                ]
+            },
+            "name": "Total Coverage, Vol. 1",
+            "year": 2016
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "1617ef9d-7247-4656-a8af-197983da2c10"
+                ]
+            },
+            "name": "Total Coverage, Vol. 2",
+            "year": 2016
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "c79a8353-759e-4641-b042-2cb3e4170b05"
+                ]
+            },
+            "name": "Total Coverage, Vol. 3",
+            "year": 2017
+        },
+        {
+            "genre": "Anime",
+            "ids": {
+                "musicbrainz_release": [
+                    "e58a7d13-b3ca-4765-b066-e373b7bac03e"
+                ]
+            },
+            "name": "Total Coverage, Vol. 4",
+            "year": 2018
+        }
+    ],
+    "ids": {
+        "musicbrainz_artist": [
+            "99841426-aee3-4c2f-9dc0-029ee6c12d98"
+        ]
+    },
+    "tags": [],
+    "theme_songs": [],
+    "type": "music"
+}

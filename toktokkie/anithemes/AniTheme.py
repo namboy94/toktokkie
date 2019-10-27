@@ -158,7 +158,7 @@ class AniTheme:
             if element.name == "h3":
                 if current_title != "" \
                         and (whitelist is None or current_title in whitelist):
-                    cls.logger.info("Found series {}".format(current_title))
+                    print("Loading themes for {}".format(current_title))
 
                     data = []  # type: List[AniTheme]
                     while len(current_tables) > 0:

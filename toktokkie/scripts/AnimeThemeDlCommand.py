@@ -27,6 +27,8 @@ from toktokkie.scripts.Command import Command
 from toktokkie.metadata.types.MusicArtist import MusicArtist
 from puffotter.os import makedirs, listdir
 from puffotter.requests import aggressive_request
+from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
+from toktokkie.metadata.types.components.MusicThemeSong import MusicThemeSong
 from toktokkie.scripts.RenameCommand import RenameCommand
 from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
@@ -67,8 +69,6 @@ class AnimeThemeDlCommand(Command):
         :return: None
         """
         makedirs(self.args.out)
-        for subdir in ["webm", "mp3", "covers"]:
-            makedirs(os.path.join(self.args.out, subdir))
 
         series_names = self.load_titles(self.args.year, self.args.season)
         selected_series = self.prompt_selection(series_names)
@@ -102,7 +102,7 @@ class AnimeThemeDlCommand(Command):
         been completed
         :return: None
         """
-        structure_dir = os.path.join(self.args.out, "structured")
+        structure_dir = self.args.out
         ops_dir = os.path.join(structure_dir, "OP")
         eds_dir = os.path.join(structure_dir, "ED")
 
@@ -145,6 +145,7 @@ class AnimeThemeDlCommand(Command):
         :param include_previous_season: Whether to include the previous season
         :return: The list of titles
         """
+        print("Loading titles...")
         url = "https://old.reddit.com/r/AnimeThemes/wiki/" \
               "{}#wiki_{}_{}_season".format(year, year, season)
         response = aggressive_request(url)
@@ -197,10 +198,13 @@ class AnimeThemeDlCommand(Command):
         :param shows: All series that are up for selection
         :return: A list of series names that were selected
         """
-        selection_file = os.path.join(self.args.out, "selection.json")
+        config = {}
+
+        selection_file = os.path.join(self.args.out, "config.json")
         if os.path.isfile(selection_file):
             with open(selection_file, "r") as f:
-                old_selection = json.loads(f.read())
+                config = json.loads(f.read())
+                old_selection = config["selection"]
 
             while True:
                 resp = input("Use previous selection? {} (y|n)"
@@ -239,7 +243,8 @@ class AnimeThemeDlCommand(Command):
                 continue
 
             with open(selection_file, "w") as f:
-                f.write(json.dumps(parts))
+                config["selection"] = parts
+                f.write(json.dumps(config))
 
             return parts
 
@@ -253,16 +258,18 @@ class AnimeThemeDlCommand(Command):
         :param selected_songs: All currently selected songs
         :return: The selected songs minus any excluded songs
         """
-        excludes_file = os.path.join(self.args.out, "excludes.json")
+        excludes_file = os.path.join(self.args.out, "config.json")
+        config = {}
 
         use_old = False
         excludes = []  # type: List[str]
 
         if os.path.isfile(excludes_file):
             with open(excludes_file, "r") as f:
-                old_selection = json.loads(f.read())
+                config = json.loads(f.read())
+                old_selection = config.get("excludes")
 
-            while True:
+            while old_selection is not None:
                 resp = input("Use previous exclusion? {} (y|n)"
                              .format(old_selection))
                 if resp.lower() in ["y", "n"]:
@@ -295,7 +302,8 @@ class AnimeThemeDlCommand(Command):
                 break
 
         with open(excludes_file, "w") as f:
-            f.write(json.dumps(excludes))
+            config["excludes"] = excludes
+            f.write(json.dumps(config))
 
         new_selection = []
         for song in selected_songs:
@@ -334,17 +342,15 @@ class AnimeThemeDlCommand(Command):
         :param selected_songs: The song data
         :return: None
         """
-        structure_dir = os.path.join(self.args.out, "structured")
-        if os.path.isdir(structure_dir):
-            shutil.rmtree(structure_dir)
-        os.makedirs(structure_dir)
-
         ops = list(filter(lambda x: "OP" in x.theme_type, selected_songs))
         eds = list(filter(lambda x: "ED" in x.theme_type, selected_songs))
 
         for oped_type, songs in [("OP", ops), ("ED", eds)]:
-            oped_dir = os.path.join(structure_dir, oped_type)
-            os.makedirs(oped_dir)
+            oped_dir = os.path.join(self.args.out, oped_type)
+            if os.path.isdir(oped_dir):
+                shutil.rmtree(oped_dir)
+
+            makedirs(oped_dir)
 
             artists = {}   # type: Dict[str, List[AniTheme]]
 
@@ -358,6 +364,7 @@ class AnimeThemeDlCommand(Command):
                 artist_dir = os.path.join(oped_dir, artist)
                 makedirs(artist_dir)
                 albums_metadata = []
+                theme_songs_metadata = []
 
                 for song in artist_songs:
                     mp3_file = song.temp_mp3_file
@@ -375,17 +382,21 @@ class AnimeThemeDlCommand(Command):
                     if not os.path.isfile(vid_path):
                         shutil.copyfile(webm_file, vid_path)
 
-                    albums_metadata.append({
+                    album_obj = MusicAlbum(artist_dir, {}, {
+                            "name": song.song_name,
+                            "ids": {},
+                            "genre": "Anime",
+                            "year": int(self.args.year)
+                    })
+                    albums_metadata.append(album_obj)
+                    theme_songs_metadata.append(MusicThemeSong(album_obj, {
                         "name": song.song_name,
                         "series_ids": {
                             "myanimelist": [str(song.mal_id)],
                             "anilist": [str(song.anilist_id)]
                         },
-                        "genre": "Anime",
-                        "year": int(self.args.year),
-                        "album_type": "theme_song",
-                        "theme_type": oped_type
-                    })
+                        "theme_type": oped_type.lower()
+                    }))
 
                 metadir = os.path.join(artist_dir, ".meta")
                 icondir = os.path.join(metadir, "icons")
@@ -395,7 +406,8 @@ class AnimeThemeDlCommand(Command):
                 metadata = {
                     "type": "music",
                     "tags": [],
-                    "ids": {"musicbrainz": ["0"]},
-                    "albums": albums_metadata
+                    "ids": {"musicbrainz_artist": ["0"]},
+                    "albums": [x.json for x in albums_metadata],
+                    "theme_songs": [x.json for x in theme_songs_metadata]
                 }
                 MusicArtist(artist_dir, json_data=metadata).write()

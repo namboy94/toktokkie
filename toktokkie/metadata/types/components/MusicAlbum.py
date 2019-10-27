@@ -22,6 +22,8 @@ import logging
 import mimetypes
 from typing import Dict, Any, List, Optional, Tuple
 from mutagen.easyid3 import EasyID3
+# noinspection PyProtectedMember
+from mutagen.id3._util import ID3NoHeaderError
 from puffotter.os import listdir, get_ext
 from toktokkie.metadata.types.components.Component import Component
 from toktokkie.metadata.ids.IdType import IdType
@@ -59,7 +61,7 @@ class MusicAlbum(Component):
         self.path = os.path.join(parent_path, self.name)
 
         ids = objectify_ids(json_data.get("ids", {}))
-        self.ids = fill_ids(ids, [], parent_ids)
+        self.ids = fill_ids(ids, [IdType.MUSICBRAINZ_RELEASE], parent_ids)
 
     @property
     def json(self) -> Dict[str, Any]:
@@ -147,15 +149,20 @@ class MusicSong:
         if self.format != "mp3":
             return {}
 
-        tags = dict(EasyID3(self.path))
-        for key in tags:
-            tag = tags[key]
-            if isinstance(tag, list):
-                if len(tag) >= 1:
-                    tags[key] = tag[0]
-                else:
-                    tags[key] = ""
-        return tags
+        try:
+            tags = dict(EasyID3(self.path))
+
+            for key in tags:
+                tag = tags[key]
+                if isinstance(tag, list):
+                    if len(tag) >= 1:
+                        tags[key] = tag[0]
+                    else:
+                        tags[key] = ""
+            return tags
+
+        except ID3NoHeaderError:
+            return {}
 
     def __write_mp3_tags(self):
         """
@@ -186,9 +193,9 @@ class MusicSong:
             return title
         else:
             if self.filename.split(" - ")[0].isnumeric():
-                return self.filename.split(" - ")[1]
+                return self.filename.split(" - ", 1)[1].rsplit(".", 1)[0]
             else:
-                return self.filename
+                return self.filename.rsplit(".", 1)[0]
 
     @title.setter
     def title(self, title: str):
