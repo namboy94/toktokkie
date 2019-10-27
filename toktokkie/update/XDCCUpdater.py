@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import re
 from enum import Enum
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, cast
 from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
 from puffotter.prompt import prompt
@@ -29,6 +29,7 @@ from toktokkie.renaming.Renamer import Renamer
 from toktokkie.renaming.RenameOperation import RenameOperation
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.types.components.TvSeason import TvSeason
 from toktokkie.exceptions import InvalidUpdateInstructions
 
@@ -113,7 +114,8 @@ class XDCCUpdater(Updater):
         :return: The season to update
         """
         season_name = self.config["season"]
-        for season in self.metadata.seasons:
+        metadata = cast(TvSeries, self.metadata)
+        for season in metadata.seasons:
             if season.name == season_name:
                 return season
         raise InvalidUpdateInstructions(
@@ -183,7 +185,7 @@ class XDCCUpdater(Updater):
         return self.predefined_patterns.get(pattern, pattern)
 
     @classmethod
-    def _prompt(cls, metadata: TvSeries) -> Optional[Dict[str, Any]]:
+    def _prompt(cls, metadata: Metadata) -> Optional[Dict[str, Any]]:
         """
         Prompts the user for information to create a config file
         :param metadata: The metadata of the media for which to create an
@@ -191,6 +193,8 @@ class XDCCUpdater(Updater):
         :return: The configuration JSON data
         """
         hs = SearchEngineType.HORRIBLESUBS.name.lower()
+
+        metadata = cast(TvSeries, metadata)
 
         print(
             "Generating XDCC Update instructions for {}".format(metadata.name)
@@ -200,7 +204,7 @@ class XDCCUpdater(Updater):
             x.name for x in metadata.seasons if x.name.startswith("Season ")
         ]
 
-        default_season = None  # type: Optional[TvSeason]
+        default_season = None  # type: Optional[str]
         if len(normal_seasons) > 0:
             default_season = max(normal_seasons)
 

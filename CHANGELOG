@@ -3,6 +3,8 @@ V 0.19.0:
   - Adjusted to new xdcc-dl paradigms
   - Major refactor of metadata structure
   - Uses json schema to validate metadata
+  - Added music support
+  - Create unified Updater functionality
 V 0.18.0:
   - Redid metadata to be more minimalistic and easier to maintain
   - Substituted verification for Checkers

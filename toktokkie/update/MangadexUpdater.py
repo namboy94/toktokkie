@@ -19,13 +19,14 @@ LICENSE"""
 
 import os
 from zipfile import ZipFile
-from typing import List, Optional
+from typing import List, Optional, cast
 from manga_dl.scrapers.mangadex import MangaDexScraper
 from manga_dl.entities.Chapter import Chapter
 from puffotter.os import makedirs, listdir, replace_illegal_ntfs_chars
 from puffotter.print import pprint
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.types.Manga import Manga
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.update.Updater import Updater
 
@@ -115,9 +116,10 @@ class MangadexUpdater(Updater):
         :param chapters: The chapters for the series
         :return: None
         """
+        metadata = cast(Manga, self.metadata)
 
         main_chapters = list(filter(lambda x: not x.is_special, chapters))
-        current_files = listdir(self.metadata.main_path)
+        current_files = listdir(metadata.main_path)
         current_latest = len(current_files)
 
         if current_latest == 0:
@@ -159,7 +161,9 @@ class MangadexUpdater(Updater):
         :param chapters: The chapters of the series
         :return: None
         """
-        current_latest = len(listdir(self.metadata.main_path))
+        metadata = cast(Manga, self.metadata)
+
+        current_latest = len(listdir(metadata.main_path))
 
         main_chapters = list(filter(
             lambda x: not x.is_special
@@ -167,7 +171,7 @@ class MangadexUpdater(Updater):
             chapters
         ))
 
-        maxchar = max(self.metadata.name)
+        maxchar = max(metadata.name)
 
         total_chapters = len(main_chapters) + current_latest
 
@@ -187,10 +191,10 @@ class MangadexUpdater(Updater):
 
             name = "{}{} - Chapter {}.cbz".format(
                 maxchar,
-                self.metadata.name,
+                metadata.name,
                 c.chapter_number.zfill(len(str(total_chapters)))
             )
-            dest = os.path.join(self.metadata.main_path, name)
+            dest = os.path.join(metadata.main_path, name)
             if not self.args["dry_run"]:
                 print("Downloading Chapter {}".format(c))
                 c.download(dest)
@@ -206,11 +210,12 @@ class MangadexUpdater(Updater):
         :param chapters: The chapters of the series
         :return: None
         """
+        metadata = cast(Manga, self.metadata)
         special_chapters = list(filter(lambda x: x.is_special, chapters))
 
         try:
             special_fill = len(max(
-                self.metadata.special_chapters,
+                metadata.special_chapters,
                 key=lambda x: len(x)
             ))
         except ValueError:
@@ -219,17 +224,17 @@ class MangadexUpdater(Updater):
         for c in special_chapters:
 
             name = "{} - Chapter {}.cbz".format(
-                self.metadata.name,
+                metadata.name,
                 c.chapter_number.zfill(special_fill)
             )
 
             path = os.path.join(
-                self.metadata.special_path, replace_illegal_ntfs_chars(name)
+                metadata.special_path, replace_illegal_ntfs_chars(name)
             )
 
             if os.path.exists(path):
                 continue
-            elif c.chapter_number not in self.metadata.special_chapters:
+            elif c.chapter_number not in metadata.special_chapters:
 
                 if self.args["dry_run"]:
                     pprint("Found unknown chapter {}".format(c.chapter_number),
@@ -237,16 +242,16 @@ class MangadexUpdater(Updater):
                 else:
                     pprint("Adding chapter {} to metadata".format(c),
                            fg="lgreen")
-                    chapter_entries = self.metadata.special_chapters
+                    chapter_entries = metadata.special_chapters
                     chapter_entries.append(c.chapter_number)
-                    self.metadata.special_chapters = chapter_entries
-                    self.metadata.write()
-                    makedirs(self.metadata.special_path)
+                    metadata.special_chapters = chapter_entries
+                    metadata.write()
+                    makedirs(metadata.special_path)
                     print("Downloading special chapter {}".format(c))
                     c.download(path)
             else:
                 if not self.args["dry_run"]:
-                    makedirs(self.metadata.special_path)
+                    makedirs(metadata.special_path)
                     print("Downloading special chapter {}".format(c))
                     c.download(path)
                 else:
