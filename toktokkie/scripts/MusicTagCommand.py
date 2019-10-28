@@ -45,6 +45,8 @@ class MusicTagCommand(Command):
         :return: None
         """
         cls.add_directories_arg(parser)
+        parser.add_argument("--force-album-art-refresh", action="store_true",
+                            help="Forces an album art refresh")
 
     def execute(self):
         """
@@ -84,7 +86,8 @@ class MusicTagCommand(Command):
                                     and key != "APIC:Cover":
                                 id3.pop(key)
 
-                        if "APIC:Cover" not in id3.keys():
+                        if "APIC:Cover" not in id3.keys() or \
+                                self.args.force_album_art_refresh:
                             with open(cover_file, "rb") as f:
                                 img = f.read()
 

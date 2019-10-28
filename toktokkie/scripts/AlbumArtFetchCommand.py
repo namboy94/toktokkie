@@ -127,7 +127,7 @@ class AlbumArtFetchCommand(Command):
                 img = None
 
         if img is None:
-            self.logger.warning("Couldn't download cover files")
+            self.logger.warning("Couldn't download cover file {}".format(dest))
             return
 
         with open(tmp_file, "wb") as f:
@@ -165,17 +165,21 @@ class AlbumArtFetchCommand(Command):
         )
 
         urls = []
-        urlmap = {}
+        urlmap = {
+            "original": [],
+            "250px": [],
+            "500px": []
+        }  # type: Dict[str, List[str]]
 
-        for a in cover_page.find_all("a"):
-            category = a.text.strip().lower()
-            if category in ["original", "250px", "500px"]:
-                urlmap[category] = a["href"]
+        for art in cover_page.select(".artwork-cont"):
+            for a in art.find_all("a"):
+                category = a.text.strip().lower()
+                if category in ["original", "250px", "500px"]:
+                    urlmap[category].append(a["href"])
 
         for category in ["original", "500px", "250px"]:
-            href = urlmap.get(category)
-            if href is not None:
-                urls.append("https:" + href)
+            for link in urlmap[category]:
+                urls.append("https:" + link)
 
         try:
             displayed = cover_page.select(".cover-art")[0].find("img")["src"]

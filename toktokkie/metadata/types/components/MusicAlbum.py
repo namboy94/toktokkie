@@ -53,7 +53,7 @@ class MusicAlbum(Component):
         self.parent_path = parent_path
         self.parent_ids = parent_ids
 
-        self.artist_name = os.path.basename(os.path.normpath(parent_path))
+        self.artist_name = os.path.basename(os.path.abspath(parent_path))
 
         self.name = json_data["name"]
         self.genre = json_data["genre"]
