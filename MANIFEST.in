@@ -1,1 +1,3 @@
 include version
+graft toktokkie/web/templates
+graft toktokkie/web/static

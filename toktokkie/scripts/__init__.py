@@ -34,6 +34,7 @@ from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
 from toktokkie.scripts.MusicTagCommand import MusicTagCommand
 from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.scripts.MusicMergeCommand import MusicMergeCommand
+from toktokkie.scripts.WebStartCommand import WebStartCommand
 
 toktokkie_commands = [
     PrintCommand,
@@ -52,7 +53,8 @@ toktokkie_commands = [
     AlbumArtFetchCommand,
     MusicTagCommand,
     MusicMergeCommand,
-    PlaylistCreateCommand
+    PlaylistCreateCommand,
+    WebStartCommand
 ]
 """
 A list of commands for the toktokkie script
