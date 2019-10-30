@@ -25,6 +25,7 @@ from puffotter.prompt import yn_prompt
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
 from toktokkie.metadata.functions import get_metadata, create_metadata
+from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.exceptions import MissingMetadata, InvalidUpdateInstructions, \
     MissingUpdateInstructions, InvalidMetadata
@@ -62,7 +63,7 @@ class Directory:
         if not os.path.isfile(self.metadata_file):
             raise MissingMetadata(self.metadata_file + " missing")
 
-        self.metadata = get_metadata(self.path)
+        self.metadata = get_metadata(self.path)  # type: Metadata
 
         if not os.path.isdir(self.metadata.icon_directory):
             os.makedirs(self.metadata.icon_directory)

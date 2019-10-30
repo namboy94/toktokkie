@@ -17,8 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
+import shutil
 from toktokkie.web import app
-from flask import render_template
+from flask import render_template, Response, request
 from toktokkie.Directory import Directory
 
 
@@ -27,7 +29,20 @@ def root():
     return render_template("index.html")
 
 
-def list():
-    media_dirs = [
-        "/home/hermann/Downloads/test-manga"
+@app.route("/image")
+def image():
+    path = request.args["path"]
+    with open(path, "rb") as f:
+        return Response(f.read(), mimetype="image/png")
+
+
+@app.route("/list")
+def list_dirs():
+    media_paths = [
+        "/home/hermann/Downloads/test"
     ]
+    media_dirs = []
+    for path in media_paths:
+        media_dirs += Directory.load_directories(path)
+
+    return render_template("list.html", media_dirs=media_dirs)

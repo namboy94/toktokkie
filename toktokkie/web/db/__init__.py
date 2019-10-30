@@ -16,10 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
-
-import os
-from flask import Flask
-
-root_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-app = Flask("toktokkie", root_path=root_path)
-
