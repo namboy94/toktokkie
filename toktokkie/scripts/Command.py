@@ -61,40 +61,6 @@ class Command:
         """
         raise NotImplementedError()
 
-    def load_directories(
-            self,
-            paths: List[str],
-            restrictions: Optional[List[MediaType]] = None
-    ) -> List[Directory]:
-        """
-        Loads directory objects from a list of file paths
-        :param paths: The paths to convert into objects
-        :param restrictions: Limits the media type of directories
-        :return: The converted directories
-        """
-        directories = []  # type: List[Directory]
-        for path in paths:
-            try:
-                self.logger.debug("Loading directory {}".format(path))
-                directory = Directory(path)
-
-                if restrictions is not None:
-                    if directory.metadata.media_type() not in restrictions:
-                        self.logger.info(
-                            "Skipping directory {} with incorrect type {}"
-                            .format(path, directory.metadata.media_type())
-                        )
-                        continue
-
-                directories.append(directory)
-            except MissingMetadata:
-                self.logger.warning("{} has no metadata file.".format(path))
-            except InvalidMetadata as e:
-                self.logger.warning("{}'s metadata is invalid. ({})".format(
-                    path, e
-                ))
-        return directories
-
     @staticmethod
     def add_directories_arg(parser: argparse.ArgumentParser):
         """

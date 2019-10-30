@@ -20,6 +20,7 @@ LICENSE"""
 import argparse
 from toktokkie.iconizing import procedures, default_procedure
 from toktokkie.scripts.Command import Command
+from toktokkie.Directory import Directory
 
 
 class IconizeCommand(Command):
@@ -57,7 +58,7 @@ class IconizeCommand(Command):
             lambda x: x.name == self.args.procedure, procedures
         ))[0]
 
-        for directory in self.load_directories(self.args.directories):
+        for directory in Directory.load_directories(self.args.directories):
             try:
                 directory.iconize(procedure)
             except ValueError:

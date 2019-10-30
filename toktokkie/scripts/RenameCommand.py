@@ -19,6 +19,7 @@ LICENSE"""
 
 import argparse
 from toktokkie.scripts.Command import Command
+from toktokkie.Directory import Directory
 
 
 class RenameCommand(Command):
@@ -49,7 +50,7 @@ class RenameCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in self.load_directories(self.args.directories):
+        for directory in Directory.load_directories(self.args.directories):
             try:
                 directory.rename(self.args.noconfirm)
             except ValueError:

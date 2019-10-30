@@ -77,10 +77,10 @@ class MusicMergeCommand(Command):
             except MissingMetadata:
                 sources += [x[1] for x in listdir(path)]
 
-        target_artists = self.load_directories(
+        target_artists = Directory.load_directories(
             targets, restrictions=[MediaType.MUSIC_ARTIST]
         )
-        source_artists = self.load_directories(
+        source_artists = Directory.load_directories(
             sources, restrictions=[MediaType.MUSIC_ARTIST]
         )
 

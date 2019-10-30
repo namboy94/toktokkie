@@ -21,6 +21,7 @@ import os
 import argparse
 import mutagen.id3
 from toktokkie.scripts.Command import Command
+from toktokkie.Directory import Directory
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.MusicArtist import MusicArtist
 
@@ -53,7 +54,7 @@ class MusicTagCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in self.load_directories(
+        for directory in Directory.load_directories(
                 self.args.directories, restrictions=[MediaType.MUSIC_ARTIST]
         ):
             music_metadata = directory.metadata  # type: MusicArtist

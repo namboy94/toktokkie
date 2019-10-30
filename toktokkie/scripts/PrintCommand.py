@@ -19,6 +19,7 @@ LICENSE"""
 
 import argparse
 from toktokkie.scripts.Command import Command
+from toktokkie.Directory import Directory
 
 
 class PrintCommand(Command):
@@ -47,5 +48,5 @@ class PrintCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in self.load_directories(self.args.directories):
+        for directory in Directory.load_directories(self.args.directories):
             print(directory.metadata)

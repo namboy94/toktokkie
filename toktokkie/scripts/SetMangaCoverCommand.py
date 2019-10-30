@@ -22,6 +22,7 @@ import argparse
 from subprocess import Popen
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
+from toktokkie.Directory import Directory
 
 
 class SetMangaCoverCommand(Command):
@@ -50,7 +51,7 @@ class SetMangaCoverCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in self.load_directories(
+        for directory in Directory.load_directories(
                 self.args.directories, restrictions=[MediaType.MANGA]
         ):
 

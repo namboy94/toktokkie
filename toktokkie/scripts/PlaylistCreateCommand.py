@@ -21,6 +21,7 @@ import os
 import argparse
 from puffotter.os import listdir, get_ext
 from toktokkie.scripts.Command import Command
+from toktokkie.Directory import Directory
 
 
 class PlaylistCreateCommand(Command):
@@ -58,7 +59,7 @@ class PlaylistCreateCommand(Command):
 
         playlist_files = []
 
-        for directory in self.load_directories(self.args.directories):
+        for directory in Directory.load_directories(self.args.directories):
             for album, album_path in listdir(directory.path, no_files=True):
                 for song, song_path in listdir(album_path, no_dirs=True):
                     if get_ext(song) in music_exts:

@@ -19,8 +19,15 @@ LICENSE"""
 
 from toktokkie.web import app
 from flask import render_template
+from toktokkie.Directory import Directory
 
 
-@app.route('/')
+@app.route("/")
 def root():
     return render_template("index.html")
+
+
+def list():
+    media_dirs = [
+        "/home/hermann/Downloads/test-manga"
+    ]

@@ -19,6 +19,7 @@ LICENSE"""
 
 import argparse
 from subprocess import Popen
+from toktokkie.Directory import Directory
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.MediaType import MediaType
 
@@ -58,7 +59,7 @@ class AnilistOpenCommand(Command):
             MediaType.TV_SERIES,
             MediaType.MOVIE
         ]
-        directories = self.load_directories(
+        directories = Directory.load_directories(
             self.args.directories, anilist_types
         )
         for directory in directories:

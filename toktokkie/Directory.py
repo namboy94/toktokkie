@@ -20,15 +20,17 @@ LICENSE"""
 import os
 import sys
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 from puffotter.prompt import yn_prompt
 from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
 from toktokkie.metadata.functions import get_metadata, create_metadata
+from toktokkie.metadata.MediaType import MediaType
 from toktokkie.exceptions import MissingMetadata, InvalidUpdateInstructions, \
-    MissingUpdateInstructions
+    MissingUpdateInstructions, InvalidMetadata
 from toktokkie.update import updaters
 from toktokkie.check.map import checker_map
+from puffotter.os import listdir
 
 
 class Directory:
@@ -167,3 +169,42 @@ class Directory:
                         "Update instructions for {} are invalid: {}"
                         .format(self.path, e)
                     )
+
+    @classmethod
+    def load_directories(
+            cls,
+            parent_dir: str,
+            restrictions: Optional[List[MediaType]] = None
+    ) -> List["Directory"]:
+        """
+        Loads all media directories in a directory
+        :param parent_dir: The directory to search for media directories
+        :param restrictions: Restricts the found media directories to media directories
+                             with a specific media type
+        :return: The list of Media Directories
+        """
+        if restrictions is None:
+            restrictions = [x for x in MediaType]
+
+        logger = logging.getLogger(cls.__name__)
+        directories = []  # type: List[Directory]
+        for name, path in listdir(parent_dir):
+            try:
+                logger.debug("Loading directory {}".format(path))
+                directory = cls(path)
+
+                if directory.metadata.media_type() not in restrictions:
+                    logger.info(
+                        "Skipping directory {} with incorrect type {}"
+                        .format(path, directory.metadata.media_type())
+                    )
+                    continue
+
+                directories.append(directory)
+            except MissingMetadata:
+                logger.warning("{} has no metadata file.".format(path))
+            except InvalidMetadata as e:
+                logger.warning("{}'s metadata is invalid. ({})".format(
+                    path, e
+                ))
+        return directories

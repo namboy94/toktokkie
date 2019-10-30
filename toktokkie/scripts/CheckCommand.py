@@ -21,6 +21,7 @@ import tvdb_api
 import argparse
 from toktokkie.scripts.Command import Command
 from anime_list_apis.api.AnilistApi import AnilistApi
+from toktokkie.Directory import Directory
 
 
 class CheckCommand(Command):
@@ -69,5 +70,5 @@ class CheckCommand(Command):
             config["anilist_anime_list"] = anime_list
             config["anilist_manga_list"] = manga_list
 
-        for directory in self.load_directories(self.args.directories):
+        for directory in Directory.load_directories(self.args.directories):
             directory.check(self.args.warnings, self.args.fix, config)

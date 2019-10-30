@@ -21,6 +21,7 @@ import os
 import argparse
 import shutil
 from toktokkie.scripts.Command import Command
+from toktokkie.Directory import Directory
 from puffotter.os import makedirs
 
 
@@ -60,7 +61,7 @@ class ArchiveCommand(Command):
         if output_path is not None:
             makedirs(output_path)
 
-        for directory in self.load_directories(self.args.directories):
+        for directory in Directory.load_directories(self.args.directories):
             if output_path is None:
                 archive_path = directory.path + ".archive"
             else:
