@@ -50,7 +50,9 @@ if __name__ == "__main__":
             "manga-dl",
             "musicbrainzngs",
             "jsonschema",
-            "Pillow"
+            "Pillow",
+            "flask",
+            "flask_sqlalchemy"
         ],
         extras_require={
             "gui": ["PyQt5"]

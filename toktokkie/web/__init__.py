@@ -19,7 +19,37 @@ LICENSE"""
 
 import os
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from puffotter.os import makedirs
 
 root_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-app = Flask("toktokkie", root_path=root_path)
+config_path = os.path.join(os.path.expanduser("~"), ".config/toktokkie")
+sqlite_uri = "sqlite:///" + os.path.join(config_path, "web.models")
+makedirs(config_path)
 
+app = Flask("toktokkie", root_path=root_path)
+db = SQLAlchemy()
+
+app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_uri
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
+
+
+# noinspection PyUnresolvedReferences
+def init_db():
+    """
+    Initializes the database
+    :return: None
+    """
+    with app.app_context():
+        from toktokkie.web.models.MediaLocation import MediaLocation
+        db.create_all()
+
+
+# noinspection PyUnresolvedReferences
+def init_routes():
+    """
+    Initializes the app routes
+    :return:
+    """
+    import toktokkie.web.routes

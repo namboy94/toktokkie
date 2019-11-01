@@ -18,31 +18,35 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import shutil
-from toktokkie.web import app
 from flask import render_template, Response, request
+from puffotter.os import get_ext
+from toktokkie.web import app
 from toktokkie.Directory import Directory
+from toktokkie.web.models.MediaLocation import MediaLocation
 
 
 @app.route("/")
 def root():
-    return render_template("index.html")
+    paths = [x.path for x in MediaLocation.query.all()]
 
-
-@app.route("/image")
-def image():
-    path = request.args["path"]
-    with open(path, "rb") as f:
-        return Response(f.read(), mimetype="image/png")
-
-
-@app.route("/list")
-def list_dirs():
-    media_paths = [
-        "/home/hermann/Downloads/test"
-    ]
     media_dirs = []
-    for path in media_paths:
+    for path in paths:
         media_dirs += Directory.load_directories(path)
 
     return render_template("list.html", media_dirs=media_dirs)
+
+
+@app.route("/image/<image_format>")
+def image(image_format: str) -> Response:
+    """
+    Sends an image file from the local file system
+    :return: A PNG image read from a local file
+    """
+    path = request.args.get("path")
+    ext = get_ext(path)
+
+    if path is None or not os.path.isfile(path) or ext != image_format:
+        return Response(status=404)
+    else:
+        with open(path, "rb") as f:
+            return Response(f.read(), mimetype="image/" + image_format)

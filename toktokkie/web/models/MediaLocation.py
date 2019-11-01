@@ -17,35 +17,34 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import argparse
-from toktokkie.web.run import run_web
-from toktokkie.scripts.Command import Command
+from toktokkie.web import db
 
 
-class WebStartCommand(Command):
+class MediaLocation(db.Model):
     """
-    Class that encapsulates behaviour of the web command
+    Database table that stores media locations
     """
 
-    @classmethod
-    def name(cls) -> str:
-        """
-        :return: The command name
-        """
-        return "web"
+    __tablename__ = "media_locations"
+    """
+    The table name
+    """
 
-    @classmethod
-    def prepare_parser(cls, parser: argparse.ArgumentParser):
-        """
-        Prepares an argumentparser for this command
-        :param parser: The parser to prepare
-        :return: None
-        """
-        pass
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False
+    )
+    """
+    The ID of the media location
+    """
 
-    def execute(self):
-        """
-        Executes the commands
-        :return: None
-        """
-        run_web()
+    path = db.Column(
+        db.String(255),
+        unique=True,
+        nullable=False
+    )
+    """
+    The path to the media location
+    """

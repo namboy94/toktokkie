@@ -17,35 +17,14 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import argparse
-from toktokkie.web.run import run_web
-from toktokkie.scripts.Command import Command
+from toktokkie.web import app, init_routes, init_db
 
 
-class WebStartCommand(Command):
+def run_web():
     """
-    Class that encapsulates behaviour of the web command
+    Starts the web app using flask's built-in server
+    :return: None
     """
-
-    @classmethod
-    def name(cls) -> str:
-        """
-        :return: The command name
-        """
-        return "web"
-
-    @classmethod
-    def prepare_parser(cls, parser: argparse.ArgumentParser):
-        """
-        Prepares an argumentparser for this command
-        :param parser: The parser to prepare
-        :return: None
-        """
-        pass
-
-    def execute(self):
-        """
-        Executes the commands
-        :return: None
-        """
-        run_web()
+    init_db()
+    init_routes()
+    app.run(port=1234)
