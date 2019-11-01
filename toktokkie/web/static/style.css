@@ -1,7 +1,7 @@
 body{
     background: #EEEEEE;
     margin:40px auto;
-    max-width:650px;
+    max-width:1000px;
     line-height:1.6;
     font-size:18px;
     color:#444444;
@@ -10,4 +10,13 @@ body{
 
 h1,h2,h3{
     line-height:1.2
+}
+
+tr {
+    height: 30px;
+}
+
+table {
+    border-color: black;
+    color: red;
 }

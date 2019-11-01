@@ -6,8 +6,8 @@
 
     <a href="/content_dirs">Configure</a>
 
-    {% for media_type, directories in media_dirs %}
-    <h1>{{ media_type.value }}</h1>
+    {% for category, directories in directory_data %}
+    <h1>{{ category }}</h1>
     <table>
         {% for directory in directories %}
         {% set cover = directory.metadata.get_icon_file("main") %}

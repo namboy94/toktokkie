@@ -18,7 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import json
 from toktokkie.web import db
+from toktokkie.Directory import Directory
+from toktokkie.metadata.functions import get_metadata_class
 
 
 class CachedDirectory(db.Model):
@@ -58,3 +61,12 @@ class CachedDirectory(db.Model):
     @property
     def name(self) -> str:
         return os.path.basename(os.path.abspath(self.path))
+
+    def load_directory(self) -> Directory:
+        json_data = json.loads(self.metadata_json)
+        metadata = get_metadata_class(json_data["type"])(
+            self.path,
+            json_data=json_data,
+            no_validation=True
+        )
+        return Directory(self.path, metadata=metadata)

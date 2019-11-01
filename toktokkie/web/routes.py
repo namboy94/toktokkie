@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 import json
+from typing import List, Dict
 from flask import render_template, Response, request, redirect, url_for
 from puffotter.os import get_ext
 from toktokkie.web import app, db
@@ -35,27 +36,59 @@ def index():
     List all directories that were found in the stored content directories
     :return: The response
     """
+    return redirect(url_for("listings", category_method="media_type"))
 
-    mapped_dirs = {x: [] for x in MediaType}
+
+@app.route("/listings/<category_method>")
+def listings(category_method: str):
+
+    directory_data = {}  # type: Dict[str, List[Directory]]
     cached_dirs = CachedDirectory.query.all()
+    directory_objs = [x.load_directory() for x in cached_dirs]
 
-    for cached in cached_dirs:
-        cached_data = json.loads(cached.metadata_json)
-        metadata = get_metadata_class(cached_data["type"])(
-            directory_path=cached.path,
-            json_data=cached_data,
-            no_validation=True
-        )
-        _directory = Directory(cached.path, metadata=metadata)
-        mapped_dirs[_directory.metadata.media_type()].append(_directory)
+    if category_method == "media_type":
 
-    media_names = sorted([x for x in MediaType], key=lambda x: x.value)
-    media_dirs = []
+        def fancy_media_type(string) -> str:
+            strings = string.replace("_", " ").split(" ")
+            string = " ".join([x[0].upper() + x[1:] for x in strings])
+            return string
 
-    for media_type in media_names:
-        media_dirs.append((media_type, mapped_dirs[media_type]))
+        directory_data = {fancy_media_type(x.value): [] for x in MediaType}
 
-    return render_template("index.html", media_dirs=media_dirs)
+        for directory_obj in directory_objs:
+            media_type = fancy_media_type(
+                directory_obj.metadata.media_type().value
+            )
+            directory_data[media_type].append(directory_obj)
+
+    elif category_method == "tags":
+
+        for directory_obj in directory_objs:
+            for tag in directory_obj.metadata.tags:
+                if tag not in directory_data:
+                    directory_data[tag] = [directory_obj]
+                else:
+                    directory_data[tag].append(directory_obj)
+
+    elif category_method == "parent":
+
+        for directory_obj in directory_objs:
+            parent = os.path.dirname(directory_obj.path)
+            if parent not in directory_data:
+                directory_data[parent] = [directory_obj]
+            else:
+                directory_data[parent].append(directory_obj)
+
+    sorted_directory_data = []
+    for key in sorted(directory_data.keys()):
+        directories = directory_data[key]
+        directories.sort(key=lambda x: x.metadata.name)
+        sorted_directory_data.append((key, directories))
+
+    return render_template(
+        "listings.html",
+        directory_data=sorted_directory_data
+    )
 
 
 @app.route("/image/<image_format>")
