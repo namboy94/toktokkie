@@ -1,0 +1,16 @@
+<a href="/content_dirs">Configure</a>
+
+{% for media_type, directories in media_dirs %}
+<h1>{{ media_type.value }}</h1>
+<ul>
+{% for directory in directories %}
+<li>{{ directory.metadata.name }}
+    {% set cover = directory.metadata.get_icon_file("main") %}
+    {% if cover is not none %}
+    <img    style="max-height: 50px" width="50px"
+            src="{{ url_for('image', image_format='png') + '?path=' + cover }}">
+    {% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endfor %}
