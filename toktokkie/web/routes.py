@@ -36,7 +36,7 @@ def index():
     mapped_dirs = {x: [] for x in MediaType}
 
     for path in paths:
-        directories = Directory.load_directories(path)
+        directories = Directory.load_child_directories(path)
         for directory in directories:
             mapped_dirs[directory.metadata.media_type()].append(directory)
 

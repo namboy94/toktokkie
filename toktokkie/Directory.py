@@ -174,38 +174,53 @@ class Directory:
     @classmethod
     def load_directories(
             cls,
-            parent_dir: str,
+            paths: List[str],
             restrictions: Optional[List[MediaType]] = None
     ) -> List["Directory"]:
         """
-        Loads all media directories in a directory
-        :param parent_dir: The directory to search for media directories
-        :param restrictions: Restricts the found media directories to media directories
-                             with a specific media type
+        Loads the toktokkie Media Directory objects based on paths
+        :param paths: The directories to turn into toktokkie Directory objs
+        :param restrictions: Restricts the found media directories to media
+                             directories with a specific media type
         :return: The list of Media Directories
         """
         if restrictions is None:
             restrictions = [x for x in MediaType]
 
         logger = logging.getLogger(cls.__name__)
+
         directories = []  # type: List[Directory]
-        for name, path in listdir(parent_dir):
+        for path in paths:
             try:
                 logger.debug("Loading directory {}".format(path))
-                directory = cls(path)
-
+                directory = Directory(path)
                 if directory.metadata.media_type() not in restrictions:
                     logger.info(
                         "Skipping directory {} with incorrect type {}"
                         .format(path, directory.metadata.media_type())
                     )
                     continue
-
                 directories.append(directory)
+
             except MissingMetadata:
                 logger.warning("{} has no metadata file.".format(path))
-            except InvalidMetadata as e:
-                logger.warning("{}'s metadata is invalid. ({})".format(
-                    path, e
-                ))
+            except InvalidMetadata:
+                logger.warning("{}'s metadata is invalid.".format(path))
+
         return directories
+
+    @classmethod
+    def load_child_directories(
+            cls,
+            parent_dir: str,
+            restrictions: Optional[List[MediaType]] = None
+    ) -> List["Directory"]:
+        """
+        Loads all media directories in a directory
+        :param parent_dir: The directory to search for media directories
+        :param restrictions: Restricts the found media directories to media
+                             directories with a specific media type
+        :return: The list of Media Directories
+        """
+        paths = [x[1] for x in listdir(parent_dir)]
+        return cls.load_directories(paths, restrictions)
