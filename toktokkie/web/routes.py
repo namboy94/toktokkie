@@ -18,12 +18,15 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import json
 from flask import render_template, Response, request, redirect, url_for
 from puffotter.os import get_ext
 from toktokkie.web import app, db
 from toktokkie.Directory import Directory
 from toktokkie.web.models.MediaLocation import MediaLocation
+from toktokkie.web.models.CachedDirectory import CachedDirectory
 from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.functions import get_metadata_class
 
 
 @app.route("/")
@@ -32,13 +35,19 @@ def index():
     List all directories that were found in the stored content directories
     :return: The response
     """
-    paths = [x.path for x in MediaLocation.query.all()]
-    mapped_dirs = {x: [] for x in MediaType}
 
-    for path in paths:
-        directories = Directory.load_child_directories(path)
-        for directory in directories:
-            mapped_dirs[directory.metadata.media_type()].append(directory)
+    mapped_dirs = {x: [] for x in MediaType}
+    cached_dirs = CachedDirectory.query.all()
+
+    for cached in cached_dirs:
+        cached_data = json.loads(cached.metadata_json)
+        metadata = get_metadata_class(cached_data["type"])(
+            directory_path=cached.path,
+            json_data=cached_data,
+            no_validation=True
+        )
+        _directory = Directory(cached.path, metadata=metadata)
+        mapped_dirs[_directory.metadata.media_type()].append(_directory)
 
     media_names = sorted([x for x in MediaType], key=lambda x: x.value)
     media_dirs = []
@@ -89,3 +98,31 @@ def add_content_dir():
         db.session.add(location)
         db.session.commit()
     return redirect(url_for("content_dirs"))
+
+
+@app.route("/directory", methods=["GET"])
+def directory():
+    path = request.args.get("path")
+    _directory = Directory(path)
+    return render_template("directory.html", directory=_directory)
+
+
+@app.route("/update", methods=["GET"])
+def update():
+
+    for x in CachedDirectory.query.all():
+        db.session.delete(x)
+
+    paths = [x.path for x in MediaLocation.query.all()]
+
+    for path in paths:
+        directories = Directory.load_child_directories(path)
+        for _directory in directories:
+            cached = CachedDirectory(
+                path=_directory.path,
+                metadata_json=json.dumps(_directory.metadata.json)
+            )
+            db.session.add(cached)
+    db.session.commit()
+
+    redirect(url_for("/"))

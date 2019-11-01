@@ -39,11 +39,20 @@ class Directory:
     Class that encapsulates all of toktokkie's functionality
     """
 
-    def __init__(self, path: str, generate_metadata: bool = False,
-                 metadata_type: str = None):
+    def __init__(
+            self,
+            path: str,
+            generate_metadata: bool = False,
+            metadata_type: str = None,
+            metadata: Optional[Metadata] = None
+    ):
         """
         Initializes the metadata of the directory
         :param path: The directory's path
+        :param generate_metadata: Generates metadata by prompting the user
+        :param metadata_type: The type of metadata
+        :param metadata: Specifies a metadata object, which will be used
+                         instead of reading the metadata file
         :except MissingMetadataException,
                 InvalidMetadataException,
                 MetadataMismatch
@@ -63,7 +72,10 @@ class Directory:
         if not os.path.isfile(self.metadata_file):
             raise MissingMetadata(self.metadata_file + " missing")
 
-        self.metadata = get_metadata(self.path)  # type: Metadata
+        if metadata is not None:
+            self.metadata = metadata
+        else:
+            self.metadata = get_metadata(self.path)  # type: Metadata
 
         if not os.path.isdir(self.metadata.icon_directory):
             os.makedirs(self.metadata.icon_directory)

@@ -1,16 +1,29 @@
-<a href="/content_dirs">Configure</a>
+{% set title = "toktokkie" %}
+{% set icon = "static/logo.png" %}
 
-{% for media_type, directories in media_dirs %}
-<h1>{{ media_type.value }}</h1>
-<ul>
-{% for directory in directories %}
-<li>{{ directory.metadata.name }}
-    {% set cover = directory.metadata.get_icon_file("main") %}
-    {% if cover is not none %}
-    <img    style="max-height: 50px" width="50px"
-            src="{{ url_for('image', image_format='png') + '?path=' + cover }}">
-    {% endif %}
-</li>
-{% endfor %}
-</ul>
-{% endfor %}
+{% extends "base_layout.html" %}
+{% block body %}
+
+    <a href="/content_dirs">Configure</a>
+
+    {% for media_type, directories in media_dirs %}
+    <h1>{{ media_type.value }}</h1>
+    <table>
+        {% for directory in directories %}
+        {% set cover = directory.metadata.get_icon_file("main") %}
+        <tr>
+            <td>
+                {% if cover is not none %}
+                    <img style="max-height: 50px" width="50px" src="{{ url_for('image', image_format='png') + '?path=' + cover }}">
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('directory') + '?path=' + directory.path }}">{{ directory.metadata.name }}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+
+{% endblock %}

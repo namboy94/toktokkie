@@ -25,7 +25,8 @@ from jsonschema import validate, ValidationError
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.schema.SchemaBuilder import SchemaBuilder
 from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.ids.mappings import valid_id_types
+from toktokkie.metadata.ids.mappings import valid_id_types, urlmap, \
+    literature_media_types
 from toktokkie.metadata.ids.functions import objectify_ids, stringify_ids, \
     fill_ids, minimize_ids
 from toktokkie.metadata.MediaType import MediaType
@@ -229,6 +230,27 @@ class Metadata:
         :return: None
         """
         self.json["ids"] = stringify_ids(minimize_ids(ids))
+
+    @property
+    def urls(self) -> Dict[IdType, List[str]]:
+        """
+        Generates URLs for the stored ID types of this metadata object
+        :return: The URLs mapped to their respective id types
+        """
+        ids = self.ids
+        urls = {x: [] for x in ids.keys()}
+
+        anime_manga = \
+            "manga" if self.media_type() in literature_media_types else "anime"
+
+        for id_type, values in ids.items():
+            for value in values:
+                url = urlmap[id_type]\
+                    .replace("@{ANIME_MANGA}", anime_manga)\
+                    .format(value)
+                urls[id_type].append(url)
+
+        return urls
 
     def set_ids(self, id_type: IdType, ids: List[str]):
         """

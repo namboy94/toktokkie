@@ -43,6 +43,7 @@ def init_db():
     """
     with app.app_context():
         from toktokkie.web.models.MediaLocation import MediaLocation
+        from toktokkie.web.models.CachedDirectory import CachedDirectory
         db.create_all()
 
 

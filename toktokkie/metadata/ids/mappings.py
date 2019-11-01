@@ -141,3 +141,21 @@ theme_song_ids = [
 """
 ID types that can be associated with theme songs
 """
+
+
+urlmap = {
+    IdType.ANILIST: "https://anilist.co/@{ANIME_MANGA}/{}",
+    IdType.MYANIMELIST: "https://myanimelist.net/@{ANIME_MANGA}/{}",
+    IdType.KITSU: "https://kitsu.io/@{ANIME_MANGA}/{}",
+    IdType.TVDB: "https://www.thetvdb.com/?id={}&tab=series",
+    IdType.VNDB: "https://vndb.org/{}",
+    IdType.IMDB: "https://www.imdb.com/title/{}",
+    IdType.ISBN: "https://isbnsearch.org/isbn/{}",
+    IdType.MANGADEX: "https://mangadex.org/title/{}",
+    IdType.MUSICBRAINZ_ARTIST: "https://musicbrainz.org/artist/{}",
+    IdType.MUSICBRAINZ_RECORDING: "https://musicbrainz.org/recording/{}",
+    IdType.MUSICBRAINZ_RELEASE: "https://musicbrainz.org/release/{}"
+}
+"""
+Maps ID types to URL schemas
+"""

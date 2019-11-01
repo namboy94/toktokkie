@@ -1,0 +1,45 @@
+{% set cover = "{}".format(directory.metadata.get_icon_file("main")) %}
+{% set cover_url = url_for('image', image_format='png') + '?path=' + cover %}
+
+{% set title=directory.metadata.name %}
+{% set icon = cover_url if cover != "None" else "static/logo.png" %}
+
+{% extends "base_layout.html" %}
+{% block body %}
+
+    <h1>{{ directory.metadata.name }}</h1>
+
+
+    {% if cover is not none %}
+    <img src="{{ icon }}">
+    {% endif %}
+
+    {% if directory.metadata.media_type().value == "tv" %}
+        <table>
+        {% for season in directory.metadata.seasons %}
+            {% set season_cover = "{}".format(directory.metadata.get_icon_file(season.name)) %}
+            {% set season_cover_url = url_for('image', image_format='png') + '?path=' + season_cover %}
+            <tr>
+                <td>
+                    <img src="{{ season_cover_url }}" style="height: 50px;">
+                </td>
+                <td>{{ season.name }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+
+    <table>
+        <tr>
+            {% for id_type, urls in directory.metadata.urls.items() %}
+            {% for url in urls %}
+            {% set image = "static/{}.png".format(id_type.value) %}
+            <td><a href="{{url}}">
+                <img src="{{image}}" style="height: 50px;">
+            </a></td>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+    </table>
+
+{% endblock %}
