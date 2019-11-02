@@ -1,29 +1,49 @@
-{% set cover = "{}".format(directory.metadata.get_icon_file("main")) %}
-{% set cover_url = url_for('image', image_format='png') + '?path=' + cover %}
+{#
+Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
 
-{% set title=directory.metadata.name %}
-{% set icon = cover_url if cover != "None" else "static/logo.png" %}
+This file is part of toktokkie.
+
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with bundesliga-tippspiel.  If not, see <http://www.gnu.org/licenses/>.
+#}
 
 {% extends "base_layout.html" %}
 {% block body %}
 
-    <h1>{{ directory.metadata.name }}</h1>
+    <h1>{{ metadata.name }}</h1>
+
+    <img src="{{ cached.icon_url }}" alt="{{ metadata.name }}">
 
 
-    {% if cover is not none %}
-    <img src="{{ icon }}">
-    {% endif %}
-
-    {% if directory.metadata.media_type().value == "tv" %}
-        <table>
-        {% for season in directory.metadata.seasons %}
-            {% set season_cover = "{}".format(directory.metadata.get_icon_file(season.name)) %}
-            {% set season_cover_url = url_for('image', image_format='png') + '?path=' + season_cover %}
+    {% if metadata.media_type().value == "tv" %}
+        <table class="alternating_table">
+        {% for season in metadata.seasons %}
+            {% set season_cover = "{}".format(metadata.get_icon_file(season.name)) %}
+            {% set season_cover_url = "{}?path={}".format(url_for("image", image_format="png"), season_cover) %}
             <tr>
                 <td>
-                    <img src="{{ season_cover_url }}" style="height: 50px;">
+                    <img class="season_image" src="{{ season_cover_url }}" alt="{{ season.name }}">
                 </td>
-                <td>{{ season.name }}</td>
+                <td>
+                    <button type="button" class="collapsible"> ⮞ {{ season.name }}</button>
+                    <table class="collapsible_content alternating_table">
+                        {% for episode_name in season.episode_names %}
+                            <tr>
+                                <td>{{ episode_name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
             </tr>
         {% endfor %}
         </table>
@@ -31,15 +51,19 @@
 
     <table>
         <tr>
-            {% for id_type, urls in directory.metadata.urls.items() %}
-            {% for url in urls %}
-            {% set image = "static/{}.png".format(id_type.value) %}
-            <td><a href="{{url}}">
-                <img src="{{image}}" style="height: 50px;">
-            </a></td>
-            {% endfor %}
+            {% for id_type, urls in metadata.urls.items() %}
+                {% for url in urls %}
+                    {% set image = "static/images/{}.png".format(id_type.value) %}
+                    <td><a href="{{url}}">
+                        <img class="external_link_image" src="{{image}}" alt="{{ id_type.value }}">
+                    </a></td>
+                {% endfor %}
             {% endfor %}
         </tr>
     </table>
+
+    <script>
+        initializeCollapsibleButtons()
+    </script>
 
 {% endblock %}

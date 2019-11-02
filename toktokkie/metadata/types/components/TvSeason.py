@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 from typing import Dict, List, Any, Union
+from puffotter.os import listdir
 from toktokkie.metadata.types.components.Component import Component
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.functions import minimize_ids, fill_ids, \
@@ -70,3 +71,12 @@ class TvSeason(Component):
         :return: Whether or not this season is a spinoff
         """
         return self.parent_ids.get(IdType.TVDB) != self.ids.get(IdType.TVDB)
+
+    @property
+    def episode_names(self) -> List[str]:
+        """
+        :return: A sorted list of episode names
+        """
+        return [
+            x[0].rsplit(".", 1)[0] for x in listdir(self.path, no_dirs=True)
+        ]

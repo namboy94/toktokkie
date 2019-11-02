@@ -1,29 +1,51 @@
-{% set title = "toktokkie" %}
-{% set icon = "static/logo.png" %}
+{#
+Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
+
+This file is part of toktokkie.
+
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with bundesliga-tippspiel.  If not, see <http://www.gnu.org/licenses/>.
+#}
 
 {% extends "base_layout.html" %}
 {% block body %}
 
-    <a href="/content_dirs">Configure</a>
-
-    {% for category, directories in directory_data %}
-    <h1>{{ category }}</h1>
-    <table>
-        {% for directory in directories %}
-        {% set cover = directory.metadata.get_icon_file("main") %}
-        <tr>
-            <td>
-                {% if cover is not none %}
-                    <img style="max-height: 50px" width="50px" src="{{ url_for('image', image_format='png') + '?path=' + cover }}">
-                {% endif %}
-            </td>
-            <td>
-                <a href="{{ url_for('directory') + '?path=' + directory.path }}">{{ directory.metadata.name }}</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h1>Listings</h1>
+    
+    {% for category, cached_dirs in directory_data %}
+        <button type="button" class="collapsible"> ⮞ {{ category }}</button>
+        <table class="collapsible_content alternating_table">
+            {% for cached_dir in cached_dirs %}
+                {% set metadata = cached_dir.directory.metadata %}
+                {% set cover = metadata.get_icon_file("main") %}
+                <tr>
+                    <td>
+                        {% if cover is not none %}
+                            <img class="listing_icon" src="{{ cached_dir.icon_url }}" alt="{{ metadata.name }}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ cached_dir.directory_url }}">
+                            {{ metadata.name }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     {% endfor %}
-
+    
+    <script>
+        initializeCollapsibleButtons()
+    </script>
 
 {% endblock %}

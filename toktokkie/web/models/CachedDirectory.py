@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 import json
+from flask import url_for
 from toktokkie.web import db
 from toktokkie.Directory import Directory
 from toktokkie.metadata.functions import get_metadata_class
@@ -28,6 +29,8 @@ class CachedDirectory(db.Model):
     """
     Database table that stores a cached version of a media Directory
     """
+
+    __directory = None
 
     __tablename__ = "cached_directories"
     """
@@ -62,11 +65,28 @@ class CachedDirectory(db.Model):
     def name(self) -> str:
         return os.path.basename(os.path.abspath(self.path))
 
-    def load_directory(self) -> Directory:
-        json_data = json.loads(self.metadata_json)
-        metadata = get_metadata_class(json_data["type"])(
-            self.path,
-            json_data=json_data,
-            no_validation=True
+    @property
+    def directory(self) -> Directory:
+        if self.__directory is None:
+            json_data = json.loads(self.metadata_json)
+            metadata = get_metadata_class(json_data["type"])(
+                self.path,
+                json_data=json_data,
+                no_validation=True
+            )
+            self.__directory = Directory(self.path, metadata=metadata)
+        return self.__directory
+
+    @property
+    def icon_url(self) -> str:
+        return "{}?path={}".format(
+            url_for("image", image_format="png"),
+            str(self.directory.metadata.get_icon_file("main"))
         )
-        return Directory(self.path, metadata=metadata)
+
+    @property
+    def directory_url(self) -> str:
+        return "{}?path={}".format(
+            url_for("directory"),
+            self.path
+        )

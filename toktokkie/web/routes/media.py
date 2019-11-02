@@ -18,27 +18,22 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import json
-from typing import List, Dict
-from flask import render_template, Response, request, redirect, url_for
+from flask import Response, request
 from puffotter.os import get_ext
-from toktokkie.web import app, db
-from toktokkie.Directory import Directory
-from toktokkie.web.models.MediaLocation import MediaLocation
-from toktokkie.web.models.CachedDirectory import CachedDirectory
-from toktokkie.metadata.MediaType import MediaType
-from toktokkie.metadata.functions import get_metadata_class
+from toktokkie.web import app
 
 
+@app.route("/image/<image_format>")
+def image(image_format: str) -> Response:
+    """
+    Sends an image file from the local file system
+    :return: A PNG image read from a local file
+    """
+    path = request.args.get("path")
+    ext = get_ext(path)
 
-
-
-
-
-
-
-
-
-
-
-
+    if path is None or not os.path.isfile(path) or ext != image_format:
+        return Response(status=404)
+    else:
+        with open(path, "rb") as f:
+            return Response(f.read(), mimetype="image/" + image_format)

@@ -17,28 +17,27 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
-import json
-from typing import List, Dict
-from flask import render_template, Response, request, redirect, url_for
-from puffotter.os import get_ext
-from toktokkie.web import app, db
-from toktokkie.Directory import Directory
-from toktokkie.web.models.MediaLocation import MediaLocation
+from flask import render_template, request, Response
+from toktokkie.web import app
 from toktokkie.web.models.CachedDirectory import CachedDirectory
-from toktokkie.metadata.MediaType import MediaType
-from toktokkie.metadata.functions import get_metadata_class
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+@app.route("/directory", methods=["GET"])
+def directory():
+    """
+    Displays a single directory
+    :return: The HTML for the directory page
+    """
+    path = request.args.get("path")
+    cached = CachedDirectory.query.filter_by(path=path).first()
+    if cached is None:
+        return Response(404)
+    else:
+        return render_template(
+            "directory.html",
+            cached=cached,
+            directory=cached.directory,
+            metadata=cached.directory.metadata,
+            icon=cached.icon_url,
+            title=cached.directory.metadata.name
+        )

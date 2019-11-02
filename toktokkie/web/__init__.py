@@ -53,4 +53,9 @@ def init_routes():
     Initializes the app routes
     :return:
     """
-    import toktokkie.web.routes
+    import toktokkie.web.routes.directories
+    import toktokkie.web.routes.update
+    import toktokkie.web.routes.config
+    import toktokkie.web.routes.listings
+    import toktokkie.web.routes.media
+    import toktokkie.web.routes.root
