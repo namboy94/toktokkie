@@ -45,7 +45,7 @@ def get_metadata(directory: str) -> Metadata:
             media_type = json.load(f)["type"]
             metadata_cls = get_metadata_class(media_type)
             return metadata_cls(directory)
-    except KeyError:
+    except (KeyError, ValueError):
         raise InvalidMetadata()
 
 
