@@ -92,11 +92,11 @@ class MusicMergeCommand(Command):
             target_map = {x.metadata.name: x for x in target_artists}
 
             for source_artist in source_artists:
-                source_metadata = source_artist.metadata  # type: MusicArtist
+                source_metadata = cast(MusicArtist, source_artist.metadata)
 
                 if source_metadata.name not in target_map:
                     new_path = os.path.join(
-                        self.args.dest, source_metadata.name
+                        self.args.target, source_metadata.name
                     )
                     shutil.copytree(source_artist.path, new_path)
                     if not self.args.keep:

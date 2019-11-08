@@ -20,9 +20,10 @@ LICENSE"""
 import os
 import argparse
 import requests
+from typing import List
 from toktokkie.Directory import Directory
 from puffotter.graphql import GraphQlClient
-from puffotter.os import makedirs
+from puffotter.os import makedirs, replace_illegal_ntfs_chars
 from puffotter.prompt import prompt
 from subprocess import Popen
 from toktokkie.metadata.types.Manga import Manga
@@ -60,6 +61,7 @@ class MangaCreateCommand(Command):
         Executes the commands
         :return: None
         """
+        titles = []  # type: List[str]
         for anilist_id in self.args.anilist_ids:
 
             client = GraphQlClient("https://graphql.anilist.co")
@@ -82,6 +84,9 @@ class MangaCreateCommand(Command):
             title = data["Media"]["title"]["english"]
             if title is None:
                 title = data["Media"]["title"]["romaji"]
+
+            title = replace_illegal_ntfs_chars(title)
+            titles.append(title)
 
             makedirs(title)
             makedirs(os.path.join(title, "Main"))
@@ -159,3 +164,7 @@ class MangaCreateCommand(Command):
                 "type": "manga"
             })
             metadata.write()
+
+        for title in titles:
+            directory = Directory(title)
+            directory.update()

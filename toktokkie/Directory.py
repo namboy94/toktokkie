@@ -153,12 +153,23 @@ class Directory:
         )
         return checker.check()
 
-    def update(self, args: Dict[str, Any]):
+    def update(self, cli_args: Optional[Dict[str, Any]] = None):
         """
         Performs an Update Action
-        :param args: Command line arguments used to configure the update
+        :param cli_args: Command line arguments used to configure the update
         :return: None
         """
+        args = {
+            "dry_run": False,
+            "create": False,
+            "throttle": -1,
+            "timeout": 120,
+            "no_check_newest_chapter_length": False,
+            "skip_special": False
+        }
+        if cli_args is not None:
+            args.update(cli_args)
+
         applicable_updaters = [
             x for x in updaters
             if self.metadata.media_type() in x.applicable_media_types()
