@@ -20,11 +20,12 @@ LICENSE"""
 from toktokkie.web import app, init_routes, init_db
 
 
-def run_web():
+def run_web(port: int = 1234):
     """
     Starts the web app using flask's built-in server
+    :param port: The port on which to run the server
     :return: None
     """
     init_db()
     init_routes()
-    app.run(host="0.0.0.0", port=1234)
+    app.run(host="0.0.0.0", port=port)

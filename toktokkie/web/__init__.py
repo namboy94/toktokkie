@@ -21,6 +21,8 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from puffotter.os import makedirs
+from toktokkie.info.tvdb import load_tvdb_series_info
+from toktokkie.metadata.ids.IdType import IdType
 
 root_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 config_path = os.path.join(os.path.expanduser("~"), ".config/toktokkie")
@@ -34,6 +36,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
+app.jinja_env.globals.update(
+    load_tvdb_series_info=load_tvdb_series_info,
+    IdType=IdType
+)
+
 
 # noinspection PyUnresolvedReferences
 def init_db():
@@ -44,6 +51,7 @@ def init_db():
     with app.app_context():
         from toktokkie.web.models.MediaLocation import MediaLocation
         from toktokkie.web.models.CachedDirectory import CachedDirectory
+        from toktokkie.web.models.CachedMedia import CachedMedia
         db.create_all()
 
 

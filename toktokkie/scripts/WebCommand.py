@@ -22,7 +22,7 @@ from toktokkie.web.run import run_web
 from toktokkie.scripts.Command import Command
 
 
-class WebStartCommand(Command):
+class WebCommand(Command):
     """
     Class that encapsulates behaviour of the web command
     """
@@ -41,11 +41,12 @@ class WebStartCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        pass
+        parser.add_argument("--port", type=int, default=1234,
+                            help="The port on which to run the web app")
 
     def execute(self):
         """
         Executes the commands
         :return: None
         """
-        run_web()
+        run_web(port=self.args.port)

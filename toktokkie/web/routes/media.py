@@ -18,9 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from flask import Response, request
+from flask import Response, request, abort
 from puffotter.os import get_ext
-from toktokkie.web import app
+from toktokkie.web import app, db
+from toktokkie.web.models.CachedMedia import CachedMedia
 
 
 @app.route("/image/<image_format>")
@@ -29,11 +30,24 @@ def image(image_format: str) -> Response:
     Sends an image file from the local file system
     :return: A PNG image read from a local file
     """
-    path = request.args.get("path")
+    path = os.path.normpath(request.args.get("path"))
     ext = get_ext(path)
 
+    cached = CachedMedia.query.filter_by(path=path).first()
+
     if path is None or not os.path.isfile(path) or ext != image_format:
-        return Response(status=404)
+        abort(404)
     else:
-        with open(path, "rb") as f:
-            return Response(f.read(), mimetype="image/" + image_format)
+        if cached is None:
+            with open(path, "rb") as f:
+                image_data = f.read()
+            cached = CachedMedia(
+                path=path,
+                data=image_data,
+                format=image_format,
+                media_type="image"
+            )
+            db.session.add(cached)
+            db.session.commit()
+
+        return Response(cached.data, mimetype=cached.mimetype)

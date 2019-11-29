@@ -1,0 +1,58 @@
+{#
+Copyright 2015 Hermann Krumrey <hermann@krumreyh.com>
+
+This file is part of toktokkie.
+
+toktokkie is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+toktokkie is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with bundesliga-tippspiel.  If not, see <http://www.gnu.org/licenses/>.
+#}
+
+<table>
+    {% if metadata.ids[IdType.TVDB]|length > 0 %}
+        {% set tvdb_info = load_tvdb_series_info(metadata.ids[IdType.TVDB][0]) %}
+        {% for key, label in tvdb_info["order"] %}
+            <tr>
+                <td>{{ label }}</td>
+                <td>{{ tvdb_info[key] }}</td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+{% if tvdb_info is defined %}
+    <p>{{ tvdb_info["synopsys"] }}</p>
+{% endif %}
+
+
+
+<table class="alternating_table">
+    {% for season in metadata.seasons %}
+        {% set season_cover = "{}".format(metadata.get_icon_file(season.name)) %}
+        {% set season_cover_url = "{}?path={}".format(url_for("image", image_format="png"), season_cover) %}
+        <tr>
+            <td>
+                <img class="season_image" src="{{ season_cover_url }}" alt="{{ season.name }}">
+            </td>
+            <td>
+                <button type="button" class="collapsible"> ⮞ {{ season.name }}</button>
+                <table class="collapsible_content alternating_table">
+                    {% for episode_name in season.episode_names %}
+                        <tr>
+                            <td>{{ episode_name }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
