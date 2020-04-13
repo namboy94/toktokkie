@@ -25,6 +25,7 @@ from bs4 import BeautifulSoup
 from typing import List, Optional, Tuple, Dict, Any
 from puffotter.subprocess import execute_command
 from puffotter.requests import aggressive_request
+from puffotter.os import replace_illegal_ntfs_chars
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType
 
@@ -88,7 +89,9 @@ class AniTheme:
         self.episodes = episodes
         self.media_url = media_url
 
-        self.filename = "{} {} - {}".format(show_name, theme_type, song_name)
+        self.filename = replace_illegal_ntfs_chars(
+            "{} {} - {}".format(show_name, theme_type, song_name)
+        )
         self.temp_webm_file = os.path.join("/tmp", self.filename + ".webm")
         self.temp_mp3_file = os.path.join("/tmp", self.filename + ".mp3")
         self.temp_cover_file = os.path.join("/tmp", self.filename + ".png")

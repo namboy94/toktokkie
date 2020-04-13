@@ -173,7 +173,7 @@ class AnimeThemeDlCommand(Command):
     @staticmethod
     def segmentize(titles: List[str]) -> List[List[str]]:
         """
-        Segments a list of titles into segments
+        Segments a list of titles into segments (seasons)
         :param titles: The titles to segmentize
         :return: The segments
         """
@@ -183,7 +183,7 @@ class AnimeThemeDlCommand(Command):
 
         for i, title in enumerate(titles):
             if i > 0 \
-                    and titles[i - 1] > title \
+                    and titles[i - 1].upper() > title.upper() \
                     and titles[i - 1][0].lower() != title[0].lower():
                 segments.append(current_segment)
                 current_segment = []
