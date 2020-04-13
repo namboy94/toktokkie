@@ -287,7 +287,12 @@ class SchemaBuilder:
         Creates additional properties for visual novel metadata
         :return: The additional properties
         """
-        return {}
+        return {
+            "has_ed": {"type": "boolean"},
+            "has_op": {"type": "boolean"},
+            "has_cgs": {"type": "boolean"},
+            "has_ost": {"type": "boolean"}
+        }
 
 
 if __name__ == "__main__":

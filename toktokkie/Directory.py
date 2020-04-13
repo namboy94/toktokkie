@@ -227,8 +227,9 @@ class Directory:
 
             except MissingMetadata:
                 logger.warning("{} has no metadata file.".format(path))
-            except InvalidMetadata:
+            except InvalidMetadata as e:
                 logger.warning("{}'s metadata is invalid.".format(path))
+                logger.warning(e.reason)
 
         return directories
 

@@ -127,7 +127,9 @@ class Metadata:
         try:
             validate(instance=self.json, schema=schema)
         except ValidationError as e:
-            raise InvalidMetadata("Invalid Metadata: {}".format(e))
+            raise InvalidMetadata(
+                "Invalid Metadata: {} ({})".format(e, e.message)
+            )
 
     def write(self):
         """

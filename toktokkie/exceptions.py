@@ -22,7 +22,12 @@ class InvalidMetadata(Exception):
     """
     Exception that is raised whenever metadata is invalid
     """
-    pass
+
+    def __init__(self, reason: str):
+        """
+        :param reason: The reason why the metadata is invalid
+        """
+        self.reason = reason
 
 
 class MetadataMismatch(Exception):
