@@ -68,7 +68,7 @@ class AniTheme:
         """
         self.logger.info("Initializing {}".format(song_name))
 
-        self.show_name = show_name
+        self.show_name = replace_illegal_ntfs_chars(show_name)
         self.mal_id = mal_id
         self.anilist_id = AnilistApi().get_anilist_id_from_mal_id(
             MediaType.ANIME, self.mal_id
@@ -85,18 +85,21 @@ class AniTheme:
         if "v" in self._theme_type.lower():
             self.alternate_version = "v1" not in self._theme_type.lower()
 
-        self.song_name = song_name
+        self.song_name = replace_illegal_ntfs_chars(song_name)
         self.episodes = episodes
         self.media_url = media_url
 
-        self.filename = replace_illegal_ntfs_chars(
-            "{} {} - {}".format(show_name, theme_type, song_name)
+        self.filename = "{} {} - {}".format(
+            self.show_name, theme_type, self.song_name
         )
+
         self.temp_webm_file = os.path.join("/tmp", self.filename + ".webm")
         self.temp_mp3_file = os.path.join("/tmp", self.filename + ".mp3")
         self.temp_cover_file = os.path.join("/tmp", self.filename + ".png")
 
         self.mal_title, self.artist = self.__load_song_info()
+        self.mal_title = replace_illegal_ntfs_chars(self.mal_title)
+        self.artist = replace_illegal_ntfs_chars(self.artist)
 
         if song_name.lower() not in self.mal_title.lower():
             self.logger.warning("Song title mismatch: [{}!={}]".format(
