@@ -22,6 +22,7 @@ import logging
 from typing import List, Optional, Dict
 from puffotter.os import listdir, replace_illegal_ntfs_chars, get_ext
 from puffotter.prompt import yn_prompt
+from imdb import IMDb
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.metadata.types.Manga import Manga
@@ -139,6 +140,8 @@ class Renamer:
         ids = id_override if id_override is not None else self.metadata.ids
 
         anilist = ids.get(IdType.ANILIST, [])
+        imdb = ids.get(IdType.IMDB, [])
+
         if len(anilist) > 0:
             anilist_id = int(anilist[0])
             media_type = AnilistMediaType.ANIME
@@ -151,6 +154,10 @@ class Renamer:
 
             if self.metadata.media_type() == MediaType.MOVIE:
                 should_name += " ({})".format(entry.releasing_start.year)
+        elif len(imdb) > 0:
+            imdb_id = imdb[0].replace("t", "")
+            info = IMDb().get_movie(imdb_id).data
+            should_name = f"{info['title']} ({info['year']})"
 
         return replace_illegal_ntfs_chars(should_name)
 

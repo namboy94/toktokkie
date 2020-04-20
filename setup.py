@@ -52,7 +52,8 @@ if __name__ == "__main__":
             "jsonschema",
             "Pillow",
             "flask",
-            "flask_sqlalchemy"
+            "flask_sqlalchemy",
+            "IMDbPy"
         ],
         extras_require={
             "gui": ["PyQt5"]
