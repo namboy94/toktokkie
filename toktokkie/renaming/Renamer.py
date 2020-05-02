@@ -93,13 +93,18 @@ class Renamer:
         """
         return list(filter(lambda x: x.source != x.dest, self.operations))
 
-    def rename(self, noconfirm: bool):
+    def rename(self, noconfirm: bool, skip_title: bool = False):
         """
         Renames the contained files according to the naming schema.
         :param noconfirm: Skips the confirmation phase if True
+        :param skip_title: If True, will skip title renaming
         :return: None
         """
-        should_title = self.load_title_name()
+        if skip_title:
+            should_title = self.metadata.name
+        else:
+            should_title = self.load_title_name()
+
         if should_title != self.metadata.name:
             ok = noconfirm
             if not ok:

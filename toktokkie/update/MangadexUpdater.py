@@ -80,7 +80,7 @@ class MangadexUpdater(Updater):
         """
         self.logger.info("Running rename")
         if not self.args["dry_run"]:
-            Renamer(self.metadata).rename(noconfirm=True)
+            Renamer(self.metadata).rename(noconfirm=True, skip_title=True)
         else:
             ops = Renamer(self.metadata).get_active_operations()
             for op in ops:
