@@ -18,18 +18,17 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import json
 import argparse
 import requests
-from typing import List
+from typing import List, Dict
 from toktokkie.Directory import Directory
 from puffotter.graphql import GraphQlClient
 from puffotter.os import makedirs, replace_illegal_ntfs_chars
 from puffotter.prompt import prompt
 from subprocess import Popen
 from toktokkie.metadata.types.Manga import Manga
-from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
-from manga_dl.scrapers.mangadex import MangaDexScraper
 from toktokkie.scripts.Command import Command
 
 
@@ -52,8 +51,8 @@ class MangaCreateCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        parser.add_argument("anilist_ids", nargs="+",
-                            help="The anilist IDs of the manga "
+        parser.add_argument("urls", nargs="+",
+                            help="The anilist or mangadex URLS of the manga "
                                  "series to create")
 
     def execute(self):
@@ -62,11 +61,51 @@ class MangaCreateCommand(Command):
         :return: None
         """
         titles = []  # type: List[str]
-        for anilist_id in self.args.anilist_ids:
+        ids = []
 
-            client = GraphQlClient("https://graphql.anilist.co")
+        for url in self.args.urls:
+            urlparts = [x for x in url.split("/") if x]
+            media_id = [x for x in urlparts if x.isdigit()][-1]
+            for site in ["anilist", "mangadex"]:
+                if urlparts[1].startswith(site):
+                    ids.append((site, media_id))
 
-            query = """
+        for site, media_id in ids:
+
+            if site == "anilist":
+                info = self.load_anilist_info(media_id)
+            elif site == "mangadex":
+                info = self.load_mangadex_info(media_id)
+            else:
+                continue
+
+            titles.append(info["title"])
+            self.prepare_directory(info["title"], info["cover"])
+
+            title_ids = {
+                "mangadex": [info["mangadex_id"]]
+            }
+            if info["anilist_id"] is not None:
+                title_ids["anilist"] = [info["anilist_id"]]
+
+            metadata = Manga(info["title"], {
+                "ids": title_ids,
+                "special_chapters": [],
+                "type": "manga"
+            })
+            metadata.write()
+
+        update_cmd = "toktokkie update "
+        for title in titles:
+            update_cmd += "\"{}\" ".format(title)
+
+        print(update_cmd)
+
+    def load_anilist_info(
+            self, anilist_id: str, prompt_for_mangadex: bool = True
+    ) -> Dict[str, str]:
+        client = GraphQlClient("https://graphql.anilist.co")
+        query = """
             query ($id: Int) {
                 Media (id: $id) {
                     title {
@@ -79,92 +118,93 @@ class MangaCreateCommand(Command):
                     }
                 }
             }
-            """
-            data = client.query(query, {"id": anilist_id})["data"]
-            title = data["Media"]["title"]["english"]
-            if title is None:
-                title = data["Media"]["title"]["romaji"]
+        """
+        data = client.query(query, {"id": anilist_id})["data"]
 
-            title = replace_illegal_ntfs_chars(title)
-            titles.append(title)
+        title = data["Media"]["title"]["english"]
+        if title is None:
+            title = data["Media"]["title"]["romaji"]
+        title = replace_illegal_ntfs_chars(title)
 
-            makedirs(title)
-            makedirs(os.path.join(title, "Main"))
-            makedirs(os.path.join(title, ".meta/icons"))
+        cover_image = data["Media"]["coverImage"]["large"]
+        cover_image = cover_image.replace("medium", "large")
+        mangadex_id = self.get_ids(anilist_id, "anilist").get("mangadex")
 
-            mangadex_id = None
-            try:
-                directory = Directory(title)
-                mangadex_id = \
-                    directory.metadata.ids.get(IdType.MANGADEX, [None])[0]
+        if mangadex_id is None and prompt_for_mangadex:
+            anilist_url = "https://anilist.co/manga/" + str(anilist_id)
+            mangadex_search = "https://mangadex.org/quick_search/" + title
+            print("Title:" + title)
+            print("Anilist URL:" + anilist_url)
+            print(mangadex_search)
 
-            except (MissingMetadata, InvalidMetadata):
+            mangadex_id = prompt("Mangadex ID/URL: ")
+            if "https://mangadex.org/title/" in mangadex_id:
+                mangadex_id = mangadex_id \
+                    .split("https://mangadex.org/title/")[1] \
+                    .split("/")[0]
 
-                cover_image = data["Media"]["coverImage"]["large"]
-                cover_image = cover_image.replace("medium", "large")
+        return {
+            "title": title,
+            "cover": cover_image,
+            "mangadex_id": mangadex_id,
+            "anilist_id": anilist_id
+        }
 
-                main_icon = os.path.join(title, ".meta/icons/main.")
-                ext = cover_image.rsplit(".", 1)[1]
+    def load_mangadex_info(self, mangadex_id: str) -> Dict[str, str]:
+        url = "https://mangadex.org/api/manga/" + mangadex_id
+        data = json.loads(requests.get(url).text)
 
+        anilist_id = data["manga"]["links"].get("al")
+        if anilist_id is not None:
+            info = self.load_anilist_info(anilist_id, False)
+            info["mangadex_id"] = mangadex_id
+        else:
+            info = {
+                "title": data["manga"]["title"],
+                "cover": "https://mangadex.org" + data["manga"]["cover_url"],
+                "mangadex_id": mangadex_id,
+                "anilist_id": anilist_id
+            }
+
+        return info
+
+    # noinspection PyMethodMayBeStatic
+    def get_ids(self, media_id: str, media_site: str) -> Dict[str, str]:
+        url = f"https://dev.otaku-info.eu/api/v1/media_ids/" \
+              f"{media_site}/manga/{media_id}"
+        data = json.loads(requests.get(url).text)
+        return data["data"]
+
+    # noinspection PyMethodMayBeStatic
+    def prepare_directory(self, title: str, cover_url: str):
+        makedirs(title)
+        makedirs(os.path.join(title, "Main"))
+        makedirs(os.path.join(title, ".meta/icons"))
+
+        try:
+            Directory(title)
+        except (MissingMetadata, InvalidMetadata):
+
+            main_icon = os.path.join(title, ".meta/icons/main.")
+            ext = cover_url.rsplit(".", 1)[1]
+
+            img = requests.get(
+                cover_url, headers={"User-Agent": "Mozilla/5.0"}
+            )
+            if img.status_code >= 300:
+                med_url = cover_url.replace("large", "medium")
                 img = requests.get(
-                    cover_image, headers={"User-Agent": "Mozilla/5.0"}
+                    med_url, headers={"User-Agent": "Mozilla/5.0"}
                 )
-                if img.status_code >= 300:
-                    med_url = cover_image.replace("large", "medium")
-                    img = requests.get(
-                        med_url, headers={"User-Agent": "Mozilla/5.0"}
-                    )
-                with open(main_icon + ext, "wb") as f:
-                    f.write(img.content)
+            with open(main_icon + ext, "wb") as f:
+                f.write(img.content)
 
-                if ext != "png":
-                    Popen(["convert", main_icon + ext, main_icon + "png"])\
-                        .wait()
-                    os.remove(main_icon + ext)
-                Popen([
-                    "zip", "-j",
-                    os.path.join(title, "cover.cbz"),
-                    main_icon + "png"
-                ]).wait()
-
-            if mangadex_id is None:
-                anilist_url = "https://anilist.co/manga/" + str(anilist_id)
-                mangadex_search = "https://mangadex.org/quick_search/" + title
-                print("Title:" + title)
-                print("Anilist URL:" + anilist_url)
-                Popen(["firefox", mangadex_search])
-
-                mangadex_id = prompt("Mangadex ID/URL: ")
-                if "https://mangadex.org/title/" in mangadex_id:
-                    mangadex_id = mangadex_id \
-                        .split("https://mangadex.org/title/")[1] \
-                        .split("/")[0]
-
-            scraper = MangaDexScraper(destination=os.path.join(title, "Main"))
-            chapters = scraper.load_chapters(None, mangadex_id)
-
-            special_chapters = []
-            for chapter in chapters:
-
-                try:
-                    chap_zero = chapter.macro_chapter == 0
-                    if "." in chapter.chapter_number or chap_zero:
-                        raise ValueError()
-                    int(chapter.chapter_number)
-
-                except ValueError:
-                    special_chapters.append(chapter.chapter_number)
-
-            metadata = Manga(title, {
-                "ids": {
-                    "anilist": [str(anilist_id)],
-                    "mangadex": [mangadex_id]
-                },
-                "special_chapters": special_chapters,
-                "type": "manga"
-            })
-            metadata.write()
-
-        for title in titles:
-            directory = Directory(title)
-            directory.update()
+            if ext != "png":
+                Popen(["convert", main_icon + ext, main_icon + "png"]) \
+                    .wait()
+                os.remove(main_icon + ext)
+            Popen([
+                "zip", "-j",
+                os.path.join(title, "cover.cbz"),
+                main_icon + "png"
+            ]).wait()
