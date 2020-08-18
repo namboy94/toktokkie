@@ -170,7 +170,7 @@ class MangaCreateCommand(Command):
 
     # noinspection PyMethodMayBeStatic
     def get_ids(self, media_id: str, media_site: str) -> Dict[str, str]:
-        url = f"https://dev.otaku-info.eu/api/v1/media_ids/" \
+        url = f"https://otaku-info.eu/api/v1/media_ids/" \
               f"{media_site}/manga/{media_id}"
         data = json.loads(requests.get(url).text)
         return data["data"]
