@@ -80,7 +80,6 @@ class TorrentUpdater(TvUpdater):
         for instruction in download_instructions:
 
             torrent_info: TorrentInfo = instruction.search_result
-            torrent_path = os.path.join(torrent_dir, torrent_info.filename)
             destination_path = \
                 os.path.join(instruction.directory, instruction.filename)
 
@@ -93,6 +92,21 @@ class TorrentUpdater(TvUpdater):
                         "downloading", "metaDL", "stalledDL"
                     ]:
                         print("Done.     ")
+                        torrent_path = os.path.join(torrent_dir,
+                                                    torrent["name"])
+
+                        if os.path.isdir(torrent_path):
+                            children = [
+                                os.path.join(torrent_path, x)
+                                for x in os.listdir(torrent_path)
+                            ]
+                            children.sort(
+                                key=lambda x: os.path.getsize(x), reverse=True
+                            )
+                            torrent_path = children[0]
+                            ext = torrent_path.rsplit(".", 1)[1]
+                            destination_path += "." + ext
+
                         client.delete(torrent["hash"])
                         shutil.move(torrent_path, destination_path)
                     else:
