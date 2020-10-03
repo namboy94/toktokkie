@@ -64,7 +64,7 @@ class TorrentUpdater(TvUpdater):
         """
         return {
             "erai-raws": "[Erai-raws] @{NAME} - @{EPI-2} "
-                         "[@{RES-P}].mkv"
+                         "[@{RES-P}]@{ANY}.mkv"
         }
 
     def download(self, download_instructions: List[DownloadInstructions]):
@@ -92,7 +92,7 @@ class TorrentUpdater(TvUpdater):
                     if torrent["state"] not in [
                         "downloading", "metaDL", "stalledDL"
                     ]:
-                        print()
+                        print("Done.     ")
                         client.delete(torrent["hash"])
                         shutil.move(torrent_path, destination_path)
                     else:

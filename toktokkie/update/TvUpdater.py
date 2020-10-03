@@ -246,15 +246,16 @@ class TvUpdater(Updater):
             "@{HASH}",
             "@{EPI-1}",
             "@{EPI-2}",
-            "@{EPI-3}"
+            "@{EPI-3}",
+            "@{ANY}"
         ]:
             print(variable)
 
         print("-" * 80)
         print("Predefined patterns:")
 
-        for pattern in cls.predefined_patterns():
-            print(pattern)
+        for pattern_name, pattern in cls.predefined_patterns().items():
+            print(f"{pattern_name} ({pattern})")
 
         print("-" * 80)
         json_data["search_pattern"] = prompt("Search Pattern")
@@ -374,6 +375,7 @@ class TvUpdater(Updater):
             pattern = pattern.replace(
                 "@{EPI-3}", str(episode).zfill(3) + "(v[0-9]+)?"
             )
+            pattern = pattern.replace("@{ANY}", ".*?")
 
         else:
             pattern = pattern.replace("@{EPI-1}", str(episode).zfill(1))
@@ -381,5 +383,6 @@ class TvUpdater(Updater):
             pattern = pattern.replace("@{EPI-3}", str(episode).zfill(3))
             pattern = pattern.replace("[@{HASH}]", "")
             pattern = pattern.replace("@{HASH}", "")
+            pattern = pattern.replace("@{ANY}", "")
 
         return pattern
