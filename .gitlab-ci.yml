@@ -5,17 +5,10 @@ stages:
   - release
 
 default:
-  image: namboy94/ci-docker-environment:0.8.0
+  image: namboy94/ci-docker-environment:0.14.0
   before_script:
     - echo "$SERVER_ACCESS_KEY" > ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
-    # TODO Remove this once development stabilizes
-    - git clone https://gitlab.namibsun.net/namibsun/python/puffotter -b develop
-    - cd puffotter
-    - python setup.py install
-    - cd ..
-    - rm -rf puffotter
-    - apt install curl
 
 github_mirror:
   stage: mirror

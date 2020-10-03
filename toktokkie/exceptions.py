@@ -57,3 +57,15 @@ class InvalidUpdateInstructions(Exception):
     Exception that is raised whenever xdcc update instructions are invalid
     """
     pass
+
+
+class MissingConfig(Exception):
+    """
+    Exception that is raised when the config file does not exist
+    """
+
+
+class InvalidConfig(Exception):
+    """
+    Exception that is raised when the config file is invalid
+    """

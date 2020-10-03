@@ -21,6 +21,9 @@ import argparse
 from puffotter.init import cli_start, argparse_add_verbosity
 from toktokkie import sentry_dsn
 from toktokkie.scripts import toktokkie_commands
+from toktokkie.scripts.ConfigInitCommand import ConfigInitCommand
+from toktokkie.Config import Config
+from toktokkie.exceptions import InvalidConfig, MissingConfig
 
 
 def main(args: argparse.Namespace):
@@ -29,6 +32,18 @@ def main(args: argparse.Namespace):
     :param args: The command line arguments
     :return: None
     """
+    if args.command != ConfigInitCommand.name():
+        try:
+            Config()
+        except InvalidConfig:
+            print("Invalid Configuration detected. "
+                  "Run tokktokkie config-init to fix this.")
+            return
+        except MissingConfig:
+            print("Missing Configuration detected. "
+                  "Run tokktokkie config-init to fix this.")
+            return
+
     for command_cls in toktokkie_commands:
         if command_cls.name() == args.command:
             command = command_cls(args)
