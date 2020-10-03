@@ -34,7 +34,8 @@ class Config:
     keys = {
         "qbittorrent_url": str,
         "qbittorrent_user": str,
-        "qbittorrent_password": str
+        "qbittorrent_password": str,
+        "qbittorrent_downloads_dir": str
     }
 
     def __init__(self, config_data: Optional[Dict[str, Any]] = None):
@@ -81,16 +82,17 @@ class Config:
             json.dump(self.config_data, f, indent=4)
 
     @property
-    def qbittorrent_config(self) -> Tuple[str, str, str]:
+    def qbittorrent_config(self) -> Tuple[str, str, str, str]:
         """
         :return: The qbittorrent config as a tuple of URL, user and password
         """
         return self.config_data["qbittorrent_url"], \
             self.config_data["qbittorrent_user"], \
-            self.config_data["qbittorrent_password"]
+            self.config_data["qbittorrent_password"], \
+            self.config_data["qbittorrent_downloads_dir"]
 
     @qbittorrent_config.setter
-    def qbittorrent_config(self, config: Tuple[str, str, str]):
+    def qbittorrent_config(self, config: Tuple[str, str, str, str]):
         """
         Sets the qbittorrent config
         :param config: The qbittorrent config as a tuple of URL,
@@ -100,6 +102,7 @@ class Config:
         for index, key in enumerate([
             "qbittorrent_url",
             "qbittorrent_user",
-            "qbittorrent_password"
+            "qbittorrent_password",
+            "qbittorrent_downloads_dir"
         ]):
             self.config_data[key] = config[index]

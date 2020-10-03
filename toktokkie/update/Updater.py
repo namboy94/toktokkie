@@ -44,10 +44,7 @@ class Updater:
         self.metadata = metadata
         self.args = args
 
-        self.update_file = os.path.join(
-            metadata.directory_path,
-            ".meta/{}_update.json".format(self.name())
-        )
+        self.update_file = self.update_file(metadata.directory_path)
         self.config = {}  # type: Dict[str, Any]
 
         if self.json_schema() is not None:
@@ -65,6 +62,18 @@ class Updater:
         :return: The name of the Updater
         """
         raise NotImplementedError()
+
+    @classmethod
+    def update_file(cls, meta_dir: str) -> str:
+        """
+        Generates the path to the update file
+        :param meta_dir: The meta directory
+        :return:
+        """
+        return os.path.join(
+            meta_dir,
+            ".meta/{}_update.json".format(cls.name())
+        )
 
     @classmethod
     def applicable_media_types(cls) -> List[MediaType]:
@@ -90,17 +99,8 @@ class Updater:
         """
         config = cls._prompt(metadata)
         if config is not None:
-            update_file = os.path.join(
-                metadata.directory_path,
-                ".meta/{}_update.json".format(cls.name())
-            )
-            with open(update_file, "w") as f:
-                f.write(json.dumps(
-                    config,
-                    sort_keys=True,
-                    indent=4,
-                    separators=(",", ": ")
-                ))
+            with open(cls.update_file(metadata.directory_path), "w") as f:
+                json.dump(config, f, indent=4)
 
     # noinspection PyUnusedLocal
     @classmethod

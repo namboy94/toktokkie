@@ -37,11 +37,11 @@ def main(args: argparse.Namespace):
             Config()
         except InvalidConfig:
             print("Invalid Configuration detected. "
-                  "Run tokktokkie config-init to fix this.")
+                  "Run toktokkie config-init to fix this.")
             return
         except MissingConfig:
             print("Missing Configuration detected. "
-                  "Run tokktokkie config-init to fix this.")
+                  "Run toktokkie config-init to fix this.")
             return
 
     for command_cls in toktokkie_commands:

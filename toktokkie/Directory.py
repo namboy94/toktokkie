@@ -27,9 +27,8 @@ from toktokkie.iconizing.Iconizer import Iconizer, Procedure
 from toktokkie.metadata.functions import get_metadata, create_metadata
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.MediaType import MediaType
-from toktokkie.exceptions import MissingMetadata, InvalidUpdateInstructions, \
-    MissingUpdateInstructions, InvalidMetadata
-from toktokkie.update import updaters
+from toktokkie.exceptions import MissingMetadata, InvalidMetadata
+from toktokkie.update import updaters, perform_update
 from toktokkie.check.map import checker_map
 from puffotter.os import listdir
 
@@ -174,25 +173,7 @@ class Directory:
             x for x in updaters
             if self.metadata.media_type() in x.applicable_media_types()
         ]
-        for updater_cls in applicable_updaters:
-
-            if args["create"]:
-                updater_cls.prompt(self.metadata)
-            else:
-                try:
-                    updater = updater_cls(self.metadata, args)
-                    print("Updating {} using {} updater:".format(
-                        self.metadata.name, updater.name()
-                    ))
-                    updater.update()
-                except MissingUpdateInstructions:
-                    self.logger.warning("No update instructions for {}"
-                                        .format(self.path))
-                except InvalidUpdateInstructions as e:
-                    self.logger.warning(
-                        "Update instructions for {} are invalid: {}"
-                        .format(self.path, e)
-                    )
+        perform_update(args, self.metadata, applicable_updaters)
 
     @classmethod
     def load_directories(

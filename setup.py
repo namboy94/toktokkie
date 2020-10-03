@@ -51,13 +51,9 @@ if __name__ == "__main__":
             "musicbrainzngs",
             "jsonschema",
             "Pillow",
-            "flask",
-            "flask_sqlalchemy",
-            "IMDbPy"
+            "IMDbPy",
+            "qbittorrent"
         ],
-        extras_require={
-            "gui": ["PyQt5"]
-        },
         test_suite='nose.collector',
         tests_require=['nose'],
         include_package_data=True,
