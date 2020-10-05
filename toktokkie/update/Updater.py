@@ -44,12 +44,12 @@ class Updater:
         self.metadata = metadata
         self.args = args
 
-        self.update_file = self.update_file(metadata.directory_path)
+        update_file = self.update_file(metadata.directory_path)
         self.config = {}  # type: Dict[str, Any]
 
         if self.json_schema() is not None:
-            if os.path.isfile(self.update_file):
-                with open(self.update_file, "r") as f:
+            if os.path.isfile(update_file):
+                with open(update_file, "r") as f:
                     self.config = json.load(f)
             else:
                 raise MissingUpdateInstructions(self.update_file)

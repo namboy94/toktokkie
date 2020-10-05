@@ -71,10 +71,8 @@ class Directory:
         if not os.path.isfile(self.metadata_file):
             raise MissingMetadata(self.metadata_file + " missing")
 
-        if metadata is not None:
-            self.metadata = metadata
-        else:
-            self.metadata = get_metadata(self.path)  # type: Metadata
+        self.metadata = \
+            metadata if metadata is not None else get_metadata(self.path)
 
         if not os.path.isdir(self.metadata.icon_directory):
             os.makedirs(self.metadata.icon_directory)

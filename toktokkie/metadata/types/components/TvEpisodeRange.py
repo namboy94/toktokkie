@@ -40,8 +40,8 @@ class TvEpisodeRange:
             self.season = json_data["season"]
             self.start_episode = json_data["start_episode"]
             self.end_episode = json_data["end_episode"]
-        except (KeyError, TypeError):
-            raise InvalidMetadata()
+        except (KeyError, TypeError) as e:
+            raise InvalidMetadata(f"Attribute Missing/Invalid: {e}")
 
     @property
     def episodes(self) -> List[TvEpisode]:

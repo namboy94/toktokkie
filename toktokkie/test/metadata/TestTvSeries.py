@@ -64,7 +64,7 @@ class TestTvSeries(_TestMetadata):
         otgw_dir.metadata.set_ids(IdType.ANILIST, ["19815"])
         otgw_dir.rename(noconfirm=True)
 
-        self.assertEqual(otgw_dir.metadata.name, "No Game No Life")
+        self.assertEqual(otgw_dir.metadata.name, "No Game, No Life")
 
         for _file in correct:
             self.assertFalse(os.path.isfile(_file))

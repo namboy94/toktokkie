@@ -240,7 +240,7 @@ class Metadata:
         :return: The URLs mapped to their respective id types
         """
         ids = self.ids
-        urls = {x: [] for x in ids.keys()}
+        urls: Dict[IdType, List[str]] = {x: [] for x in ids.keys()}
 
         anime_manga = \
             "manga" if self.media_type() in literature_media_types else "anime"

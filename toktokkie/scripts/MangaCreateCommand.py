@@ -143,6 +143,7 @@ class MangaCreateCommand(Command):
                     .split("https://mangadex.org/title/")[1] \
                     .split("/")[0]
 
+        assert mangadex_id is not None
         return {
             "title": title,
             "cover": cover_image,
@@ -159,6 +160,7 @@ class MangaCreateCommand(Command):
             info = self.load_anilist_info(anilist_id, False)
             info["mangadex_id"] = mangadex_id
         else:
+            assert anilist_id is not None
             info = {
                 "title": data["manga"]["title"],
                 "cover": "https://mangadex.org" + data["manga"]["cover_url"],

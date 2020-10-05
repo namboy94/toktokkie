@@ -51,6 +51,7 @@ class XDCCUpdater(TvUpdater):
         :return: Optional JSON schema for a configuration file
         """
         schema = super().json_schema()
+        assert schema is not None
         schema["properties"]["bot"] = {"type": "string"}
         schema["required"].append("bot")
         return schema
@@ -100,6 +101,7 @@ class XDCCUpdater(TvUpdater):
         :return: The configuration JSON data
         """
         json_data = super()._prompt(metadata)
+        assert json_data is not None
         json_data["bot"] = prompt("Bot", default="CR-HOLLAND|NEW")
         return json_data
 

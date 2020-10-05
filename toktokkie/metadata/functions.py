@@ -45,8 +45,8 @@ def get_metadata(directory: str) -> Metadata:
             media_type = json.load(f)["type"]
             metadata_cls = get_metadata_class(media_type)
             return metadata_cls(directory)
-    except (KeyError, ValueError):
-        raise InvalidMetadata()
+    except (KeyError, ValueError) as e:
+        raise InvalidMetadata(f"Missing/Invalid attribute: {e}")
 
 
 def create_metadata(directory: str, media_type: Union[str, MediaType]) \

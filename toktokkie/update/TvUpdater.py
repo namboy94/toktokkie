@@ -271,9 +271,8 @@ class TvUpdater(Updater):
         """
         search_results = self.search_engine.search(search_term)
 
-        search_regex = re.compile(search_regex)
         search_results = list(filter(
-            lambda x: re.match(search_regex, x.filename),
+            lambda x: re.match(re.compile(search_regex), x.filename),
             search_results
         ))
         return search_results

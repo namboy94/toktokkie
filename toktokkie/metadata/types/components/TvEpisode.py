@@ -37,5 +37,5 @@ class TvEpisode:
         try:
             self.season = json_data["season"]
             self.episode = json_data["episode"]
-        except KeyError:
-            raise InvalidMetadata()
+        except KeyError as e:
+            raise InvalidMetadata(f"Attribute missing: {e}")
