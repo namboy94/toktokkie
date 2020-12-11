@@ -78,6 +78,12 @@ class MusicTagCommand(Command):
                         directory.metadata.icon_directory,
                         album.name + ".png"
                     )
+                    if not os.path.isfile(cover_file):
+                        self.logger.warning("No specific cover file for {}"
+                                            .format(album.name))
+                        cover_file = os.path.join(
+                            directory.metadata.icon_directory, "main.png"
+                        )
 
                     if os.path.isfile(cover_file):
                         id3 = mutagen.id3.ID3(song.path)
@@ -102,6 +108,3 @@ class MusicTagCommand(Command):
                             id3.add(apic)
 
                         id3.save()
-                    else:
-                        self.logger.warning("No cover file for {}"
-                                            .format(album.name))

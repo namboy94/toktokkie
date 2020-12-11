@@ -69,7 +69,9 @@ class XDCCUpdater(TvUpdater):
         :return: Predefined search patterns for this updater
         """
         return {
-            "horriblesubs": "[HorribleSubs] @{NAME} - @{EPI-2} [@{RES-P}].mkv"
+            "horriblesubs": "[HorribleSubs] @{NAME} - @{EPI-2} [@{RES-P}].mkv",
+            "subsplease": "[SubsPlease] @{NAME} - @{EPI-2} "
+                          "(@{RES-P}) [@{HASH}].mkv"
         }
 
     def perform_search(self, search_term: str, search_regex: str) -> List[Any]:

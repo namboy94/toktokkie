@@ -75,6 +75,8 @@ def perform_update(
     else:
         has_instructions = []
         for updater_cls in applicable_updaters:
+            if updater_cls.json_schema() is None:
+                has_instructions.append(updater_cls)
             update_file = updater_cls.update_file(metadata.directory_path)
             if os.path.isfile(update_file):
                 has_instructions.append(updater_cls)

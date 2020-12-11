@@ -143,24 +143,31 @@ class MangaCreateCommand(Command):
                     .split("https://mangadex.org/title/")[1] \
                     .split("/")[0]
 
-        assert mangadex_id is not None
-        return {
+        anilist_info = {
             "title": title,
             "cover": cover_image,
             "mangadex_id": mangadex_id,
             "anilist_id": anilist_id
         }
+        if mangadex_id is not None:
+            anilist_info["mangadex_id"] = mangadex_id
+
+        return anilist_info
 
     def load_mangadex_info(self, mangadex_id: str) -> Dict[str, str]:
         url = "https://mangadex.org/api/manga/" + mangadex_id
         data = json.loads(requests.get(url).text)
 
-        anilist_id = data["manga"]["links"].get("al")
+        links = data["manga"].get("links")
+        if links is not None:
+            anilist_id = links.get("al")
+        else:
+            anilist_id = None
+
         if anilist_id is not None:
             info = self.load_anilist_info(anilist_id, False)
             info["mangadex_id"] = mangadex_id
         else:
-            assert anilist_id is not None
             info = {
                 "title": data["manga"]["title"],
                 "cover": "https://mangadex.org" + data["manga"]["cover_url"],
@@ -175,7 +182,7 @@ class MangaCreateCommand(Command):
         url = f"https://otaku-info.eu/api/v1/media_ids/" \
               f"{media_site}/manga/{media_id}"
         data = json.loads(requests.get(url).text)
-        return data["data"]
+        return data.get("data", {})
 
     # noinspection PyMethodMayBeStatic
     def prepare_directory(self, title: str, cover_url: str):

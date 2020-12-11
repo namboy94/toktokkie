@@ -102,7 +102,7 @@ def load_tvdb_episode_name(
         return info[season_number][episode_number]["episodeName"]
 
     except (tvdb_episodenotfound, tvdb_seasonnotfound, tvdb_shownotfound,
-            ConnectionError, KeyError, AttributeError) as e:
+            ConnectionError, KeyError, AttributeError, ValueError) as e:
         # If not found, or other error, just return generic name
         if str(e) == "cache_location":  # pragma: no cover
             logging.getLogger(__name__).warning("TheTVDB.com is down!")

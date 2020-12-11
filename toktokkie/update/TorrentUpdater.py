@@ -64,7 +64,9 @@ class TorrentUpdater(TvUpdater):
         """
         return {
             "erai-raws": "[Erai-raws] @{NAME} - @{EPI-2} "
-                         "[@{RES-P}]@{ANY}.mkv"
+                         "@{ANY}[@{RES-P}]@{ANY}.mkv",
+            "subsplease": "[SubsPlease] @{NAME} - @{EPI-2} "
+                          "(@{RES-P}) [@{HASH}].mkv"
         }
 
     def download(self, download_instructions: List[DownloadInstructions]):
