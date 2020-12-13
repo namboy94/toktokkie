@@ -43,6 +43,7 @@ valid_id_types = {
     ],
     MediaType.TV_SERIES: [
         IdType.TVDB,
+        IdType.IMDB,
         IdType.ANILIST,
         IdType.MYANIMELIST,
         IdType.KITSU
