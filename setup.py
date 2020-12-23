@@ -52,7 +52,8 @@ if __name__ == "__main__":
             "jsonschema",
             "Pillow",
             "IMDbPy",
-            "qbittorrent"
+            "qbittorrent",
+            "youtube-dl"
         ],
         test_suite='nose.collector',
         tests_require=['nose'],

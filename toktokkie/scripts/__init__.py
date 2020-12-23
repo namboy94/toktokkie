@@ -36,6 +36,7 @@ from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.scripts.MusicMergeCommand import MusicMergeCommand
 from toktokkie.scripts.ConfigInitCommand import ConfigInitCommand
 from toktokkie.scripts.IdFetchCommand import IdFetchCommand
+from toktokkie.scripts.YoutubeMusicDlCommand import YoutubeMusicDlCommand
 
 toktokkie_commands = [
     PrintCommand,
@@ -56,7 +57,8 @@ toktokkie_commands = [
     MusicMergeCommand,
     PlaylistCreateCommand,
     ConfigInitCommand,
-    IdFetchCommand
+    IdFetchCommand,
+    YoutubeMusicDlCommand
 ]
 """
 A list of commands for the toktokkie script
