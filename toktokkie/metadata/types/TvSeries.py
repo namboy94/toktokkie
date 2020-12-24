@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import List, Dict
+from typing import List, Dict, Optional
 from puffotter.os import listdir
 from toktokkie.metadata.Metadata import Metadata
 from toktokkie.metadata.types.components.TvSeason import TvSeason
@@ -27,6 +27,7 @@ from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.types.components.TvEpisode import TvEpisode
 from toktokkie.metadata.types.components.TvEpisodeRange import TvEpisodeRange
 from toktokkie.exceptions import InvalidMetadata
+from toktokkie.renaming.RenameOperation import RenameOperation
 
 
 class TvSeries(Metadata):
@@ -281,3 +282,76 @@ class TvSeries(Metadata):
                 )
 
         return content_info
+
+    def resolve_name(self) -> str:
+        """
+        If possible, will fetch the appropriate name for the
+        metadata based on IDs, falling back to the
+        directory name if this is not possible or supported.
+        """
+        return self.name
+
+    # noinspection PyMethodMayBeStatic
+    def create_rename_operations(self) -> List[RenameOperation]:
+        """
+        Performs rename operations on the content referenced by
+        this metadata object
+        :return: The rename operations for this metadata
+        """
+        operations = []
+
+        excluded = self.excludes.get(IdType.TVDB, {})
+        multis = self.multi_episodes.get(IdType.TVDB, {})
+        start_overrides = \
+            self.season_start_overrides.get(IdType.TVDB, {})
+
+        content_info = self.get_episode_files()
+
+        for tvdb_id, season_data in content_info.items():
+            tvdb_ids = self.ids.get(IdType.TVDB, [])
+            is_spinoff = tvdb_ids[0] != tvdb_id
+
+            if is_spinoff:
+                sample_episode = season_data[list(season_data)[0]][0]
+                location = os.path.dirname(sample_episode)
+                series_name = os.path.basename(location)
+            else:
+                series_name = self.name
+
+            for _season_number, episodes in season_data.items():
+                season_number = _season_number if not is_spinoff else 1
+
+                season_excluded = excluded.get(season_number, [])
+                season_multis = multis.get(season_number, {})
+                episode_number = start_overrides.get(season_number, 1)
+
+                for episode_file in episodes:
+
+                    while episode_number in season_excluded:
+                        episode_number += 1
+
+                    if episode_number not in season_multis:
+                        end = None  # type: Optional[int]
+                    else:
+                        end = season_multis[episode_number]
+
+                    episode_name = load_tvdb_episode_name(
+                        tvdb_id, season_number, episode_number, end
+                    )
+
+                    new_name = generate_tv_episode_filename(
+                        episode_file,
+                        series_name,
+                        season_number,
+                        episode_number,
+                        episode_name,
+                        end
+                    )
+
+                    if end is not None:
+                        episode_number = end
+
+                    operations.append(RenameOperation(episode_file, new_name))
+                    episode_number += 1
+
+        return operations

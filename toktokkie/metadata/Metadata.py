@@ -31,6 +31,7 @@ from toktokkie.metadata.ids.functions import objectify_ids, stringify_ids, \
     fill_ids, minimize_ids
 from toktokkie.metadata.MediaType import MediaType
 from toktokkie.metadata.prompt.Prompter import Prompter
+from toktokkie.renaming.RenameOperation import RenameOperation
 
 
 class Metadata:
@@ -276,3 +277,20 @@ class Metadata:
             return path
         else:
             return None
+
+    def resolve_name(self) -> str:
+        """
+        If possible, will fetch the appropriate name for the
+        metadata based on IDs, falling back to the
+        directory name if this is not possible or supported.
+        """
+        return self.name
+
+    # noinspection PyMethodMayBeStatic
+    def create_rename_operations(self) -> List[RenameOperation]:
+        """
+        Performs rename operations on the content referenced by
+        this metadata object
+        :return: The rename operations for this metadata
+        """
+        return []

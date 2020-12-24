@@ -89,6 +89,7 @@ class YoutubeMusicDlCommand(Command):
                 "preferredquality": "192",
             }],
             "outtmpl": f"{tmp_dir}/%(title)s.%(ext)s",
+            "ignoreerrors": True
         }
         with youtube_dl.YoutubeDL(ytdl_args) as ytdl:
             ytdl.download(self.args.youtube_urls)
