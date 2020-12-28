@@ -52,7 +52,7 @@ class Renamer:
         """
         self.logger = logging.getLogger(self.__class__.__name__)
         self.metadata = metadata
-        self.operations = self._generate_operations()
+        self.operations = metadata.create_rename_operations()
 
     @property
     def path(self) -> str:
@@ -60,38 +60,6 @@ class Renamer:
         :return: The path to the media directory
         """
         return self.metadata.directory_path
-
-    def _generate_operations(self) -> List[RenameOperation]:
-        """
-        Generates renaming operations for the various possible media types
-        :return: The renaming operations
-        """
-        operations = []  # type: List[RenameOperation]
-        if self.metadata.media_type() == MediaType.BOOK:
-            operations = self._generate_book_operations()
-        elif self.metadata.media_type() == MediaType.BOOK_SERIES:
-            operations = self._generate_book_series_operations()
-        elif self.metadata.media_type() == MediaType.MOVIE:
-            operations = self._generate_movie_operations()
-        elif self.metadata.media_type() == MediaType.TV_SERIES:
-            operations = self._generate_tv_series_operations()
-        elif self.metadata.media_type() == MediaType.MANGA:
-            operations = self._generate_manga_operations()
-        elif self.metadata.media_type() == MediaType.MUSIC_ARTIST:
-            operations = self._generate_music_operations()
-        elif self.metadata.media_type() == MediaType.VISUAL_NOVEL:
-            pass
-        else:
-            self.logger.error("Renaming methods for {} not implemented"
-                              .format(self.metadata.media_type().name))
-        return operations
-
-    def get_active_operations(self) -> List[RenameOperation]:
-        """
-        :return: Any rename operations whose source and destination
-                 paths differ.
-        """
-        return list(filter(lambda x: x.source != x.dest, self.operations))
 
     def rename(self, noconfirm: bool, skip_title: bool = False):
         """
@@ -103,7 +71,7 @@ class Renamer:
         if skip_title:
             should_title = self.metadata.name
         else:
-            should_title = self.load_title_name()
+            should_title = self.metadata.resolve_title_name()
 
         if should_title != self.metadata.name:
             ok = noconfirm
@@ -112,9 +80,13 @@ class Renamer:
                                .format(should_title))
             if ok:
                 self.metadata.name = should_title
-                self.operations = self._generate_operations()
+                self.operations = self.metadata.create_rename_operations()
 
-        if len(self.get_active_operations()) == 0:
+        active_operations = list(filter(
+            lambda x: x.source != x.dest,
+            self.operations
+        ))
+        if len(active_operations) == 0:
             self.logger.info("Files already named correctly, skipping.")
             return
 
@@ -162,8 +134,8 @@ class Renamer:
         elif len(imdb) > 0:
             imdb_id = imdb[0].replace("t", "")
             info = IMDb().get_movie(imdb_id).data
-            should_name = f"{info['title']} ({info['year']})"
 
+            should_name = f"{info['title']} ({info['year']})"
         return replace_illegal_ntfs_chars(should_name)
 
     def _get_children(self, no_dirs: bool = False, no_files: bool = False) \

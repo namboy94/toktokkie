@@ -278,7 +278,7 @@ class Metadata:
         else:
             return None
 
-    def resolve_name(self) -> str:
+    def resolve_title_name(self) -> str:
         """
         If possible, will fetch the appropriate name for the
         metadata based on IDs, falling back to the

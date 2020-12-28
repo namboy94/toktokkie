@@ -283,7 +283,7 @@ class TvSeries(Metadata):
 
         return content_info
 
-    def resolve_name(self) -> str:
+    def resolve_title_name(self) -> str:
         """
         If possible, will fetch the appropriate name for the
         metadata based on IDs, falling back to the
