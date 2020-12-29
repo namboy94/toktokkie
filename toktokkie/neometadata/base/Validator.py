@@ -29,13 +29,6 @@ class Validator(MetadataBase, ABC):
     Class that handles validation of metadata
     """
 
-    @property
-    def json_schema(self) -> Dict[str, Any]:
-        """
-        The JSON schema for the metadata type
-        """
-        return self.build_schema()
-
     def validate(self):
         """
         Validates the JSON data to make sure everything has valid values
@@ -43,18 +36,26 @@ class Validator(MetadataBase, ABC):
         :return: None
         """
         try:
-            validate(instance=self.json, schema=self.json_schema)
+            validate(instance=self.json, schema=self.build_schema())
         except ValidationError as e:
             raise InvalidMetadata(
                 "Invalid Metadata: {} ({})".format(e, e.message)
             )
+        self._validate()
 
-    def build_schema(self) -> Dict[str, Any]:
+    def _validate(self):
+        """
+        Performs additional validation
+        """
+        pass
+
+    @classmethod
+    def build_schema(cls) -> Dict[str, Any]:
         """
         Generates the JSON schema
         :return: The JSON schema
         """
-        ids = self._create_ids_schema()
+        ids = cls._create_ids_schema()
         ids["minProperties"] = 1
 
         properties = {
@@ -65,7 +66,7 @@ class Validator(MetadataBase, ABC):
             "ids": ids,
             "type": {
                 "type": "string",
-                "pattern": "^" + str(self.media_type().value) + "$"
+                "pattern": "^" + str(cls.media_type().value) + "$"
             }
         }
         required = ["type", "ids"]
@@ -77,13 +78,14 @@ class Validator(MetadataBase, ABC):
             "additionalProperties": False
         }
 
-    def _create_ids_schema(self) -> Dict[str, Any]:
+    @classmethod
+    def _create_ids_schema(cls) -> Dict[str, Any]:
         """
         Creates an "ids" object that allows any valid ID types
         :return: The "ids" object in JSON schema format
         """
         properties = {}  # type: Dict[str, Any]
-        for id_type in self.valid_id_types():
+        for id_type in cls.valid_id_types():
             properties[id_type.value] = {
                 "type": "array",
                 "items": {"type": "string"}
@@ -93,5 +95,5 @@ class Validator(MetadataBase, ABC):
             "type": "object",
             "properties": properties,
             "additionalProperties": False,
-            "required": [x.value for x in self.required_id_types()]
+            "required": [x.value for x in cls.required_id_types()]
         }

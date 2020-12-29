@@ -22,7 +22,7 @@ from toktokkie.neometadata.enums import IdType, MediaType
 from toktokkie.neometadata.base.Metadata import Metadata
 from toktokkie.neometadata.tv.TvRenamer import TvRenamer
 from toktokkie.neometadata.tv.TvValidator import TvValidator
-from toktokkie.neometadata.tv.TvPromter import TvPrompter
+from toktokkie.neometadata.tv.TvPrompter import TvPrompter
 
 
 class Tv(Metadata, TvRenamer, TvValidator, TvPrompter):
@@ -38,9 +38,16 @@ class Tv(Metadata, TvRenamer, TvValidator, TvPrompter):
         return MediaType.TV_SERIES
 
     @classmethod
+    def required_id_types(cls) -> List[IdType]:
+        """
+        :return: Required ID types for TV metadata
+        """
+        return []
+
+    @classmethod
     def valid_id_types(cls) -> List[IdType]:
         """
-        :return: Valid ID types for the metadata
+        :return: Valid ID types for TV metadata
         """
         return [
             IdType.ANILIST,

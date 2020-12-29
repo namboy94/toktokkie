@@ -22,11 +22,10 @@ import sys
 import logging
 from typing import Dict, Any, List, Optional
 from puffotter.prompt import yn_prompt
-from toktokkie.renaming.Renamer import Renamer
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
-from toktokkie.metadata.functions import get_metadata, create_metadata
-from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.neometadata.functions import get_metadata, create_metadata
+from toktokkie.neometadata.base.Metadata import Metadata
+from toktokkie.neometadata.enums import MediaType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.update import updaters, perform_update
 from toktokkie.check.map import checker_map
@@ -109,13 +108,14 @@ class Directory:
         metadata = create_metadata(self.path, metadata_type)
         metadata.write()
 
-    def rename(self, noconfirm: bool = False):
+    def rename(self, noconfirm: bool = False, skip_title: bool = True):
         """
         Renames the contained files.
         :param noconfirm: Skips the confirmation phase
+        :param skip_title: Skips title renaming
         :return: None
         """
-        Renamer(self.metadata).rename(noconfirm)
+        self.metadata.rename(noconfirm, skip_title)
         self.path = self.metadata.directory_path
 
     def iconize(self, procedure: Procedure):

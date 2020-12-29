@@ -24,6 +24,7 @@ from puffotter.prompt import prompt_comma_list
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
 from toktokkie.neometadata.utils.ids import int_id_types, objectify_ids
+from toktokkie.neometadata.utils.IdFetcher import IdFetcher
 
 
 class Prompter(MetadataBase, ABC):
@@ -57,15 +58,31 @@ class Prompter(MetadataBase, ABC):
         :return: The generated metadata object
         """
         name = os.path.basename(os.path.abspath(directory_path))
+        id_fetcher = cls._create_id_fetcher(directory_path)
         print(f"Generating metadata for {name}:")
         data = {
             "type": cls.media_type().value,
             "tags": prompt_comma_list("Tags"),
             "ids": cls._prompt_ids(
-                cls.valid_id_types(), cls.required_id_types(), {}
+                cls.valid_id_types(),
+                cls.required_id_types(),
+                {},
+                id_fetcher
             )
         }
         return data
+
+    @classmethod
+    def _create_id_fetcher(cls, directory: str) -> IdFetcher:
+        """
+        Creates an ID fetcher
+        :param directory: The directory for which to generate the ID fetcher
+        :return: The generated ID fetcher
+        """
+        return IdFetcher(
+            os.path.basename(os.path.abspath(directory)),
+            cls.media_type()
+        )
 
     @classmethod
     def _prompt_ids(
@@ -73,6 +90,7 @@ class Prompter(MetadataBase, ABC):
             valid_ids: List[IdType],
             required_ids: List[IdType],
             defaults: Dict[str, List[str]],
+            id_fetcher: IdFetcher,
             mincount: int = 1
     ) -> Dict[str, List[str]]:
         """
@@ -80,6 +98,7 @@ class Prompter(MetadataBase, ABC):
         :param valid_ids: IDs that are valid for the prompt
         :param required_ids: IDs that are required to be provided
         :param defaults: Any potential default values for the IDs
+        :param id_fetcher: An ID fetcher
         :param mincount: Minimal amount of IDs that the user needs to provide
         :return: The IDs in a dictionary mapping the ID names to their IDs
         """
@@ -88,7 +107,9 @@ class Prompter(MetadataBase, ABC):
             if id_type not in valid_ids:
                 continue
             else:
-                defaults = cls._load_default_ids(valid_ids, defaults)
+                defaults = cls._load_default_ids(
+                    valid_ids, defaults, id_fetcher
+                )
 
                 default = defaults.get(id_type.value)
                 is_int = id_type in int_id_types
@@ -118,7 +139,8 @@ class Prompter(MetadataBase, ABC):
         if len(ids) < mincount:
             print("Please enter at least {} IDs".format(mincount))
             return cls._prompt_ids(
-                valid_ids, required_ids, defaults, mincount
+                valid_ids, required_ids, defaults, id_fetcher,
+                mincount=mincount
             )
         else:
             return ids
@@ -127,13 +149,15 @@ class Prompter(MetadataBase, ABC):
     def _load_default_ids(
             cls,
             valid_ids: List[IdType],
-            defaults: Dict[str, List[str]]
+            defaults: Dict[str, List[str]],
+            id_fetcher: IdFetcher
     ) -> Dict[str, List[str]]:
         """
         Tries to load any missing default IDs using the name of the directory
         and/or other default IDs
         :param valid_ids: List of valid ID types
         :param defaults: The current default IDs
+        :param id_fetcher: An ID fetcher
         :return: The updated IDs
         """
         for id_type in valid_ids:
@@ -141,7 +165,7 @@ class Prompter(MetadataBase, ABC):
                 continue
             else:
                 _defaults = objectify_ids(defaults)
-                ids = cls.id_fetcher.fetch_ids(id_type, _defaults)
+                ids = id_fetcher.fetch_ids(id_type, _defaults)
                 if ids is not None:
                     defaults[id_type.value] = ids
 
@@ -151,18 +175,20 @@ class Prompter(MetadataBase, ABC):
     def _prompt_component_ids(
             cls,
             valid_ids: List[IdType],
-            previous_ids: Dict[str, List[str]]
+            previous_ids: Dict[str, List[str]],
+            id_fetcher: IdFetcher
     ) -> Dict[str, List[str]]:
         """
         Prompts for IDs for a component (for example, a season of a tv series)
         Strips away any IDs that are the same as the root metadata ids
         :param valid_ids: ID Types that are valid for the kind of metadata
         :param previous_ids: The IDs previously aquired
+        :param id_fetcher: An ID fetcher
         :return: The prompted IDs, mapped to id type strings
         """
 
         defaults = previous_ids.copy()
-        ids = cls._prompt_ids(valid_ids, [], defaults, 0)
+        ids = cls._prompt_ids(valid_ids, [], defaults, id_fetcher, mincount=0)
 
         # Strip unnecessary IDs
         for key in list(ids.keys()):

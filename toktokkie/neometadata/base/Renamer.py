@@ -19,14 +19,57 @@ LICENSE"""
 
 from abc import ABC
 from typing import List
+from puffotter.prompt import yn_prompt
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
-from toktokkie.neometadata.renaming.RenameOperation import RenameOperation
+from toktokkie.neometadata.utils.RenameOperation import RenameOperation
 
 
 class Renamer(MetadataBase, ABC):
     """
     Class that's responsible to define renaming functionality
     """
+
+    def rename(self, noconfirm: bool, skip_title: bool = False):
+        """
+        Renames the contained files according to the naming schema.
+        :param noconfirm: Skips the confirmation phase if True
+        :param skip_title: If True, will skip title renaming
+        :return: None
+        """
+        if skip_title:
+            should_title = self.name
+        else:
+            should_title = self.resolve_title_name()
+
+        operations = self.create_rename_operations()
+
+        if should_title != self.name:
+            if noconfirm or \
+                    yn_prompt(f"Rename title of series to {should_title}?"):
+                self.name = should_title
+                # Reload with new title name
+                operations = self.create_rename_operations()
+
+        active_operations = list(filter(
+            lambda x: x.source != x.dest,
+            operations
+        ))
+        if len(active_operations) == 0:
+            self.logger.info("Files already named correctly, skipping.")
+            return
+
+        if not noconfirm:
+            for operation in operations:
+                print(operation)
+
+            prompt = yn_prompt("Proceed with renaming?")
+
+            if not prompt:
+                self.logger.warning("Renaming aborted.")
+                return
+
+        for operation in operations:
+            operation.rename()
 
     def resolve_title_name(self) -> str:
         """

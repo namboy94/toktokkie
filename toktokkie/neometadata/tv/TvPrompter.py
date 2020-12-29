@@ -21,9 +21,10 @@ from abc import ABC
 from typing import Dict, Any, Tuple, List
 from puffotter.os import listdir
 from toktokkie.neometadata.base.Prompter import Prompter
+from toktokkie.neometadata.tv.TvExtras import TvExtras
 
 
-class TvPrompter(Prompter, ABC):
+class TvPrompter(Prompter, TvExtras, ABC):
     """
     Prompter class for tv series
     """
@@ -58,7 +59,11 @@ class TvPrompter(Prompter, ABC):
 
         for season_name, season_path in season_folders + special_folders:
             print("\n{}:".format(season_name))
-            ids = cls._prompt_component_ids(cls.valid_id_types(), base["ids"])
+            ids = cls._prompt_component_ids(
+                cls.valid_id_types(),
+                base["ids"],
+                cls._create_id_fetcher(directory_path)
+            )
 
             seasons.append({
                 "ids": ids,

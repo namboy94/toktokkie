@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 import json
 from abc import ABC
 from typing import Optional, Dict, Any
+from toktokkie.exceptions import MissingMetadata
 from toktokkie.neometadata.base.Renamer import Renamer
 from toktokkie.neometadata.base.Validator import Validator
 from toktokkie.neometadata.base.Prompter import Prompter
@@ -50,6 +52,8 @@ class Metadata(Renamer, Validator, Prompter, ABC):
         self.directory_path = directory_path
 
         if json_data is None:
+            if not os.path.isfile(self.metadata_file):
+                raise MissingMetadata()
             with open(self.metadata_file, "r") as info:
                 self.json = json.load(info)
         else:
@@ -67,3 +71,11 @@ class Metadata(Renamer, Validator, Prompter, ABC):
             self.directory_path,
             str(self.json)
         )
+
+    @classmethod
+    def from_prompt(cls, directory_path: str) -> "Metadata":
+        """
+        Generates a metadata object based on interactive user input
+        :return: The generated metadata
+        """
+        return cls(directory_path, cls.prompt(directory_path))

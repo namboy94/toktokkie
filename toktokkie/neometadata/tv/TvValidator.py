@@ -17,28 +17,33 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 from abc import ABC
 from typing import Dict, Any
+from puffotter.os import listdir
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.base.Validator import Validator
+from toktokkie.neometadata.tv.TvExtras import TvExtras
 
 
-class TvValidator(Validator, ABC):
+class TvValidator(Validator, TvExtras, ABC):
     """
     Class that handles validation of tv series metadata
     """
 
-    def build_schema(self) -> Dict[str, Any]:
+    @classmethod
+    def build_schema(cls) -> Dict[str, Any]:
         """
         Generates the JSON schema
         :return: The JSON schema
         """
         base = super().build_schema()
-        ids = self._create_ids_schema()
+        ids = cls._create_ids_schema()
 
         excludes = {}
         multi_episodes = {}
         season_start_overrides = {}
-        for id_type in self.valid_id_types():
+        for id_type in cls.valid_id_types():
             extra_base = {
                 "type": "array",
                 "items": {
@@ -95,3 +100,19 @@ class TvValidator(Validator, ABC):
         })
         base["required"].append("seasons")
         return base
+
+    def _validate(self):
+        """
+        Performs additional validation
+        """
+        foldercount = len(listdir(self.directory_path, no_files=True))
+
+        if len(self.seasons) < foldercount:
+            raise InvalidMetadata("Missing seasons in metadata")
+        elif len(self.seasons) > foldercount:
+            raise InvalidMetadata("Missing season directories")
+
+        for season in self.seasons:
+            if not os.path.isdir(season.path):
+                raise InvalidMetadata("Missing season directory {}"
+                                      .format(season.name))

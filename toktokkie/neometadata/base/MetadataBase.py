@@ -103,7 +103,7 @@ class MetadataBase(ABC):
         """
         return fill_ids(
             objectify_ids(self.json["ids"]),
-            valid_id_types[self.media_type()]
+            self.valid_id_types()
         )
 
     @ids.setter

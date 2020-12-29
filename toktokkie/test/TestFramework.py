@@ -27,13 +27,16 @@ class _TestFramework(unittest.TestCase):
     A class that implements standard setUp and tearDown methods for unit tests
     """
 
-    resources = "toktokkie/test/res"
+    resources = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "res"
+    )
     """
     The directory containing the original test resources.
     The contents of this directory should not be modified during tests.
     """
 
-    test_res = "test-res"
+    res_dir = "/tmp/toktokkie-test-res"
     """
     The directory containing a fresh copy of the test resources.
     May be modified during tests. Regenerated in setUp method.
@@ -44,8 +47,8 @@ class _TestFramework(unittest.TestCase):
         Deletes any generated resources
         :return:
         """
-        if os.path.exists(self.test_res):
-            shutil.rmtree(self.test_res)
+        if os.path.exists(self.res_dir):
+            shutil.rmtree(self.res_dir)
 
     def setUp(self):
         """
@@ -54,9 +57,9 @@ class _TestFramework(unittest.TestCase):
         """
         self.cleanup()
         try:
-            shutil.copytree(self.resources, self.test_res)
+            shutil.copytree(self.resources, self.res_dir)
         except FileNotFoundError:
-            shutil.copytree(os.path.basename(self.resources), self.test_res)
+            shutil.copytree(os.path.basename(self.resources), self.res_dir)
 
     def tearDown(self):
         """
@@ -71,14 +74,14 @@ class _TestFramework(unittest.TestCase):
         :param directory: The directory to get
         :return: The path to the directory
         """
-        return os.path.join(self.test_res, directory)
+        return os.path.join(self.res_dir, directory)
 
-    def verify_same(self, should_dir: str, is_dir: str):
+    def assert_directories_same(self, should_dir: str, is_dir: str):
         """
         Makes sure that two directories share the same content.
-        :param should_dir: Directory
-        :param is_dir:
-        :return:
+        :param should_dir: The first directory
+        :param is_dir: The second directory
+        :return: None
         """
         self.assertTrue(os.path.isdir(should_dir))
         self.assertTrue(os.path.isdir(is_dir))
@@ -92,4 +95,6 @@ class _TestFramework(unittest.TestCase):
             child_path = os.path.join(should_dir, child)
 
             if os.path.isdir(child_path):
-                self.verify_same(child_path, os.path.join(is_dir, child))
+                self.assert_directories_same(
+                    child_path, os.path.join(is_dir, child)
+                )
