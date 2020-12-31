@@ -18,10 +18,18 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
-from typing import List
+from imdb import IMDb
+from typing import List, Tuple, Optional
 from puffotter.prompt import yn_prompt
+from puffotter.os import replace_illegal_ntfs_chars
+from anime_list_apis.api.AnilistApi import AnilistApi
+from anime_list_apis.models.attributes.Title import TitleType
+from anime_list_apis.models.attributes.MediaType import MediaType as \
+    AnilistMediaType
+from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
 from toktokkie.neometadata.utils.RenameOperation import RenameOperation
+from toktokkie.neometadata.utils.ids import literature_media_types
 
 
 class Renamer(MetadataBase, ABC):
@@ -77,7 +85,7 @@ class Renamer(MetadataBase, ABC):
         metadata based on IDs, falling back to the
         directory name if this is not possible or supported.
         """
-        return self.name
+        return self.name  # pragma: no cover
 
     # noinspection PyMethodMayBeStatic
     def create_rename_operations(self) -> List[RenameOperation]:
@@ -86,4 +94,68 @@ class Renamer(MetadataBase, ABC):
         this metadata object
         :return: The rename operations for this metadata
         """
-        return []
+        return []  # pragma: no cover
+
+    def load_anilist_title_and_year(self) -> Tuple[str, Optional[int]]:
+        """
+        Loads the title and year of an item using anilist IDs
+        :return: The title of the item and the year as a tuple
+        """
+        anilist_ids = self.ids[IdType.ANILIST]
+        if len(anilist_ids) == 0:
+            return self.name, None
+
+        anilist_id = int(anilist_ids[0])
+
+        if anilist_id == 0:
+            return self.name, None
+
+        if self.media_type() in literature_media_types:
+            media_type = AnilistMediaType.MANGA
+        else:
+            media_type = AnilistMediaType.ANIME
+
+        entry = AnilistApi().get_data(media_type, anilist_id)
+        new_name = entry.title.get(TitleType.ENGLISH)
+        year = entry.releasing_start.year
+
+        return replace_illegal_ntfs_chars(new_name), year
+
+    def load_imdb_title_and_year(self) -> Tuple[str, Optional[int]]:
+        """
+        Loads the title and year of an item using IMDB IDs
+        :return: The title of the item and the year as a tuple
+        """
+        imdb_ids = self.ids[IdType.IMDB]
+        if len(imdb_ids) == 0:
+            return self.name, None
+
+        imdb_id = imdb_ids[0].replace("t", "")
+
+        if imdb_id == "0":
+            return self.name, None
+
+        info = IMDb().get_movie(imdb_id).data
+
+        new_name = info["title"]
+        year = info["year"]
+
+        return replace_illegal_ntfs_chars(new_name), year
+
+    def load_title_and_year(
+            self, id_type_priority: List[IdType]
+    ) -> Tuple[str, Optional[int]]:
+        """
+        Loads the title and year based on a custom order of id types
+        """
+        func_map = {
+            IdType.IMDB: self.load_imdb_title_and_year,
+            IdType.ANILIST: self.load_anilist_title_and_year
+        }
+
+        for id_type in id_type_priority:
+            func = func_map.get(id_type, lambda: (self.name, None))
+            name, year = func()
+            if year is not None:
+                return name, year
+        return self.name, None

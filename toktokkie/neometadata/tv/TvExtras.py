@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
-from typing import List, Dict
+from typing import List, Dict, Optional
 from toktokkie.neometadata.enums import IdType
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
@@ -105,20 +105,7 @@ class TvExtras(MetadataBase, ABC):
                  point to ID types
                  Form: {idtype: {season: episode}}
         """
-        generated = {}  # type: Dict[IdType, Dict[int, int]]
-
-        for _id_type, overrides in \
-                self.json.get("season_start_overrides", {}).items():
-
-            id_type = IdType(_id_type)
-            if id_type not in generated:
-                generated[id_type] = {}
-
-            for override in overrides:
-                episode = TvEpisode(override)
-                generated[id_type][episode.season] = episode.episode
-
-        return generated
+        return self.json.get("season_start_overrides", {})
 
     @property
     def multi_episodes(self) -> Dict[IdType, Dict[int, Dict[int, int]]]:
@@ -177,13 +164,15 @@ class TvExtras(MetadataBase, ABC):
             self,
             id_type: IdType,
             season: int,
-            episode: int
+            episode: int,
+            end_episode: Optional[int] = None
     ):
         """
         Adds an excluded episode
         :param id_type: The ID type
         :param season: The season of the excluded episode
         :param episode: The excluded episode number
+        :param end_episode: Optional end episode for multi-episode excludes
         :return: None
         """
         if "excludes" not in self.json:
@@ -191,7 +180,29 @@ class TvExtras(MetadataBase, ABC):
         if id_type.value not in self.json["excludes"]:
             self.json["excludes"][id_type.value] = []
 
-        self.json["excludes"][id_type.value].append({
-            "season": season,
-            "episode": episode
-        })
+        exclude = {"season": season}
+        if end_episode is None:
+            exclude.update({"episode": episode})
+        else:
+            exclude.update({
+                "start_episode": episode, "end_episode": end_episode
+            })
+
+        self.json["excludes"][id_type.value].append(exclude)
+
+    def add_season_start_override(
+            self, id_type: IdType, season: int, episode: int
+    ):
+        """
+        Adds a new season start override
+        :param id_type: The ID type
+        :param season: The season
+        :param episode: The episode
+        :return: None
+        """
+        if "season_start_overrides" not in self.json:
+            self.json["season_start_overrides"] = {}
+        if id_type not in self.json["season_start_overrides"]:
+            self.json["season_start_overrides"][id_type] = {}
+
+        self.json["season_start_overrides"][id_type][season] = episode

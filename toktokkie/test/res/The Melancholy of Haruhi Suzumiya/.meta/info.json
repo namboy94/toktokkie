@@ -8,6 +8,9 @@
         ],
         "tvdb": [
             "79414"
+        ],
+        "imdb": [
+            "tt0816407"
         ]
     },
     "seasons": [
@@ -21,7 +24,8 @@
                 ],
                 "tvdb": [
                     "85438"
-                ]
+                ],
+                "imdb": ["tt1386581"]
             },
             "name": "Suzumiya Haruhi-chan no Yuuutsu"
         },
@@ -35,7 +39,8 @@
                 ],
                 "tvdb": [
                     "95361"
-                ]
+                ],
+                "imdb": ["tt1386580"]
             },
             "name": "Nyoron! Churuya-san!"
         },

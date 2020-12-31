@@ -73,11 +73,8 @@ class MetadataBase(ABC):
         :param name: The new name of the media directory
         :return: None
         """
-        directory = self.directory_path
-        if directory.endswith("/"):
-            directory = directory.rsplit("/", 1)[0]
-        new_path = os.path.join(os.path.dirname(directory), name)
-        os.rename(directory, new_path)
+        new_path = os.path.join(os.path.dirname(self.directory_path), name)
+        os.rename(self.directory_path, new_path)
         self.directory_path = new_path
 
     @property
@@ -142,21 +139,21 @@ class MetadataBase(ABC):
         """
         :return: The media type of the Metadata class
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @classmethod
     def valid_id_types(cls) -> List[IdType]:
         """
         :return: Valid ID types for the metadata
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @classmethod
     def required_id_types(cls) -> List[IdType]:
         """
         :return: Required ID types for the metadata
         """
-        return []
+        return []  # pragma: no cover
 
     def __str__(self) -> str:
         """

@@ -47,7 +47,7 @@ class Validator(MetadataBase, ABC):
         """
         Performs additional validation
         """
-        pass
+        pass  # pragma: no cover
 
     @classmethod
     def build_schema(cls) -> Dict[str, Any]:

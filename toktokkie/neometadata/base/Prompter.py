@@ -137,7 +137,7 @@ class Prompter(MetadataBase, ABC):
                             defaults.pop(IdType.ANILIST.value)
 
         if len(ids) < mincount:
-            print("Please enter at least {} IDs".format(mincount))
+            print("Please enter at least {} ID(s)".format(mincount))
             return cls._prompt_ids(
                 valid_ids, required_ids, defaults, id_fetcher,
                 mincount=mincount

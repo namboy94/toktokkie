@@ -18,11 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import logging
 import tvdb_api
 from abc import ABC
 from typing import List, Optional, Dict
-from puffotter.os import get_ext
+from puffotter.os import get_ext, listdir
 from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 from toktokkie.utils.ImdbCache import ImdbCache
@@ -67,7 +66,7 @@ class TvRenamer(Renamer, TvExtras, ABC):
 
         for service_id, season_data in content_info.items():
             service_ids = self.ids.get(id_type, [])
-            is_spinoff = service_ids[0] != service_id
+            is_spinoff = id_type is not None and service_ids[0] != service_id
 
             if is_spinoff:
                 sample_episode = season_data[list(season_data)[0]][0]
@@ -195,7 +194,10 @@ class TvRenamer(Renamer, TvExtras, ABC):
             return ImdbCache.load_episode_name(
                 service_id, season_number, episode_number
             )
-        elif id_type == IdType.TVDB:
+        elif id_type == IdType.TVDB:  # pragma: no cover
+            # Due to tvdb's new paid model, this will no longer be able
+            # to be tested in unit tests.
+            # IMDB will now be the de-facto default
             try:
                 tvdb = tvdb_api.Tvdb()
                 info = tvdb[int(service_id)]
@@ -230,12 +232,9 @@ class TvRenamer(Renamer, TvExtras, ABC):
         """
         content_info = {}  # type: Dict[str, Dict[int, List[str]]]
 
-        for season_name in os.listdir(self.directory_path):
-
-            season_path = os.path.join(self.directory_path, season_name)
-            if season_name.startswith(".") or os.path.isfile(season_path):
-                continue
-
+        for season_name, season_path in listdir(
+                self.directory_path, no_files=True, no_dot=True
+        ):
             season_metadata = self.get_season(season_name)
             service_id = season_metadata.ids.get(id_type, ["0"])[0]
 
@@ -249,15 +248,10 @@ class TvRenamer(Renamer, TvExtras, ABC):
             if season_number not in content_info[service_id]:
                 content_info[service_id][season_number] = []
 
-            for episode in os.listdir(season_metadata.path):
-                episode_path = os.path.join(season_metadata.path, episode)
-
-                if not os.path.isfile(episode_path) or episode.startswith("."):
-                    continue
-
-                content_info[service_id][season_number].append(
-                    episode_path
-                )
+            for episode, episode_path in listdir(
+                    season_metadata.path, no_dirs=True, no_dot=True
+            ):
+                content_info[service_id][season_number].append(episode_path)
 
         # Sort the episode lists
         for service_id in content_info:
@@ -267,3 +261,14 @@ class TvRenamer(Renamer, TvExtras, ABC):
                 )
 
         return content_info
+
+    def resolve_title_name(self) -> str:
+        """
+        If possible, will fetch the appropriate name for the
+        metadata based on IDs, falling back to the
+        directory name if this is not possible or supported.
+        """
+        return self.load_title_and_year([
+            IdType.ANILIST,
+            IdType.IMDB
+        ])[0]

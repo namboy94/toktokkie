@@ -66,7 +66,7 @@ class Metadata(Renamer, Validator, Prompter, ABC):
         """
         :return: A string that could re-generate the metadata object
         """
-        return "{}({}, {})".format(
+        return "{}('{}', {})".format(
             self.__class__.__name__,
             self.directory_path,
             str(self.json)

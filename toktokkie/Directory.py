@@ -108,7 +108,7 @@ class Directory:
         metadata = create_metadata(self.path, metadata_type)
         metadata.write()
 
-    def rename(self, noconfirm: bool = False, skip_title: bool = True):
+    def rename(self, noconfirm: bool = False, skip_title: bool = False):
         """
         Renames the contained files.
         :param noconfirm: Skips the confirmation phase

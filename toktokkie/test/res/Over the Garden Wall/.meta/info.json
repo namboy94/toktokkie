@@ -1,5 +1,8 @@
 {
     "ids": {
+        "imdb": [
+            "tt3718778"
+        ],
         "tvdb": [
             "281643"
         ]
@@ -11,21 +14,5 @@
         }
     ],
     "tags": [],
-    "type": "tv",
-    "excludes": {
-        "tvdb": [
-            {
-                "episode": 1,
-                "season": 0
-            },
-            {
-                "episode": 2,
-                "season": 0
-            },
-            {
-                "episode": 3,
-                "season": 0
-            }
-        ]
-    }
+    "type": "tv"
 }

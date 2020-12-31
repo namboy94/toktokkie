@@ -38,7 +38,7 @@ if __name__ == "__main__":
         packages=find_packages(),
         scripts=list(map(lambda x: os.path.join("bin", x), os.listdir("bin"))),
         install_requires=[
-            "tvdb_api",
+            "tvdb_api<3.0",
             "beautifulsoup4",
             "typing",
             "requests",

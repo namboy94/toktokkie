@@ -20,6 +20,8 @@ LICENSE"""
 import os
 import shutil
 import unittest
+from typing import Tuple, List
+from puffotter.os import listdir
 
 
 class _TestFramework(unittest.TestCase):
@@ -98,3 +100,27 @@ class _TestFramework(unittest.TestCase):
                 self.assert_directories_same(
                     child_path, os.path.join(is_dir, child)
                 )
+
+    def scramble_episode_names(self, directory: str) \
+            -> Tuple[List[str], List[str]]:
+        """
+        Scrambles the existing episode names to ease checking of correct
+        renaming
+        :param directory: The directory whose contents to scramble
+        :return: A list containing paths to the correct and scrambled files
+        """
+        correct = []
+        wrong = []
+        for _, season_dir in listdir(directory, no_files=True):
+            for episode, episode_file in listdir(season_dir, no_dirs=True):
+                new_file = os.path.join(season_dir, "A" + episode)
+                os.rename(episode_file, new_file)
+                correct.append(episode_file)
+                wrong.append(new_file)
+
+        for _file in correct:
+            self.assertFalse(os.path.isfile(_file))
+        for _file in wrong:
+            self.assertTrue(os.path.isfile(_file))
+
+        return correct, wrong

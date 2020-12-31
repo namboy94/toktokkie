@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, Optional
-from imdb import IMDb
+from imdb import IMDb, IMDbDataAccessError
 from imdb.Movie import Movie
 
 
@@ -60,8 +60,12 @@ class ImdbCache:
 
         if existing is None and imdb_id_int not in ImdbCache.episode_cache:
             ImdbCache.episode_cache[imdb_id_int] = {}
-            data = ImdbCache.imdb_api\
-                .get_movie_episodes(imdb_id_int)["data"]["episodes"]
+
+            try:
+                data = ImdbCache.imdb_api\
+                    .get_movie_episodes(imdb_id_int)["data"]["episodes"]
+            except IMDbDataAccessError:
+                data = {}
             for _season, episodes in data.items():
                 ImdbCache.episode_cache[imdb_id_int][_season] = {}
                 for number, _episode in episodes.items():

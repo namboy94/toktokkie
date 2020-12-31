@@ -104,7 +104,7 @@ class TestValidatingTvMetadata(_TestFramework):
         """
         Tests if missing season directories are handled correctly
         """
-        haruhi = Tv(self.get("Suzumiya Haruhi no Yuuutsu"))
+        haruhi = Tv(self.get("The Melancholy of Haruhi Suzumiya"))
         haruhi.validate()
 
         new_dir = os.path.join(haruhi.directory_path, "New")
@@ -120,7 +120,7 @@ class TestValidatingTvMetadata(_TestFramework):
         """
         Tests if missing season metadata is handled correctly
         """
-        haruhi = Tv(self.get("Suzumiya Haruhi no Yuuutsu"))
+        haruhi = Tv(self.get("The Melancholy of Haruhi Suzumiya"))
         haruhi.validate()
 
         s2 = os.path.join(haruhi.directory_path, "Season 2")

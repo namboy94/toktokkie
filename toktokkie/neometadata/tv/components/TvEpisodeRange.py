@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, Any, List
-from toktokkie.metadata.types.components.TvEpisode import TvEpisode
+from toktokkie.neometadata.tv.components.TvEpisode import TvEpisode
 from toktokkie.exceptions import InvalidMetadata
 
 
@@ -50,7 +50,7 @@ class TvEpisodeRange:
         """
         episodes = []
         min_episode = min(self.start_episode, self.end_episode)
-        max_episode = min(self.start_episode, self.end_episode)
+        max_episode = max(self.start_episode, self.end_episode)
 
         for episode in range(min_episode, max_episode + 1):
             episodes.append(TvEpisode({
