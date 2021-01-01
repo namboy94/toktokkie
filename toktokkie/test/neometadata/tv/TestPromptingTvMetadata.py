@@ -19,13 +19,14 @@ LICENSE"""
 
 import os
 from unittest import mock
+from toktokkie.exceptions import InvalidDirectoryState
 from toktokkie.neometadata.tv.Tv import Tv
 from toktokkie.neometadata.enums import IdType
 from toktokkie.Directory import Directory
 from toktokkie.test.TestFramework import _TestFramework
 
 
-class TestGeneratingTvMetadata(_TestFramework):
+class TestPromptingTvMetadata(_TestFramework):
     """
     Class that tests generating tv series metadata
     """
@@ -106,3 +107,17 @@ class TestGeneratingTvMetadata(_TestFramework):
         self.assertTrue(os.path.isdir(metadata.directory_path))
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertTrue(os.path.isfile(metadata.metadata_file))
+
+    def test_pre_prompt_checks(self):
+        """
+        Tests pre-prompt checking
+        :return: None
+        """
+        new_series = self.get("New Series")
+        os.makedirs(new_series)
+
+        try:
+            Tv.prompt(new_series)
+            self.fail()
+        except InvalidDirectoryState:
+            pass

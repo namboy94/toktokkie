@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
+from toktokkie.neometadata.book.Book import Book
 from toktokkie.test.TestFramework import _TestFramework
 
 
@@ -24,3 +26,16 @@ class TestRenamingBookMetadata(_TestFramework):
     """
     Class that tests the BookRenamer class
     """
+
+    def test_book_renaming(self):
+        """
+        Tests renaming book directories
+        :return: None
+        """
+        faust = Book(self.get("Faust"))
+        book_path = os.path.join(faust.directory_path, "Faust.epub")
+        self.assertTrue(os.path.isfile(book_path))
+        os.rename(book_path, os.path.join(faust.directory_path, "x.epub"))
+        self.assertFalse(os.path.isfile(book_path))
+        faust.rename(noconfirm=True)
+        self.assertTrue(os.path.isfile(book_path))

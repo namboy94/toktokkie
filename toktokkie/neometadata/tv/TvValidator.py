@@ -101,10 +101,11 @@ class TvValidator(Validator, TvExtras, ABC):
         base["required"].append("seasons")
         return base
 
-    def _validate(self):
+    def validate(self):
         """
         Performs additional validation
         """
+        super().validate()
         foldercount = len(listdir(self.directory_path, no_files=True))
 
         if len(self.seasons) < foldercount:

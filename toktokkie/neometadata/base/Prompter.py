@@ -25,6 +25,7 @@ from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
 from toktokkie.neometadata.utils.ids import int_id_types, objectify_ids
 from toktokkie.neometadata.utils.IdFetcher import IdFetcher
+from toktokkie.exceptions import InvalidDirectoryState
 
 
 class Prompter(MetadataBase, ABC):
@@ -59,7 +60,11 @@ class Prompter(MetadataBase, ABC):
         """
         name = os.path.basename(os.path.abspath(directory_path))
         id_fetcher = cls._create_id_fetcher(directory_path)
-        print(f"Generating metadata for {name}:")
+        print(f"Generating metadata for {name} "
+              f"(type: {cls.media_type().value}):")
+
+        cls.pre_prompt_check(directory_path)
+
         data = {
             "type": cls.media_type().value,
             "tags": prompt_comma_list("Tags"),
@@ -197,3 +202,12 @@ class Prompter(MetadataBase, ABC):
                 ids.pop(key)
 
         return ids
+
+    @classmethod
+    def pre_prompt_check(cls, directory_path: str):
+        """
+        Performs checks before prompting
+        :return: None
+        """
+        if not os.path.isdir(directory_path):
+            raise InvalidDirectoryState(f"{directory_path} does not exist")

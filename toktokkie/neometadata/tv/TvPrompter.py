@@ -22,6 +22,7 @@ from typing import Dict, Any, Tuple, List
 from puffotter.os import listdir
 from toktokkie.neometadata.base.Prompter import Prompter
 from toktokkie.neometadata.tv.TvExtras import TvExtras
+from toktokkie.exceptions import InvalidDirectoryState
 
 
 class TvPrompter(Prompter, TvExtras, ABC):
@@ -74,3 +75,14 @@ class TvPrompter(Prompter, TvExtras, ABC):
             "seasons": seasons
         })
         return base
+
+    @classmethod
+    def pre_prompt_check(cls, directory_path: str):
+        """
+        Makes sure that the tv directory has at least one season
+        :param directory_path: The path to the directory to check
+        :return: None
+        """
+        super().pre_prompt_check(directory_path)
+        if len(listdir(directory_path, no_files=True)) == 0:
+            raise InvalidDirectoryState("No season directory")

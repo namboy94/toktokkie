@@ -24,3 +24,9 @@ class TestValidatingBookMetadata(_TestFramework):
     """
     Class that tests the BookVaildator class
     """
+
+    def test_validating_missing_book_file(self):
+        """
+        Tests if a missing book file is handled correctly
+        :return: None
+        """

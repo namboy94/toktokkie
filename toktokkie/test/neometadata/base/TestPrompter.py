@@ -20,6 +20,7 @@ LICENSE"""
 import os
 from typing import List
 from unittest.mock import patch
+from toktokkie.exceptions import InvalidDirectoryState
 from toktokkie.neometadata.tv.Tv import Tv
 from toktokkie.neometadata.enums import IdType
 from toktokkie.test.TestFramework import _TestFramework
@@ -42,7 +43,7 @@ class TestPrompter(_TestFramework):
             "", "", "", "", ""  # Season IDs
         ]):
             test_dir = self.get("Tester")
-            os.makedirs(test_dir)
+            os.makedirs(os.path.join(test_dir, "Season 1"))
             meta = Tv.prompt(test_dir)
             self.assertEqual(meta["ids"]["tvdb"], ["100"])
 
@@ -64,7 +65,21 @@ class TestPrompter(_TestFramework):
             "", "", "", "", ""  # Season IDs
         ]):
             test_dir = self.get("Tester")
-            os.makedirs(test_dir)
+            os.makedirs(os.path.join(test_dir, "Season 1"))
             meta = Dummy.prompt(test_dir)
             self.assertEqual(meta["ids"]["tvdb"], ["1"])
             self.assertEqual(meta["ids"]["imdb"], ["100"])
+
+    def test_pre_prompt_checks(self):
+        """
+        Tests pre-prompt checking
+        :return: None
+        """
+        new_series = self.get("New Series")
+        self.assertFalse(os.path.exists(new_series))
+
+        try:
+            Tv.prompt(new_series)
+            self.fail()
+        except InvalidDirectoryState:
+            pass

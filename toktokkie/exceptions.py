@@ -69,3 +69,10 @@ class InvalidConfig(Exception):
     """
     Exception that is raised when the config file is invalid
     """
+
+
+class InvalidDirectoryState(Exception):
+    """
+    Exception that is raised if a directory is in a state that does not
+    comply with requirements of a Metadata class
+    """

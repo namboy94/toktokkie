@@ -18,11 +18,23 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from typing import List
+from puffotter.os import listdir, get_ext
 from toktokkie.neometadata.base.Renamer import Renamer
 from toktokkie.neometadata.book.BookExtras import BookExtras
+from toktokkie.neometadata.utils.RenameOperation import RenameOperation
 
 
 class BookRenamer(Renamer, BookExtras, ABC):
     """
     Implements the Renamer functionality for book metadata
     """
+
+    def create_rename_operations(self) -> List[RenameOperation]:
+        """
+        Creates renaming operations for book metadata
+        :return: The renaming operations
+        """
+        book_files = listdir(self.directory_path, no_dirs=True)
+        book_file, path = book_files[0]
+        return [RenameOperation(path, f"{self.name}.{get_ext(book_file)}")]

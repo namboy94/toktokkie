@@ -41,13 +41,6 @@ class Validator(MetadataBase, ABC):
             raise InvalidMetadata(
                 "Invalid Metadata: {} ({})".format(e, e.message)
             )
-        self._validate()
-
-    def _validate(self):
-        """
-        Performs additional validation
-        """
-        pass  # pragma: no cover
 
     @classmethod
     def build_schema(cls) -> Dict[str, Any]:

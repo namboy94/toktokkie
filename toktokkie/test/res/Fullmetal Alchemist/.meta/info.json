@@ -1,0 +1,46 @@
+{
+    "ids": {
+        "anilist": [
+            "121"
+        ],
+        "imdb": [
+            "tt0421357"
+        ],
+        "myanimelist": [
+            "121"
+        ],
+        "tvdb": [
+            "75579"
+        ]
+    },
+    "seasons": [
+        {
+            "ids": {},
+            "name": "Season 1"
+        },
+        {
+            "ids": {
+                "anilist": [
+                    "664"
+                ],
+                "myanimelist": [
+                    "664"
+                ]
+            },
+            "name": "Fullmetal Alchemist - Reflections"
+        },
+        {
+            "ids": {
+                "anilist": [
+                    "430"
+                ],
+                "myanimelist": [
+                    "430"
+                ]
+            },
+            "name": "Fullmetal Alchemist The Movie - Conqueror of Shamballa"
+        }
+    ],
+    "tags": [],
+    "type": "tv"
+}
