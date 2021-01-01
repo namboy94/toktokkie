@@ -17,34 +17,23 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
+from toktokkie.exceptions import InvalidMetadata
+from toktokkie.neometadata.tv.components.TvEpisodeRange import TvEpisodeRange
+from toktokkie.test.TestFramework import _TestFramework
 
 
-class IdType(Enum):
+class TestTvEpisodeRange(_TestFramework):
     """
-    Enumeration of all possible ID types
+    Class that tests the TvEpisodeRange component
     """
-    TVDB = "tvdb"
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    ISBN = "isbn"
-    VNDB = "vndb"
-    MANGADEX = "mangadex"
-    MUSICBRAINZ_ARTIST = "musicbrainz_artist"
-    MUSICBRAINZ_RECORDING = "musicbrainz_recording"
-    MUSICBRAINZ_RELEASE = "musicbrainz_release"
 
-
-class MediaType(Enum):
-    """
-    Enumeration that defines all possible media types
-    """
-    BOOK = "book"
-    BOOK_SERIES = "book_series"
-    MOVIE = "movie"
-    TV_SERIES = "tv"
-    VISUAL_NOVEL = "visual_novel"
-    COMIC = "comic"
-    MUSIC_ARTIST = "music"
+    def test_missing_attributes(self):
+        """
+        Tests if missing attributes are handled correctly
+        :return: None
+        """
+        try:
+            TvEpisodeRange({})
+            self.fail()
+        except InvalidMetadata:
+            pass

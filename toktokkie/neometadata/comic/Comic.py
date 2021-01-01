@@ -17,34 +17,13 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
+from toktokkie.neometadata.base.Metadata import Metadata
+from toktokkie.neometadata.comic.ComicPrompter import ComicPrompter
+from toktokkie.neometadata.comic.ComicRenamer import ComicRenamer
+from toktokkie.neometadata.comic.ComicValidator import ComicValidator
 
 
-class IdType(Enum):
+class Comic(Metadata, ComicRenamer, ComicPrompter, ComicValidator):
     """
-    Enumeration of all possible ID types
+    Metadata class that handles comics
     """
-    TVDB = "tvdb"
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    ISBN = "isbn"
-    VNDB = "vndb"
-    MANGADEX = "mangadex"
-    MUSICBRAINZ_ARTIST = "musicbrainz_artist"
-    MUSICBRAINZ_RECORDING = "musicbrainz_recording"
-    MUSICBRAINZ_RELEASE = "musicbrainz_release"
-
-
-class MediaType(Enum):
-    """
-    Enumeration that defines all possible media types
-    """
-    BOOK = "book"
-    BOOK_SERIES = "book_series"
-    MOVIE = "movie"
-    TV_SERIES = "tv"
-    VISUAL_NOVEL = "visual_novel"
-    COMIC = "comic"
-    MUSIC_ARTIST = "music"

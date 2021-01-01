@@ -18,9 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, List, Any
-from toktokkie.metadata.types.components.Component import Component
-from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.ids.functions import stringify_ids, objectify_ids,\
+from toktokkie.neometadata.enums import IdType
+from toktokkie.neometadata.base.components.Component import Component
+from toktokkie.neometadata.utils.ids import stringify_ids, objectify_ids,\
     minimize_ids, fill_ids
 
 

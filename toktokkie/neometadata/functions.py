@@ -22,6 +22,11 @@ import json
 from typing import Union, Type
 from toktokkie.neometadata.base.Metadata import Metadata
 from toktokkie.neometadata.tv.Tv import Tv
+from toktokkie.neometadata.book.Book import Book
+from toktokkie.neometadata.book_series.BookSeries import BookSeries
+from toktokkie.neometadata.comic.Comic import Comic
+from toktokkie.neometadata.music.Music import Music
+from toktokkie.neometadata.movie.Movie import Movie
 from toktokkie.neometadata.enums import MediaType
 from toktokkie.exceptions import InvalidMetadata
 

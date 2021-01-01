@@ -18,11 +18,10 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, Any
-from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
-from toktokkie.metadata.types.components.Component import Component
-from toktokkie.metadata.ids.mappings import theme_song_ids
-from toktokkie.metadata.ids.functions import objectify_ids, stringify_ids, \
-    fill_ids, minimize_ids
+from toktokkie.neometadata.base.components.Component import Component
+from toktokkie.neometadata.music.components.MusicAlbum import MusicAlbum
+from toktokkie.neometadata.utils.ids import theme_song_ids, objectify_ids, \
+    stringify_ids, fill_ids, minimize_ids
 
 
 class MusicThemeSong(Component):

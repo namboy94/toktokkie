@@ -17,34 +17,15 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
+from toktokkie.neometadata.base.Metadata import Metadata
+from toktokkie.neometadata.book_series.BookSeriesPrompter import BookSeriesPrompter
+from toktokkie.neometadata.book_series.BookSeriesRenamer import BookSeriesRenamer
+from toktokkie.neometadata.book_series.BookSeriesValidator import BookSeriesValidator
 
 
-class IdType(Enum):
+class BookSeries(
+    Metadata, BookSeriesRenamer, BookSeriesPrompter, BookSeriesValidator
+):
     """
-    Enumeration of all possible ID types
+    Metadata class that handles book series
     """
-    TVDB = "tvdb"
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    ISBN = "isbn"
-    VNDB = "vndb"
-    MANGADEX = "mangadex"
-    MUSICBRAINZ_ARTIST = "musicbrainz_artist"
-    MUSICBRAINZ_RECORDING = "musicbrainz_recording"
-    MUSICBRAINZ_RELEASE = "musicbrainz_release"
-
-
-class MediaType(Enum):
-    """
-    Enumeration that defines all possible media types
-    """
-    BOOK = "book"
-    BOOK_SERIES = "book_series"
-    MOVIE = "movie"
-    TV_SERIES = "tv"
-    VISUAL_NOVEL = "visual_novel"
-    COMIC = "comic"
-    MUSIC_ARTIST = "music"

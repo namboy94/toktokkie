@@ -17,34 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
+from toktokkie.test.TestFramework import _TestFramework
 
 
-class IdType(Enum):
+class TestComicExtras(_TestFramework):
     """
-    Enumeration of all possible ID types
+    Class that tests the ComicExtras class
     """
-    TVDB = "tvdb"
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    ISBN = "isbn"
-    VNDB = "vndb"
-    MANGADEX = "mangadex"
-    MUSICBRAINZ_ARTIST = "musicbrainz_artist"
-    MUSICBRAINZ_RECORDING = "musicbrainz_recording"
-    MUSICBRAINZ_RELEASE = "musicbrainz_release"
-
-
-class MediaType(Enum):
-    """
-    Enumeration that defines all possible media types
-    """
-    BOOK = "book"
-    BOOK_SERIES = "book_series"
-    MOVIE = "movie"
-    TV_SERIES = "tv"
-    VISUAL_NOVEL = "visual_novel"
-    COMIC = "comic"
-    MUSIC_ARTIST = "music"

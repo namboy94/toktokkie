@@ -100,7 +100,7 @@ def minimize_ids(
 literature_media_types = [
     MediaType.BOOK,
     MediaType.BOOK_SERIES,
-    MediaType.MANGA
+    MediaType.COMIC
 ]
 """
 Media types that represent literature

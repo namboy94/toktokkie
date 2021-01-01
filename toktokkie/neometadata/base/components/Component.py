@@ -37,4 +37,4 @@ class Component:
         Converts the component into a JSON-compatible dictionary
         :return: The JSON-compatible dictionary
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover

@@ -114,7 +114,7 @@ class TestRenamer(_TestFramework):
         )
 
         renamer.ids = {IdType.ANILIST: ["86635"]}
-        renamer.media_type = lambda: MediaType.MANGA
+        renamer.media_type = lambda: MediaType.COMIC
 
         self.assertEqual(
             renamer.load_anilist_title_and_year(),

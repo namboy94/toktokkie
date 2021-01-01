@@ -25,9 +25,9 @@ from mutagen.easyid3 import EasyID3
 # noinspection PyProtectedMember
 from mutagen.id3._util import ID3NoHeaderError
 from puffotter.os import listdir, get_ext
-from toktokkie.metadata.types.components.Component import Component
-from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.ids.functions import objectify_ids, stringify_ids, \
+from toktokkie.neometadata.base.components.Component import Component
+from toktokkie.neometadata.enums import IdType
+from toktokkie.neometadata.utils.ids import objectify_ids, stringify_ids, \
     fill_ids, minimize_ids
 
 

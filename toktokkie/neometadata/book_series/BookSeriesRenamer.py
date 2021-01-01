@@ -17,34 +17,12 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from enum import Enum
+from abc import ABC
+from toktokkie.neometadata.base.Renamer import Renamer
+from toktokkie.neometadata.book_series.BookSeriesExtras import BookSeriesExtras
 
 
-class IdType(Enum):
+class BookSeriesRenamer(Renamer, BookSeriesExtras, ABC):
     """
-    Enumeration of all possible ID types
+    Implements the Renamer functionality for book series metadata
     """
-    TVDB = "tvdb"
-    IMDB = "imdb"
-    MYANIMELIST = "myanimelist"
-    ANILIST = "anilist"
-    KITSU = "kitsu"
-    ISBN = "isbn"
-    VNDB = "vndb"
-    MANGADEX = "mangadex"
-    MUSICBRAINZ_ARTIST = "musicbrainz_artist"
-    MUSICBRAINZ_RECORDING = "musicbrainz_recording"
-    MUSICBRAINZ_RELEASE = "musicbrainz_release"
-
-
-class MediaType(Enum):
-    """
-    Enumeration that defines all possible media types
-    """
-    BOOK = "book"
-    BOOK_SERIES = "book_series"
-    MOVIE = "movie"
-    TV_SERIES = "tv"
-    VISUAL_NOVEL = "visual_novel"
-    COMIC = "comic"
-    MUSIC_ARTIST = "music"
