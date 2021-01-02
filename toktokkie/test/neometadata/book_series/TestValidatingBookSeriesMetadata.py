@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from jsonschema import validate, ValidationError
+from toktokkie.neometadata.book_series.BookSeries import BookSeries
 from toktokkie.test.TestFramework import _TestFramework
 
 
@@ -24,3 +26,38 @@ class TestValidatingBookSeriesMetadata(_TestFramework):
     """
     Class that tests the BookSeriesVaildator class
     """
+
+    def test_validation(self):
+        """
+        Tests if the validation of metadata works correctly
+        :return: None
+        """
+        valid_data = [
+            {"type": "book_series", "ids": {"isbn": ["100"]}, "volumes": {}},
+            {"type": "book_series", "ids": {"isbn": ["100"]}, "volumes": {
+                "1": {"ids": {"isbn": ["1000"]}}
+            }}
+        ]
+        invalid_data = [
+            {},
+            {"type": "book_series", "ids": {"isbn": 100}, "volumes": {}},
+            {"type": "book_series", "volumes": {}},
+            {"type": "book_series", "ids": {}},
+            {"type": "movie", "ids": {"isbn": ["100"]}, "volumes": {}},
+            {"type": "book_series", "ids": {"isbn": "100"}, "volumes": {}},
+            {"type": "book_series", "ids": {"isbn": ["100"]}, "volumes": {
+                "1": {"ids": {"isbn": 1000}}
+            }},
+            {"type": "book_series", "ids": {"isbn": ["100"]}, "volumes": {
+                "ids": {"isbn": ["1000"]}
+            }},
+        ]
+        schema = BookSeries.build_schema()
+        for entry in valid_data:
+            validate(entry, schema)
+        for entry in invalid_data:
+            try:
+                validate(entry, schema)
+                self.fail()
+            except ValidationError:
+                pass

@@ -32,7 +32,7 @@ class BookPrompter(Prompter, BookExtras, ABC):
     @classmethod
     def pre_prompt_check(cls, directory_path: str):
         """
-        Makes sure that the tv directory has at least one season
+        Makes sure that the book directory has exactly one book file
         :param directory_path: The path to the directory to check
         :return: None
         """

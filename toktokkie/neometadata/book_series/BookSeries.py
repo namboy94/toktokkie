@@ -17,10 +17,15 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import List
 from toktokkie.neometadata.base.Metadata import Metadata
-from toktokkie.neometadata.book_series.BookSeriesPrompter import BookSeriesPrompter
-from toktokkie.neometadata.book_series.BookSeriesRenamer import BookSeriesRenamer
-from toktokkie.neometadata.book_series.BookSeriesValidator import BookSeriesValidator
+from toktokkie.neometadata.enums import IdType, MediaType
+from toktokkie.neometadata.book_series.BookSeriesPrompter import \
+    BookSeriesPrompter
+from toktokkie.neometadata.book_series.BookSeriesRenamer import \
+    BookSeriesRenamer
+from toktokkie.neometadata.book_series.BookSeriesValidator import \
+    BookSeriesValidator
 
 
 class BookSeries(
@@ -29,3 +34,22 @@ class BookSeries(
     """
     Metadata class that handles book series
     """
+
+    @classmethod
+    def media_type(cls) -> MediaType:
+        """
+        :return: The Nook media type
+        """
+        return MediaType.BOOK_SERIES
+
+    @classmethod
+    def valid_id_types(cls) -> List[IdType]:
+        """
+        :return: A list of valid ID types
+        """
+        return [
+            IdType.ISBN,
+            IdType.MYANIMELIST,
+            IdType.ANILIST,
+            IdType.KITSU
+        ]

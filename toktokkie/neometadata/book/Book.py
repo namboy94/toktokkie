@@ -33,7 +33,7 @@ class Book(Metadata, BookRenamer, BookPrompter, BookValidator):
     @classmethod
     def media_type(cls) -> MediaType:
         """
-        :return: The Nook media type
+        :return: The Book media type
         """
         return MediaType.BOOK
 
@@ -43,5 +43,8 @@ class Book(Metadata, BookRenamer, BookPrompter, BookValidator):
         :return: A list of valid ID types
         """
         return [
-            IdType.ISBN
+            IdType.ISBN,
+            IdType.MYANIMELIST,
+            IdType.ANILIST,
+            IdType.KITSU
         ]

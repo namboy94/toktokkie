@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 from abc import ABC
 from typing import Dict, Any
 from jsonschema import validate, ValidationError

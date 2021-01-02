@@ -117,7 +117,8 @@ class TestPromptingTvMetadata(_TestFramework):
         os.makedirs(new_series)
 
         try:
-            Tv.prompt(new_series)
+            with mock.patch("builtins.input", lambda x: print(x)):
+                Tv.prompt(new_series)
             self.fail()
         except InvalidDirectoryState:
             pass

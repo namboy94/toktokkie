@@ -20,6 +20,7 @@ LICENSE"""
 import os
 from puffotter.os import touch
 from unittest.mock import patch
+from toktokkie.Directory import Directory
 from toktokkie.exceptions import InvalidDirectoryState
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.book.Book import Book
@@ -62,7 +63,8 @@ class TestPromptingBookMetadata(_TestFramework):
         os.makedirs(path)
 
         try:
-            Book.from_prompt(path)
+            with patch("builtins.input", lambda x: print(x)):
+                Book.from_prompt(path)
             self.fail()
         except InvalidDirectoryState as e:
             self.assertEqual(str(e), "No book file")
@@ -76,10 +78,40 @@ class TestPromptingBookMetadata(_TestFramework):
         os.makedirs(path)
         touch(os.path.join(path, "Part 1.epub"))
         touch(os.path.join(path, "Part 2.epub"))
-        print(os.listdir(path))
 
         try:
-            Book.from_prompt(path)
+            with patch("builtins.input", lambda x: print(x)):
+                Book.from_prompt(path)
             self.fail()
         except InvalidDirectoryState as e:
             self.assertEqual(str(e), "More than one book file")
+
+    def test_prompt(self):
+        """
+        Tests generating a new metadata object using user prompts
+        :return: None
+        """
+        faust_two = self.get("Faust 2")
+        os.makedirs(faust_two)
+        touch(os.path.join(faust_two, "Faust2.epub"))
+        with patch("builtins.input", side_effect=[
+            "school, faust, goethe", "1502597918", "", "", ""
+        ]):
+            metadata = Book.from_prompt(faust_two)
+            metadata.write()
+
+        directory = Directory(faust_two)
+
+        self.assertTrue(os.path.isdir(directory.meta_dir))
+        self.assertTrue(os.path.isfile(metadata.metadata_file))
+        self.assertEqual(metadata, directory.metadata)
+        self.assertEqual(metadata.ids[IdType.ISBN], ["1502597918"])
+        self.assertEqual(metadata.ids[IdType.ANILIST], [])
+        self.assertEqual(metadata.ids[IdType.MYANIMELIST], [])
+        self.assertEqual(metadata.ids[IdType.KITSU], [])
+
+        for invalid in [IdType.VNDB, IdType.MANGADEX, IdType.TVDB]:
+            self.assertFalse(invalid in metadata.ids)
+
+        for tag in ["school", "faust", "goethe"]:
+            self.assertTrue(tag in metadata.tags)

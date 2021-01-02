@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 from typing import Dict, List, Any
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.components.Component import Component
@@ -32,27 +33,32 @@ class BookVolume(Component):
     def __init__(
             self,
             volume_number: int,
-            volume_name: str,
-            volume_path: str,
+            path: str,
             parent_ids: Dict[IdType, List[str]],
             json_data: Dict[str, Dict[str, List[str]]]
     ):
         """
         Initializes the Book Volume
         :param volume_number: The volume number
-        :param volume_name: The volume name
-        :param volume_path: The path to the volume file
+        :param path: The path to the volume file
         :param parent_ids: The IDs of the parent BookSeries object
         :param json_data: The JSON data for the book volume containing the
                           IDs for this specific volume
         """
         self.number = volume_number
-        self.name = volume_name
-        self.path = volume_path
+        self.path = path
 
         ids = objectify_ids(json_data.get("ids", {}))
         self.ids = fill_ids(ids, [], parent_ids)
         self.parent_ids = parent_ids
+
+    @property
+    def name(self) -> str:
+        """
+        The name of the volume
+        :return: None
+        """
+        return os.path.basename(self.path).rsplit(".", 1)[0]
 
     @property
     def json(self) -> Dict[str, Any]:

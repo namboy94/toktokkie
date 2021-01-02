@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from typing import Dict, Any
 from toktokkie.neometadata.base.Validator import Validator
 from toktokkie.neometadata.book_series.BookSeriesExtras import BookSeriesExtras
 
@@ -26,3 +27,27 @@ class BookSeriesValidator(Validator, BookSeriesExtras, ABC):
     """
     Implements the Validator functionality for book series metadata
     """
+
+    @classmethod
+    def build_schema(cls) -> Dict[str, Any]:
+        """
+        Generates the JSON schema
+        :return: The JSON schema
+        """
+        base = super().build_schema()
+        ids = cls._create_ids_schema()
+        base["properties"].update({
+            "volumes": {
+                "type": "object",
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "type": "object",
+                        "properties": {
+                            "ids": ids
+                        }
+                    }
+                },
+                "additionalProperties": False
+            }
+        })
+        return base

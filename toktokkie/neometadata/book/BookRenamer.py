@@ -20,6 +20,7 @@ LICENSE"""
 from abc import ABC
 from typing import List
 from puffotter.os import listdir, get_ext
+from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.Renamer import Renamer
 from toktokkie.neometadata.book.BookExtras import BookExtras
 from toktokkie.neometadata.utils.RenameOperation import RenameOperation
@@ -38,3 +39,13 @@ class BookRenamer(Renamer, BookExtras, ABC):
         book_files = listdir(self.directory_path, no_dirs=True)
         book_file, path = book_files[0]
         return [RenameOperation(path, f"{self.name}.{get_ext(book_file)}")]
+
+    def resolve_title_name(self) -> str:
+        """
+        If possible, will fetch the appropriate name for the
+        metadata based on IDs, falling back to the
+        directory name if this is not possible or supported.
+        """
+        return self.load_title_and_year([
+            IdType.ANILIST
+        ])[0]

@@ -16,24 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
-
-from abc import ABC
-from puffotter.os import listdir
-from toktokkie.exceptions import InvalidMetadata
-from toktokkie.neometadata.base.Validator import Validator
-from toktokkie.neometadata.book.BookExtras import BookExtras
-
-
-class BookValidator(Validator, BookExtras, ABC):
-    """
-    Implements the Validator functionality for book metadata
-    """
-
-    def validate(self):
-        """
-        Ensures that book files exist
-        :return: None
-        """
-        super().validate()
-        if len(listdir(self.directory_path, no_dirs=True)) != 1:
-            raise InvalidMetadata("Incorrect amount of book files")

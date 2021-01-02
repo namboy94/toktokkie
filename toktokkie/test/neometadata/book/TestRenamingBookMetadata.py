@@ -18,6 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from toktokkie.neometadata.enums import IdType
+from toktokkie.Directory import Directory
 from toktokkie.neometadata.book.Book import Book
 from toktokkie.test.TestFramework import _TestFramework
 
@@ -39,3 +41,31 @@ class TestRenamingBookMetadata(_TestFramework):
         self.assertFalse(os.path.isfile(book_path))
         faust.rename(noconfirm=True)
         self.assertTrue(os.path.isfile(book_path))
+
+    def test_renaming(self):
+        """
+        Tests renaming files associated with the metadata type
+        :return: None
+        """
+        faust = self.get("Faust")
+        correct = os.path.join(faust, "Faust.epub")
+        incorrect = os.path.join(faust, "Fausti.epub")
+        os.rename(correct, incorrect)
+
+        self.assertFalse(os.path.isfile(correct))
+        self.assertTrue(os.path.isfile(incorrect))
+
+        faust_dir = Directory(faust)
+        faust_dir.rename(noconfirm=True)
+
+        self.assertTrue(os.path.isfile(correct))
+        self.assertFalse(os.path.isfile(incorrect))
+
+        faust_dir.metadata.set_ids(IdType.ANILIST, [39115])
+        faust_dir.rename(noconfirm=True)
+
+        self.assertEqual(faust_dir.metadata.name, "Spice & Wolf")
+        self.assertFalse(os.path.isfile(correct))
+        self.assertTrue(os.path.isfile(
+            self.get("Spice & Wolf/Spice & Wolf.epub")
+        ))
