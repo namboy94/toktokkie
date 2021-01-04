@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import List
+from toktokkie.neometadata.enums import IdType, MediaType
 from toktokkie.neometadata.base.Metadata import Metadata
 from toktokkie.neometadata.music.MusicPrompter import MusicPrompter
 from toktokkie.neometadata.music.MusicRenamer import MusicRenamer
@@ -27,3 +29,19 @@ class Music(Metadata, MusicRenamer, MusicPrompter, MusicValidator):
     """
     Metadata class that handles music/artists
     """
+
+    @classmethod
+    def media_type(cls) -> MediaType:
+        """
+        :return: The MusicArtist media type
+        """
+        return MediaType.MUSIC_ARTIST
+
+    @classmethod
+    def valid_id_types(cls) -> List[IdType]:
+        """
+        :return: A list of valid ID types
+        """
+        return [
+            IdType.MUSICBRAINZ_ARTIST
+        ]

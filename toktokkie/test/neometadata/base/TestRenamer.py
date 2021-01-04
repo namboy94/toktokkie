@@ -92,32 +92,18 @@ class TestRenamer(_TestFramework):
         Tests loading the title using anilist
         :return: None
         """
-
-        # noinspection PyAbstractClass
-        class Dummy(Renamer):
-            ids = {IdType.ANILIST: ["0"]}
-            name = "Unknown"
-
-        renamer = Dummy()
-        renamer.media_type = lambda: MediaType.TV_SERIES
-
         self.assertEqual(
-            renamer.load_anilist_title_and_year(),
-            ("Unknown", None)
+            Renamer.load_anilist_title_and_year(["0"], MediaType.TV_SERIES),
+            None
         )
 
-        renamer.ids = {IdType.ANILIST: ["1"]}
-
         self.assertEqual(
-            renamer.load_anilist_title_and_year(),
+            Renamer.load_anilist_title_and_year(["1"], MediaType.TV_SERIES),
             ("Cowboy Bebop", 1998)
         )
 
-        renamer.ids = {IdType.ANILIST: ["86635"]}
-        renamer.media_type = lambda: MediaType.COMIC
-
         self.assertEqual(
-            renamer.load_anilist_title_and_year(),
+            Renamer.load_anilist_title_and_year(["86635"], MediaType.COMIC),
             ("Kaguya-sama; Love is War", 2015)
         )
 
@@ -126,23 +112,12 @@ class TestRenamer(_TestFramework):
         Tests loading the title using myanimelist
         :return: None
         """
-        # noinspection PyAbstractClass
-        class Dummy(Renamer):
-            ids = {IdType.IMDB: ["0"]}
-            name = "Unknown"
-
-        renamer = Dummy()
-        renamer.media_type = lambda: MediaType.TV_SERIES
-
         self.assertEqual(
-            renamer.load_imdb_title_and_year(),
-            ("Unknown", None)
+            Renamer.load_imdb_title_and_year(["0"]),
+            None
         )
-
-        renamer.ids = {IdType.IMDB: ["tt0944947"]}
-
         self.assertEqual(
-            renamer.load_imdb_title_and_year(),
+            Renamer.load_imdb_title_and_year(["tt0944947"]),
             ("Game of Thrones", 2011)
         )
 

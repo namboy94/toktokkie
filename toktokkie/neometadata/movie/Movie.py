@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import List
+from toktokkie.neometadata.enums import IdType, MediaType
 from toktokkie.neometadata.base.Metadata import Metadata
 from toktokkie.neometadata.movie.MoviePrompter import MoviePrompter
 from toktokkie.neometadata.movie.MovieRenamer import MovieRenamer
@@ -27,3 +29,22 @@ class Movie(Metadata, MovieRenamer, MoviePrompter, MovieValidator):
     """
     Metadata class that handles movies
     """
+
+    @classmethod
+    def media_type(cls) -> MediaType:
+        """
+        :return: The Movie media type
+        """
+        return MediaType.MOVIE
+
+    @classmethod
+    def valid_id_types(cls) -> List[IdType]:
+        """
+        :return: A list of valid ID types
+        """
+        return [
+            IdType.IMDB,
+            IdType.MYANIMELIST,
+            IdType.ANILIST,
+            IdType.KITSU
+        ]

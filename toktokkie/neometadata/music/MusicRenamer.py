@@ -18,11 +18,74 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from typing import List
+from toktokkie.neometadata.enums import IdType
+from toktokkie.neometadata.utils.RenameOperation import RenameOperation
 from toktokkie.neometadata.base.Renamer import Renamer
 from toktokkie.neometadata.music.MusicExtras import MusicExtras
+from toktokkie.neometadata.music.components.MusicThemeSong import \
+    MusicThemeSong
 
 
 class MusicRenamer(Renamer, MusicExtras, ABC):
     """
     Implements the Renamer functionality for music metadata
     """
+    
+    def create_rename_operations(self) -> List[RenameOperation]:
+        """
+        Creates renaming operations for movie metadata
+        :return: The renaming operations
+        """
+        operations = []  # type: List[RenameOperation]
+
+        theme_songs = {x.name: x for x in self.theme_songs}
+
+        for album in self.albums:
+
+            if album.name in theme_songs:
+                theme_song = theme_songs[album.name]  # type: MusicThemeSong
+                series_name = self.load_title_and_year(
+                    [IdType.ANILIST], theme_song.series_ids
+                )[0]
+
+                for song in album.songs:
+                    if song.title.startswith(theme_song.name):
+                        continue  # Skip renaming full version
+                    else:
+                        new_name = "{} {} - {}.{}".format(
+                            series_name,
+                            theme_song.theme_type,
+                            theme_song.name,
+                            song.format
+                        )
+                        operations.append(RenameOperation(song.path, new_name))
+
+                for video in album.videos:
+                    new_name = "{} {} - {}-video.{}".format(
+                        series_name,
+                        theme_song.theme_type,
+                        theme_song.name,
+                        video.format
+                    )
+                    operations.append(RenameOperation(video.path, new_name))
+                    break
+
+            else:
+                tracks = []
+                for i, song in enumerate(album.songs):
+                    if song.tracknumber is None:
+                        track_number = str(i + 1).zfill(2)
+                    else:
+                        track_number = str(song.tracknumber[0]).zfill(2)
+                    tracks.append((track_number, song))
+
+                tracks.sort(key=lambda x: x[0])  # Sort for better UX
+
+                for track_number, song in tracks:
+                    new_name = "{} - {}.{}".format(
+                        track_number, song.title, song.format
+                    )
+                    operations.append(RenameOperation(song.path, new_name))
+
+        return operations

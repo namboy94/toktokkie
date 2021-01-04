@@ -18,6 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from puffotter.os import listdir
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.base.Validator import Validator
 from toktokkie.neometadata.movie.MovieExtras import MovieExtras
 
@@ -26,3 +28,12 @@ class MovieValidator(Validator, MovieExtras, ABC):
     """
     Implements the Validator functionality for movie metadata
     """
+
+    def validate(self):
+        """
+        Ensures that the movie file exist
+        :return: None
+        """
+        super().validate()
+        if len(listdir(self.directory_path, no_dirs=True)) != 1:
+            raise InvalidMetadata("Incorrect amount of movie files")

@@ -1,0 +1,52 @@
+{
+    "albums": [
+        {
+            "genre": "Anime",
+            "ids": {},
+            "name": "Brave Shine",
+            "year": 2018
+        },
+        {
+            "genre": "Anime",
+            "ids": {},
+            "name": "Fate",
+            "year": 2019
+        },
+        {
+            "genre": "JPOP",
+            "ids": {},
+            "name": "Normal",
+            "year": 2020
+        }
+    ],
+    "ids": {
+        "musicbrainz_artist": [
+            "100"
+        ]
+    },
+    "tags": [],
+    "theme_songs": [
+        {
+            "name": "Brave Shine",
+            "series_ids": {
+                "anilist": [
+                    "1000"
+                ],
+                "myanimelist": [
+                    "1000"
+                ]
+            },
+            "theme_type": "op"
+        },
+        {
+            "name": "Fate",
+            "series_ids": {
+                "anilist": [
+                    "2000"
+                ]
+            },
+            "theme_type": "ed"
+        }
+    ],
+    "type": "music"
+}

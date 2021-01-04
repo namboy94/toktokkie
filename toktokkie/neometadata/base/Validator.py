@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
 from abc import ABC
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 from jsonschema import validate, ValidationError
+from toktokkie.neometadata.enums import IdType
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
 
@@ -73,13 +73,19 @@ class Validator(MetadataBase, ABC):
         }
 
     @classmethod
-    def _create_ids_schema(cls) -> Dict[str, Any]:
+    def _create_ids_schema(
+            cls, valid_id_type_overrides: Optional[List[IdType]] = None
+    ) -> Dict[str, Any]:
         """
         Creates an "ids" object that allows any valid ID types
         :return: The "ids" object in JSON schema format
         """
+        id_types = cls.valid_id_types()
+        if valid_id_type_overrides is not None:
+            id_types = valid_id_type_overrides
+
         properties = {}  # type: Dict[str, Any]
-        for id_type in cls.valid_id_types():
+        for id_type in id_types:
             properties[id_type.value] = {
                 "type": "array",
                 "items": {"type": "string"}

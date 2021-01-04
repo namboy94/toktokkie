@@ -18,6 +18,8 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from puffotter.os import listdir
+from toktokkie.exceptions import InvalidDirectoryState
 from toktokkie.neometadata.base.Prompter import Prompter
 from toktokkie.neometadata.movie.MovieExtras import MovieExtras
 
@@ -26,3 +28,17 @@ class MoviePrompter(Prompter, MovieExtras, ABC):
     """
     Implements the Prompter functionality for movie metadata
     """
+
+    @classmethod
+    def pre_prompt_check(cls, directory_path: str):
+        """
+        Makes sure that the movie directory has exactly one movie file
+        :param directory_path: The path to the directory to check
+        :return: None
+        """
+        super().pre_prompt_check(directory_path)
+        filecount = len(listdir(directory_path, no_dirs=True))
+        if filecount == 0:
+            raise InvalidDirectoryState("No book file")
+        elif filecount > 1:
+            raise InvalidDirectoryState("More than one book file")

@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from typing import Dict, Any
 from toktokkie.neometadata.base.Validator import Validator
 from toktokkie.neometadata.comic.ComicExtras import ComicExtras
 
@@ -26,3 +27,20 @@ class ComicValidator(Validator, ComicExtras, ABC):
     """
     Implements the Validator functionality for comic metadata
     """
+
+    @classmethod
+    def build_schema(cls) -> Dict[str, Any]:
+        """
+        Generates the JSON schema
+        :return: The JSON schema
+        """
+        base = super().build_schema()
+        base["properties"].update({
+            "special_chapters": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        })
+        return base

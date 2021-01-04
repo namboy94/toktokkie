@@ -76,10 +76,10 @@ def get_metadata_class(media_type: Union[str, MediaType]) -> Type[Metadata]:
         for x in [
             Book,
             BookSeries,
-            # Comic,
-            # Movie,
+            Comic,
+            Movie,
             Tv,
-            # Music
+            Music
         ]
     }
     return mapping[media_type]

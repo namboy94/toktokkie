@@ -18,11 +18,72 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from typing import Dict, Any
+from toktokkie.exceptions import InvalidMetadata
+from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.Validator import Validator
 from toktokkie.neometadata.music.MusicExtras import MusicExtras
+from toktokkie.neometadata.utils.ids import theme_song_ids
 
 
 class MusicValidator(Validator, MusicExtras, ABC):
     """
     Implements the Validator functionality for music metadata
     """
+
+    @classmethod
+    def build_schema(cls) -> Dict[str, Any]:
+        """
+        Generates the JSON schema
+        :return: The JSON schema
+        """
+        base = super().build_schema()
+
+        valid_album_ids = cls.valid_id_types()
+        valid_album_ids.remove(IdType.MUSICBRAINZ_ARTIST)
+        valid_album_ids.append(IdType.MUSICBRAINZ_RELEASE)
+
+        album_ids = cls._create_ids_schema(valid_album_ids)
+        series_ids = cls._create_ids_schema(theme_song_ids)
+
+        base["properties"].update({
+            "albums": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "genre": {"type": "string"},
+                        "year": {"type": "number"},
+                        "ids": album_ids
+                    },
+                    "required": ["name", "genre", "year"],
+                    "additionalProperties": False
+                }
+            },
+            "theme_songs": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "series_ids": series_ids,
+                        "theme_type": {
+                            "type": "string",
+                            "pattern": "(op|ed|insert|special|other){1}"
+                        }
+                    },
+                    "required": ["name", "theme_type"],
+                    "additionalProperties": False
+                }
+            }
+        })
+        base["required"].append("albums")
+        return base
+
+    def validate(self):
+        super().validate()
+        # The important thing here is that self.theme_songs is called, as
+        # it checks that all theme songs have corresponding albums
+        if len(self.theme_songs) != len(self.json.get("theme_songs", [])):
+            raise InvalidMetadata("Invalid  amount of theme songs")

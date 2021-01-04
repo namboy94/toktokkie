@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from typing import List
+from toktokkie.neometadata.enums import IdType, MediaType
 from toktokkie.neometadata.base.Metadata import Metadata
 from toktokkie.neometadata.comic.ComicPrompter import ComicPrompter
 from toktokkie.neometadata.comic.ComicRenamer import ComicRenamer
@@ -27,3 +29,23 @@ class Comic(Metadata, ComicRenamer, ComicPrompter, ComicValidator):
     """
     Metadata class that handles comics
     """
+
+    @classmethod
+    def media_type(cls) -> MediaType:
+        """
+        :return: The Comic media type
+        """
+        return MediaType.COMIC
+
+    @classmethod
+    def valid_id_types(cls) -> List[IdType]:
+        """
+        :return: A list of valid ID types
+        """
+        return [
+            IdType.ISBN,
+            IdType.MYANIMELIST,
+            IdType.ANILIST,
+            IdType.KITSU,
+            IdType.MANGADEX
+        ]

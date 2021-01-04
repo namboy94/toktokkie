@@ -60,13 +60,17 @@ class IdFetcher:
         :param other_ids: Any other known IDs
         :return: The IDs or None if no ID could be determined
         """
-        if id_type == IdType.TVDB:
-            return self.__load_tvdb_ids()
-        elif id_type == IdType.ANILIST and IdType.MYANIMELIST in other_ids:
-            return self.__load_anilist_ids(other_ids[IdType.MYANIMELIST])
-        elif id_type == IdType.MUSICBRAINZ_ARTIST:
-            return self.__load_musicbrainz_artist_ids()
-        else:
+        try:
+            if id_type == IdType.TVDB:
+                return self.__load_tvdb_ids()
+            elif id_type == IdType.ANILIST and IdType.MYANIMELIST in other_ids:
+                return self.__load_anilist_ids(other_ids[IdType.MYANIMELIST])
+            elif id_type == IdType.MUSICBRAINZ_ARTIST:
+                return self.__load_musicbrainz_artist_ids()
+            else:
+                return None
+        except Exception as e:
+            self.logger.warning(str(e))
             return None
 
     def __load_tvdb_ids(self) -> List[str]:

@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 from abc import ABC
+from typing import List
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
 
 
@@ -25,3 +27,38 @@ class ComicExtras(MetadataBase, ABC):
     """
     Additional methods and attributes for comic metadata objects
     """
+    # TODO volume or chapter based
+
+    @property
+    def main_path(self) -> str:
+        """
+        The path to the main manga directory
+        :return: The path
+        """
+        return os.path.join(self.directory_path, "Main")
+
+    @property
+    def special_path(self) -> str:
+        """
+        The path to the special manga directory
+        :return: The path or None if it does not exist
+        """
+        return os.path.join(self.directory_path, "Special")
+
+    @property
+    def special_chapters(self) -> List[str]:
+        """
+        :return: A list of special chapter identifiers for this series
+        """
+        return self.json.get("special_chapters", [])
+
+    @special_chapters.setter
+    def special_chapters(self, special_chapters: List[str]):
+        """
+        Setter method for the special_chapters
+        :param special_chapters: The special chapter identifiers to set
+        :return: None
+        """
+        max_len = len(max(special_chapters, key=lambda x: len(x)))
+        special_chapters.sort(key=lambda x: x.zfill(max_len))
+        self.json["special_chapters"] = special_chapters

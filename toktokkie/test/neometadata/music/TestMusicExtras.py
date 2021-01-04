@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from toktokkie.neometadata.music.components.MusicAlbum import MusicAlbum
+from toktokkie.neometadata.music.components.MusicThemeSong import \
+    MusicThemeSong
+from toktokkie.neometadata.music.Music import Music
 from toktokkie.test.TestFramework import _TestFramework
 
 
@@ -24,3 +28,34 @@ class TestMusicExtras(_TestFramework):
     """
     Class that tests the MusicExtras class
     """
+
+    def test_fetching_albums(self):
+        """
+        Tests fetching albums for an artist
+        :return: None
+        """
+        amalee = Music(self.get("Amalee"))
+        albums = amalee.albums
+        self.assertEqual(len(albums), 10)
+        self.assertEqual(albums[0].name, "Nostalgia")
+
+    def test_theme_song_differentiation(self):
+        """
+        Tests if the theme_songs and non_theme_song_albums attributes work
+        correctly
+        :return: None
+        """
+        aimer = Music(self.get("Aimer"))
+        albums = aimer.albums
+        theme_songs = aimer.theme_songs
+        non_theme_songs = aimer.non_theme_song_albums
+
+        self.assertEqual(len(albums), len(theme_songs) + len(non_theme_songs))
+        self.assertEqual(theme_songs[0].name, "Brave Shine")
+        self.assertEqual(theme_songs[1].name, "Fate")
+        self.assertEqual(non_theme_songs[0].name, "Normal")
+
+    def test_adding_albums(self):
+        amalee = Music(self.get("Amalee"))
+        album = MusicAlbum(amalee.directory_path, amalee.ids, {})
+        amalee.add_album()
