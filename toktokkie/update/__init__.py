@@ -20,7 +20,7 @@ LICENSE"""
 import os
 from typing import List, Type, Dict, Any
 from puffotter.prompt import yn_prompt
-from toktokkie.metadata.Metadata import Metadata
+from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.update.Updater import Updater
 from toktokkie.update.XDCCUpdater import XDCCUpdater
 from toktokkie.update.MangadexUpdater import MangadexUpdater

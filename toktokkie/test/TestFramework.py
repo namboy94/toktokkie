@@ -23,7 +23,7 @@ import unittest
 from jsonschema import validate, ValidationError
 from typing import Tuple, List, Any, Dict, Type
 from puffotter.os import listdir
-from toktokkie.neometadata.base.Validator import Validator
+from toktokkie.metadata.base.Validator import Validator
 
 
 class _TestFramework(unittest.TestCase):

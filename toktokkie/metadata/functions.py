@@ -20,15 +20,15 @@ LICENSE"""
 import os
 import json
 from typing import Union, Type
-from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.types.Book import Book
-from toktokkie.metadata.types.BookSeries import BookSeries
-from toktokkie.metadata.types.Movie import Movie
-from toktokkie.metadata.types.TvSeries import TvSeries
-from toktokkie.metadata.types.VisualNovel import VisualNovel
-from toktokkie.metadata.types.MusicArtist import MusicArtist
-from toktokkie.metadata.types.Manga import Manga
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.base.Metadata import Metadata
+from toktokkie.metadata.tv.Tv import Tv
+from toktokkie.metadata.book.Book import Book
+from toktokkie.metadata.book_series.BookSeries import BookSeries
+from toktokkie.metadata.comic.Comic import Comic
+from toktokkie.metadata.music.Music import Music
+from toktokkie.metadata.movie.Movie import Movie
+from toktokkie.metadata.game.Game import Game
+from toktokkie.metadata.enums import MediaType
 from toktokkie.exceptions import InvalidMetadata
 
 
@@ -58,7 +58,7 @@ def create_metadata(directory: str, media_type: Union[str, MediaType]) \
     :return: The generated metadata
     """
     metadata_cls = get_metadata_class(media_type)
-    metadata = metadata_cls.prompt(directory)
+    metadata = metadata_cls.from_prompt(directory)
     metadata.write()
     return metadata
 
@@ -72,12 +72,16 @@ def get_metadata_class(media_type: Union[str, MediaType]) -> Type[Metadata]:
     if type(media_type) == str:
         media_type = MediaType(media_type)
 
-    return {
-        Book.media_type(): Book,
-        BookSeries.media_type(): BookSeries,
-        TvSeries.media_type(): TvSeries,
-        Movie.media_type(): Movie,
-        VisualNovel.media_type(): VisualNovel,
-        Manga.media_type(): Manga,
-        MusicArtist.media_type(): MusicArtist
-    }[media_type]  # type: ignore
+    mapping = {
+        x.media_type(): x
+        for x in [
+            Book,
+            BookSeries,
+            Comic,
+            Movie,
+            Tv,
+            Music,
+            Game
+        ]
+    }
+    return mapping[media_type]

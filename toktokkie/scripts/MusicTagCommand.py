@@ -22,7 +22,7 @@ import argparse
 import mutagen.id3
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.enums import MediaType
 from toktokkie.metadata.types.MusicArtist import MusicArtist
 
 

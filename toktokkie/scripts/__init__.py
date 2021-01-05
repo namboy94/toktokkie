@@ -22,7 +22,6 @@ from toktokkie.scripts.PrintCommand import PrintCommand
 from toktokkie.scripts.IconizeCommand import IconizeCommand
 from toktokkie.scripts.RenameCommand import RenameCommand
 from toktokkie.scripts.ArchiveCommand import ArchiveCommand
-from toktokkie.scripts.CheckCommand import CheckCommand
 from toktokkie.scripts.MangaCreateCommand import MangaCreateCommand
 from toktokkie.scripts.MetadataGenCommand import MetadataGenCommand
 from toktokkie.scripts.UpdateCommand import UpdateCommand
@@ -44,7 +43,6 @@ toktokkie_commands = [
     IconizeCommand,
     RenameCommand,
     ArchiveCommand,
-    CheckCommand,
     MangaCreateCommand,
     MetadataGenCommand,
     UpdateCommand,

@@ -21,7 +21,7 @@ import argparse
 from subprocess import Popen
 from toktokkie.Directory import Directory
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.enums import MediaType
 
 
 class AnilistOpenCommand(Command):

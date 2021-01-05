@@ -26,7 +26,7 @@ from subprocess import Popen, check_output
 from puffotter.prompt import yn_prompt
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.enums import MediaType
 from toktokkie.metadata.types.TvSeries import TvSeries
 
 

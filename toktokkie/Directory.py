@@ -23,12 +23,11 @@ import logging
 from typing import Dict, Any, List, Optional
 from puffotter.prompt import yn_prompt
 from toktokkie.iconizing.Iconizer import Iconizer, Procedure
-from toktokkie.neometadata.functions import get_metadata, create_metadata
-from toktokkie.neometadata.base.Metadata import Metadata
-from toktokkie.neometadata.enums import MediaType
+from toktokkie.metadata.functions import get_metadata, create_metadata
+from toktokkie.metadata.base.Metadata import Metadata
+from toktokkie.metadata.enums import MediaType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.update import updaters, perform_update
-from toktokkie.check.map import checker_map
 from puffotter.os import listdir
 
 
@@ -126,29 +125,6 @@ class Directory:
         """
         iconizer = Iconizer(self.path, self.metadata.icon_directory, procedure)
         iconizer.iconize()
-
-    def check(
-            self,
-            show_warnings: bool,
-            fix_interactively: bool,
-            config: Dict[str, Any]
-    ) -> bool:
-        """
-        Performs a check, making sure that everything in the directory
-        is configured correctly and up-to-date
-        :param show_warnings: Whether or not to show warnings
-        :param fix_interactively: Whether or not to enable interactive fixing
-        :param config: Configuration dictionary for checks
-        :return: The check result
-        """
-        checker_cls = checker_map[self.metadata.media_type()]
-        checker = checker_cls(
-            self.metadata,
-            show_warnings,
-            fix_interactively,
-            config
-        )
-        return checker.check()
 
     def update(self, cli_args: Optional[Dict[str, Any]] = None):
         """

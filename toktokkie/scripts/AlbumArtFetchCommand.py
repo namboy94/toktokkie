@@ -26,7 +26,7 @@ from typing import Dict, List
 from toktokkie.Directory import Directory
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.enums import MediaType
 from toktokkie.metadata.types.MusicArtist import MusicArtist
 from toktokkie.metadata.types.components.MusicThemeSong import MusicThemeSong
 from puffotter.graphql import GraphQlClient

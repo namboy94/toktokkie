@@ -22,7 +22,7 @@ import logging
 from typing import List, Optional
 from toktokkie.Directory import Directory
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.enums import MediaType
 
 
 class Command:

@@ -24,10 +24,9 @@ from manga_dl.scrapers.mangadex import MangaDexScraper
 from manga_dl.entities.Chapter import Chapter
 from puffotter.os import makedirs, listdir, replace_illegal_ntfs_chars
 from puffotter.print import pprint
-from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.metadata.MediaType import MediaType
-from toktokkie.metadata.types.Manga import Manga
-from toktokkie.renaming.Renamer import Renamer
+from toktokkie.metadata.enums import IdType
+from toktokkie.metadata.enums import MediaType
+from toktokkie.metadata.comic.Comic import Comic
 from toktokkie.update.Updater import Updater
 
 
@@ -80,9 +79,9 @@ class MangadexUpdater(Updater):
         """
         self.logger.info("Running rename")
         if not self.args["dry_run"]:
-            Renamer(self.metadata).rename(noconfirm=True, skip_title=True)
+            self.metadata.rename(noconfirm=True, skip_title=True)
         else:
-            ops = Renamer(self.metadata).get_active_operations()
+            ops = self.metadata.create_rename_operations()
             for op in ops:
                 print(op)
 
@@ -116,7 +115,7 @@ class MangadexUpdater(Updater):
         :param chapters: The chapters for the series
         :return: None
         """
-        metadata = cast(Manga, self.metadata)
+        metadata = cast(Comic, self.metadata)
 
         main_chapters = list(filter(lambda x: not x.is_special, chapters))
         current_files = listdir(metadata.main_path)
@@ -161,7 +160,7 @@ class MangadexUpdater(Updater):
         :param chapters: The chapters of the series
         :return: None
         """
-        metadata = cast(Manga, self.metadata)
+        metadata = cast(Comic, self.metadata)
 
         current_latest = len(listdir(metadata.main_path))
 
@@ -210,7 +209,7 @@ class MangadexUpdater(Updater):
         :param chapters: The chapters of the series
         :return: None
         """
-        metadata = cast(Manga, self.metadata)
+        metadata = cast(Comic, self.metadata)
         special_chapters = list(filter(lambda x: x.is_special, chapters))
 
         try:

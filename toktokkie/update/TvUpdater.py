@@ -23,12 +23,11 @@ from enum import Enum
 from typing import List, Dict, Any, Optional, cast, Set
 from puffotter.prompt import prompt
 from toktokkie.update.Updater import Updater
-from toktokkie.renaming.Renamer import Renamer
-from toktokkie.renaming.RenameOperation import RenameOperation
-from toktokkie.metadata.MediaType import MediaType
-from toktokkie.metadata.types.TvSeries import TvSeries
-from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.types.components.TvSeason import TvSeason
+from toktokkie.metadata.enums import MediaType
+from toktokkie.metadata.tv.Tv import Tv
+from toktokkie.metadata.tv.components.TvSeason import TvSeason
+from toktokkie.metadata.utils.RenameOperation import RenameOperation
+from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.exceptions import InvalidUpdateInstructions
 
 
@@ -143,7 +142,7 @@ class TvUpdater(Updater):
         :return: The season to update
         """
         season_name = self.config["season"]
-        metadata = cast(TvSeries, self.metadata)
+        metadata = cast(Tv, self.metadata)
         for season in metadata.seasons:
             if season.name == season_name:
                 return season
@@ -207,7 +206,7 @@ class TvUpdater(Updater):
                          updater config file
         :return: The configuration JSON data
         """
-        metadata = cast(TvSeries, metadata)
+        metadata = cast(Tv, metadata)
         print(f"Generating {cls.name()} "
               f"Update instructions for {metadata.name}")
 
@@ -341,8 +340,7 @@ class TvUpdater(Updater):
         Renames the episodes in the season directory that's being updated
         :return: None
         """
-        renamer = Renamer(self.metadata)
-        for operation in renamer.operations:
+        for operation in self.metadata.create_rename_operations():
             operation_dir = os.path.basename(os.path.dirname(operation.source))
             if operation_dir == self.season.name:
                 operation.rename()

@@ -22,8 +22,8 @@ import json
 import logging
 from typing import Dict, Any, List, Optional
 from jsonschema import validate, ValidationError
-from toktokkie.metadata.Metadata import Metadata
-from toktokkie.metadata.MediaType import MediaType
+from toktokkie.metadata.base.Metadata import Metadata
+from toktokkie.metadata.enums import MediaType
 from toktokkie.exceptions import InvalidUpdateInstructions, \
     MissingUpdateInstructions
 
