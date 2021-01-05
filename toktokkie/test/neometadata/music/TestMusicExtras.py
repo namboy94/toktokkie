@@ -34,7 +34,7 @@ class TestMusicExtras(_TestFramework):
         Tests fetching albums for an artist
         :return: None
         """
-        amalee = Music(self.get("Amalee"))
+        amalee = Music(self.get("AmaLee"))
         albums = amalee.albums
         self.assertEqual(len(albums), 10)
         self.assertEqual(albums[0].name, "Nostalgia")
@@ -52,10 +52,74 @@ class TestMusicExtras(_TestFramework):
 
         self.assertEqual(len(albums), len(theme_songs) + len(non_theme_songs))
         self.assertEqual(theme_songs[0].name, "Brave Shine")
-        self.assertEqual(theme_songs[1].name, "Fate")
-        self.assertEqual(non_theme_songs[0].name, "Normal")
+        self.assertEqual(theme_songs[1].name, "Torches")
+        self.assertEqual(non_theme_songs[0].name, "Sleepless Nights")
 
     def test_adding_albums(self):
-        amalee = Music(self.get("Amalee"))
-        album = MusicAlbum(amalee.directory_path, amalee.ids, {})
-        amalee.add_album()
+        """
+        Tests adding albums
+        :return: None
+        """
+        amalee = Music(self.get("AmaLee"))
+        album = MusicAlbum(
+            amalee.directory_path,
+            amalee.ids,
+            {},
+            "New Album!",
+            "NEW",
+            2020
+        )
+        self.assertEqual(len(amalee.albums), 10)
+        amalee.add_album(album)
+        self.assertEqual(len(amalee.albums), 11)
+        new_album = amalee.albums[-1]
+        self.assertEqual(new_album.name, "New Album!")
+
+        amalee.add_album(album)
+        self.assertEqual(len(amalee.albums), 11)
+
+    def test_adding_theme_song(self):
+        """
+        Tests adding a new theme song
+        :return: None
+        """
+        amalee = Music(self.get("AmaLee"))
+        album_1 = MusicAlbum(
+            amalee.directory_path,
+            amalee.ids,
+            {},
+            "Theme Song 1",
+            "anime",
+            2020
+        )
+        theme_song_1 = MusicThemeSong(
+            album_1,
+            "Theme Song 1",
+            "OP",
+            {}
+        )
+        album_2 = MusicAlbum(
+            amalee.directory_path,
+            amalee.ids,
+            {},
+            "Theme Song 2",
+            "anime",
+            2020
+        )
+        theme_song_2 = MusicThemeSong(
+            album_2,
+            "Theme Song 2",
+            "OP",
+            {}
+        )
+        self.assertEqual(len(amalee.albums), 10)
+        self.assertEqual(len(amalee.theme_songs), 0)
+        amalee.add_theme_song(theme_song_1)
+        self.assertEqual(len(amalee.albums), 11)
+        self.assertEqual(len(amalee.theme_songs), 1)
+        amalee.add_theme_song(theme_song_1)
+        self.assertEqual(len(amalee.albums), 11)
+        self.assertEqual(len(amalee.theme_songs), 1)
+        amalee.add_theme_song(theme_song_2)
+        self.assertEqual(len(amalee.albums), 12)
+        self.assertEqual(len(amalee.theme_songs), 2)

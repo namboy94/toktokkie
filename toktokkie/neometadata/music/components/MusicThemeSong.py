@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from typing import Dict, Any
+from typing import Dict, Any, List
+from toktokkie.exceptions import InvalidMetadata
+from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.components.Component import Component
 from toktokkie.neometadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.neometadata.utils.ids import theme_song_ids, objectify_ids, \
@@ -32,23 +34,25 @@ class MusicThemeSong(Component):
     def __init__(
             self,
             album: MusicAlbum,
-            json_data: Dict[str, Any]
+            name: str,
+            theme_type: str,
+            series_ids: Dict[IdType, List[str]]
     ):
         """
         Initializes the object
         :param album: The album object related to this theme song
-        :param json_data: The JSON data for the theme song
+        :param name: The name of the song
+        :param theme_type: The type of theme song
+        :param series_ids: The IDs of the series this is a theme song for
         """
         self.album = album
-        self.name = json_data["name"]
-        self._theme_type = json_data["theme_type"]
+        self.name = name
+        self._theme_type = theme_type
 
         if self.name != self.album.name:
             self.logger.warning("Theme song {} does not match album {}"
                                 .format(self.name, self.album.name))
-
-        ids = objectify_ids(json_data.get("series_ids"))  # type: ignore
-        self.series_ids = fill_ids(ids, theme_song_ids)
+        self.series_ids = fill_ids(series_ids, theme_song_ids)
 
     @property
     def theme_type(self) -> str:
@@ -68,3 +72,26 @@ class MusicThemeSong(Component):
             "series_ids": stringify_ids(minimize_ids(self.series_ids)),
             "theme_type": self.theme_type.lower()
         }
+
+    @classmethod
+    def from_json(
+            cls,
+            album: MusicAlbum,
+            json_data: Dict[str, Any]
+    ) -> "MusicThemeSong":
+        """
+        Generates a new MusicThemeSong object based on JSON data
+        :param album: The corresponding album object
+        :param json_data: The JSON data
+        :return: The generated object
+        :raises InvalidMetadataException: If the provided JSON is invalid
+        """
+        try:
+            return cls(
+                album,
+                json_data["name"],
+                json_data["theme_type"],
+                objectify_ids(json_data["series_ids"])
+            )
+        except KeyError as e:
+            raise InvalidMetadata(f"Attribute missing: {e}")

@@ -33,7 +33,7 @@ class TestTvEpisodeRange(_TestFramework):
         :return: None
         """
         try:
-            TvEpisodeRange({})
+            TvEpisodeRange.from_json({})
             self.fail()
         except InvalidMetadata:
             pass

@@ -36,14 +36,14 @@ class TestBookVolume(_TestFramework):
             1,
             "/tmp/Name.epub",
             {IdType.ISBN: ["ABC"]},
-            {"ids": {IdType.ANILIST.value: ["XYZ"]}}
+            {IdType.ANILIST: ["XYZ"]}
         )
         self.assertEqual(volume.name, "Name")
         self.assertEqual(volume.path, "/tmp/Name.epub")
 
         self.assertEqual(
             volume.ids,
-            {IdType.ISBN: ["ABC"], IdType.ANILIST: ["XYZ"]}
+            {IdType.ANILIST: ["XYZ"], IdType.ISBN: ["ABC"]}
         )
         self.assertEqual(
             volume.json,

@@ -20,6 +20,7 @@ LICENSE"""
 import os
 from typing import Dict, List, Any, Union
 from puffotter.os import listdir
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.base.components.Component import Component
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.utils.ids import objectify_ids, stringify_ids,\
@@ -35,15 +36,22 @@ class TvSeason(Component):
             self,
             parent_path: str,
             parent_ids: Dict[IdType, List[str]],
-            json_data: Dict[str, Union[str, Dict[str, List[str]]]]
+            ids: Dict[IdType, List[str]],
+            name: str
     ):
+        """
+        Initializes the TvSeason object
+        :param parent_path: The path to the parent metadata directory
+        :param parent_ids: The IDs of the parent metadata
+        :param ids: The specific IDs for this season
+        :param name: The name of the season
+        """
         self.parent_path = parent_path
         self.parent_ids = parent_ids
 
-        self.name = str(json_data["name"])
+        self.name = name
         self.path = os.path.join(parent_path, self.name)
 
-        ids = objectify_ids(json_data.get("ids", {}))  # type: ignore
         self.ids = fill_ids(ids, [], parent_ids)
 
     @property
@@ -55,6 +63,31 @@ class TvSeason(Component):
             "name": self.name,
             "ids": stringify_ids(minimize_ids(self.ids, self.parent_ids))
         }
+
+    @classmethod
+    def from_json(
+            cls,
+            parent_path: str,
+            parent_ids: Dict[IdType, List[str]],
+            json_data: Dict[str, Union[str, Dict[str, List[str]]]]
+    ):
+        """
+        Generates a TvSeason object based on JSON data
+        :param parent_path: The path to the parent metadata directory
+        :param parent_ids: The IDs of the parent metadata
+        :param json_data: The JSON data
+        :return: The generated TvSeason object
+        :raises InvalidMetadataException: If the provided JSON is invalid
+        """
+        try:
+            return cls(
+                parent_path,
+                parent_ids,
+                objectify_ids(json_data["ids"]),
+                json_data["name"]
+            )
+        except KeyError as e:
+            raise InvalidMetadata(f"Attribute missing: {e}")
 
     @property
     def season_number(self) -> int:

@@ -43,9 +43,9 @@ class TestTvExtras(_TestFramework):
         self.assertEqual(season_1.ids[IdType.IMDB], ["tt0421357"])
         self.assertEqual(season_1.ids[IdType.MYANIMELIST], ["121"])
 
-        new_season = TvSeason(meta.directory_path, meta.ids, {
-            "ids": {"kitsu": ["100"]}, "name": "Test"
-        })
+        new_season = TvSeason(
+            meta.directory_path, meta.ids, {IdType.KITSU: ["100"]}, "Test"
+        )
         seasons.append(new_season)
 
         meta.seasons = seasons

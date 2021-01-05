@@ -40,7 +40,7 @@ class BookSeriesExtras(MetadataBase, ABC):
         for i, (_, volume_path) in enumerate(volume_files):
             volume_num = i + 1
             json_data = self.json["volumes"].get(str(volume_num), {"ids": {}})
-            volumes[i + 1] = BookVolume(
+            volumes[i + 1] = BookVolume.from_json_data(
                 volume_num, volume_path, self.ids, json_data
             )
         return volumes

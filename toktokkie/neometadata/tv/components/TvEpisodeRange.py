@@ -19,29 +19,25 @@ LICENSE"""
 
 from typing import Dict, Any, List
 from toktokkie.neometadata.tv.components.TvEpisode import TvEpisode
+from toktokkie.neometadata.base.components.Component import Component
 from toktokkie.exceptions import InvalidMetadata
 
 
-class TvEpisodeRange:
+class TvEpisodeRange(Component):
     """
     Class that models a TV Episode Range
     """
 
-    def __init__(self, json_data: Dict[str, Any]):
+    def __init__(self, season: int, start_episode: int, end_episode: int):
         """
         Initializes the TvEpisodeRange object
-        :param json_data: The JSON data from which to generate
-                          the episode range from
-        :raises InvalidMetadataException: If the provided JSON is invalid
+        :param season: The season
+        :param start_episode: The first episode in the range
+        :param end_episode: The last episode in the range
         """
-        self.json = json_data
-
-        try:
-            self.season = json_data["season"]
-            self.start_episode = json_data["start_episode"]
-            self.end_episode = json_data["end_episode"]
-        except (KeyError, TypeError) as e:
-            raise InvalidMetadata(f"Attribute Missing/Invalid: {e}")
+        self.season = season
+        self.start_episode = start_episode
+        self.end_episode = end_episode
 
     @property
     def episodes(self) -> List[TvEpisode]:
@@ -53,9 +49,34 @@ class TvEpisodeRange:
         max_episode = max(self.start_episode, self.end_episode)
 
         for episode in range(min_episode, max_episode + 1):
-            episodes.append(TvEpisode({
-                "season": self.season,
-                "episode": episode
-            }))
+            episodes.append(TvEpisode(self.season, episode))
 
         return episodes
+
+    @property
+    def json(self) -> Dict[str, Any]:
+        """
+        :return: A JSON-compatible dictionary representing the object
+        """
+        return {
+            "season": self.season,
+            "start_episode": self.start_episode,
+            "end_episode": self.end_episode
+        }
+
+    @classmethod
+    def from_json(cls, json_data: Dict[str, Any]) -> "TvEpisodeRange":
+        """
+        Generates a TvEpisodeRange object based on json data
+        :param json_data: The JSON data
+        :return: The generated TvEpisodeRange object
+        :raises InvalidMetadataException: If the provided JSON is invalid
+        """
+        try:
+            return cls(
+                json_data["season"],
+                json_data["start_episode"],
+                json_data["end_episode"]
+            )
+        except (KeyError, TypeError) as e:
+            raise InvalidMetadata(f"Attribute Missing/Invalid: {e}")

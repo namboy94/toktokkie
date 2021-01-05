@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 from typing import Dict, List, Any
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.base.components.Component import Component
 from toktokkie.neometadata.utils.ids import stringify_ids, objectify_ids,\
@@ -35,20 +36,17 @@ class BookVolume(Component):
             volume_number: int,
             path: str,
             parent_ids: Dict[IdType, List[str]],
-            json_data: Dict[str, Dict[str, List[str]]]
+            ids: Dict[IdType, List[str]]
     ):
         """
         Initializes the Book Volume
         :param volume_number: The volume number
         :param path: The path to the volume file
         :param parent_ids: The IDs of the parent BookSeries object
-        :param json_data: The JSON data for the book volume containing the
-                          IDs for this specific volume
+        :param ids: The specific IDs for this book volume
         """
         self.number = volume_number
         self.path = path
-
-        ids = objectify_ids(json_data.get("ids", {}))
         self.ids = fill_ids(ids, [], parent_ids)
         self.parent_ids = parent_ids
 
@@ -68,3 +66,30 @@ class BookVolume(Component):
         return {
             "ids": stringify_ids(minimize_ids(self.ids, self.parent_ids))
         }
+
+    @classmethod
+    def from_json_data(
+            cls,
+            volume_number: int,
+            path: str,
+            parent_ids: Dict[IdType, List[str]],
+            json_data: Dict[str, Dict[str, List[str]]]
+    ) -> "BookVolume":
+        """
+        Generates a BookVolume object based on json data
+        :param volume_number: The volume number
+        :param path: The path to the volume file
+        :param parent_ids: The IDs of the parent metadata
+        :param json_data: The JSON data
+        :return: None
+        :raises InvalidMetadataException: If the provided JSON is invalid
+        """
+        try:
+            return cls(
+                volume_number,
+                path,
+                parent_ids,
+                objectify_ids(json_data["ids"])
+            )
+        except KeyError as e:
+            raise InvalidMetadata(f"Attribute missing: {e}")

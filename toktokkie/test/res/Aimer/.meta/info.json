@@ -4,24 +4,24 @@
             "genre": "Anime",
             "ids": {},
             "name": "Brave Shine",
-            "year": 2018
+            "year": 2015
+        },
+        {
+            "genre": "J-Pop",
+            "ids": {},
+            "name": "Sleepless Nights",
+            "year": 2012
         },
         {
             "genre": "Anime",
             "ids": {},
-            "name": "Fate",
+            "name": "Torches",
             "year": 2019
-        },
-        {
-            "genre": "JPOP",
-            "ids": {},
-            "name": "Normal",
-            "year": 2020
         }
     ],
     "ids": {
         "musicbrainz_artist": [
-            "100"
+            "9388cee2-7d57-4598-905f-106019b267d3"
         ]
     },
     "tags": [],
@@ -30,19 +30,22 @@
             "name": "Brave Shine",
             "series_ids": {
                 "anilist": [
-                    "1000"
+                    "19603"
                 ],
                 "myanimelist": [
-                    "1000"
+                    "22297"
                 ]
             },
             "theme_type": "op"
         },
         {
-            "name": "Fate",
+            "name": "Torches",
             "series_ids": {
                 "anilist": [
-                    "2000"
+                    "101348"
+                ],
+                "myanimelist": [
+                    "37521"
                 ]
             },
             "theme_type": "ed"

@@ -50,10 +50,11 @@ class TestBookSeriesExtras(_TestFramework):
 
         new_path = os.path.join(path, "Z.epub")
         touch(new_path)
-        new_vol = BookVolume(
+        new_vol = BookVolume.from_json_data(
             5,
             new_path,
-            meta.ids, {"ids": {IdType.ISBN.value: ["ABC"]}}
+            meta.ids,
+            {"ids": {IdType.ISBN.value: ["ABC"]}}
         )
         volumes[5] = new_vol
         meta.volumes = volumes

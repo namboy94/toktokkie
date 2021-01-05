@@ -38,7 +38,7 @@ class MusicExtras(MetadataBase, ABC):
                  albums or theme songs
         """
         return list(map(
-            lambda x: MusicAlbum(self.directory_path, self.ids, x),
+            lambda x: MusicAlbum.from_json(self.directory_path, self.ids, x),
             self.json["albums"]
         ))
 
@@ -56,7 +56,7 @@ class MusicExtras(MetadataBase, ABC):
             if album is None:
                 raise InvalidMetadata("Missing album data for {}".format(name))
             else:
-                theme_songs.append(MusicThemeSong(album, theme_song))
+                theme_songs.append(MusicThemeSong.from_json(album, theme_song))
 
         return theme_songs
 

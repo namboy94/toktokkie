@@ -38,7 +38,7 @@ class TvExtras(MetadataBase, ABC):
         :return: A list of TV seasons
         """
         seasons_list = list(map(
-            lambda x: TvSeason(self.directory_path, self.ids, x),
+            lambda x: TvSeason.from_json(self.directory_path, self.ids, x),
             self.json["seasons"]
         ))
         seasons_list.sort(
@@ -86,10 +86,10 @@ class TvExtras(MetadataBase, ABC):
             for exclude in self.json["excludes"][_id_type]:
 
                 try:
-                    episode_range = TvEpisodeRange(exclude)
+                    episode_range = TvEpisodeRange.from_json(exclude)
                     episodes = episode_range.episodes
                 except InvalidMetadata:
-                    episodes = [TvEpisode(exclude)]
+                    episodes = [TvEpisode.from_json(exclude)]
 
                 for episode in episodes:
                     if episode.season not in generated[id_type]:
@@ -121,7 +121,7 @@ class TvExtras(MetadataBase, ABC):
             generated[id_type] = {}
 
             for multi_episode in self.json["multi_episodes"][_id_type]:
-                episode_range = TvEpisodeRange(multi_episode)
+                episode_range = TvEpisodeRange.from_json(multi_episode)
 
                 season_number = episode_range.season
                 start = episode_range.start_episode

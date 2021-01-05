@@ -19,23 +19,39 @@ LICENSE"""
 
 from typing import Dict, Any
 from toktokkie.exceptions import InvalidMetadata
+from toktokkie.neometadata.base.components.Component import Component
 
 
-class TvEpisode:
+class TvEpisode(Component):
     """
     Class that models a TV Episode
     """
 
-    def __init__(self, json_data: Dict[str, Any]):
+    def __init__(self, season: int, episode: int):
         """
         Initializes the TvEpisode object
-        :param json_data: The JSON data from which to generate the episode from
+        :param season: The season of the episode
+        :param episode: The episode number
+        """
+        self.season = season
+        self.episode = episode
+
+    @property
+    def json(self) -> Dict[str, Any]:
+        """
+        :return: The object represented as JSON data
+        """
+        return {"season": self.season, "episode": self.episode}
+
+    @classmethod
+    def from_json(cls, json_data: Dict[str, Any]) -> "TvEpisode":
+        """
+        Generates a TvEpisode object from json data
+        :param json_data: The JSON data
+        :return: The generated TvEpisode object
         :raises InvalidMetadataException: If the provided JSON is invalid
         """
-        self.json = json_data
-
         try:
-            self.season = json_data["season"]
-            self.episode = json_data["episode"]
+            return cls(json_data["season"], json_data["episode"])
         except KeyError as e:
             raise InvalidMetadata(f"Attribute missing: {e}")

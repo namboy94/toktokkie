@@ -25,6 +25,7 @@ from mutagen.easyid3 import EasyID3
 # noinspection PyProtectedMember
 from mutagen.id3._util import ID3NoHeaderError
 from puffotter.os import listdir, get_ext
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.base.components.Component import Component
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.utils.ids import objectify_ids, stringify_ids, \
@@ -40,13 +41,19 @@ class MusicAlbum(Component):
             self,
             parent_path: str,
             parent_ids: Dict[IdType, List[str]],
-            json_data: Dict[str, Any]
+            ids: Dict[IdType, List[str]],
+            name: str,
+            genre: str,
+            year: int
     ):
         """
         Initializes the MusicAlbum object
         :param parent_path: The path to the parent directory
         :param parent_ids: The IDs associated with the parent
-        :param json_data: The JSON data of the album
+        :param ids: The specific IDs for this album
+        :param name: The name of the album
+        :param genre: The genre of the album
+        :param year: Th eyar this album was released
         """
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -55,12 +62,11 @@ class MusicAlbum(Component):
 
         self.artist_name = os.path.basename(os.path.abspath(parent_path))
 
-        self.name = json_data["name"]
-        self.genre = json_data["genre"]
-        self.year = json_data["year"]
+        self.name = name
+        self.genre = genre
+        self.year = year
         self.path = os.path.join(parent_path, self.name)
 
-        ids = objectify_ids(json_data.get("ids", {}))
         self.ids = fill_ids(ids, [IdType.MUSICBRAINZ_RELEASE], parent_ids)
 
     @property
@@ -75,6 +81,33 @@ class MusicAlbum(Component):
             "year": self.year,
             "ids": stringify_ids(minimize_ids(self.ids, self.parent_ids))
         }
+
+    @classmethod
+    def from_json(
+            cls,
+            parent_path: str,
+            parent_ids: Dict[IdType, List[str]],
+            json_data: Dict[str, Any]
+    ) -> "MusicAlbum":
+        """
+        Generates a new MusicAlbum object based on JSON data
+        :param parent_path: The path to the parent metadata directory
+        :param parent_ids: The IDs of the parent metadata
+        :param json_data: The JSON data
+        :return: The generated object
+        :raises InvalidMetadataException: If the provided JSON is invalid
+        """
+        try:
+            return cls(
+                parent_path,
+                parent_ids,
+                objectify_ids(json_data["ids"]),
+                json_data["name"],
+                json_data["genre"],
+                json_data["year"]
+            )
+        except KeyError as e:
+            raise InvalidMetadata(f"Attribute missing: {e}")
 
     @property
     def songs(self) -> List["MusicSong"]:
