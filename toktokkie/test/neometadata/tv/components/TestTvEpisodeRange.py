@@ -37,3 +37,14 @@ class TestTvEpisodeRange(_TestFramework):
             self.fail()
         except InvalidMetadata:
             pass
+
+    def test_jsonification(self):
+        """
+        Tests the JSON representation of TvEpisodeRange objects
+        :return: None
+        """
+        episode_range = TvEpisodeRange(1, 1, 10)
+        generated = TvEpisodeRange.from_json(episode_range.json)
+        self.assertEqual(episode_range.season, generated.season)
+        self.assertEqual(episode_range.start_episode, generated.start_episode)
+        self.assertEqual(episode_range.end_episode, generated.end_episode)

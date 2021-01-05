@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.enums import IdType
 from toktokkie.neometadata.book_series.components.BookVolume import BookVolume
 from toktokkie.test.TestFramework import _TestFramework
@@ -49,3 +50,14 @@ class TestBookVolume(_TestFramework):
             volume.json,
             {"ids": {IdType.ANILIST.value: ["XYZ"]}}
         )
+
+    def test_missing_attributes(self):
+        """
+        Tests if missing attributes are handled correctly
+        :return: None
+        """
+        try:
+            BookVolume.from_json(1, "1", {}, {})
+            self.fail()
+        except InvalidMetadata:
+            pass

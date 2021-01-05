@@ -68,7 +68,7 @@ class BookVolume(Component):
         }
 
     @classmethod
-    def from_json_data(
+    def from_json(
             cls,
             volume_number: int,
             path: str,

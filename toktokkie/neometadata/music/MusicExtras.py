@@ -19,7 +19,6 @@ LICENSE"""
 
 from abc import ABC
 from typing import List
-from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.neometadata.music.components.MusicThemeSong import \
     MusicThemeSong
@@ -52,12 +51,8 @@ class MusicExtras(MetadataBase, ABC):
         theme_songs = []
         for theme_song in self.json.get("theme_songs", []):
             name = theme_song["name"]
-            album = album_map.get(name)
-            if album is None:
-                raise InvalidMetadata("Missing album data for {}".format(name))
-            else:
-                theme_songs.append(MusicThemeSong.from_json(album, theme_song))
-
+            album = album_map[name]
+            theme_songs.append(MusicThemeSong.from_json(album, theme_song))
         return theme_songs
 
     @property

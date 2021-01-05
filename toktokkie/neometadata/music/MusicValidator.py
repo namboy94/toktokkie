@@ -83,7 +83,8 @@ class MusicValidator(Validator, MusicExtras, ABC):
 
     def validate(self):
         super().validate()
-        # The important thing here is that self.theme_songs is called, as
-        # it checks that all theme songs have corresponding albums
-        if len(self.theme_songs) != len(self.json.get("theme_songs", [])):
-            raise InvalidMetadata("Invalid  amount of theme songs")
+        album_names = [x.name for x in self.albums]
+        for theme_song in self.json.get("theme_songs", []):
+            name = theme_song["name"]
+            if name not in album_names:
+                raise InvalidMetadata(f"Missing album data for {name}")

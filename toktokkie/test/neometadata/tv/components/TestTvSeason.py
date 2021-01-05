@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.tv.Tv import Tv
+from toktokkie.neometadata.tv.components.TvSeason import TvSeason
 from toktokkie.test.TestFramework import _TestFramework
 
 
@@ -38,3 +40,14 @@ class TestTvSeason(_TestFramework):
             episodes[0],
             "Over the Garden Wall - S01E01 - Chapter 1; The Old Grist Mill"
         )
+
+    def test_missing_attributes(self):
+        """
+        Tests if missing attributes are handled correctly
+        :return: None
+        """
+        try:
+            TvSeason.from_json("1", {}, {})
+            self.fail()
+        except InvalidMetadata:
+            pass
