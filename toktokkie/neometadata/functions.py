@@ -27,6 +27,7 @@ from toktokkie.neometadata.book_series.BookSeries import BookSeries
 from toktokkie.neometadata.comic.Comic import Comic
 from toktokkie.neometadata.music.Music import Music
 from toktokkie.neometadata.movie.Movie import Movie
+from toktokkie.neometadata.game.Game import Game
 from toktokkie.neometadata.enums import MediaType
 from toktokkie.exceptions import InvalidMetadata
 
@@ -79,7 +80,8 @@ def get_metadata_class(media_type: Union[str, MediaType]) -> Type[Metadata]:
             Comic,
             Movie,
             Tv,
-            Music
+            Music,
+            Game
         ]
     }
     return mapping[media_type]
