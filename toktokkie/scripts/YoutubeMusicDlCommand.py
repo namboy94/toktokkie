@@ -27,8 +27,8 @@ from puffotter.os import makedirs, listdir
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
-from toktokkie.metadata.types.MusicArtist import MusicArtist
-from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
+from toktokkie.metadata.music.Music import Music
+from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 
 
 class YoutubeMusicDlCommand(Command):
@@ -71,7 +71,7 @@ class YoutubeMusicDlCommand(Command):
             self.logger.warning("No valid directory provided")
             return
         directory = directories[0]
-        metadata: MusicArtist = directory.metadata
+        metadata: Music = directory.metadata
         album_metadata_base = {
             "ids": {},
             "year": self.args.year,
@@ -126,7 +126,7 @@ class YoutubeMusicDlCommand(Command):
                 )
                 shutil.move(song, new_song_path)
 
-            album_metadata = MusicAlbum(
+            album_metadata = MusicAlbum.from_json(
                 metadata.directory_path, metadata.ids, album_metadata_json
             )
             metadata.add_album(album_metadata)

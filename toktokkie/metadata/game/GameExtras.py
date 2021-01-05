@@ -88,7 +88,7 @@ class GameExtras(MetadataBase, ABC):
         if not os.path.isdir(self.cg_dir):
             return {}
         else:
-            cgs = {}
+            cgs: Dict[str, List[str]] = {}
             for cg_dir, cg_dir_path in listdir(self.cg_dir, no_files=True):
                 cgs[cg_dir] = []
                 for _, img_path in listdir(cg_dir_path, no_dirs=True):

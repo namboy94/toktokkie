@@ -25,7 +25,7 @@ from toktokkie.scripts.Command import Command
 from toktokkie.enums import MediaType
 from toktokkie.Directory import Directory
 from toktokkie.exceptions import MissingMetadata
-from toktokkie.metadata.types.MusicArtist import MusicArtist
+from toktokkie.metadata.music.Music import Music
 from puffotter.os import listdir
 
 
@@ -92,7 +92,7 @@ class MusicMergeCommand(Command):
             target_map = {x.metadata.name: x for x in target_artists}
 
             for source_artist in source_artists:
-                source_metadata = cast(MusicArtist, source_artist.metadata)
+                source_metadata = cast(Music, source_artist.metadata)
 
                 if source_metadata.name not in target_map:
                     new_path = os.path.join(
@@ -118,8 +118,8 @@ class MusicMergeCommand(Command):
         :param source_artist: The artist to merge into the target
         :return: None
         """
-        source_metadata = cast(MusicArtist, source_artist.metadata)
-        target_metadata = cast(MusicArtist, target_artist.metadata)
+        source_metadata = cast(Music, source_artist.metadata)
+        target_metadata = cast(Music, target_artist.metadata)
 
         target_albums = {x.name: x for x in target_metadata.albums}
         source_themes = {x.name: x for x in source_metadata.theme_songs}

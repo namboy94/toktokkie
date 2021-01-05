@@ -27,7 +27,7 @@ from puffotter.prompt import yn_prompt
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
-from toktokkie.metadata.types.TvSeries import TvSeries
+from toktokkie.metadata.tv.Tv import Tv
 
 
 class SuperCutCommand(Command):
@@ -104,7 +104,7 @@ class SuperCutCommand(Command):
         :param directory: The directory for which to generate the instructions
         :return: None
         """
-        metadata = directory.metadata  # type: TvSeries  # type: ignore
+        metadata = directory.metadata  # type: Tv  # type: ignore
         supercut_dir = os.path.join(directory.path, ".supercut")
         supercut_file = os.path.join(supercut_dir, "supercut.txt")
 
@@ -131,7 +131,7 @@ class SuperCutCommand(Command):
         :param directory: The directory for which to create a supercut
         :return: None
         """
-        metadata = directory.metadata  # type: TvSeries  # type: ignore
+        metadata = directory.metadata  # type: Tv  # type: ignore
 
         supercut_dir = os.path.join(directory.path, ".supercut")
         supercut_file = os.path.join(supercut_dir, "supercut.txt")
@@ -151,8 +151,8 @@ class SuperCutCommand(Command):
 
     def read_supercut_instructions(
             self,
-            metadata:
-            TvSeries, supercut_file: str
+            metadata: Tv,
+            supercut_file: str
     ) -> List[Dict[str, str]]:
         """
         Reads the supercut instructions file and generates an easily

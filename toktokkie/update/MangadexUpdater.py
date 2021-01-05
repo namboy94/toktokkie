@@ -47,7 +47,7 @@ class MangadexUpdater(Updater):
         """
         :return: A list of media type with which the updater can be used with
         """
-        return [MediaType.MANGA]
+        return [MediaType.COMIC]
 
     def update(self):
         """

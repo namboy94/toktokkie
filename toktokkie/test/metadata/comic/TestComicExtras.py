@@ -65,4 +65,3 @@ class TestComicExtras(_TestFramework):
         specials = meta.special_chapters
         self.assertEqual(len(specials), 7)
         self.assertEqual(specials[0], "1.5")
-

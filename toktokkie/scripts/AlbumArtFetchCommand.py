@@ -25,10 +25,10 @@ from bs4 import BeautifulSoup
 from typing import Dict, List
 from toktokkie.Directory import Directory
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.ids.IdType import IdType
+from toktokkie.enums import IdType
 from toktokkie.enums import MediaType
-from toktokkie.metadata.types.MusicArtist import MusicArtist
-from toktokkie.metadata.types.components.MusicThemeSong import MusicThemeSong
+from toktokkie.metadata.music.Music import Music
+from toktokkie.metadata.music.components.MusicThemeSong import MusicThemeSong
 from puffotter.graphql import GraphQlClient
 
 
@@ -61,7 +61,7 @@ class AlbumArtFetchCommand(Command):
         for directory in Directory.load_directories(
                 self.args.directories, restrictions=[MediaType.MUSIC_ARTIST]
         ):
-            metadata = directory.metadata  # type: MusicArtist
+            metadata = directory.metadata  # type: Music
             theme_songs = {
                 x.name: x for x in metadata.theme_songs
             }  # type: Dict[str, MusicThemeSong]

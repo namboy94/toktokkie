@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from typing import Dict, List, Any, Union
+from typing import Dict, List, Any
 from puffotter.os import listdir
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.base.components.Component import Component
@@ -69,7 +69,7 @@ class TvSeason(Component):
             cls,
             parent_path: str,
             parent_ids: Dict[IdType, List[str]],
-            json_data: Dict[str, Union[str, Dict[str, List[str]]]]
+            json_data: Dict[str, Any]
     ):
         """
         Generates a TvSeason object based on JSON data

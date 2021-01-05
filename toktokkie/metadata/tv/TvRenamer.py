@@ -58,14 +58,22 @@ class TvRenamer(Renamer, TvExtras, ABC):
 
         id_type = self.selected_renaming_id_type
 
-        excluded = self.excludes.get(id_type, {})
-        multis = self.multi_episodes.get(id_type, {})
-        start_overrides = self.season_start_overrides.get(id_type, {})
+        if id_type is None:
+            excluded, multis, start_overrides = {}, {}, {}
+        else:
+            excluded = self.excludes.get(id_type, {})
+            multis = self.multi_episodes.get(id_type, {})
+            start_overrides = self.season_start_overrides.get(id_type, {})
 
         content_info = self.get_episode_files(id_type)
 
         for service_id, season_data in content_info.items():
-            service_ids = self.ids.get(id_type, [])
+
+            if id_type is None:
+                service_ids = []
+            else:
+                service_ids = self.ids.get(id_type, [])
+
             is_spinoff = id_type is not None and service_ids[0] != service_id
 
             if is_spinoff:
@@ -159,7 +167,7 @@ class TvRenamer(Renamer, TvExtras, ABC):
     @staticmethod
     def load_episode_name(
             service_id: str,
-            id_type: IdType,
+            id_type: Optional[IdType],
             season_number: int,
             episode_number: int,
             multi_end: Optional[int] = None
@@ -176,7 +184,7 @@ class TvRenamer(Renamer, TvExtras, ABC):
         """
         default = "Episode " + str(episode_number)
 
-        if service_id == "0":
+        if id_type is None or service_id == "0":
             return default
 
         if multi_end is not None:
@@ -236,7 +244,10 @@ class TvRenamer(Renamer, TvExtras, ABC):
                 self.directory_path, no_files=True, no_dot=True
         ):
             season_metadata = self.get_season(season_name)
-            service_id = season_metadata.ids.get(id_type, ["0"])[0]
+            if id_type is None:
+                service_id = "0"
+            else:
+                service_id = season_metadata.ids.get(id_type, ["0"])[0]
 
             if service_id not in content_info:
                 content_info[service_id] = {}

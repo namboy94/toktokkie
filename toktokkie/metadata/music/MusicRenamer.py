@@ -31,7 +31,7 @@ class MusicRenamer(Renamer, MusicExtras, ABC):
     """
     Implements the Renamer functionality for music metadata
     """
-    
+
     def create_rename_operations(self) -> List[RenameOperation]:
         """
         Creates renaming operations for movie metadata

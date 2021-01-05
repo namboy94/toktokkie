@@ -27,7 +27,7 @@ from puffotter.graphql import GraphQlClient
 from puffotter.os import makedirs, replace_illegal_ntfs_chars
 from puffotter.prompt import prompt
 from subprocess import Popen
-from toktokkie.metadata.types.Manga import Manga
+from toktokkie.metadata.comic.Comic import Comic
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.scripts.Command import Command
 
@@ -88,7 +88,7 @@ class MangaCreateCommand(Command):
             if info["anilist_id"] is not None:
                 title_ids["anilist"] = [info["anilist_id"]]
 
-            metadata = Manga(info["title"], {
+            metadata = Comic(info["title"], {
                 "ids": title_ids,
                 "special_chapters": [],
                 "type": "manga"
@@ -172,7 +172,7 @@ class MangaCreateCommand(Command):
                 "title": data["manga"]["title"],
                 "cover": "https://mangadex.org" + data["manga"]["cover_url"],
                 "mangadex_id": mangadex_id,
-                "anilist_id": anilist_id
+                "anilist_id": "0"
             }
 
         return info

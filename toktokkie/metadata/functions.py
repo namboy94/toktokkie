@@ -69,7 +69,7 @@ def get_metadata_class(media_type: Union[str, MediaType]) -> Type[Metadata]:
     :param media_type: The media type for which to get the metadata class
     :return: The metadata class
     """
-    if type(media_type) == str:
+    if isinstance(media_type, str):
         media_type = MediaType(media_type)
 
     mapping = {

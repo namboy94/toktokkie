@@ -23,7 +23,7 @@ import mutagen.id3
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
-from toktokkie.metadata.types.MusicArtist import MusicArtist
+from toktokkie.metadata.music.Music import Music
 
 
 class MusicTagCommand(Command):
@@ -57,7 +57,7 @@ class MusicTagCommand(Command):
         for directory in Directory.load_directories(
                 self.args.directories, restrictions=[MediaType.MUSIC_ARTIST]
         ):
-            music_metadata = directory.metadata  # type: MusicArtist
+            music_metadata = directory.metadata  # type: Music
             for album in music_metadata.albums:
                 for song in album.songs:
 

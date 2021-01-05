@@ -17,6 +17,6 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.utils.torrent.search import NyaaSearchEngine
+from toktokkie.utils.torrent.search.NyaaSearchEngine import NyaaSearchEngine
 
 search_engines = [NyaaSearchEngine]

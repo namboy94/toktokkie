@@ -24,11 +24,11 @@ import argparse
 from typing import Dict, List
 from bs4 import BeautifulSoup
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.types.MusicArtist import MusicArtist
+from toktokkie.metadata.music.Music import Music
 from puffotter.os import makedirs, listdir
 from puffotter.requests import aggressive_request
-from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
-from toktokkie.metadata.types.components.MusicThemeSong import MusicThemeSong
+from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
+from toktokkie.metadata.music.components.MusicThemeSong import MusicThemeSong
 from toktokkie.scripts.RenameCommand import RenameCommand
 from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
@@ -382,22 +382,24 @@ class AnimeThemeDlCommand(Command):
                     if not os.path.isfile(vid_path):
                         shutil.copyfile(webm_file, vid_path)
 
-                    album_obj = MusicAlbum(artist_dir, {}, {
+                    album_obj = MusicAlbum.from_json(artist_dir, {}, {
                             "name": song.song_name,
                             "ids": {},
                             "genre": "Anime",
                             "year": int(self.args.year)
                     })
                     albums_metadata.append(album_obj)
-                    theme_songs_metadata.append(MusicThemeSong(album_obj, {
-                        "name": song.song_name,
-                        "series_ids": {
-                            "myanimelist": [str(song.mal_id)],
-                            "anilist": [str(song.anilist_id)]
-                        },
-                        "theme_type": oped_type.lower()
-                    }))
-
+                    theme_songs_metadata.append(MusicThemeSong.from_json(
+                        album_obj,
+                        {
+                            "name": song.song_name,
+                            "series_ids": {
+                                "myanimelist": [str(song.mal_id)],
+                                "anilist": [str(song.anilist_id)]
+                            },
+                            "theme_type": oped_type.lower()
+                        }
+                    ))
                 metadir = os.path.join(artist_dir, ".meta")
                 icondir = os.path.join(metadir, "icons")
                 makedirs(metadir)
@@ -410,4 +412,4 @@ class AnimeThemeDlCommand(Command):
                     "albums": [x.json for x in albums_metadata],
                     "theme_songs": [x.json for x in theme_songs_metadata]
                 }
-                MusicArtist(artist_dir, json_data=metadata).write()
+                Music(artist_dir, json_data=metadata).write()
