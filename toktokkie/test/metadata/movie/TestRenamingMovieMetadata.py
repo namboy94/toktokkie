@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.movie.Movie import Movie
 from toktokkie.test.TestFramework import _TestFramework
 

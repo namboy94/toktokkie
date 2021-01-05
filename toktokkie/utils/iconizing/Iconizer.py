@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from toktokkie.iconizing.procedures.Procedure import Procedure
+from toktokkie.utils.iconizing import Procedure
 
 
 class Iconizer:

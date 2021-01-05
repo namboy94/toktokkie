@@ -19,7 +19,7 @@ LICENSE"""
 
 from abc import ABC
 from typing import List, Dict, Optional
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.base.MetadataBase import MetadataBase
 from toktokkie.metadata.tv.components.TvSeason import TvSeason

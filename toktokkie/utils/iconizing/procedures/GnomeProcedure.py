@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import sys
 from subprocess import Popen, check_output, CalledProcessError
-from toktokkie.iconizing.procedures.Procedure import Procedure
+from toktokkie.utils.iconizing import Procedure
 
 
 class GnomeProcedure(Procedure):

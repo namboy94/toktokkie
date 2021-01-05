@@ -20,7 +20,7 @@ LICENSE"""
 import os
 from unittest.mock import patch
 from toktokkie.Directory import Directory
-from toktokkie.metadata.enums import IdType, MediaType
+from toktokkie.enums import IdType, MediaType
 from toktokkie.test.TestFramework import _TestFramework
 from toktokkie.metadata.base.Renamer import Renamer
 

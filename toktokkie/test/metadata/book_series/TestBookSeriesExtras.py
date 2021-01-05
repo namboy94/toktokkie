@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 from puffotter.os import touch
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.book_series.components.BookVolume import BookVolume
 from toktokkie.metadata.book_series.BookSeries import BookSeries
 from toktokkie.test.TestFramework import _TestFramework

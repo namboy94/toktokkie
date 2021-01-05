@@ -17,6 +17,26 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.torrent.search.NyaaSearchEngine import NyaaSearchEngine
+from typing import List
+from toktokkie.utils.torrent.search.TorrentInfo import TorrentInfo
 
-search_engines = [NyaaSearchEngine]
+
+class SearchEngine:
+    """
+    Specifies the methods a search engine needs to be able to do
+    """
+
+    @classmethod
+    def name(cls) -> str:
+        """
+        :return: The name of the search engine
+        """
+        raise NotImplementedError()
+
+    def search(self, search_term) -> List[TorrentInfo]:
+        """
+        Performs the actual search
+        :param search_term: The term to search for
+        :return: The search results
+        """
+        raise NotImplementedError()

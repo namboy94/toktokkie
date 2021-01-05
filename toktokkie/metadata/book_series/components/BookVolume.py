@@ -20,9 +20,9 @@ LICENSE"""
 import os
 from typing import Dict, List, Any
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.base.components.Component import Component
-from toktokkie.metadata.utils.ids import stringify_ids, objectify_ids,\
+from toktokkie.utils.ids import stringify_ids, objectify_ids,\
     minimize_ids, fill_ids
 
 

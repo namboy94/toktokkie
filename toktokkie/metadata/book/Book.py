@@ -22,7 +22,7 @@ from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.metadata.book.BookPrompter import BookPrompter
 from toktokkie.metadata.book.BookRenamer import BookRenamer
 from toktokkie.metadata.book.BookValidator import BookValidator
-from toktokkie.metadata.enums import IdType, MediaType
+from toktokkie.enums import IdType, MediaType
 
 
 class Book(Metadata, BookRenamer, BookPrompter, BookValidator):

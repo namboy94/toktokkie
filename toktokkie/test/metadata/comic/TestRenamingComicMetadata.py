@@ -21,7 +21,7 @@ import os
 import shutil
 from typing import List, Tuple
 from puffotter.os import listdir
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.comic.Comic import Comic
 from toktokkie.test.TestFramework import _TestFramework
 

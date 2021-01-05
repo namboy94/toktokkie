@@ -22,8 +22,8 @@ import tvdb_api
 import musicbrainzngs
 from typing import List, Dict, Optional
 from toktokkie import version
-from toktokkie.metadata.enums import IdType, MediaType
-from toktokkie.metadata.utils.ids import literature_media_types
+from toktokkie.enums import IdType, MediaType
+from toktokkie.utils.ids import literature_media_types
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType

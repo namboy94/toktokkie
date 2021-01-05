@@ -22,10 +22,11 @@ import sys
 import logging
 from typing import Dict, Any, List, Optional
 from puffotter.prompt import yn_prompt
-from toktokkie.iconizing.Iconizer import Iconizer, Procedure
+from toktokkie.utils.iconizing.Iconizer import Iconizer
+from toktokkie.utils.iconizing.procedures.Procedure import Procedure
 from toktokkie.metadata.functions import get_metadata, create_metadata
 from toktokkie.metadata.base.Metadata import Metadata
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import MediaType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
 from toktokkie.update import updaters, perform_update
 from puffotter.os import listdir

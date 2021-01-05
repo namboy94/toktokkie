@@ -21,7 +21,7 @@ import os
 import argparse
 from subprocess import Popen
 from toktokkie.scripts.Command import Command
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import MediaType
 from toktokkie.Directory import Directory
 
 

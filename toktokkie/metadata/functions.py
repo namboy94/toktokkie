@@ -28,7 +28,7 @@ from toktokkie.metadata.comic.Comic import Comic
 from toktokkie.metadata.music.Music import Music
 from toktokkie.metadata.movie.Movie import Movie
 from toktokkie.metadata.game.Game import Game
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import MediaType
 from toktokkie.exceptions import InvalidMetadata
 
 

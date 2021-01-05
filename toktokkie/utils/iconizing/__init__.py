@@ -16,3 +16,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
+
+from typing import Type
+from toktokkie.utils.iconizing.procedures.Procedure import Procedure
+from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
+from toktokkie.utils.iconizing.procedures.NoopProcedure import NoopProcedure
+
+procedures = [GnomeProcedure]
+
+
+def default_procedure() -> Type[Procedure]:
+    """
+    Checks all available procedures for eligibility
+    :return: The eligible procedure or None if none were found
+    """
+    for procedure in procedures:
+        if procedure.is_applicable():
+            return procedure
+    return NoopProcedure

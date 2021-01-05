@@ -22,8 +22,8 @@ import json
 import logging
 from abc import ABC
 from typing import Optional, Any, Dict, List
-from toktokkie.metadata.enums import MediaType, IdType
-from toktokkie.metadata.utils.ids import stringify_ids, fill_ids, \
+from toktokkie.enums import MediaType, IdType
+from toktokkie.utils.ids import stringify_ids, fill_ids, \
     objectify_ids, minimize_ids, urlmap, literature_media_types
 
 

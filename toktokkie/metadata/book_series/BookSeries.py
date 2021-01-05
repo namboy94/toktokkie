@@ -19,7 +19,7 @@ LICENSE"""
 
 from typing import List
 from toktokkie.metadata.base.Metadata import Metadata
-from toktokkie.metadata.enums import IdType, MediaType
+from toktokkie.enums import IdType, MediaType
 from toktokkie.metadata.book_series.BookSeriesPrompter import \
     BookSeriesPrompter
 from toktokkie.metadata.book_series.BookSeriesRenamer import \

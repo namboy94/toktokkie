@@ -21,7 +21,7 @@ import os
 from unittest import mock
 from toktokkie.exceptions import InvalidDirectoryState
 from toktokkie.metadata.tv.Tv import Tv
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.Directory import Directory
 from toktokkie.test.TestFramework import _TestFramework
 

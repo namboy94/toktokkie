@@ -24,8 +24,8 @@ from manga_dl.scrapers.mangadex import MangaDexScraper
 from manga_dl.entities.Chapter import Chapter
 from puffotter.os import makedirs, listdir, replace_illegal_ntfs_chars
 from puffotter.print import pprint
-from toktokkie.metadata.enums import IdType
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import IdType
+from toktokkie.enums import MediaType
 from toktokkie.metadata.comic.Comic import Comic
 from toktokkie.update.Updater import Updater
 

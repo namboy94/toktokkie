@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from toktokkie.iconizing import procedures, default_procedure
+from toktokkie.utils.iconizing import procedures, default_procedure
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
 

@@ -21,7 +21,7 @@ import os
 import shutil
 from unittest.mock import patch
 from toktokkie.metadata.tv.Tv import Tv
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.test.TestFramework import _TestFramework
 
 

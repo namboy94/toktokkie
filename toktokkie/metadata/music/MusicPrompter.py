@@ -21,10 +21,10 @@ from abc import ABC
 from typing import Dict, Any
 from puffotter.os import listdir
 from puffotter.prompt import prompt, yn_prompt
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.base.Prompter import Prompter
 from toktokkie.metadata.music.MusicExtras import MusicExtras
-from toktokkie.metadata.utils.ids import theme_song_ids
+from toktokkie.utils.ids import theme_song_ids
 
 
 class MusicPrompter(Prompter, MusicExtras, ABC):

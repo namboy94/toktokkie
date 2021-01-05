@@ -23,9 +23,9 @@ import shutil
 from typing import List, Dict, Set
 from qbittorrent import Client
 from toktokkie.update.TvUpdater import TvUpdater, DownloadInstructions
-from toktokkie.torrent.search import search_engines
-from toktokkie.torrent.search.SearchEngine import SearchEngine
-from toktokkie.torrent.search.TorrentInfo import TorrentInfo
+from toktokkie.utils.torrent.search import search_engines
+from toktokkie.utils.torrent.search.SearchEngine import SearchEngine
+from toktokkie.utils.torrent.search.TorrentInfo import TorrentInfo
 from toktokkie.Config import Config
 
 

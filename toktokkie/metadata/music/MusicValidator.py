@@ -20,10 +20,10 @@ LICENSE"""
 from abc import ABC
 from typing import Dict, Any
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.base.Validator import Validator
 from toktokkie.metadata.music.MusicExtras import MusicExtras
-from toktokkie.metadata.utils.ids import theme_song_ids
+from toktokkie.utils.ids import theme_song_ids
 
 
 class MusicValidator(Validator, MusicExtras, ABC):

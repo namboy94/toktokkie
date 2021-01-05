@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from toktokkie.metadata.tv.Tv import Tv
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.tv.components.TvSeason import TvSeason
 from toktokkie.test.TestFramework import _TestFramework
 

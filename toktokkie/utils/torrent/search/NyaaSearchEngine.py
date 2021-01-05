@@ -21,8 +21,8 @@ import os
 import requests
 from typing import List
 from bs4 import BeautifulSoup
-from toktokkie.torrent.search.SearchEngine import SearchEngine
-from toktokkie.torrent.search.TorrentInfo import TorrentInfo
+from toktokkie.utils.torrent.search.SearchEngine import SearchEngine
+from toktokkie.utils.torrent.search.TorrentInfo import TorrentInfo
 
 
 class NyaaSearchEngine(SearchEngine):

@@ -20,8 +20,8 @@ LICENSE"""
 from abc import ABC
 from typing import List
 from puffotter.os import listdir
-from toktokkie.metadata.enums import IdType
-from toktokkie.metadata.utils.RenameOperation import RenameOperation
+from toktokkie.enums import IdType
+from toktokkie.utils.RenameOperation import RenameOperation
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.book_series.BookSeriesExtras import BookSeriesExtras
 

@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import List
-from toktokkie.metadata.enums import IdType, MediaType
+from toktokkie.enums import IdType, MediaType
 from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.metadata.music.MusicPrompter import MusicPrompter
 from toktokkie.metadata.music.MusicRenamer import MusicRenamer

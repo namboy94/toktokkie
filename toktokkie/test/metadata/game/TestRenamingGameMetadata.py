@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
-from toktokkie.metadata.enums import IdType
-from toktokkie.Directory import Directory
 from toktokkie.metadata.game.Game import Game
 from toktokkie.test.TestFramework import _TestFramework
 

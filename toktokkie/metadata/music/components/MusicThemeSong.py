@@ -19,10 +19,10 @@ LICENSE"""
 
 from typing import Dict, Any, List
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.base.components.Component import Component
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
-from toktokkie.metadata.utils.ids import theme_song_ids, objectify_ids, \
+from toktokkie.utils.ids import theme_song_ids, objectify_ids, \
     stringify_ids, fill_ids, minimize_ids
 
 

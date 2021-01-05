@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.book_series.components.BookVolume import BookVolume
 from toktokkie.test.TestFramework import _TestFramework
 

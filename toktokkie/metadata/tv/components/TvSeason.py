@@ -22,8 +22,8 @@ from typing import Dict, List, Any, Union
 from puffotter.os import listdir
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.base.components.Component import Component
-from toktokkie.metadata.enums import IdType
-from toktokkie.metadata.utils.ids import objectify_ids, stringify_ids,\
+from toktokkie.enums import IdType
+from toktokkie.utils.ids import objectify_ids, stringify_ids,\
     fill_ids, minimize_ids
 
 

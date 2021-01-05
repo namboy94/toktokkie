@@ -22,7 +22,7 @@ from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.metadata.game.GamePrompter import GamePrompter
 from toktokkie.metadata.game.GameRenamer import GameRenamer
 from toktokkie.metadata.game.GameValidator import GameValidator
-from toktokkie.metadata.enums import IdType, MediaType
+from toktokkie.enums import IdType, MediaType
 
 
 class Game(Metadata, GameRenamer, GamePrompter, GameValidator):

@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from typing import Dict, List, Optional
-from toktokkie.metadata.enums import IdType, MediaType
+from toktokkie.enums import IdType, MediaType
 
 
 def stringify_ids(ids: Dict[IdType, List[str]]) -> Dict[str, List[str]]:

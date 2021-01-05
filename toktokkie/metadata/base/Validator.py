@@ -20,7 +20,7 @@ LICENSE"""
 from abc import ABC
 from typing import Dict, Any, List, Optional
 from jsonschema import validate, ValidationError
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.base.MetadataBase import MetadataBase
 

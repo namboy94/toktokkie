@@ -26,7 +26,7 @@ from puffotter.prompt import prompt
 from puffotter.os import makedirs, listdir
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import MediaType
 from toktokkie.metadata.types.MusicArtist import MusicArtist
 from toktokkie.metadata.types.components.MusicAlbum import MusicAlbum
 

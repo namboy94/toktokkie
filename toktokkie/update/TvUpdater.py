@@ -23,10 +23,10 @@ from enum import Enum
 from typing import List, Dict, Any, Optional, cast, Set
 from puffotter.prompt import prompt
 from toktokkie.update.Updater import Updater
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import MediaType
 from toktokkie.metadata.tv.Tv import Tv
 from toktokkie.metadata.tv.components.TvSeason import TvSeason
-from toktokkie.metadata.utils.RenameOperation import RenameOperation
+from toktokkie.utils.RenameOperation import RenameOperation
 from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.exceptions import InvalidUpdateInstructions
 

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.iconizing.procedures.Procedure import Procedure
+from toktokkie.utils.iconizing import Procedure
 
 
 class NoopProcedure(Procedure):

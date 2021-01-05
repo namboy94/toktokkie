@@ -21,7 +21,7 @@ import os
 from unittest.mock import patch
 from puffotter.os import makedirs
 from toktokkie.Directory import Directory
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.music.Music import Music
 from toktokkie.test.TestFramework import _TestFramework
 

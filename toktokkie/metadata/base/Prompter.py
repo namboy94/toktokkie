@@ -21,10 +21,10 @@ import os
 from abc import ABC
 from typing import Dict, Any, List
 from puffotter.prompt import prompt_comma_list
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.base.MetadataBase import MetadataBase
-from toktokkie.metadata.utils.ids import int_id_types, objectify_ids
-from toktokkie.metadata.utils.IdFetcher import IdFetcher
+from toktokkie.utils.ids import int_id_types, objectify_ids
+from toktokkie.utils.IdFetcher import IdFetcher
 from toktokkie.exceptions import InvalidDirectoryState
 
 

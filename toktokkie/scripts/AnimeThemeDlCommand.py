@@ -33,7 +33,7 @@ from toktokkie.scripts.RenameCommand import RenameCommand
 from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
 from toktokkie.scripts.MusicTagCommand import MusicTagCommand
-from toktokkie.anithemes.AniTheme import AniTheme
+from toktokkie.utils.anithemes.AniTheme import AniTheme
 
 
 class AnimeThemeDlCommand(Command):

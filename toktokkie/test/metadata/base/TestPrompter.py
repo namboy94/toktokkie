@@ -22,7 +22,7 @@ from typing import List
 from unittest.mock import patch
 from toktokkie.exceptions import InvalidDirectoryState
 from toktokkie.metadata.tv.Tv import Tv
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.test.TestFramework import _TestFramework
 
 

@@ -21,7 +21,7 @@ import argparse
 from toktokkie.scripts.Command import Command
 from toktokkie.metadata.ids.IdType import IdType
 from toktokkie.metadata.ids.mappings import valid_id_types
-from toktokkie.metadata.enums import MediaType
+from toktokkie.enums import MediaType
 from toktokkie.metadata.types.TvSeries import TvSeries
 from toktokkie.Directory import Directory
 

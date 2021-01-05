@@ -24,10 +24,10 @@ from typing import Dict, Any, List
 from puffotter.os import listdir
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.metadata.base.components.Component import Component
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.music.components.MusicSong import MusicSong
 from toktokkie.metadata.music.components.MusicVideo import MusicVideo
-from toktokkie.metadata.utils.ids import objectify_ids, stringify_ids, \
+from toktokkie.utils.ids import objectify_ids, stringify_ids, \
     fill_ids, minimize_ids
 
 

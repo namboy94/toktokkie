@@ -26,8 +26,8 @@ from tvdb_api import tvdb_episodenotfound, tvdb_seasonnotfound, \
     tvdb_shownotfound
 from toktokkie.utils.ImdbCache import ImdbCache
 from toktokkie.metadata.base.Renamer import Renamer
-from toktokkie.metadata.utils.RenameOperation import RenameOperation
-from toktokkie.metadata.enums import IdType
+from toktokkie.utils.RenameOperation import RenameOperation
+from toktokkie.enums import IdType
 from toktokkie.metadata.tv.TvExtras import TvExtras
 
 

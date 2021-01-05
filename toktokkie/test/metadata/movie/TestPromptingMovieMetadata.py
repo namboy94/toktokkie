@@ -22,7 +22,7 @@ from unittest.mock import patch
 from puffotter.os import touch, makedirs
 from toktokkie.Directory import Directory
 from toktokkie.exceptions import InvalidDirectoryState
-from toktokkie.metadata.enums import IdType
+from toktokkie.enums import IdType
 from toktokkie.metadata.movie.Movie import Movie
 from toktokkie.test.TestFramework import _TestFramework
 
