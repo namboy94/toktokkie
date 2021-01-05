@@ -52,7 +52,7 @@ class MusicAlbum(Component):
         :param ids: The specific IDs for this album
         :param name: The name of the album
         :param genre: The genre of the album
-        :param year: Th eyar this album was released
+        :param year: The year this album was released
         """
         self.logger = logging.getLogger(self.__class__.__name__)
 

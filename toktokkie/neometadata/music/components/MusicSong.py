@@ -19,12 +19,12 @@ LICENSE"""
 
 import os
 import logging
-from typing import Dict, Optional, Tuple, TYPE_CHECKING
+from typing import Dict, Tuple, TYPE_CHECKING
 from mutagen.easyid3 import EasyID3
 # noinspection PyProtectedMember
 from mutagen.id3._util import ID3NoHeaderError
-from puffotter.os import get_ext
-if TYPE_CHECKING:
+from puffotter.os import get_ext, listdir
+if TYPE_CHECKING:  # pragma: no cover
     from toktokkie.neometadata.music.components.MusicAlbum import MusicAlbum
 
 
@@ -51,7 +51,7 @@ class MusicSong:
         tags = {}  # type: Dict[str, str]
         if self.format == "mp3":
             tags = self.__load_mp3_tags()
-        self.__tags = tags
+        self._tags = tags
 
     def save_tags(self):
         """
@@ -61,21 +61,21 @@ class MusicSong:
         if self.format == "mp3":
             self.__write_mp3_tags()
         else:
-            pass
+            self.logger.warning("Can't write tags for {}: "
+                                "not a known file type".format(self.path))
 
     def __load_mp3_tags(self) -> Dict[str, str]:
         """
         Loads MP3 tags if this is an mp3 file
         :return: The mp3 tags as a dictionary
         """
-        if self.format != "mp3":
-            return {}
-
         try:
             tags = dict(EasyID3(self.path))
 
             for key in tags:
                 tag = tags[key]
+                print(tag)
+                print(key)
                 if isinstance(tag, list):
                     if len(tag) >= 1:
                         tags[key] = tag[0]
@@ -91,13 +91,8 @@ class MusicSong:
         Writes the current tags to the file as ID3 tags, if this is an mp3 file
         :return: None
         """
-        if self.format != "mp3":
-            self.logger.warning("Can't set mp3 tags for {}: not an mp3 file"
-                                .format(self.path))
-            return
-
         mp3 = EasyID3(self.path)
-        for key, tag in self.__tags.items():
+        for key, tag in self._tags.items():
             if tag == "":
                 if key in mp3:
                     mp3.pop(key)
@@ -110,7 +105,7 @@ class MusicSong:
         """
         :return: The title of the song
         """
-        title = self.__tags.get("title")
+        title = self._tags.get("title")
         if title is not None:
             return title
         else:
@@ -125,14 +120,14 @@ class MusicSong:
         :param title: The title of the song
         :return: None
         """
-        self.__tags["title"] = title
+        self._tags["title"] = title
 
     @property
-    def artist_name(self) -> Optional[str]:
+    def artist_name(self) -> str:
         """
         :return: The song's artist name
         """
-        return self.__tags.get("artist")
+        return self._tags.get("artist", self.album.artist_name)
 
     @artist_name.setter
     def artist_name(self, name: str):
@@ -140,14 +135,14 @@ class MusicSong:
         :param name: The song's artist name
         :return: None
         """
-        self.__tags["artist"] = name
+        self._tags["artist"] = name
 
     @property
-    def album_artist_name(self) -> Optional[str]:
+    def album_artist_name(self) -> str:
         """
         :return: The song's album artist name
         """
-        return self.__tags.get("albumartist")
+        return self._tags.get("albumartist", self.album.artist_name)
 
     @album_artist_name.setter
     def album_artist_name(self, name: str):
@@ -155,14 +150,14 @@ class MusicSong:
         :param name: The song's album artist name
         :return: None
         """
-        self.__tags["albumartist"] = name
+        self._tags["albumartist"] = name
 
     @property
     def album_name(self) -> str:
         """
         :return: The song's album name
         """
-        return self.__tags.get("album", self.album.name)
+        return self._tags.get("album", self.album.name)
 
     @album_name.setter
     def album_name(self, name: str):
@@ -170,14 +165,14 @@ class MusicSong:
         :param name: The song's album name
         :return: None
         """
-        self.__tags["album"] = name
+        self._tags["album"] = name
 
     @property
     def genre(self) -> str:
         """
         :return: The song's genre
         """
-        return self.__tags.get("genre", self.album.genre)
+        return self._tags.get("genre", self.album.genre)
 
     @genre.setter
     def genre(self, genre: str):
@@ -185,23 +180,29 @@ class MusicSong:
         :param genre: The song's genre
         :return: None
         """
-        self.__tags["genre"] = genre
+        self._tags["genre"] = genre
 
     @property
-    def tracknumber(self) -> Optional[Tuple[int, Optional[int]]]:
+    def tracknumber(self) -> Tuple[int, int]:
         """
         :return: The song's track number as a tuple consisting of the song's
                  track number and the total amount of tracks in the album
         """
-        tracknumber = self.__tags.get("tracknumber")
+        tracks = listdir(self.album.path, no_dirs=True)
+        track_count = len(tracks)
+        tracknumber = self._tags.get("tracknumber")
+
         if tracknumber is not None:
             split = tracknumber.split("/")
             if len(split) == 1:
-                return int(tracknumber), None
+                return int(tracknumber), track_count
             else:
                 return int(split[0]), int(split[1])
         else:
-            return None
+            for i, (_, track_path) in enumerate(tracks):
+                if track_path == self.path:
+                    return i + 1, track_count
+            return 1, track_count
 
     @tracknumber.setter
     def tracknumber(self, track_number: Tuple[int, int]):
@@ -212,14 +213,14 @@ class MusicSong:
         :return: None
         """
         track, total = track_number
-        self.__tags["tracknumber"] = "{}/{}".format(track, total)
+        self._tags["tracknumber"] = "{}/{}".format(track, total)
 
     @property
     def year(self) -> int:
         """
         :return: The year this song was released
         """
-        return int(self.__tags.get("date", self.album.year))
+        return int(self._tags.get("date", self.album.year))
 
     @year.setter
     def year(self, year: int):
@@ -227,4 +228,4 @@ class MusicSong:
         :param year: The year this song was released
         :return: None
         """
-        self.__tags["date"] = str(year)
+        self._tags["date"] = str(year)

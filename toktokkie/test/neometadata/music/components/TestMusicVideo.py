@@ -17,26 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import logging
-from typing import TYPE_CHECKING
-from puffotter.os import get_ext
-if TYPE_CHECKING:  # pragma: no cover
-    from toktokkie.neometadata.music.components.MusicAlbum import MusicAlbum
+from toktokkie.test.TestFramework import _TestFramework
 
 
-class MusicVideo:
+class TestMusicVideo(_TestFramework):
     """
-    Class that keeps track of information for music videos
+    Class that tests the MusicVideo class
     """
-
-    def __init__(self, path: str, album: "MusicAlbum"):
-        """
-        Initializes the music video
-        :param path: The path to the video file
-        :param album: The album to which the music video belongs to
-        """
-        self.logger = logging.getLogger(self.__class__.__name__)
-
-        self.album = album
-        self.path = path
-        self.format = get_ext(self.path)

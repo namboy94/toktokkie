@@ -73,11 +73,8 @@ class MusicRenamer(Renamer, MusicExtras, ABC):
 
             else:
                 tracks = []
-                for i, song in enumerate(album.songs):
-                    if song.tracknumber is None:
-                        track_number = str(i + 1).zfill(2)
-                    else:
-                        track_number = str(song.tracknumber[0]).zfill(2)
+                for song in album.songs:
+                    track_number = str(song.tracknumber[0]).zfill(2)
                     tracks.append((track_number, song))
 
                 tracks.sort(key=lambda x: x[0])  # Sort for better UX
