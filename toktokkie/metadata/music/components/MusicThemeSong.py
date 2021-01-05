@@ -20,13 +20,12 @@ LICENSE"""
 from typing import Dict, Any, List
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.enums import IdType
-from toktokkie.metadata.base.components.Component import Component
+from toktokkie.metadata.base.IdHelper import IdHelper
+from toktokkie.metadata.base.components.JsonComponent import JsonComponent
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
-from toktokkie.utils.ids import theme_song_ids, objectify_ids, \
-    stringify_ids, fill_ids, minimize_ids
 
 
-class MusicThemeSong(Component):
+class MusicThemeSong(JsonComponent):
     """
     Class that collects data on music theme songs (like anime openings etc)
     """
@@ -52,7 +51,9 @@ class MusicThemeSong(Component):
         if self.name != self.album.name:
             self.logger.warning("Theme song {} does not match album {}"
                                 .format(self.name, self.album.name))
-        self.series_ids = fill_ids(series_ids, theme_song_ids)
+        self.series_ids = IdHelper.fill_ids(
+            series_ids, IdHelper.theme_song_id_types()
+        )
 
     @property
     def theme_type(self) -> str:
@@ -69,7 +70,9 @@ class MusicThemeSong(Component):
         """
         return {
             "name": self.name,
-            "series_ids": stringify_ids(minimize_ids(self.series_ids)),
+            "series_ids": IdHelper.stringify_ids(IdHelper.minimize_ids(
+                self.series_ids
+            )),
             "theme_type": self.theme_type.lower()
         }
 
@@ -91,7 +94,7 @@ class MusicThemeSong(Component):
                 album,
                 json_data["name"],
                 json_data["theme_type"],
-                objectify_ids(json_data["series_ids"])
+                IdHelper.objectify_ids(json_data["series_ids"])
             )
         except KeyError as e:
             raise InvalidMetadata(f"Attribute missing: {e}")

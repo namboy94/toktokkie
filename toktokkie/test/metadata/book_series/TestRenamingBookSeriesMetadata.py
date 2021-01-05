@@ -78,7 +78,7 @@ class TestRenamingBookSeriesMetadata(_TestFramework):
             self.assertFalse(os.path.isfile(path))
             self.assertTrue(os.path.isfile(new_file))
 
-        bsb_dir.rename(noconfirm=True)
+        bsb_dir.metadata.rename(noconfirm=True)
 
         for correct_file in correct_files:
             self.assertTrue(os.path.isfile(correct_file))
@@ -89,7 +89,7 @@ class TestRenamingBookSeriesMetadata(_TestFramework):
         with patch("builtins.input", side_effect=[
             "n", "y"
         ]):
-            bsb_dir.rename()
+            bsb_dir.metadata.rename()
 
         self.assertTrue(os.path.isdir(self.get("Not Bluesteel Blasphemer")))
         self.assertFalse(os.path.isdir(bsb))
@@ -100,7 +100,7 @@ class TestRenamingBookSeriesMetadata(_TestFramework):
                 "Bluesteel Blasphemer", "Not Bluesteel Blasphemer"
             )))
 
-        bsb_dir.rename(noconfirm=True)
+        bsb_dir.metadata.rename(noconfirm=True)
 
         for correct_file in correct_files:
             self.assertTrue(os.path.isfile(correct_file))

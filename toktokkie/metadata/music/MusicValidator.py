@@ -23,7 +23,6 @@ from toktokkie.exceptions import InvalidMetadata
 from toktokkie.enums import IdType
 from toktokkie.metadata.base.Validator import Validator
 from toktokkie.metadata.music.MusicExtras import MusicExtras
-from toktokkie.utils.ids import theme_song_ids
 
 
 class MusicValidator(Validator, MusicExtras, ABC):
@@ -44,7 +43,7 @@ class MusicValidator(Validator, MusicExtras, ABC):
         valid_album_ids.append(IdType.MUSICBRAINZ_RELEASE)
 
         album_ids = cls._create_ids_schema(valid_album_ids)
-        series_ids = cls._create_ids_schema(theme_song_ids)
+        series_ids = cls._create_ids_schema(Validator.theme_song_id_types())
 
         base["properties"].update({
             "albums": {

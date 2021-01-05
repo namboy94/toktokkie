@@ -21,12 +21,11 @@ import os
 from typing import Dict, List, Any
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.enums import IdType
-from toktokkie.metadata.base.components.Component import Component
-from toktokkie.utils.ids import stringify_ids, objectify_ids,\
-    minimize_ids, fill_ids
+from toktokkie.metadata.base.IdHelper import IdHelper
+from toktokkie.metadata.base.components.JsonComponent import JsonComponent
 
 
-class BookVolume(Component):
+class BookVolume(JsonComponent):
     """
     Class that models a Volume in a Book Series
     """
@@ -47,7 +46,7 @@ class BookVolume(Component):
         """
         self.number = volume_number
         self.path = path
-        self.ids = fill_ids(ids, [], parent_ids)
+        self.ids = IdHelper.fill_ids(ids, [], parent_ids)
         self.parent_ids = parent_ids
 
     @property
@@ -64,7 +63,9 @@ class BookVolume(Component):
         :return: A JSON-compatible dictionary representing this object
         """
         return {
-            "ids": stringify_ids(minimize_ids(self.ids, self.parent_ids))
+            "ids": IdHelper.stringify_ids(
+                IdHelper.minimize_ids(self.ids, self.parent_ids)
+            )
         }
 
     @classmethod
@@ -89,7 +90,7 @@ class BookVolume(Component):
                 volume_number,
                 path,
                 parent_ids,
-                objectify_ids(json_data["ids"])
+                IdHelper.objectify_ids(json_data["ids"])
             )
         except KeyError as e:
             raise InvalidMetadata(f"Attribute missing: {e}")

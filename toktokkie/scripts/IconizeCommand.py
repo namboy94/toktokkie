@@ -21,6 +21,7 @@ import argparse
 from toktokkie.utils.iconizing import procedures, default_procedure
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
+from toktokkie.utils.iconizing.Iconizer import Iconizer
 
 
 class IconizeCommand(Command):
@@ -60,7 +61,13 @@ class IconizeCommand(Command):
 
         for directory in Directory.load_directories(self.args.directories):
             try:
-                directory.iconize(procedure)
+                metadata = directory.metadata
+                iconizer = Iconizer(
+                    metadata.directory_path,
+                    metadata.icon_directory,
+                    procedure
+                )
+                iconizer.iconize()
             except ValueError:
                 self.logger.warning(
                     "Iconizing of " + directory.path + "failed"

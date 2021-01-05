@@ -46,7 +46,6 @@ class TestPromptingGameMetadata(_TestFramework):
 
         directory = Directory(evangile)
 
-        self.assertTrue(os.path.isdir(directory.meta_dir))
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertEqual(metadata, directory.metadata)
         self.assertEqual(metadata.ids[IdType.VNDB], ["v6710"])

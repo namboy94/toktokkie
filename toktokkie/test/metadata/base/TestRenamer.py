@@ -39,7 +39,7 @@ class TestRenamer(_TestFramework):
         otgw_dir = Directory(otgw)
 
         otgw_dir.metadata.set_ids(IdType.ANILIST, ["19815"])
-        otgw_dir.rename(noconfirm=True, skip_title=True)
+        otgw_dir.metadata.rename(noconfirm=True, skip_title=True)
 
         self.assertEqual(otgw_dir.metadata.name, "Over the Garden Wall")
         self.assertTrue(otgw_dir.path.endswith("Over the Garden Wall"))
@@ -72,7 +72,7 @@ class TestRenamer(_TestFramework):
         correct, wrong = self.scramble_episode_names(otgw)
 
         with patch("builtins.input", side_effect=["n", "n"]):
-            otgw_dir.rename()
+            otgw_dir.metadata.rename()
 
         for _file in correct:
             self.assertFalse(os.path.isfile(_file))
@@ -80,7 +80,7 @@ class TestRenamer(_TestFramework):
             self.assertTrue(os.path.isfile(_file))
 
         with patch("builtins.input", side_effect=["n", "y"]):
-            otgw_dir.rename()
+            otgw_dir.metadata.rename()
 
         for _file in correct:
             self.assertTrue(os.path.isfile(_file))

@@ -18,17 +18,20 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-import sys
+import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import List, Optional, Union, Type
 from puffotter.prompt import yn_prompt
-from toktokkie.utils.iconizing.Iconizer import Iconizer
-from toktokkie.utils.iconizing.procedures.Procedure import Procedure
-from toktokkie.metadata.functions import get_metadata, create_metadata
 from toktokkie.metadata.base.Metadata import Metadata
+from toktokkie.metadata.tv.Tv import Tv
+from toktokkie.metadata.book.Book import Book
+from toktokkie.metadata.book_series.BookSeries import BookSeries
+from toktokkie.metadata.comic.Comic import Comic
+from toktokkie.metadata.music.Music import Music
+from toktokkie.metadata.movie.Movie import Movie
+from toktokkie.metadata.game.Game import Game
 from toktokkie.enums import MediaType
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
-from toktokkie.update import updaters, perform_update
 from puffotter.os import listdir
 
 
@@ -37,118 +40,67 @@ class Directory:
     Class that encapsulates all of toktokkie's functionality
     """
 
-    def __init__(
-            self,
-            path: str,
-            generate_metadata: bool = False,
-            metadata_type: str = None,
-            metadata: Optional[Metadata] = None
-    ):
+    logger = logging.getLogger(__file__)
+    """
+    Logger for the directory class
+    """
+
+    def __init__(self, path: str):
         """
         Initializes the metadata of the directory
         :param path: The directory's path
-        :param generate_metadata: Generates metadata by prompting the user
-        :param metadata_type: The type of metadata
-        :param metadata: Specifies a metadata object, which will be used
-                         instead of reading the metadata file
         :except MissingMetadataException,
                 InvalidMetadataException,
                 MetadataMismatch
         """
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.metadata = self.get_metadata(path)
 
-        self.path = path
-        self.meta_dir = os.path.join(path, ".meta")
-        self.metadata_file = os.path.join(self.meta_dir, "info.json")
-
-        if generate_metadata:
-
-            if metadata_type is None:
-                raise ValueError("Metadata type must be specified")
-            self.generate_metadata(metadata_type)
-
-        if not os.path.isfile(self.metadata_file):
-            raise MissingMetadata(self.metadata_file + " missing")
-
-        self.metadata = \
-            metadata if metadata is not None else get_metadata(self.path)
-
-        if not os.path.isdir(self.metadata.icon_directory):
-            os.makedirs(self.metadata.icon_directory)
+    @property
+    def path(self) -> str:
+        """
+        :return: The path to the directory
+        """
+        return self.metadata.directory_path
 
     def reload(self):
         """
         Reloads the metadata from the metadata file
         :return: None
         """
-        self.metadata = get_metadata(self.path)
+        self.metadata = self.get_metadata(self.metadata.directory_path)
 
-    def write_metadata(self):
+    def save(self):
         """
         Updates the metadata file with the current contents of the metadata
         :return: None
         """
         self.metadata.write()
 
-    def generate_metadata(self, metadata_type: str):
+    @classmethod
+    def prompt(cls, path: str, metadata_type: Union[str, MediaType]) \
+            -> Optional["Directory"]:
         """
         Prompts the user for metadata information
+        :param path: The path to the directory for which to prompt
         :param metadata_type: The metadata type to generate
-        :return: None
+        :return: The generated directory, or None if aborted
         """
+        try:
+            existing = Directory(path)
+        except (InvalidMetadata, MissingMetadata):
+            existing = None
 
-        if os.path.isfile(self.metadata_file):
+        if existing is not None:
             prompt = yn_prompt("Metadata File already exists. "
                                "Continuing will delete the previous data. "
                                "Continue?")
             if not prompt:
-                self.logger.warning("Aborting")
-                sys.exit(0)
+                cls.logger.warning("Aborting")
+                return None
 
-        metadata = create_metadata(self.path, metadata_type)
+        metadata = cls.create_metadata(path, metadata_type)
         metadata.write()
-
-    def rename(self, noconfirm: bool = False, skip_title: bool = False):
-        """
-        Renames the contained files.
-        :param noconfirm: Skips the confirmation phase
-        :param skip_title: Skips title renaming
-        :return: None
-        """
-        self.metadata.rename(noconfirm, skip_title)
-        self.path = self.metadata.directory_path
-
-    def iconize(self, procedure: Procedure):
-        """
-        Applies the directory's icons
-        :param procedure: The iconizing procedure to use
-        :return: None
-        """
-        iconizer = Iconizer(self.path, self.metadata.icon_directory, procedure)
-        iconizer.iconize()
-
-    def update(self, cli_args: Optional[Dict[str, Any]] = None):
-        """
-        Performs an Update Action
-        :param cli_args: Command line arguments used to configure the update
-        :return: None
-        """
-        args = {
-            "dry_run": False,
-            "create": False,
-            "throttle": -1,
-            "timeout": 120,
-            "no_check_newest_chapter_length": False,
-            "skip_special": False
-        }
-        if cli_args is not None:
-            args.update(cli_args)
-
-        applicable_updaters = [
-            x for x in updaters
-            if self.metadata.media_type() in x.applicable_media_types()
-        ]
-        perform_update(args, self.metadata, applicable_updaters)
+        return cls(path)
 
     @classmethod
     def load_directories(
@@ -204,3 +156,61 @@ class Directory:
         """
         paths = [x[1] for x in listdir(parent_dir)]
         return cls.load_directories(paths, restrictions)
+
+    @staticmethod
+    def get_metadata(directory: str) -> Metadata:
+        """
+        Automatically resolves the metadata of a directory
+        :param directory: The directory for which to generate the metadata
+        :return: The generated metadata
+        :raises InvalidMetadataException: If the metadata is invalid
+        """
+        info_file = os.path.join(directory, ".meta/info.json")
+        try:
+            with open(info_file, "r") as f:
+                media_type = json.load(f)["type"]
+                metadata_cls = Directory.get_metadata_class(media_type)
+                return metadata_cls(directory)
+        except (KeyError, ValueError) as e:
+            raise InvalidMetadata(f"Missing/Invalid attribute: {e}")
+        except FileNotFoundError:
+            raise MissingMetadata()
+
+    @staticmethod
+    def create_metadata(directory: str, media_type: Union[str, MediaType]) \
+            -> Metadata:
+        """
+        Generates a new metadata object using user prompts
+        :param directory: The directory for which to generate the metadata
+        :param media_type: The media type of the metadata
+        :return: The generated metadata
+        """
+        metadata_cls = Directory.get_metadata_class(media_type)
+        metadata = metadata_cls.from_prompt(directory)
+        metadata.write()
+        return metadata
+
+    @staticmethod
+    def get_metadata_class(media_type: Union[str, MediaType]) \
+            -> Type[Metadata]:
+        """
+        Retrieves the metadata class for a given media type
+        :param media_type: The media type for which to get the metadata class
+        :return: The metadata class
+        """
+        if isinstance(media_type, str):
+            media_type = MediaType(media_type)
+
+        mapping = {
+            x.media_type(): x
+            for x in [
+                Book,
+                BookSeries,
+                Comic,
+                Movie,
+                Tv,
+                Music,
+                Game
+            ]
+        }
+        return mapping[media_type]

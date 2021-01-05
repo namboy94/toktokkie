@@ -28,8 +28,7 @@ from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnilistMediaType
 from toktokkie.enums import IdType, MediaType
 from toktokkie.metadata.base.MetadataBase import MetadataBase
-from toktokkie.utils.RenameOperation import RenameOperation
-from toktokkie.utils.ids import literature_media_types
+from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 
 
 class Renamer(MetadataBase, ABC):
@@ -37,7 +36,7 @@ class Renamer(MetadataBase, ABC):
     Class that's responsible to define renaming functionality
     """
 
-    def rename(self, noconfirm: bool, skip_title: bool = False):
+    def rename(self, noconfirm: bool = False, skip_title: bool = False):
         """
         Renames the contained files according to the naming schema.
         :param noconfirm: Skips the confirmation phase if True
@@ -115,7 +114,7 @@ class Renamer(MetadataBase, ABC):
         if anilist_id == 0:
             return None
 
-        if _media_type in literature_media_types:
+        if _media_type in MetadataBase.literature_media_types():
             media_type = AnilistMediaType.MANGA
         else:
             media_type = AnilistMediaType.ANIME

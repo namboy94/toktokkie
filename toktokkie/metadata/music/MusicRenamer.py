@@ -20,7 +20,7 @@ LICENSE"""
 from abc import ABC
 from typing import List
 from toktokkie.enums import IdType
-from toktokkie.utils.RenameOperation import RenameOperation
+from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.music.MusicExtras import MusicExtras
 from toktokkie.metadata.music.components.MusicThemeSong import \

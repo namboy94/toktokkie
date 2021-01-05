@@ -22,16 +22,15 @@ import logging
 import mimetypes
 from typing import Dict, Any, List
 from puffotter.os import listdir
-from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.base.components.Component import Component
 from toktokkie.enums import IdType
+from toktokkie.exceptions import InvalidMetadata
+from toktokkie.metadata.base.IdHelper import IdHelper
+from toktokkie.metadata.base.components.JsonComponent import JsonComponent
 from toktokkie.metadata.music.components.MusicSong import MusicSong
 from toktokkie.metadata.music.components.MusicVideo import MusicVideo
-from toktokkie.utils.ids import objectify_ids, stringify_ids, \
-    fill_ids, minimize_ids
 
 
-class MusicAlbum(Component):
+class MusicAlbum(JsonComponent):
     """
     Class that defines attributes of music albums
     """
@@ -66,7 +65,9 @@ class MusicAlbum(Component):
         self.year = year
         self.path = os.path.join(parent_path, self.name)
 
-        self.ids = fill_ids(ids, [IdType.MUSICBRAINZ_RELEASE], parent_ids)
+        self.ids = IdHelper.fill_ids(
+            ids, [IdType.MUSICBRAINZ_RELEASE], parent_ids
+        )
 
     @property
     def json(self) -> Dict[str, Any]:
@@ -78,7 +79,9 @@ class MusicAlbum(Component):
             "name": self.name,
             "genre": self.genre,
             "year": self.year,
-            "ids": stringify_ids(minimize_ids(self.ids, self.parent_ids))
+            "ids": IdHelper.stringify_ids(
+                IdHelper.minimize_ids(self.ids, self.parent_ids)
+            )
         }
 
     @classmethod
@@ -100,7 +103,7 @@ class MusicAlbum(Component):
             return cls(
                 parent_path,
                 parent_ids,
-                objectify_ids(json_data["ids"]),
+                IdHelper.objectify_ids(json_data["ids"]),
                 json_data["name"],
                 json_data["genre"],
                 json_data["year"]

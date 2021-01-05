@@ -23,7 +23,7 @@ from puffotter.os import listdir, get_ext
 from toktokkie.enums import IdType
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.book.BookExtras import BookExtras
-from toktokkie.utils.RenameOperation import RenameOperation
+from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 
 
 class BookRenamer(Renamer, BookExtras, ABC):

@@ -52,6 +52,6 @@ class RenameCommand(Command):
         """
         for directory in Directory.load_directories(self.args.directories):
             try:
-                directory.rename(self.args.noconfirm)
+                directory.metadata.rename(self.args.noconfirm)
             except ValueError:
                 self.logger.warning("Renaming of " + directory.path + "failed")

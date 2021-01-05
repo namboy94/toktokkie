@@ -93,7 +93,7 @@ class TestPromptingBookSeriesMetadata(_TestFramework):
             metadata.write()
 
         directory = Directory(sp_n_wo)
-        directory.rename(noconfirm=True)
+        directory.metadata.rename(noconfirm=True)
 
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertEqual(metadata, directory.metadata)

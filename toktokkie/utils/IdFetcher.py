@@ -23,7 +23,7 @@ import musicbrainzngs
 from typing import List, Dict, Optional
 from toktokkie import version
 from toktokkie.enums import IdType, MediaType
-from toktokkie.utils.ids import literature_media_types
+from toktokkie.metadata.base.IdHelper import IdHelper
 from anime_list_apis.api.AnilistApi import AnilistApi
 from anime_list_apis.models.attributes.MediaType import MediaType as \
     AnimeListMediaType
@@ -94,7 +94,7 @@ class IdFetcher:
         """
         self.logger.info("Loading anilist ID from mal IDs {}".format(mal_ids))
         list_type = AnimeListMediaType.ANIME
-        if self.media_type in literature_media_types:
+        if self.media_type in IdHelper.literature_media_types():
             list_type = AnimeListMediaType.MANGA
 
         ids = []

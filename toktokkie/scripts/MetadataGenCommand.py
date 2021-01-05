@@ -67,9 +67,8 @@ class MetadataGenCommand(Command):
 
             media_type = self.args.media_type
 
-            generated = Directory(
+            generated = Directory.prompt(
                 directory,
-                generate_metadata=True,
-                metadata_type=media_type
-            )
+                media_type
+            ).metadata
             generated.metadata.print_folder_icon_source()

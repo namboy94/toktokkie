@@ -23,11 +23,10 @@ import logging
 from abc import ABC
 from typing import Optional, Any, Dict, List
 from toktokkie.enums import MediaType, IdType
-from toktokkie.utils.ids import stringify_ids, fill_ids, \
-    objectify_ids, minimize_ids, urlmap, literature_media_types
+from toktokkie.metadata.base.IdHelper import IdHelper
 
 
-class MetadataBase(ABC):
+class MetadataBase(IdHelper, ABC):
     """
     Base class for all metadata classes. Specifies most of the
     methods required by Metadata classes.
@@ -98,8 +97,8 @@ class MetadataBase(ABC):
         """
         :return: A dictionary containing lists of IDs mapped to ID types
         """
-        return fill_ids(
-            objectify_ids(self.json["ids"]),
+        return self.fill_ids(
+            self.objectify_ids(self.json["ids"]),
             self.valid_id_types()
         )
 
@@ -111,7 +110,7 @@ class MetadataBase(ABC):
         :param ids: The IDs to set
         :return: None
         """
-        self.json["ids"] = stringify_ids(minimize_ids(ids))
+        self.json["ids"] = self.stringify_ids(self.minimize_ids(ids))
 
     @property
     def urls(self) -> Dict[IdType, List[str]]:
@@ -122,14 +121,13 @@ class MetadataBase(ABC):
         ids = self.ids
         urls: Dict[IdType, List[str]] = {x: [] for x in ids.keys()}
 
-        anime_manga = \
-            "manga" if self.media_type() in literature_media_types else "anime"
-
         for id_type, values in ids.items():
             for value in values:
-                url = urlmap[id_type] \
-                    .replace("@{ANIME_MANGA}", anime_manga) \
-                    .format(value)
+                url = self.generate_url_for_id(
+                    id_type,
+                    self.media_type(),
+                    value
+                )
                 urls[id_type].append(url)
 
         return urls

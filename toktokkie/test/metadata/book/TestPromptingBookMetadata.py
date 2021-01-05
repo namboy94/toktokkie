@@ -102,7 +102,6 @@ class TestPromptingBookMetadata(_TestFramework):
 
         directory = Directory(faust_two)
 
-        self.assertTrue(os.path.isdir(directory.meta_dir))
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertEqual(metadata, directory.metadata)
         self.assertEqual(metadata.ids[IdType.ISBN], ["1502597918"])

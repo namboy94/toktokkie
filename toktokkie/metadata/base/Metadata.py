@@ -21,6 +21,7 @@ import os
 import json
 from abc import ABC
 from typing import Optional, Dict, Any
+from puffotter.os import makedirs
 from toktokkie.exceptions import MissingMetadata
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.base.Validator import Validator
@@ -61,6 +62,8 @@ class Metadata(Renamer, Validator, Prompter, ABC):
 
         if not no_validation:
             self.validate()
+
+        makedirs(self.icon_directory)
 
     def __repr__(self) -> str:
         """

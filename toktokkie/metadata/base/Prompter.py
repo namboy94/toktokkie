@@ -23,7 +23,6 @@ from typing import Dict, Any, List
 from puffotter.prompt import prompt_comma_list
 from toktokkie.enums import IdType
 from toktokkie.metadata.base.MetadataBase import MetadataBase
-from toktokkie.utils.ids import int_id_types, objectify_ids
 from toktokkie.utils.IdFetcher import IdFetcher
 from toktokkie.exceptions import InvalidDirectoryState
 
@@ -117,7 +116,7 @@ class Prompter(MetadataBase, ABC):
                 )
 
                 default = defaults.get(id_type.value)
-                is_int = id_type in int_id_types
+                is_int = id_type in cls.int_id_types()
 
                 min_count = 0
                 if id_type in required_ids:
@@ -169,7 +168,7 @@ class Prompter(MetadataBase, ABC):
             if id_type.value in defaults:
                 continue
             else:
-                _defaults = objectify_ids(defaults)
+                _defaults = cls.objectify_ids(defaults)
                 ids = id_fetcher.fetch_ids(id_type, _defaults)
                 if ids is not None:
                     defaults[id_type.value] = ids

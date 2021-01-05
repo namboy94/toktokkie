@@ -20,6 +20,7 @@ LICENSE"""
 import argparse
 from toktokkie.scripts.Command import Command
 from toktokkie.Directory import Directory
+from toktokkie.update import updaters, perform_update
 
 
 class UpdateCommand(Command):
@@ -71,4 +72,20 @@ class UpdateCommand(Command):
         :return: None
         """
         for directory in Directory.load_directories(self.args.directories):
-            directory.update(dict(self.args.__dict__))
+
+            metadata = directory.metadata
+            args = {
+                "dry_run": False,
+                "create": False,
+                "throttle": -1,
+                "timeout": 120,
+                "no_check_newest_chapter_length": False,
+                "skip_special": False
+            }
+            args.update(dict(self.args.__dict__))
+
+            applicable_updaters = [
+                x for x in updaters
+                if metadata.media_type() in x.applicable_media_types()
+            ]
+            perform_update(args, metadata, applicable_updaters)

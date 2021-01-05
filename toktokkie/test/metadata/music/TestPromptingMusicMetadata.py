@@ -90,7 +90,7 @@ class TestPromptingMusicMetadata(_TestFramework):
             metadata.write()
 
         directory = Directory(yui)
-        directory.rename(noconfirm=True)
+        directory.metadata.rename(noconfirm=True)
 
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertEqual(metadata, directory.metadata)

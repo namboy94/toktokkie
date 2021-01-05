@@ -21,13 +21,12 @@ import os
 from typing import Dict, List, Any
 from puffotter.os import listdir
 from toktokkie.exceptions import InvalidMetadata
-from toktokkie.metadata.base.components.Component import Component
+from toktokkie.metadata.base.components.JsonComponent import JsonComponent
 from toktokkie.enums import IdType
-from toktokkie.utils.ids import objectify_ids, stringify_ids,\
-    fill_ids, minimize_ids
+from toktokkie.metadata.base.IdHelper import IdHelper
 
 
-class TvSeason(Component):
+class TvSeason(JsonComponent):
     """
     Class that models a season of a TV Series
     """
@@ -52,7 +51,7 @@ class TvSeason(Component):
         self.name = name
         self.path = os.path.join(parent_path, self.name)
 
-        self.ids = fill_ids(ids, [], parent_ids)
+        self.ids = IdHelper.fill_ids(ids, [], parent_ids)
 
     @property
     def json(self) -> Dict[str, Any]:
@@ -61,7 +60,9 @@ class TvSeason(Component):
         """
         return {
             "name": self.name,
-            "ids": stringify_ids(minimize_ids(self.ids, self.parent_ids))
+            "ids": IdHelper.stringify_ids(IdHelper.minimize_ids(
+                self.ids, self.parent_ids
+            ))
         }
 
     @classmethod
@@ -83,7 +84,7 @@ class TvSeason(Component):
             return cls(
                 parent_path,
                 parent_ids,
-                objectify_ids(json_data["ids"]),
+                IdHelper.objectify_ids(json_data["ids"]),
                 json_data["name"]
             )
         except KeyError as e:

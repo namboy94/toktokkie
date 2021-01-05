@@ -35,10 +35,10 @@ class TestRenamingTvMetadata(_TestFramework):
         """
         otgw = self.get("Over the Garden Wall")
         otgw_dir = Directory(otgw)
-        otgw_dir.rename(noconfirm=True)
+        otgw_dir.metadata.rename(noconfirm=True)
 
         correct, wrong = self.scramble_episode_names(otgw)
-        otgw_dir.rename(noconfirm=True)
+        otgw_dir.metadata.rename(noconfirm=True)
 
         for _file in correct:
             self.assertTrue(os.path.isfile(_file))
@@ -54,7 +54,7 @@ class TestRenamingTvMetadata(_TestFramework):
         otgw_dir = Directory(otgw)
 
         otgw_dir.metadata.set_ids(IdType.ANILIST, ["19815"])
-        otgw_dir.rename(noconfirm=True)
+        otgw_dir.metadata.rename(noconfirm=True)
 
         self.assertEqual(otgw_dir.metadata.name, "No Game, No Life")
         self.assertTrue(otgw_dir.path.endswith("No Game, No Life"))
@@ -81,15 +81,15 @@ class TestRenamingTvMetadata(_TestFramework):
         self.assertFalse(os.path.isfile(sample))
 
         meta.ids = {IdType.IMDB: ["0"]}
-        otgw_dir.rename(noconfirm=True)
+        otgw_dir.metadata.rename(noconfirm=True)
         self.assertTrue(os.path.isfile(sample))
 
         meta.ids = {IdType.KITSU: ["0"]}
-        otgw_dir.rename(noconfirm=True)
+        otgw_dir.metadata.rename(noconfirm=True)
         self.assertTrue(os.path.isfile(sample))
 
         meta.ids = {}
-        otgw_dir.rename(noconfirm=True)
+        otgw_dir.metadata.rename(noconfirm=True)
         self.assertTrue(os.path.isfile(sample))
 
     def test_renaming_spinoff(self):
@@ -100,7 +100,7 @@ class TestRenamingTvMetadata(_TestFramework):
         haruhi_dir = Directory(haruhi)
 
         correct, wrong = self.scramble_episode_names(haruhi)
-        haruhi_dir.rename(noconfirm=True)
+        haruhi_dir.metadata.rename(noconfirm=True)
 
         for _file in correct:
             self.assertTrue(os.path.isfile(_file))
@@ -117,7 +117,7 @@ class TestRenamingTvMetadata(_TestFramework):
         meta: Tv = fullmetal_dir.metadata
 
         meta.add_multi_episode(IdType.IMDB, 1, 9, 10)
-        fullmetal_dir.rename(noconfirm=True)
+        fullmetal_dir.metadata.rename(noconfirm=True)
 
         self.assertTrue(os.path.isfile(os.path.join(
             fullmetal,
@@ -144,7 +144,7 @@ class TestRenamingTvMetadata(_TestFramework):
         self.assertTrue(os.path.isfile(excluded))
 
         meta.add_exclude(IdType.IMDB, 1, 5)
-        fullmetal_dir.rename(noconfirm=True)
+        fullmetal_dir.metadata.rename(noconfirm=True)
 
         self.assertFalse(os.path.isfile(excluded))
 

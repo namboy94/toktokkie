@@ -88,7 +88,6 @@ class TestPromptingComicMetadata(_TestFramework):
 
         directory = Directory(showa)
 
-        self.assertTrue(os.path.isdir(directory.meta_dir))
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertEqual(metadata, directory.metadata)
         self.assertEqual(metadata.ids[IdType.ANILIST], ["106988"])
@@ -108,5 +107,5 @@ class TestPromptingComicMetadata(_TestFramework):
             showa, "Special/Shouwa Otome Otogibanashi - Chapter 5.5.cbz"
         )
         self.assertFalse(os.path.isfile(special_file))
-        directory.rename(noconfirm=True)
+        directory.metadata.rename(noconfirm=True)
         self.assertTrue(os.path.isfile(special_file))

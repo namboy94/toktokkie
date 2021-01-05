@@ -21,7 +21,7 @@ from abc import ABC
 from typing import List
 from puffotter.os import listdir
 from toktokkie.enums import IdType
-from toktokkie.utils.RenameOperation import RenameOperation
+from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.book_series.BookSeriesExtras import BookSeriesExtras
 

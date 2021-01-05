@@ -19,11 +19,11 @@ LICENSE"""
 
 from typing import Dict, Any, List
 from toktokkie.metadata.tv.components.TvEpisode import TvEpisode
-from toktokkie.metadata.base.components.Component import Component
+from toktokkie.metadata.base.components.JsonComponent import JsonComponent
 from toktokkie.exceptions import InvalidMetadata
 
 
-class TvEpisodeRange(Component):
+class TvEpisodeRange(JsonComponent):
     """
     Class that models a TV Episode Range
     """

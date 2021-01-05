@@ -26,7 +26,7 @@ from toktokkie.update.Updater import Updater
 from toktokkie.enums import MediaType
 from toktokkie.metadata.tv.Tv import Tv
 from toktokkie.metadata.tv.components.TvSeason import TvSeason
-from toktokkie.utils.RenameOperation import RenameOperation
+from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.exceptions import InvalidUpdateInstructions
 

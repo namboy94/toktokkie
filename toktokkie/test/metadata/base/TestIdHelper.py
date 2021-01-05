@@ -17,24 +17,22 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import logging
-from typing import Dict, Any
+from toktokkie.enums import MediaType, IdType
+from toktokkie.metadata.base.IdHelper import IdHelper
+from toktokkie.test.TestFramework import _TestFramework
 
 
-class Component:
+class TestIdHelper(_TestFramework):
     """
-    Specifies common features of metadata components
-    """
-
-    logger = logging.getLogger(__name__)
-    """
-    Logger for the components
+    Class that tests the IdHelper class
     """
 
-    @property
-    def json(self) -> Dict[str, Any]:
+    def test_generating_manga_url(self):
         """
-        Converts the component into a JSON-compatible dictionary
-        :return: The JSON-compatible dictionary
+        Tests generating a manga URL
+        :return: None
         """
-        raise NotImplementedError()  # pragma: no cover
+        anilist_url = IdHelper.generate_url_for_id(
+            IdType.ANILIST, MediaType.BOOK, "123"
+        )
+        self.assertEqual(anilist_url, "https://anilist.co/manga/123")

@@ -20,7 +20,7 @@ LICENSE"""
 from abc import ABC
 from typing import List
 from puffotter.os import listdir, get_ext
-from toktokkie.utils.RenameOperation import RenameOperation
+from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 from toktokkie.enums import IdType
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.movie.MovieExtras import MovieExtras

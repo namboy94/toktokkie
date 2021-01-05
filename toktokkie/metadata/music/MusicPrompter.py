@@ -24,7 +24,6 @@ from puffotter.prompt import prompt, yn_prompt
 from toktokkie.enums import IdType
 from toktokkie.metadata.base.Prompter import Prompter
 from toktokkie.metadata.music.MusicExtras import MusicExtras
-from toktokkie.utils.ids import theme_song_ids
 
 
 class MusicPrompter(Prompter, MusicExtras, ABC):
@@ -70,7 +69,7 @@ class MusicPrompter(Prompter, MusicExtras, ABC):
                         choices={"OP", "ED", "Insert", "Special", "Other"}
                     ).lower(),
                     "series_ids": cls._prompt_ids(
-                        theme_song_ids, [], {}, id_fetcher
+                        Prompter.theme_song_id_types(), [], {}, id_fetcher
                     )
                 }
                 theme_songs.append(theme_data)

@@ -57,13 +57,13 @@ class TestRenamingBookMetadata(_TestFramework):
         self.assertTrue(os.path.isfile(incorrect))
 
         faust_dir = Directory(faust)
-        faust_dir.rename(noconfirm=True)
+        faust_dir.metadata.rename(noconfirm=True)
 
         self.assertTrue(os.path.isfile(correct))
         self.assertFalse(os.path.isfile(incorrect))
 
         faust_dir.metadata.set_ids(IdType.ANILIST, [39115])
-        faust_dir.rename(noconfirm=True)
+        faust_dir.metadata.rename(noconfirm=True)
 
         self.assertEqual(faust_dir.metadata.name, "Spice & Wolf")
         self.assertFalse(os.path.isfile(correct))

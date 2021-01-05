@@ -101,7 +101,6 @@ class TestPromptingMovieMetadata(_TestFramework):
 
         directory = Directory(matrix_two)
 
-        self.assertTrue(os.path.isdir(directory.meta_dir))
         self.assertTrue(os.path.isfile(metadata.metadata_file))
         self.assertEqual(metadata, directory.metadata)
         self.assertEqual(metadata.ids[IdType.IMDB], ["tt0234215"])
