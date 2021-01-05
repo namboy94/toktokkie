@@ -18,6 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
+from puffotter.os import listdir
 from toktokkie.neometadata.base.MetadataBase import MetadataBase
 
 
@@ -25,3 +26,10 @@ class BookExtras(MetadataBase, ABC):
     """
     Additional methods and attributes for book metadata objects
     """
+
+    @property
+    def book_path(self) -> str:
+        """
+        :return: The path to the book file
+        """
+        return listdir(self.directory_path, no_dirs=True)[0][1]

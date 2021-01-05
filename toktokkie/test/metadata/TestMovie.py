@@ -30,38 +30,6 @@ class TestMovie(_TestMetadata):
     Class that tests the Movie metadata class
     """
 
-    def test_renaming(self):
-        """
-        Tests renaming files associated with the metadata type
-        :return: None
-        """
-        matrix = self.get("The Matrix (1999)")
-        correct = os.path.join(matrix, "The Matrix (1999).txt")
-        incorrect = os.path.join(matrix, "The Matrix (2000).txt")
-        os.rename(correct, incorrect)
-
-        self.assertFalse(os.path.isfile(correct))
-        self.assertTrue(os.path.isfile(incorrect))
-
-        matrix_dir = Directory(matrix)
-        matrix_dir.rename(noconfirm=True)
-
-        self.assertTrue(os.path.isfile(correct))
-        self.assertFalse(os.path.isfile(incorrect))
-
-        matrix_dir.metadata.set_ids(IdType.ANILIST, [431])
-        matrix_dir.rename(noconfirm=True)
-
-        self.assertEqual(matrix_dir.metadata.name,
-                         "Howl‘s Moving Castle (2004)")
-        self.assertFalse(os.path.isfile(correct))
-        self.assertTrue(os.path.isfile(
-            self.get("Howl‘s Moving Castle (2004)/"
-                     "Howl‘s Moving Castle (2004).txt")
-        ))
-
-
-
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly

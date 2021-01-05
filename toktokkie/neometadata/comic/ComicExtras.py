@@ -59,6 +59,7 @@ class ComicExtras(MetadataBase, ABC):
         :param special_chapters: The special chapter identifiers to set
         :return: None
         """
-        max_len = len(max(special_chapters, key=lambda x: len(x)))
-        special_chapters.sort(key=lambda x: x.zfill(max_len))
+        if len(special_chapters) > 0:
+            max_len = len(max(special_chapters, key=lambda x: len(x)))
+            special_chapters.sort(key=lambda x: x.zfill(max_len))
         self.json["special_chapters"] = special_chapters

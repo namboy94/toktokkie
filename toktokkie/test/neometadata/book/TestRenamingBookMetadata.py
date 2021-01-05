@@ -36,6 +36,7 @@ class TestRenamingBookMetadata(_TestFramework):
         """
         faust = Book(self.get("Faust"))
         book_path = os.path.join(faust.directory_path, "Faust.epub")
+        self.assertEqual(book_path, faust.book_path)
         self.assertTrue(os.path.isfile(book_path))
         os.rename(book_path, os.path.join(faust.directory_path, "x.epub"))
         self.assertFalse(os.path.isfile(book_path))
