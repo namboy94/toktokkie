@@ -49,69 +49,6 @@ class TestMusicArtist(_TestMetadata):
         for correct_file in correct_files:
             self.assertTrue(os.path.isfile(correct_file))
 
-    def test_prompt(self):
-        """
-        Tests generating a new metadata object using user prompts
-        :return: None
-        """
-        yui = self.get("YUI")
-        os.makedirs(yui)
-        makedirs(os.path.join(yui, "HOLIDAYS IN THE SUN"))
-        makedirs(os.path.join(yui, "again"))
-
-        with mock.patch("builtins.input", side_effect=[
-            "anime, j-pop",
-            "80d1d7e0-fdab-4009-8375-54bd63d74c0e",
-            "J-Pop", "2010", "2508b36d-e788-486b-902f-8ad4cf09910f", "n",
-            "Anime", "2009", "", "y",
-            "OP", "85249", "", "44fac196-20fd-48d7-a545-b848d459059d",
-            "5114", "", ""
-        ]):
-            metadata = MusicArtist.prompt(yui)
-            metadata.write()
-
-        directory = Directory(yui)
-        directory.rename(noconfirm=True)
-
-        self.assertTrue(os.path.isfile(metadata.metadata_file))
-        self.assertEqual(metadata, directory.metadata)
-
-        self.assertEqual(metadata.tags, ["anime", "j-pop"])
-        self.assertEqual(
-            metadata.ids[IdType.MUSICBRAINZ_ARTIST],
-            ["80d1d7e0-fdab-4009-8375-54bd63d74c0e"]
-        )
-
-        albums = metadata.albums
-        holidays = albums[0]
-        again = albums[1]
-        again_theme = metadata.theme_songs[0]
-
-        self.assertEqual(holidays.name, "HOLIDAYS IN THE SUN")
-        self.assertEqual(holidays.year, 2010)
-        self.assertEqual(holidays.genre, "J-Pop")
-        self.assertEqual(
-            holidays.ids[IdType.MUSICBRAINZ_RELEASE],
-            ["2508b36d-e788-486b-902f-8ad4cf09910f"]
-        )
-
-        self.assertEqual(again.name, "again")
-        self.assertEqual(again.year, 2009)
-        self.assertEqual(again.genre, "Anime")
-        self.assertEqual(again.ids[IdType.MUSICBRAINZ_RELEASE], [])
-
-        self.assertEqual(again_theme.name, "again")
-        self.assertEqual(again_theme.theme_type, "OP")
-        self.assertEqual(
-            again_theme.series_ids[IdType.MUSICBRAINZ_RECORDING],
-            ["44fac196-20fd-48d7-a545-b848d459059d"]
-        )
-        self.assertEqual(again_theme.series_ids[IdType.TVDB], ["85249"])
-        self.assertEqual(again_theme.series_ids[IdType.VNDB], [])
-        self.assertEqual(again_theme.series_ids[IdType.MYANIMELIST], ["5114"])
-        self.assertEqual(again_theme.series_ids[IdType.ANILIST], ["5114"])
-        self.assertEqual(again_theme.series_ids[IdType.KITSU], [])
-
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly

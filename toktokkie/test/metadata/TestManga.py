@@ -87,46 +87,6 @@ class TestManga(_TestMetadata):
         self.assertEqual(taisho_dir.metadata.name, "Shouwa Otome Otogibanashi")
         check_files(True)
 
-    def test_prompt(self):
-        """
-        Tests generating a new metadata object using user prompts
-        :return: None
-        """
-        showa = self.get("Shouwa Otome Otogibanashi")
-        os.makedirs(showa)
-        os.makedirs(os.path.join(showa, "Special"))
-        create_file(os.path.join(showa, "Special/Chap 5.5.cbz"))
-        with mock.patch("builtins.input", side_effect=[
-            "shouwa, romance, sequel", "", "", "106988", "", "", "5.5"
-        ]):
-            metadata = Manga.prompt(showa)
-            metadata.write()
-
-        directory = Directory(showa)
-
-        self.assertTrue(os.path.isdir(directory.meta_dir))
-        self.assertTrue(os.path.isfile(metadata.metadata_file))
-        self.assertEqual(metadata, directory.metadata)
-        self.assertEqual(metadata.ids[IdType.ANILIST], ["106988"])
-        self.assertEqual(metadata.ids[IdType.MYANIMELIST], [])
-        self.assertEqual(metadata.ids[IdType.KITSU], [])
-        self.assertEqual(metadata.ids[IdType.MANGADEX], [])
-        self.assertEqual(metadata.ids[IdType.ISBN], [])
-        self.assertEqual(metadata.special_chapters, ["5.5"])
-
-        for invalid in [IdType.VNDB, IdType.IMDB, IdType.TVDB]:
-            self.assertFalse(invalid in metadata.ids)
-
-        for tag in ["shouwa", "romance", "sequel"]:
-            self.assertTrue(tag in metadata.tags)
-
-        special_file = os.path.join(
-            showa, "Special/Shouwa Otome Otogibanashi - Chapter 5.5.cbz"
-        )
-        self.assertFalse(os.path.isfile(special_file))
-        directory.rename(noconfirm=True)
-        self.assertTrue(os.path.isfile(special_file))
-
     def test_validation(self):
         """
         Tests if the validation of metadata works correctly

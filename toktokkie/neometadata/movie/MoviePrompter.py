@@ -39,6 +39,6 @@ class MoviePrompter(Prompter, MovieExtras, ABC):
         super().pre_prompt_check(directory_path)
         filecount = len(listdir(directory_path, no_dirs=True))
         if filecount == 0:
-            raise InvalidDirectoryState("No book file")
+            raise InvalidDirectoryState("No movie file")
         elif filecount > 1:
-            raise InvalidDirectoryState("More than one book file")
+            raise InvalidDirectoryState("More than one movie file")

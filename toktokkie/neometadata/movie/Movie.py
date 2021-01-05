@@ -48,3 +48,10 @@ class Movie(Metadata, MovieRenamer, MoviePrompter, MovieValidator):
             IdType.ANILIST,
             IdType.KITSU
         ]
+
+    @classmethod
+    def required_id_types(cls) -> List[IdType]:
+        """
+        :return: A list of required ID types
+        """
+        return [IdType.IMDB]

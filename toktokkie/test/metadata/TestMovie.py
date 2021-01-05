@@ -60,36 +60,7 @@ class TestMovie(_TestMetadata):
                      "Howl‘s Moving Castle (2004).txt")
         ))
 
-    def test_prompt(self):
-        """
-        Tests generating a new metadata object using user prompts
-        :return: None
-        """
-        matrix_two = self.get("The Matrix Reloaded (2003)")
-        os.makedirs(matrix_two)
-        with mock.patch("builtins.input", side_effect=[
-            "scifi, unpopular", "tt0234215", "", "", ""
-        ]):
-            metadata = Movie.prompt(matrix_two)
-            metadata.write()
 
-        directory = Directory(matrix_two)
-
-        self.assertTrue(os.path.isdir(directory.meta_dir))
-        self.assertTrue(os.path.isfile(metadata.metadata_file))
-        self.assertEqual(metadata, directory.metadata)
-        self.assertEqual(metadata.ids[IdType.IMDB], ["tt0234215"])
-        self.assertEqual(metadata.ids[IdType.ANILIST], [])
-        self.assertEqual(metadata.ids[IdType.MYANIMELIST], [])
-        self.assertEqual(metadata.ids[IdType.KITSU], [])
-
-        for invalid in [
-            IdType.VNDB, IdType.MANGADEX, IdType.TVDB, IdType.ISBN
-        ]:
-            self.assertFalse(invalid in metadata.ids)
-
-        for tag in ["scifi", "unpopular"]:
-            self.assertTrue(tag in metadata.tags)
 
     def test_validation(self):
         """
