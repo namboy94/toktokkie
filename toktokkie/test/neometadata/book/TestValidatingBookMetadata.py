@@ -18,7 +18,6 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
-from jsonschema import validate, ValidationError
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.neometadata.book.Book import Book
 from toktokkie.test.TestFramework import _TestFramework
@@ -47,7 +46,6 @@ class TestValidatingBookMetadata(_TestFramework):
         Tests if the validation of metadata works correctly
         :return: None
         """
-        schema = Book.build_schema()
         valid_data = [
             {"type": "book", "ids": {"isbn": ["100"]}}
         ]
@@ -60,12 +58,4 @@ class TestValidatingBookMetadata(_TestFramework):
             {"type": "book", "ids": {"isbn": [100]}},  # Ids not string
             {"type": "movie", "ids": {"isbn": ["100"]}}  # Wrong media type
         ]
-
-        for entry in valid_data:
-            validate(entry, schema)
-        for entry in invalid_data:
-            try:
-                validate(entry, schema)
-                self.fail()
-            except ValidationError:
-                pass
+        self.perform_json_validation(Book, valid_data, invalid_data)

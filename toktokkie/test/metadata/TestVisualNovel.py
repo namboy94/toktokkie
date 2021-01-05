@@ -22,10 +22,9 @@ from unittest import mock
 from toktokkie.Directory import Directory
 from toktokkie.metadata.types.VisualNovel import VisualNovel
 from toktokkie.metadata.ids.IdType import IdType
-from toktokkie.test.metadata.TestMetadata import _TestMetadata
 
 
-class TestVisualNovel(_TestMetadata):
+class __TestVisualNovel:
     """
     Class that tests the VisualNovel metadata class
     """

@@ -75,3 +75,20 @@ class TestRenamingMusicMetadata(_TestFramework):
         for old, new in renamed:
             self.assertTrue(os.path.isfile(old))
             self.assertFalse(os.path.isfile(new))
+
+    def test_renaming(self):
+        """
+        Tests renaming files associated with the metadata type
+        :return: None
+        """
+        amalee = Music(self.get("AmaLee"))
+
+        correct_files = []
+        for album, album_path in listdir(amalee.directory_path):
+            for song, song_file in listdir(album_path):
+                correct_files.append(song_file)
+
+        amalee.rename(noconfirm=True)
+
+        for correct_file in correct_files:
+            self.assertTrue(os.path.isfile(correct_file))

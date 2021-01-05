@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from jsonschema import validate, ValidationError
 from toktokkie.neometadata.book_series.BookSeries import BookSeries
 from toktokkie.test.TestFramework import _TestFramework
 
@@ -52,12 +51,4 @@ class TestValidatingBookSeriesMetadata(_TestFramework):
                 "ids": {"isbn": ["1000"]}
             }},
         ]
-        schema = BookSeries.build_schema()
-        for entry in valid_data:
-            validate(entry, schema)
-        for entry in invalid_data:
-            try:
-                validate(entry, schema)
-                self.fail()
-            except ValidationError:
-                pass
+        self.perform_json_validation(BookSeries, valid_data, invalid_data)

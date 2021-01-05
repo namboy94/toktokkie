@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
+from toktokkie.exceptions import InvalidMetadata
+from toktokkie.neometadata.movie.Movie import Movie
 from toktokkie.test.TestFramework import _TestFramework
 
 
@@ -24,3 +27,38 @@ class TestValidatingMovieMetadata(_TestFramework):
     """
     Class that tests the MovieVaildator class
     """
+
+    def test_validation(self):
+        """
+        Tests if the validation of metadata works correctly
+        :return: None
+        """
+        valid_data = [
+            {"type": "movie", "ids": {"imdb": ["tt0234215"]}}
+        ]
+        invalid_data = [
+            {},
+            {"type": "movie"},
+            {"type": "movie", "ids": {}},
+            {"type": "movie", "ids": {"imdb": 100}},
+            {"type": "movie", "ids": {"anilist": "100"}},
+            {"type": "movie", "ids": {"imdb": [100]}},
+            {"type": "movie", "ids": {"isbn": ["100"]}},
+            {"type": "movie", "ids": {"imdb": "tt0234215"}},
+            {"type": "movie", "ids": {"imdb": "tt0234215", "other": "stuff"}},
+            {"type": "movie", "ids": {"imdb": "tt0234215", "tvdb": "stuff"}}
+        ]
+        self.perform_json_validation(Movie, valid_data, invalid_data)
+
+    def test_validating_missing_movie_file(self):
+        """
+        Tests if a missing book file is handled correctly
+        :return: None
+        """
+        faust = self.get("The Matrix (1999)")
+        os.remove(os.path.join(faust, "The Matrix (1999).mp4"))
+        try:
+            Movie(faust)
+            self.fail()
+        except InvalidMetadata:
+            pass

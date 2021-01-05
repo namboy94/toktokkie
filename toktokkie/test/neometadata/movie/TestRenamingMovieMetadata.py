@@ -76,3 +76,15 @@ class TestRenamingMovieMetadata(_TestFramework):
             self.get("Howl‘s Moving Castle (2004)/"
                      "Howl‘s Moving Castle (2004).mp4")
         ))
+
+    def test_renaming_title_if_invalid(self):
+        """
+        Tests how the renaming of the title is handled if no valid
+        data can be fetched
+        :return: None
+        """
+        matrix = Movie(self.get("The Matrix (1999)"))
+        matrix.ids = {IdType.IMDB: ["0"]}
+        matrix.name = "ABC"
+        matrix.rename(noconfirm=True)
+        self.assertEqual("ABC", matrix.name)

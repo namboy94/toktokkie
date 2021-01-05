@@ -20,8 +20,10 @@ LICENSE"""
 import os
 import shutil
 import unittest
-from typing import Tuple, List
+from jsonschema import validate, ValidationError
+from typing import Tuple, List, Any, Dict, Type
 from puffotter.os import listdir
+from toktokkie.neometadata.base.Validator import Validator
 
 
 class _TestFramework(unittest.TestCase):
@@ -124,3 +126,30 @@ class _TestFramework(unittest.TestCase):
             self.assertTrue(os.path.isfile(_file))
 
         return correct, wrong
+
+    def perform_json_validation(
+            self,
+            metadata_cls: Type[Validator],
+            valid_json: List[Dict[str, Any]],
+            invalid_json: List[Dict[str, Any]]
+    ):
+        """
+        Performs validation checks for json schemas
+        :param metadata_cls: The metadata validator class
+        :param valid_json: Valid json dictionaries
+        :param invalid_json: Invalid JSON dictionaries
+        :return: None
+        """
+        schema = metadata_cls.build_schema()
+        print("Valid")
+        for entry in valid_json:
+            print(entry)
+            validate(entry, schema)
+        print("Invalid")
+        for entry in invalid_json:
+            print(entry)
+            try:
+                validate(entry, schema)
+                self.fail()
+            except ValidationError:
+                pass

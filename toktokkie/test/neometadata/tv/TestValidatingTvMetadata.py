@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 import shutil
-from jsonschema import validate, ValidationError
+from jsonschema import validate
 from toktokkie.neometadata.tv.Tv import Tv
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.test.TestFramework import _TestFramework
@@ -59,16 +59,7 @@ class TestValidatingTvMetadata(_TestFramework):
             {"type": "tv", "ids": {"isbn": ["281643"]},
              "seasons": [{"name": "Season 1", "ids": {}}]},
         ]
-        schema = Tv.build_schema()
-
-        for entry in valid_data:
-            validate(entry, schema)
-        for entry in invalid_data:
-            try:
-                validate(entry, schema)
-                self.fail()
-            except ValidationError:
-                pass
+        self.perform_json_validation(Tv, valid_data, invalid_data)
 
     def test_structure_validation(self):
         """
