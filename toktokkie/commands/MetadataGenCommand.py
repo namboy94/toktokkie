@@ -19,15 +19,14 @@ LICENSE"""
 
 import os
 import argparse
-from subprocess import Popen
-from toktokkie.scripts.Command import Command
-from toktokkie.enums import MediaType
 from toktokkie.Directory import Directory
+from toktokkie.enums import MediaType
+from toktokkie.commands.Command import Command
 
 
-class SetMangaCoverCommand(Command):
+class MetadataGenCommand(Command):
     """
-    Class that encapsulates behaviour of the set-manga-cover command
+    Class that encapsulates behaviour of the metadata-gen command
     """
 
     @classmethod
@@ -35,7 +34,7 @@ class SetMangaCoverCommand(Command):
         """
         :return: The command name
         """
-        return "set-manga-cover"
+        return "metadata-gen"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -44,6 +43,10 @@ class SetMangaCoverCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
+        # noinspection PyTypeChecker
+        media_types = list(map(lambda x: x.value, list(MediaType)))
+        parser.add_argument("media_type", choices=set(media_types),
+                            help="The media type of the metadata")
         cls.add_directories_arg(parser)
 
     def execute(self):
@@ -51,14 +54,21 @@ class SetMangaCoverCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in Directory.load_directories(
-                self.args.directories, restrictions=[MediaType.MANGA]
-        ):
+        for directory in self.args.directories:
 
-            cover = os.path.join(directory.metadata.icon_directory, "main.png")
-            target = os.path.join(directory.path, "cover.cbz")
-            if os.path.isfile(cover):
-                if not os.path.isfile(target):
-                    Popen(["zip", "-j", target, cover]).wait()
-            else:
-                self.logger.warning("No cover for {}".format(directory.path))
+            if not os.path.isdir(directory):
+                self.logger.warning(
+                    "{} is not a directory, skipping.".format(directory)
+                )
+                continue
+
+            if directory.endswith("/"):
+                directory = directory.rsplit("/", 1)[0]
+
+            media_type = self.args.media_type
+
+            generated = Directory.prompt(
+                directory,
+                media_type
+            ).metadata
+            generated.metadata.print_folder_icon_source()

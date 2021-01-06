@@ -1,3 +1,5 @@
+V 0.21.0:
+  - Redid metadata structure
 V 0.20.0:
   - Removed web and gui components
   - Added global configuration

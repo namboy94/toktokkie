@@ -17,16 +17,14 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
 import argparse
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
-from toktokkie.enums import MediaType
-from toktokkie.scripts.Command import Command
 
 
-class MetadataGenCommand(Command):
+class RenameCommand(Command):
     """
-    Class that encapsulates behaviour of the metadata-gen command
+    Class that encapsulates behaviour of the rename command
     """
 
     @classmethod
@@ -34,7 +32,7 @@ class MetadataGenCommand(Command):
         """
         :return: The command name
         """
-        return "metadata-gen"
+        return "rename"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -43,32 +41,19 @@ class MetadataGenCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        # noinspection PyTypeChecker
-        media_types = list(map(lambda x: x.value, list(MediaType)))
-        parser.add_argument("media_type", choices=set(media_types),
-                            help="The media type of the metadata")
         cls.add_directories_arg(parser)
+        parser.add_argument("--noconfirm", action="store_true",
+                            help="Skips the user confirmation step")
+        parser.add_argument("--include-title", action="store_true",
+                            help="Also renames the title based on ID info")
 
     def execute(self):
         """
-        Executes the commands
+        Executes the command
         :return: None
         """
-        for directory in self.args.directories:
-
-            if not os.path.isdir(directory):
-                self.logger.warning(
-                    "{} is not a directory, skipping.".format(directory)
-                )
-                continue
-
-            if directory.endswith("/"):
-                directory = directory.rsplit("/", 1)[0]
-
-            media_type = self.args.media_type
-
-            generated = Directory.prompt(
-                directory,
-                media_type
-            ).metadata
-            generated.metadata.print_folder_icon_source()
+        for directory in Directory.load_directories(self.args.directories):
+            directory.metadata.rename(
+                noconfirm=self.args.noconfirm,
+                skip_title=not self.args.include_title
+            )

@@ -21,7 +21,7 @@ import os
 import argparse
 import shutil
 from typing import List, cast
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.enums import MediaType
 from toktokkie.Directory import Directory
 from toktokkie.exceptions import MissingMetadata

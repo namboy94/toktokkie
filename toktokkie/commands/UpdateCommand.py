@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.update import updaters, perform_update
 

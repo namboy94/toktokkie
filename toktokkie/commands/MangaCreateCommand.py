@@ -29,7 +29,7 @@ from puffotter.prompt import prompt
 from subprocess import Popen
 from toktokkie.metadata.comic.Comic import Comic
 from toktokkie.exceptions import MissingMetadata, InvalidMetadata
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 
 
 class MangaCreateCommand(Command):

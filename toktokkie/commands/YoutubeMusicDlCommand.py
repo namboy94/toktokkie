@@ -24,7 +24,7 @@ import youtube_dl
 from typing import List
 from puffotter.prompt import prompt
 from puffotter.os import makedirs, listdir
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
 from toktokkie.metadata.music.Music import Music

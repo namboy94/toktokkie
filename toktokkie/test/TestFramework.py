@@ -18,11 +18,14 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+import sys
 import shutil
 import unittest
+from unittest.mock import patch
 from jsonschema import validate, ValidationError
 from typing import Tuple, List, Any, Dict, Type
 from puffotter.os import listdir
+from toktokkie.main import main, define_parser
 from toktokkie.metadata.base.Validator import Validator
 
 
@@ -153,3 +156,16 @@ class _TestFramework(unittest.TestCase):
                 self.fail()
             except ValidationError:
                 pass
+
+    @staticmethod
+    def execute_command(args: List[str], stdin: List[str]):
+        """
+        Executes a command
+        :param args: The command line arguments
+        :param stdin: input using stdin
+        :return: None
+        """
+        parser = define_parser()
+        sys.argv = [sys.argv[0]] + args
+        with patch("builtins.input", side_effect=stdin):
+            main(parser.parse_args())

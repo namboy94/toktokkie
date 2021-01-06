@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 from puffotter.os import listdir, get_ext
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 
 

@@ -20,7 +20,7 @@ LICENSE"""
 import tvdb_api
 import argparse
 from toktokkie.enums import IdType
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 
 

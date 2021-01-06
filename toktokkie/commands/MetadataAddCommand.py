@@ -18,7 +18,7 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.enums import IdType
 from toktokkie.enums import MediaType
 from toktokkie.metadata.tv.Tv import Tv

@@ -24,7 +24,7 @@ from PIL import Image
 from bs4 import BeautifulSoup
 from typing import Dict, List
 from toktokkie.Directory import Directory
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.enums import IdType
 from toktokkie.enums import MediaType
 from toktokkie.metadata.music.Music import Music

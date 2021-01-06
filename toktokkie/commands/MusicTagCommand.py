@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 import mutagen.id3
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
 from toktokkie.metadata.music.Music import Music

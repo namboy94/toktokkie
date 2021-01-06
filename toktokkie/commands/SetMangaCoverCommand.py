@@ -17,14 +17,17 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 import argparse
-from toktokkie.scripts.Command import Command
+from subprocess import Popen
+from toktokkie.commands.Command import Command
+from toktokkie.enums import MediaType
 from toktokkie.Directory import Directory
 
 
-class PrintCommand(Command):
+class SetMangaCoverCommand(Command):
     """
-    Class that encapsulates behaviour of the print command
+    Class that encapsulates behaviour of the set-manga-cover command
     """
 
     @classmethod
@@ -32,7 +35,7 @@ class PrintCommand(Command):
         """
         :return: The command name
         """
-        return "print"
+        return "set-manga-cover"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -48,5 +51,14 @@ class PrintCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in Directory.load_directories(self.args.directories):
-            print(directory.metadata)
+        for directory in Directory.load_directories(
+                self.args.directories, restrictions=[MediaType.MANGA]
+        ):
+
+            cover = os.path.join(directory.metadata.icon_directory, "main.png")
+            target = os.path.join(directory.path, "cover.cbz")
+            if os.path.isfile(cover):
+                if not os.path.isfile(target):
+                    Popen(["zip", "-j", target, cover]).wait()
+            else:
+                self.logger.warning("No cover for {}".format(directory.path))

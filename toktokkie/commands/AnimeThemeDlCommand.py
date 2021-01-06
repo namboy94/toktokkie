@@ -23,16 +23,16 @@ import shutil
 import argparse
 from typing import Dict, List
 from bs4 import BeautifulSoup
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.metadata.music.Music import Music
 from puffotter.os import makedirs, listdir
 from puffotter.requests import aggressive_request
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.metadata.music.components.MusicThemeSong import MusicThemeSong
-from toktokkie.scripts.RenameCommand import RenameCommand
-from toktokkie.scripts.PlaylistCreateCommand import PlaylistCreateCommand
-from toktokkie.scripts.AlbumArtFetchCommand import AlbumArtFetchCommand
-from toktokkie.scripts.MusicTagCommand import MusicTagCommand
+from toktokkie.commands.RenameCommand import RenameCommand
+from toktokkie.commands.PlaylistCreateCommand import PlaylistCreateCommand
+from toktokkie.commands.AlbumArtFetchCommand import AlbumArtFetchCommand
+from toktokkie.commands.MusicTagCommand import MusicTagCommand
 from toktokkie.utils.anithemes.AniTheme import AniTheme
 
 

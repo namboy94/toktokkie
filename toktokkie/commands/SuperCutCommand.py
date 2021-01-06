@@ -24,7 +24,7 @@ from typing import List, Dict
 from datetime import datetime
 from subprocess import Popen, check_output
 from puffotter.prompt import yn_prompt
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
 from toktokkie.metadata.tv.Tv import Tv

@@ -20,7 +20,7 @@ LICENSE"""
 import argparse
 from subprocess import Popen
 from toktokkie.Directory import Directory
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.enums import MediaType
 
 

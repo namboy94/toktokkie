@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 import shutil
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from puffotter.os import makedirs
 

@@ -18,13 +18,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from toktokkie.scripts.Command import Command
+from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 
 
-class RenameCommand(Command):
+class PrintCommand(Command):
     """
-    Class that encapsulates behaviour of the rename command
+    Class that encapsulates behaviour of the print command
     """
 
     @classmethod
@@ -32,7 +32,7 @@ class RenameCommand(Command):
         """
         :return: The command name
         """
-        return "rename"
+        return "print"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -42,8 +42,6 @@ class RenameCommand(Command):
         :return: None
         """
         cls.add_directories_arg(parser)
-        parser.add_argument("--noconfirm", action="store_true",
-                            help="Skips the user confirmation step")
 
     def execute(self):
         """
@@ -51,7 +49,4 @@ class RenameCommand(Command):
         :return: None
         """
         for directory in Directory.load_directories(self.args.directories):
-            try:
-                directory.metadata.rename(self.args.noconfirm)
-            except ValueError:
-                self.logger.warning("Renaming of " + directory.path + "failed")
+            print(directory.metadata)

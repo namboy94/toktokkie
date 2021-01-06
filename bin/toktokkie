@@ -17,54 +17,9 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import argparse
-from puffotter.init import cli_start, argparse_add_verbosity
+from puffotter.init import cli_start
 from toktokkie import sentry_dsn
-from toktokkie.scripts import toktokkie_commands
-from toktokkie.scripts.ConfigInitCommand import ConfigInitCommand
-from toktokkie.Config import Config
-from toktokkie.exceptions import InvalidConfig, MissingConfig
-
-
-def main(args: argparse.Namespace):
-    """
-    The main function of this script
-    :param args: The command line arguments
-    :return: None
-    """
-    if args.command != ConfigInitCommand.name():
-        try:
-            Config()
-        except InvalidConfig:
-            print("Invalid Configuration detected. "
-                  "Run toktokkie config-init to fix this.")
-            return
-        except MissingConfig:
-            print("Missing Configuration detected. "
-                  "Run toktokkie config-init to fix this.")
-            return
-
-    for command_cls in toktokkie_commands:
-        if command_cls.name() == args.command:
-            command = command_cls(args)
-            command.execute()
-
-
-def define_parser() -> argparse.ArgumentParser:
-    """
-    :return: The command line parser for this script
-    """
-    parser = argparse.ArgumentParser()
-    argparse_add_verbosity(parser)
-    command_parser = parser.add_subparsers(dest="command")
-    command_parser.required = True
-
-    for command_cls in toktokkie_commands:
-        subparser = command_parser.add_parser(command_cls.name())
-        argparse_add_verbosity(subparser)
-        command_cls.prepare_parser(subparser)
-
-    return parser
+from toktokkie.main import main, define_parser
 
 
 if __name__ == "__main__":
