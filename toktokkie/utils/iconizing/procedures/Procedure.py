@@ -36,7 +36,7 @@ class Procedure:
         :param png_icon_path: The path to the png icon file
         :return: None
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @classmethod
     def is_applicable(cls) -> bool:
@@ -44,4 +44,4 @@ class Procedure:
         Checks if this procedure is applicable to the current system
         :return: True if applicable, else False
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover

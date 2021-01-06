@@ -18,7 +18,6 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from toktokkie.utils.iconizing import all_procedures, default_procedure
 from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.utils.iconizing.Iconizer import Iconizer
@@ -43,11 +42,11 @@ class IconizeCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        procedure_names = {x.name for x in all_procedures}
+        procedure_names = {x.name for x in Iconizer.all_procedures}
 
         cls.add_directories_arg(parser)
         parser.add_argument("procedure", choices=procedure_names, nargs="?",
-                            default=default_procedure().name,
+                            default=Iconizer.default_procedure().name,
                             help="The procedure to use")
 
     def execute(self):
@@ -56,7 +55,7 @@ class IconizeCommand(Command):
         :return: None
         """
         procedure = list(filter(
-            lambda x: x.name == self.args.procedure, all_procedures
+            lambda x: x.name == self.args.procedure, Iconizer.all_procedures
         ))[0]
 
         for directory in Directory.load_directories(self.args.directories):

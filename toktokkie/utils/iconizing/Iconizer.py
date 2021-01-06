@@ -18,14 +18,24 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from typing import Type
 from puffotter.os import listdir
-from toktokkie.utils.iconizing import Procedure
+from toktokkie.utils.iconizing.procedures.Procedure import Procedure
+from toktokkie.utils.iconizing.procedures.NoopProcedure import NoopProcedure
+from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
 from toktokkie.metadata.base.Metadata import Metadata
 
 
 class Iconizer:
     """
     Class that handles iconizing directories
+    """
+
+    all_procedures = [
+        GnomeProcedure
+    ]
+    """
+    All implemented procedures
     """
 
     def __init__(
@@ -56,3 +66,14 @@ class Iconizer:
                 self.procedure.iconize(child_path, icon)
             else:
                 self.procedure.iconize(child_path, main_icon)
+
+    @staticmethod
+    def default_procedure() -> Type[Procedure]:
+        """
+        Checks all available procedures for eligibility
+        :return: The eligible procedure or None if none were found
+        """
+        for procedure in Iconizer.all_procedures:
+            if procedure.is_applicable():
+                return procedure
+        return NoopProcedure

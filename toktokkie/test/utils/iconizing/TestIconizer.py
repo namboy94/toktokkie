@@ -18,11 +18,14 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from typing import List, Tuple
+from unittest.mock import patch
 from toktokkie.metadata.tv.Tv import Tv
 from toktokkie.utils.iconizing.procedures.Procedure import Procedure
-from toktokkie.utils.iconizing.procedures.NoopProcedure import NoopProcedure
 from toktokkie.utils.iconizing.Iconizer import Iconizer
 from toktokkie.test.TestFramework import _TestFramework
+from toktokkie.utils.iconizing.procedures.NoopProcedure import NoopProcedure
+from toktokkie.utils.iconizing.procedures.GnomeProcedure import GnomeProcedure
 
 
 class DummyProcedure(Procedure):
@@ -30,7 +33,7 @@ class DummyProcedure(Procedure):
     Class that keeps track of the iconizing efforts of an iconizing procedure
     """
 
-    history = []
+    history: List[Tuple[str, str]] = []
     """
     History of the procedure
     """
@@ -87,3 +90,25 @@ class TestIconizer(_TestFramework):
                  metadata.get_icon_file("main"))
             ]
         )
+
+    def test_getting_default_procedure(self):
+        """
+        Tests getting the default procedure
+        :return: None
+        """
+        with patch("toktokkie.utils.iconizing.procedures.GnomeProcedure."
+                   "GnomeProcedure.is_applicable", side_effect=[False]):
+            default = Iconizer.default_procedure()
+            self.assertEqual(default, NoopProcedure)
+        with patch("toktokkie.utils.iconizing.procedures.GnomeProcedure."
+                   "GnomeProcedure.is_applicable", side_effect=[True]):
+            default = Iconizer.default_procedure()
+            self.assertEqual(default, GnomeProcedure)
+
+    def test_noop_procedure(self):
+        """
+        Tests the NoopProcedure
+        :return: None
+        """
+        self.assertTrue(NoopProcedure.is_applicable())
+        NoopProcedure.iconize("", "")

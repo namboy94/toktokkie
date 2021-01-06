@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import sys
 from subprocess import Popen, check_output, CalledProcessError
-from toktokkie.utils.iconizing import Procedure
+from toktokkie.utils.iconizing.procedures.Procedure import Procedure
 
 
 class GnomeProcedure(Procedure):
@@ -30,7 +30,7 @@ class GnomeProcedure(Procedure):
     """
 
     @classmethod
-    def iconize(cls, directory: str, png_icon_path: str):
+    def iconize(cls, directory: str, png_icon_path: str):  # pragma: no cover
         """
         Iconizes the directory using gio
         :param directory: The directory to iconize
@@ -43,7 +43,7 @@ class GnomeProcedure(Procedure):
         ]).wait()
 
     @classmethod
-    def is_applicable(cls) -> bool:
+    def is_applicable(cls) -> bool:  # pragma: no cover
         """
         Checks if this procedure is applicable to the current system.
         The Gnome procedure is applicable if the system is running Linux
@@ -58,7 +58,7 @@ class GnomeProcedure(Procedure):
                 gvfs_installed = True
 
         gvfs_check = False
-        if gvfs_installed:  # pragma: no cover
+        if gvfs_installed:
 
             try:
                 gvfs_out = check_output([
@@ -75,7 +75,7 @@ class GnomeProcedure(Procedure):
             try:
                 return sys.platform.startswith("linux") \
                        and gvfs_installed and gvfs_check
-            except KeyError:  # pragma: no cover
+            except KeyError:
                 return False
 
         else:
