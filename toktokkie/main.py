@@ -20,9 +20,6 @@ LICENSE"""
 import argparse
 from puffotter.init import argparse_add_verbosity
 from toktokkie.commands import toktokkie_commands
-from toktokkie.commands.ConfigInitCommand import ConfigInitCommand
-from toktokkie.Config import Config
-from toktokkie.exceptions import InvalidConfig, MissingConfig
 
 
 def main(args: argparse.Namespace):
@@ -31,18 +28,6 @@ def main(args: argparse.Namespace):
     :param args: The command line arguments
     :return: None
     """
-    if args.command != ConfigInitCommand.name():
-        try:
-            Config()
-        except InvalidConfig:
-            print("Invalid Configuration detected. "
-                  "Run toktokkie config-init to fix this.")
-            return
-        except MissingConfig:
-            print("Missing Configuration detected. "
-                  "Run toktokkie config-init to fix this.")
-            return
-
     for command_cls in toktokkie_commands:
         if command_cls.name() == args.command:
             command = command_cls(args)

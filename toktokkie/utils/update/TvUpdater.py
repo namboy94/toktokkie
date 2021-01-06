@@ -22,7 +22,7 @@ import re
 from enum import Enum
 from typing import List, Dict, Any, Optional, cast, Set
 from puffotter.prompt import prompt
-from toktokkie.update.Updater import Updater
+from toktokkie.utils.update.Updater import Updater
 from toktokkie.enums import MediaType
 from toktokkie.metadata.tv.Tv import Tv
 from toktokkie.metadata.tv.components.TvSeason import TvSeason

@@ -59,18 +59,6 @@ class InvalidUpdateInstructions(Exception):
     pass
 
 
-class MissingConfig(Exception):
-    """
-    Exception that is raised when the config file does not exist
-    """
-
-
-class InvalidConfig(Exception):
-    """
-    Exception that is raised when the config file is invalid
-    """
-
-
 class InvalidDirectoryState(Exception):
     """
     Exception that is raised if a directory is in a state that does not

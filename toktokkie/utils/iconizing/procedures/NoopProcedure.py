@@ -27,12 +27,11 @@ class NoopProcedure(Procedure):
     """
 
     @classmethod
-    def iconize(cls, directory: str, icon_path_no_ext):
+    def iconize(cls, directory: str, png_icon_path: str):
         """
         Doesn't do anything
         :param directory: The directory to iconize
-        :param icon_path_no_ext: The icon file without a file extension.
-                                 .png will be appended
+        :param png_icon_path: The path to the png icon file
         :return: None
         """
         pass

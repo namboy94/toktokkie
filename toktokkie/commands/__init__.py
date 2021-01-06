@@ -33,7 +33,6 @@ from toktokkie.commands.AlbumArtFetchCommand import AlbumArtFetchCommand
 from toktokkie.commands.MusicTagCommand import MusicTagCommand
 from toktokkie.commands.PlaylistCreateCommand import PlaylistCreateCommand
 from toktokkie.commands.MusicMergeCommand import MusicMergeCommand
-from toktokkie.commands.ConfigInitCommand import ConfigInitCommand
 from toktokkie.commands.IdFetchCommand import IdFetchCommand
 from toktokkie.commands.YoutubeMusicDlCommand import YoutubeMusicDlCommand
 
@@ -54,7 +53,6 @@ toktokkie_commands = [
     MusicTagCommand,
     MusicMergeCommand,
     PlaylistCreateCommand,
-    ConfigInitCommand,
     IdFetchCommand,
     YoutubeMusicDlCommand
 ]

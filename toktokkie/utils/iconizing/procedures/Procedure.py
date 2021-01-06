@@ -29,11 +29,11 @@ class Procedure:
     """
 
     @classmethod
-    def iconize(cls, directory: str, icon_path_no_ext: str):
+    def iconize(cls, directory: str, png_icon_path: str):
         """
         Iconizes a directory with an icon file
         :param directory: The directory to iconize
-        :param icon_path_no_ext: The icon file without a file extension.
+        :param png_icon_path: The path to the png icon file
         :return: None
         """
         raise NotImplementedError()

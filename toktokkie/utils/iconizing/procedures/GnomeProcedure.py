@@ -30,18 +30,16 @@ class GnomeProcedure(Procedure):
     """
 
     @classmethod
-    def iconize(cls, directory: str, icon_path_no_ext):
+    def iconize(cls, directory: str, png_icon_path: str):
         """
         Iconizes the directory using gio
         :param directory: The directory to iconize
-        :param icon_path_no_ext: The icon file without a file extension.
-                                 .png will be appended
+        :param png_icon_path: The path to the png icon file
         :return: None
         """
-        icon_path = icon_path_no_ext + ".png"
         Popen([
             "gio", "set", "-t", "string", directory,
-            "metadata::custom-icon", "file://" + icon_path
+            "metadata::custom-icon", "file://" + png_icon_path
         ]).wait()
 
     @classmethod

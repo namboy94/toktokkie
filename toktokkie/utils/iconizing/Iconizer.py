@@ -18,7 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import os
+from puffotter.os import listdir
 from toktokkie.utils.iconizing import Procedure
+from toktokkie.metadata.base.Metadata import Metadata
 
 
 class Iconizer:
@@ -26,16 +28,17 @@ class Iconizer:
     Class that handles iconizing directories
     """
 
-    def __init__(self, path: str, icon_location: str,
-                 procedure: Procedure = None):
+    def __init__(
+            self,
+            metadata: Metadata,
+            procedure: Procedure
+    ):
         """
         Initializes the iconizer
-        :param path: The path to the directory to iconize
-        :param icon_location: The location of the icons
+        :param metadata: The metadata for the directory to iconize
         :param procedure: The procedure to use for iconizing.
         """
-        self.path = path
-        self.icon_location = os.path.abspath(icon_location)
+        self.metadata = metadata
         self.procedure = procedure
 
     def iconize(self):
@@ -43,14 +46,13 @@ class Iconizer:
         Iconizes the directory
         :return: None
         """
-        self.procedure.iconize(
-            self.path, os.path.join(self.icon_location, "main")
-        )
-        for child in os.listdir(self.path):
-            child_path = os.path.join(self.path, child)
+        main_path = self.metadata.directory_path
+        main_icon = self.metadata.get_icon_file("main")
+        self.procedure.iconize(main_path, main_icon)
 
-            if child.startswith(".") or not os.path.isdir(child_path):
-                continue
-
-            icon = os.path.join(self.icon_location, child)
-            self.procedure.iconize(child_path, icon)
+        for child, child_path in listdir(main_path, no_files=True):
+            icon = self.metadata.get_icon_file(child)
+            if icon is not None and os.path.isfile(icon):
+                self.procedure.iconize(child_path, icon)
+            else:
+                self.procedure.iconize(child_path, main_icon)

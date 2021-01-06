@@ -27,7 +27,7 @@ from puffotter.print import pprint
 from toktokkie.enums import IdType
 from toktokkie.enums import MediaType
 from toktokkie.metadata.comic.Comic import Comic
-from toktokkie.update.Updater import Updater
+from toktokkie.utils.update.Updater import Updater
 
 
 class MangadexUpdater(Updater):

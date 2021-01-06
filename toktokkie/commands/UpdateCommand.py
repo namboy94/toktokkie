@@ -20,7 +20,7 @@ LICENSE"""
 import argparse
 from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
-from toktokkie.update import updaters, perform_update
+from toktokkie.utils.update import updaters, perform_update
 
 
 class UpdateCommand(Command):

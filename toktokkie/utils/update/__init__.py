@@ -21,10 +21,10 @@ import os
 from typing import List, Type, Dict, Any
 from puffotter.prompt import yn_prompt
 from toktokkie.metadata.base.Metadata import Metadata
-from toktokkie.update.Updater import Updater
-from toktokkie.update.XDCCUpdater import XDCCUpdater
-from toktokkie.update.MangadexUpdater import MangadexUpdater
-from toktokkie.update.TorrentUpdater import TorrentUpdater
+from toktokkie.utils.update.Updater import Updater
+from toktokkie.utils.update.XDCCUpdater import XDCCUpdater
+from toktokkie.utils.update.MangadexUpdater import MangadexUpdater
+from toktokkie.utils.update.TorrentUpdater import TorrentUpdater
 from toktokkie.exceptions import InvalidUpdateInstructions, \
     MissingUpdateInstructions
 

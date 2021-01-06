@@ -23,7 +23,7 @@ from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
 from xdcc_dl.entities.XDCCPack import XDCCPack
 from toktokkie.metadata.base.Metadata import Metadata
-from toktokkie.update.TvUpdater import TvUpdater, DownloadInstructions
+from toktokkie.utils.update.TvUpdater import TvUpdater, DownloadInstructions
 
 
 class XDCCUpdater(TvUpdater):

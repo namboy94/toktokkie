@@ -86,7 +86,7 @@ class Directory:
         :return: The generated directory, or None if aborted
         """
         try:
-            existing = Directory(path)
+            existing: Optional[Directory] = Directory(path)
         except (InvalidMetadata, MissingMetadata):
             existing = None
 

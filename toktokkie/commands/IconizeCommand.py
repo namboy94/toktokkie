@@ -43,7 +43,7 @@ class IconizeCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        procedure_names = set(list(map(lambda x: x.name, all_procedures)))
+        procedure_names = {x.name for x in all_procedures}
 
         cls.add_directories_arg(parser)
         parser.add_argument("procedure", choices=procedure_names, nargs="?",
@@ -60,15 +60,5 @@ class IconizeCommand(Command):
         ))[0]
 
         for directory in Directory.load_directories(self.args.directories):
-            try:
-                metadata = directory.metadata
-                iconizer = Iconizer(
-                    metadata.directory_path,
-                    metadata.icon_directory,
-                    procedure
-                )
-                iconizer.iconize()
-            except ValueError:
-                self.logger.warning(
-                    "Iconizing of " + directory.path + "failed"
-                )
+            iconizer = Iconizer(directory.metadata, procedure)
+            iconizer.iconize()
