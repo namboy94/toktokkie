@@ -58,7 +58,7 @@ class Prompter(MetadataBase, ABC):
         :return: The generated metadata object
         """
         name = os.path.basename(os.path.abspath(directory_path))
-        id_fetcher = cls._create_id_fetcher(directory_path)
+        id_fetcher = cls.create_id_fetcher(directory_path)
         print(f"Generating metadata for {name} "
               f"(type: {cls.media_type().value}):")
 
@@ -67,7 +67,7 @@ class Prompter(MetadataBase, ABC):
         data = {
             "type": cls.media_type().value,
             "tags": prompt_comma_list("Tags"),
-            "ids": cls._prompt_ids(
+            "ids": cls.prompt_ids(
                 cls.valid_id_types(),
                 cls.required_id_types(),
                 {},
@@ -77,7 +77,7 @@ class Prompter(MetadataBase, ABC):
         return data
 
     @classmethod
-    def _create_id_fetcher(cls, directory: str) -> IdFetcher:
+    def create_id_fetcher(cls, directory: str) -> IdFetcher:
         """
         Creates an ID fetcher
         :param directory: The directory for which to generate the ID fetcher
@@ -89,7 +89,7 @@ class Prompter(MetadataBase, ABC):
         )
 
     @classmethod
-    def _prompt_ids(
+    def prompt_ids(
             cls,
             valid_ids: List[IdType],
             required_ids: List[IdType],
@@ -142,7 +142,7 @@ class Prompter(MetadataBase, ABC):
 
         if len(ids) < mincount:
             print("Please enter at least {} ID(s)".format(mincount))
-            return cls._prompt_ids(
+            return cls.prompt_ids(
                 valid_ids, required_ids, defaults, id_fetcher,
                 mincount=mincount
             )
@@ -176,7 +176,7 @@ class Prompter(MetadataBase, ABC):
         return defaults
 
     @classmethod
-    def _prompt_component_ids(
+    def prompt_component_ids(
             cls,
             valid_ids: List[IdType],
             previous_ids: Dict[str, List[str]],
@@ -192,7 +192,7 @@ class Prompter(MetadataBase, ABC):
         """
 
         defaults = previous_ids.copy()
-        ids = cls._prompt_ids(valid_ids, [], defaults, id_fetcher, mincount=0)
+        ids = cls.prompt_ids(valid_ids, [], defaults, id_fetcher, mincount=0)
 
         # Strip unnecessary IDs
         for key in list(ids.keys()):

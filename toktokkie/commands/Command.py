@@ -39,7 +39,7 @@ class Command:
         """
         :return: The command name
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -48,14 +48,14 @@ class Command:
         :param parser: The parser to prepare
         :return: None
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def execute(self):
         """
         Executes the commands
         :return: None
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @staticmethod
     def add_directories_arg(parser: argparse.ArgumentParser):

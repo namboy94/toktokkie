@@ -40,7 +40,7 @@ class MusicPrompter(Prompter, MusicExtras, ABC):
         :return: The generated metadata JSON
         """
         base = super().prompt(directory_path)
-        id_fetcher = cls._create_id_fetcher(directory_path)
+        id_fetcher = cls.create_id_fetcher(directory_path)
         albums = []
         theme_songs = []
 
@@ -55,7 +55,7 @@ class MusicPrompter(Prompter, MusicExtras, ABC):
                 "name": album,
                 "genre": prompt("Genre"),
                 "year": prompt("Year", _type=int),
-                "ids": cls._prompt_component_ids(
+                "ids": cls.prompt_component_ids(
                     valid_album_ids, {}, id_fetcher
                 )
             }
@@ -68,7 +68,7 @@ class MusicPrompter(Prompter, MusicExtras, ABC):
                         "Theme Type",
                         choices={"OP", "ED", "Insert", "Special", "Other"}
                     ).lower(),
-                    "series_ids": cls._prompt_ids(
+                    "series_ids": cls.prompt_ids(
                         Prompter.theme_song_id_types(), [], {}, id_fetcher
                     )
                 }

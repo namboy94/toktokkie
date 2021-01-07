@@ -60,10 +60,10 @@ class TvPrompter(Prompter, TvExtras, ABC):
 
         for season_name, season_path in season_folders + special_folders:
             print("\n{}:".format(season_name))
-            ids = cls._prompt_component_ids(
+            ids = cls.prompt_component_ids(
                 cls.valid_id_types(),
                 base["ids"],
-                cls._create_id_fetcher(directory_path)
+                cls.create_id_fetcher(directory_path)
             )
 
             seasons.append({

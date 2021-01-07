@@ -42,3 +42,4 @@ class TestPrintCommand(_TestFramework):
                 self.fail()
             except ZeroDivisionError:
                 pass
+        self.execute_command(["print", path], [])

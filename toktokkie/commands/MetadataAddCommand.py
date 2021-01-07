@@ -101,6 +101,8 @@ class MetadataAddCommand(Command):
                 self.add_exclude()
             elif self.args.mode == "season":
                 self.add_season()
+            else:  # pragma: no cover
+                self.logger.error("Invalid command")
         else:
             self.logger.warning(f"Invalid directory for action "
                                 f"{self.args.mode}")
@@ -149,10 +151,10 @@ class MetadataAddCommand(Command):
         season_path = os.path.join(meta.directory_path, season_name)
 
         print(f"Enter IDs for season {season_name}")
-        season_ids = meta.objectify_ids(meta._prompt_component_ids(
+        season_ids = meta.objectify_ids(meta.prompt_component_ids(
             meta.valid_id_types(),
             meta.stringify_ids(meta.ids),
-            meta._create_id_fetcher(meta.directory_path)
+            meta.create_id_fetcher(meta.directory_path)
         ))
         season = TvSeason(
             meta.directory_path,

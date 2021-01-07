@@ -52,13 +52,13 @@ class BookSeriesPrompter(Prompter, BookSeriesExtras, ABC):
         """
         base = super().prompt(directory_path)
         volumes = {}  # type: Dict[str, Any]
-        id_fetcher = cls._create_id_fetcher(directory_path)
+        id_fetcher = cls.create_id_fetcher(directory_path)
 
         for i, (volume_name, _) in enumerate(
                 listdir(directory_path, no_dirs=True)
         ):
             print("Volume {} ({}):".format(i + 1, volume_name))
-            ids = cls._prompt_component_ids(
+            ids = cls.prompt_component_ids(
                 cls.valid_id_types(), base["ids"], id_fetcher
             )
             volumes[str(i + 1)] = {

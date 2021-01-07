@@ -20,6 +20,8 @@ LICENSE"""
 import logging
 import tvdb_api
 import musicbrainzngs
+# noinspection PyPackageRequirements
+from imdb import IMDb
 from typing import List, Dict, Optional
 from toktokkie import version
 from toktokkie.enums import IdType, MediaType
@@ -63,6 +65,8 @@ class IdFetcher:
         try:
             if id_type == IdType.TVDB:
                 return self.__load_tvdb_ids()
+            elif id_type == IdType.IMDB:
+                return self.__load_imdb_ids()
             elif id_type == IdType.ANILIST and IdType.MYANIMELIST in other_ids:
                 return self.__load_anilist_ids(other_ids[IdType.MYANIMELIST])
             elif id_type == IdType.MUSICBRAINZ_ARTIST:
@@ -85,6 +89,17 @@ class IdFetcher:
         except ValueError:
             self.logger.warning("TVDB API now required API keys")
             return []
+
+    def __load_imdb_ids(self) -> List[str]:
+        """
+        Retrieves IMDB IDs based on the media name
+        :return: THe IMDB IDs
+        """
+        results = IMDb().search_movie(self.name)
+        if len(results) == 0:
+            return []
+        else:
+            return ["tt" + str(results[0].getID())]
 
     def __load_anilist_ids(self, mal_ids: List[str]) -> List[str]:
         """

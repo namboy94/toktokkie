@@ -38,7 +38,7 @@ class TestPrompter(_TestFramework):
         """
         with patch("builtins.input", side_effect=[
             "",  # tags
-            "[]", "", "", "", "",  # first round IDs
+            "[]", "[]", "", "", "",  # first round IDs
             "100", "", "", "", "",  # second round IDs
             "", "", "", "", ""  # Season IDs
         ]):
@@ -60,7 +60,7 @@ class TestPrompter(_TestFramework):
         with patch("builtins.input", side_effect=[
             "",  # tags
             "1",  # tvdb ID,
-            "", "", "", "100",  # imdb ID
+            "100",  # imdb ID
             "", "", "",  # rest of the IDs
             "", "", "", "", ""  # Season IDs
         ]):
