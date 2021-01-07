@@ -20,10 +20,10 @@ LICENSE"""
 import os
 import shutil
 import argparse
-import youtube_dl
 from typing import List
+from youtube_dl.YoutubeDL import YoutubeDL
 from puffotter.prompt import prompt
-from puffotter.os import makedirs, listdir
+from puffotter.os import makedirs, listdir, get_ext
 from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
@@ -58,6 +58,8 @@ class YoutubeMusicDlCommand(Command):
                             help="The youtube video/playlist URLs")
         parser.add_argument("--album-name", help="Specifies an album name for"
                                                  "the downloaded playlist")
+        parser.add_argument("--only-audio", action="store_true",
+                            help="If specified, discards video files")
 
     def execute(self):
         """
@@ -70,6 +72,7 @@ class YoutubeMusicDlCommand(Command):
         if len(directories) != 1:
             self.logger.warning("No valid directory provided")
             return
+
         directory = directories[0]
         metadata: Music = directory.metadata
         album_metadata_base = {
@@ -81,20 +84,17 @@ class YoutubeMusicDlCommand(Command):
         tmp_dir = "/tmp/ytmusicdl"
         makedirs(tmp_dir, delete_before=True)
 
-        ytdl_args = {
-            "format": "bestaudio/best",
-            "postprocessors": [{
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "192",
-            }],
-            "outtmpl": f"{tmp_dir}/%(title)s.%(ext)s",
-            "ignoreerrors": True
-        }
-        with youtube_dl.YoutubeDL(ytdl_args) as ytdl:
-            ytdl.download(self.args.youtube_urls)
+        self.download_from_youtube(tmp_dir)
 
+        songs = {}
         for downloaded, path in listdir(tmp_dir):
+            name = downloaded.replace(".mp3", "").replace("-video.mp4", "")
+            if name not in songs:
+                songs[name] = {}
+
+            ext = get_ext(downloaded)
+            songs["name"][ext] = path
+
             name = prompt(f"Enter song name for {downloaded}")
             os.rename(path, os.path.join(tmp_dir, name + ".mp3"))
 
@@ -160,3 +160,30 @@ class YoutubeMusicDlCommand(Command):
         return [
             os.path.join(tmp_dir, song) for song in ordered
         ]
+
+    def download_from_youtube(self, target_dir: str):
+        makedirs(target_dir, delete_before=True)
+
+        mp3_args = {
+            "format": "bestaudio/best",
+            "postprocessors": [{
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": "192",
+            }],
+            "outtmpl": f"{target_dir}/%(title)s.%(ext)s",
+            "ignoreerrors": True
+        }
+        mp4_args = {
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
+            "outtmpl": f"{target_dir}/%(title)s-video.%(ext)s",
+            "ignoreerrors": True
+        }
+
+        youtube_dl_args = [mp3_args]
+        if not self.args.only_audio:
+            youtube_dl_args.append(mp4_args)
+
+        for args in youtube_dl_args:
+            with YoutubeDL(args) as youtube_dl:
+                youtube_dl.download(self.args.youtube_urls)

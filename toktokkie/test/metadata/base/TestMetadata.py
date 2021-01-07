@@ -66,3 +66,11 @@ class TestMetadata(_TestFramework):
         meta = Tv(self.get("Over the Garden Wall"))
         representation = repr(meta)
         exec(f"self.assertEqual({representation}, meta)")
+
+    def test_trailing_slashes(self):
+        """
+        Tests if trailing slashes are handled correctly for name parameter
+        :return: None
+        """
+        tv = Tv("test/", {}, no_validation=True)
+        self.assertEqual(tv.name, "test")

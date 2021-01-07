@@ -45,15 +45,16 @@ class Directory:
     Logger for the directory class
     """
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, no_validation: bool = False):
         """
         Initializes the metadata of the directory
         :param path: The directory's path
+        :param no_validation: Disables validation
         :except MissingMetadataException,
                 InvalidMetadataException,
                 MetadataMismatch
         """
-        self.metadata = self.get_metadata(path)
+        self.metadata = self.get_metadata(path, no_validation)
 
     @property
     def path(self) -> str:
@@ -86,7 +87,7 @@ class Directory:
         :return: The generated directory, or None if aborted
         """
         try:
-            existing: Optional[Directory] = Directory(path)
+            existing: Optional[Directory] = Directory(path, True)
         except (InvalidMetadata, MissingMetadata):
             existing = None
 
@@ -158,10 +159,11 @@ class Directory:
         return cls.load_directories(paths, restrictions)
 
     @staticmethod
-    def get_metadata(directory: str) -> Metadata:
+    def get_metadata(directory: str, no_validation: bool = False) -> Metadata:
         """
         Automatically resolves the metadata of a directory
         :param directory: The directory for which to generate the metadata
+        :param no_validation: Disables Validation
         :return: The generated metadata
         :raises InvalidMetadataException: If the metadata is invalid
         """
@@ -170,7 +172,7 @@ class Directory:
             with open(info_file, "r") as f:
                 media_type = json.load(f)["type"]
                 metadata_cls = Directory.get_metadata_class(media_type)
-                return metadata_cls(directory)
+                return metadata_cls(directory, no_validation=no_validation)
         except (KeyError, ValueError) as e:
             raise InvalidMetadata(f"Missing/Invalid attribute: {e}")
         except FileNotFoundError:

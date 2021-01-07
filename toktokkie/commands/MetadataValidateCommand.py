@@ -18,15 +18,13 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from toktokkie.Directory import Directory
-from toktokkie.enums import MediaType
 from toktokkie.commands.Command import Command
-from toktokkie.exceptions import InvalidDirectoryState
+from toktokkie.Directory import Directory
 
 
-class MetadataGenCommand(Command):
+class MetadataValidateCommand(Command):
     """
-    Class that encapsulates behaviour of the metadata-gen command
+    Class that encapsulates behaviour of the metadata-validate command
     """
 
     @classmethod
@@ -34,7 +32,7 @@ class MetadataGenCommand(Command):
         """
         :return: The command name
         """
-        return "metadata-gen"
+        return "metadata-validate"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -43,10 +41,6 @@ class MetadataGenCommand(Command):
         :param parser: The parser to prepare
         :return: None
         """
-        # noinspection PyTypeChecker
-        media_types = list(map(lambda x: x.value, list(MediaType)))
-        parser.add_argument("media_type", choices=set(media_types),
-                            help="The media type of the metadata")
         cls.add_directories_arg(parser)
 
     def execute(self):
@@ -54,14 +48,6 @@ class MetadataGenCommand(Command):
         Executes the commands
         :return: None
         """
-        for directory in self.args.directories:
-
-            try:
-                generated = Directory.prompt(
-                    directory,
-                    self.args.media_type
-                ).metadata
-                generated.print_folder_icon_source()
-            except InvalidDirectoryState as e:
-                self.logger.warning(f"Invalid state for directory {directory}:"
-                                    f" {e}")
+        for _ in Directory.load_directories(self.args.directories):
+            pass
+        print("Done")
