@@ -43,6 +43,13 @@ class SuperCutCommand(Command):
         return "supercut"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Allows creation of supercuts of tv shows"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

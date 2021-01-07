@@ -36,6 +36,13 @@ class UpdateCommand(Command):
         return "update"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Updates directory with new episodes/chapters etc"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

@@ -35,6 +35,13 @@ class RenameCommand(Command):
         return "rename"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Renames directory content based on IDs"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

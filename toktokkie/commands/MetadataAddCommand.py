@@ -42,6 +42,13 @@ class MetadataAddCommand(Command):
         return "metadata-add"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Adds data to existing metadata"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

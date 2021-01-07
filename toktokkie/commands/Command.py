@@ -42,6 +42,13 @@ class Command:
         raise NotImplementedError()  # pragma: no cover
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        raise NotImplementedError()  # pragma: no cover
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

@@ -25,9 +25,9 @@ from toktokkie.enums import MediaType
 from toktokkie.Directory import Directory
 
 
-class SetMangaCoverCommand(Command):
+class SetComicCoverCommand(Command):
     """
-    Class that encapsulates behaviour of the set-manga-cover command
+    Class that encapsulates behaviour of the set-comic-cover command
     """
 
     @classmethod
@@ -35,7 +35,14 @@ class SetMangaCoverCommand(Command):
         """
         :return: The command name
         """
-        return "set-manga-cover"
+        return "set-comic-cover"
+
+    @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Creates a comic cover cbz file"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -52,7 +59,7 @@ class SetMangaCoverCommand(Command):
         :return: None
         """
         for directory in Directory.load_directories(
-                self.args.directories, restrictions=[MediaType.MANGA]
+                self.args.directories, restrictions=[MediaType.COMIC]
         ):
 
             cover = os.path.join(directory.metadata.icon_directory, "main.png")

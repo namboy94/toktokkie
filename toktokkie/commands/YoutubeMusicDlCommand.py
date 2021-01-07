@@ -44,6 +44,13 @@ class YoutubeMusicDlCommand(Command):
         return "youtube-music-dl"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Downloads music from youtube"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

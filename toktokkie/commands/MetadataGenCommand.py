@@ -37,6 +37,13 @@ class MetadataGenCommand(Command):
         return "metadata-gen"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Creates new metadata configuration for a directory"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

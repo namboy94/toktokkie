@@ -43,8 +43,10 @@ def define_parser() -> argparse.ArgumentParser:
     command_parser = parser.add_subparsers(dest="command")
     command_parser.required = True
 
-    for command_cls in toktokkie_commands:
-        subparser = command_parser.add_parser(command_cls.name())
+    for command_cls in sorted(toktokkie_commands, key=lambda x: x.name()):
+        subparser = command_parser.add_parser(
+            command_cls.name(), help=command_cls.help()
+        )
         argparse_add_verbosity(subparser)
         command_cls.prepare_parser(subparser)
 

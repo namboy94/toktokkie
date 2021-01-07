@@ -45,6 +45,13 @@ class AlbumArtFetchCommand(Command):
         return "album-art-fetch"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Loads music album art based on stored IDs"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

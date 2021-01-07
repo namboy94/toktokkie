@@ -37,6 +37,13 @@ class IdFetchCommand(Command):
         return "id-fetch"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Fills out IDs based on existing IDs"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

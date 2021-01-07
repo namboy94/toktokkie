@@ -38,6 +38,13 @@ class ArchiveCommand(Command):
         return "archive"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Archives the folder structure and metadata"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

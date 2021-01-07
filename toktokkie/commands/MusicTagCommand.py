@@ -39,6 +39,13 @@ class MusicTagCommand(Command):
         return "music-tag"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Modifies the mp3 music tags based on metadata"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

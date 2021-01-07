@@ -45,6 +45,13 @@ class MangaCreateCommand(Command):
         return "manga-create"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Creates a new manga directory based on anilist/mangadex data"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

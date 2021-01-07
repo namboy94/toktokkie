@@ -37,6 +37,14 @@ class PlaylistCreateCommand(Command):
         return "playlist-create"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Creates a playlist file containing" \
+               "all songs in the directories"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

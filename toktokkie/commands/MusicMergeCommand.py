@@ -42,6 +42,13 @@ class MusicMergeCommand(Command):
         return "music-merge"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Combines multiple music directories into one"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

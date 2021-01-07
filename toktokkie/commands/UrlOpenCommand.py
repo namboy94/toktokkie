@@ -24,9 +24,9 @@ from toktokkie.commands.Command import Command
 from toktokkie.enums import MediaType
 
 
-class AnilistOpenCommand(Command):
+class UrlOpenCommand(Command):
     """
-    Class that encapsulates behaviour of the anilist-open command
+    Class that encapsulates behaviour of the urlopen command
     """
 
     @classmethod
@@ -34,7 +34,14 @@ class AnilistOpenCommand(Command):
         """
         :return: The command name
         """
-        return "anilist-open"
+        return "urlopen"
+
+    @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Opens the stored IDs in a browser"
 
     @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
@@ -52,8 +59,9 @@ class AnilistOpenCommand(Command):
         Executes the command
         :return: None
         """
+        # TODO re-implement
         anilist_types = [
-            MediaType.MANGA,
+            MediaType.COMIC,
             MediaType.BOOK,
             MediaType.BOOK_SERIES,
             MediaType.TV_SERIES,

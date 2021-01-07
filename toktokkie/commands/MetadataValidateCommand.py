@@ -35,6 +35,14 @@ class MetadataValidateCommand(Command):
         return "metadata-validate"
 
     @classmethod
+    def help(cls) -> str:
+        """
+        :return: The help message for the command
+        """
+        return "Verifies if a directory is a valid toktokkie " \
+               "metadata directory"
+
+    @classmethod
     def prepare_parser(cls, parser: argparse.ArgumentParser):
         """
         Prepares an argumentparser for this command

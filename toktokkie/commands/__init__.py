@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.commands.AnilistOpenCommand import AnilistOpenCommand
+from toktokkie.commands.UrlOpenCommand import UrlOpenCommand
 from toktokkie.commands.PrintCommand import PrintCommand
 from toktokkie.commands.IconizeCommand import IconizeCommand
 from toktokkie.commands.RenameCommand import RenameCommand
@@ -26,7 +26,7 @@ from toktokkie.commands.MangaCreateCommand import MangaCreateCommand
 from toktokkie.commands.MetadataGenCommand import MetadataGenCommand
 from toktokkie.commands.UpdateCommand import UpdateCommand
 from toktokkie.commands.MetadataAddCommand import MetadataAddCommand
-from toktokkie.commands.SetMangaCoverCommand import SetMangaCoverCommand
+from toktokkie.commands.SetComicCoverCommand import SetComicCoverCommand
 from toktokkie.commands.SuperCutCommand import SuperCutCommand
 from toktokkie.commands.AnimeThemeDlCommand import AnimeThemeDlCommand
 from toktokkie.commands.AlbumArtFetchCommand import AlbumArtFetchCommand
@@ -39,7 +39,7 @@ from toktokkie.commands.MetadataValidateCommand import MetadataValidateCommand
 
 toktokkie_commands = [
     PrintCommand,
-    AnilistOpenCommand,
+    UrlOpenCommand,
     IconizeCommand,
     RenameCommand,
     ArchiveCommand,
@@ -47,7 +47,7 @@ toktokkie_commands = [
     MetadataGenCommand,
     UpdateCommand,
     MetadataAddCommand,
-    SetMangaCoverCommand,
+    SetComicCoverCommand,
     SuperCutCommand,
     AnimeThemeDlCommand,
     AlbumArtFetchCommand,
