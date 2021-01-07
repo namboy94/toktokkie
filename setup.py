@@ -53,7 +53,8 @@ if __name__ == "__main__":
             "Pillow",
             "IMDbPy",
             "qbittorrent",
-            "youtube-dl"
+            "youtube-dl",
+            "torrent-dl"
         ],
         test_suite='nose.collector',
         tests_require=['nose'],

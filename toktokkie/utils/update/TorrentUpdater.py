@@ -17,15 +17,12 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
-import time
-import shutil
 from typing import List, Dict, Set
-from qbittorrent import Client
 from toktokkie.utils.update.TvUpdater import TvUpdater, DownloadInstructions
-from toktokkie.utils.torrent.search import search_engines
-from toktokkie.utils.torrent.search.SearchEngine import SearchEngine
-from toktokkie.utils.torrent.search.TorrentInfo import TorrentInfo
+from torrent_dl.search import search_engines
+from torrent_dl.search.SearchEngine import SearchEngine
+from torrent_dl.entities.TorrentDownload import TorrentDownload
+from torrent_dl.download.QBittorrentDownloader import QBittorrentDownloader
 
 
 class TorrentUpdater(TvUpdater):
@@ -74,43 +71,9 @@ class TorrentUpdater(TvUpdater):
         :param download_instructions: The download instrcutions
         :return: None
         """
-        url, user, password, torrent_dir = Config().qbittorrent_config
-        client = Client(url)
-        client.login(user, password)
-
-        for instruction in download_instructions:
-
-            torrent_info: TorrentInfo = instruction.search_result
-            destination_path = \
-                os.path.join(instruction.directory, instruction.filename)
-
-            print(f"Downloading Torrent: {torrent_info.filename}")
-
-            client.download_from_link(torrent_info.magnet_link)
-            while len(client.torrents()) > 0:
-                for torrent in client.torrents():
-                    if torrent["state"] not in [
-                        "downloading", "metaDL", "stalledDL"
-                    ]:
-                        print("Done.     ")
-                        torrent_path = os.path.join(torrent_dir,
-                                                    torrent["name"])
-
-                        if os.path.isdir(torrent_path):
-                            children = [
-                                os.path.join(torrent_path, x)
-                                for x in os.listdir(torrent_path)
-                            ]
-                            children.sort(
-                                key=lambda x: os.path.getsize(x), reverse=True
-                            )
-                            torrent_path = children[0]
-                            ext = torrent_path.rsplit(".", 1)[1]
-                            destination_path += "." + ext
-
-                        client.delete(torrent["hash"])
-                        shutil.move(torrent_path, destination_path)
-                    else:
-                        print(f"{(100 * torrent['progress']):.2f}%", end="\r")
-
-                time.sleep(1)
+        downloader = QBittorrentDownloader()
+        torrents = [
+            TorrentDownload(x.search_result, x.directory, x.filename)
+            for x in download_instructions
+        ]
+        downloader.download(torrents)
