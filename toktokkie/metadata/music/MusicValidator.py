@@ -41,6 +41,7 @@ class MusicValidator(Validator, MusicExtras, ABC):
         valid_album_ids = cls.valid_id_types()
         valid_album_ids.remove(IdType.MUSICBRAINZ_ARTIST)
         valid_album_ids.append(IdType.MUSICBRAINZ_RELEASE)
+        valid_album_ids.append(IdType.YOUTUBE_VIDEO)
 
         album_ids = cls._create_ids_schema(valid_album_ids)
         series_ids = cls._create_ids_schema(Validator.theme_song_id_types())

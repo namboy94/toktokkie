@@ -20,13 +20,14 @@ LICENSE"""
 import os
 import shutil
 import argparse
-from typing import List
+from typing import List, Dict, Union
 from youtube_dl.YoutubeDL import YoutubeDL
+from colorama import Fore, Style
 from puffotter.prompt import prompt
 from puffotter.os import makedirs, listdir, get_ext
 from toktokkie.commands.Command import Command
-from toktokkie.Directory import Directory
-from toktokkie.enums import MediaType
+from toktokkie.exceptions import MissingMetadata, InvalidMetadata
+from toktokkie.enums import IdType
 from toktokkie.metadata.music.Music import Music
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 
@@ -73,104 +74,39 @@ class YoutubeMusicDlCommand(Command):
         Executes the commands
         :return: None
         """
-        directories = Directory.load_directories(
-            [self.args.artist_directory], [MediaType.MUSIC_ARTIST]
-        )
-        if len(directories) != 1:
-            self.logger.warning("No valid directory provided")
+        directory = self.args.artist_directory
+
+        # Create directory if it does not exist
+        try:
+            metadata = Music(directory)
+        except MissingMetadata:
+            makedirs(directory)
+            self.logger.warning("Missing metadata")
+            metadata = Music.from_prompt(directory)
+            metadata.write()
+        except InvalidMetadata:
+            self.logger.warning(f"Invalid music metadata for {directory}")
             return
 
-        directory = directories[0]
-        metadata: Music = directory.metadata
-        album_metadata_base = {
-            "ids": {},
-            "year": self.args.year,
-            "genre": self.args.genre
-        }
-
-        tmp_dir = "/tmp/ytmusicdl"
+        tmp_dir = "/tmp/toktokkie-ytmusicdl"
         makedirs(tmp_dir, delete_before=True)
 
-        self.download_from_youtube(tmp_dir)
+        downloaded = self.download_from_youtube(tmp_dir)
+        self.create_albums(metadata, downloaded)
+        metadata.rename(noconfirm=True)
 
-        songs = {}
-        for downloaded, path in listdir(tmp_dir):
-            name = downloaded.replace(".mp3", "").replace("-video.mp4", "")
-            if name not in songs:
-                songs[name] = {}
-
-            ext = get_ext(downloaded)
-            songs["name"][ext] = path
-
-            name = prompt(f"Enter song name for {downloaded}")
-            os.rename(path, os.path.join(tmp_dir, name + ".mp3"))
-
-        albums = []
-        if self.args.album_name is not None:
-            album_dir = os.path.join(directory.path, self.args.album_name)
-            album_metadata_json = {"name": self.args.album_name}
-            album_metadata_json.update(album_metadata_base)
-            order = self.prompt_song_order(tmp_dir)
-            albums.append((album_dir, album_metadata_json, order))
-        else:
-            for song_file, song_path in listdir(tmp_dir):
-                song_name = song_file.rsplit(".mp3", 1)[0]
-                album_dir = os.path.join(directory.path, song_name)
-                album_metadata_json = {"name": song_name}
-                album_metadata_json.update(album_metadata_base)
-                albums.append((album_dir, album_metadata_json, [song_path]))
-
-        for album_dir, album_metadata_json, songs in albums:
-            if os.path.isdir(album_dir):
-                self.logger.warning(f"Album {album_dir} already exists")
-                continue
-
-            makedirs(album_dir)
-            for i, song in enumerate(songs):
-                new_song_path = os.path.join(
-                    album_dir,
-                    f"{str(i + 1).zfill(2)} - {os.path.basename(song)}"
-                )
-                shutil.move(song, new_song_path)
-
-            album_metadata = MusicAlbum.from_json(
-                metadata.directory_path, metadata.ids, album_metadata_json
-            )
-            metadata.add_album(album_metadata)
-
-        metadata.write()
-
-    @staticmethod
-    def prompt_song_order(tmp_dir: str) -> List[str]:
+    def download_from_youtube(self, target_dir: str) \
+            -> List[Dict[str, Union[str, Dict[str, str]]]]:
         """
-        Prompts the user for the song order in an album
-        :param tmp_dir: The directory in which the unordered files exist
-        :return: List of ordered file paths
+        Downloads all youtube URLs from the command line arguments into a
+        directory. Both mp4 and mp3 files will be downloaded if not specified
+        otherwise by command line arguments.
+        Playlists will be resolved to their own video IDs and downloaded
+        seperately
+        :param target_dir: The directory in which to store the downloaded files
+        :return: The downloaded songs in the following form:
+                 [{"files": {extension: path}}, "id": "ID"}, ...]
         """
-        songs = os.listdir(tmp_dir)
-        ordered = []
-
-        while len(songs) > 1:
-            for i, song in enumerate(songs):
-                print(f"{i + 1} - {song}")
-            index = prompt(
-                "Next song in order: ",
-                _type=int,
-                choices={str(x) for x in range(1, len(songs) + 1)}
-            ) - 1
-            selected = songs.pop(index)
-            ordered.append(selected)
-
-        if len(songs) == 1:
-            ordered.append(songs.pop(0))
-
-        return [
-            os.path.join(tmp_dir, song) for song in ordered
-        ]
-
-    def download_from_youtube(self, target_dir: str):
-        makedirs(target_dir, delete_before=True)
-
         mp3_args = {
             "format": "bestaudio/best",
             "postprocessors": [{
@@ -191,6 +127,134 @@ class YoutubeMusicDlCommand(Command):
         if not self.args.only_audio:
             youtube_dl_args.append(mp4_args)
 
-        for args in youtube_dl_args:
-            with YoutubeDL(args) as youtube_dl:
-                youtube_dl.download(self.args.youtube_urls)
+        video_ids = []
+        with YoutubeDL() as yt_info:
+            for youtube_url in self.args.youtube_urls:
+                url_info = yt_info.extract_info(youtube_url, download=False)
+                if url_info.get("_type") == "playlist":
+                    for entry in url_info["entries"]:
+                        video_ids.append(entry["id"])
+                else:
+                    video_ids.append(url_info["id"])
+
+        directory_content = []
+        downloaded = []
+        for video_id in video_ids:
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
+            for args in youtube_dl_args:
+                with YoutubeDL(args) as youtube_dl:
+                    youtube_dl.download([video_url])
+
+            new_content = sorted([
+                x[1] for x in listdir(target_dir)
+                if x[1] not in directory_content
+            ])
+            directory_content += new_content
+
+            files = {get_ext(x): x for x in new_content}
+            mp3_file = os.path.basename(files["mp3"])
+            mp3_name = mp3_file.rsplit(".mp3", 1)[0]
+
+            entry = {
+                "id": video_id,
+                "files": files,
+                "name": mp3_name
+            }
+            downloaded.append(entry)
+
+        for entry in downloaded:
+            entry["name"] = prompt(
+                f"Enter song name for "
+                f"{Fore.LIGHTYELLOW_EX}{entry['name']}{Style.RESET_ALL}",
+                required=True
+            )
+
+        return downloaded
+
+    def create_albums(
+            self,
+            music: Music,
+            info: List[Dict[str, Union[str, Dict[str, str]]]]
+    ):
+        """
+        Creates album objects based on downloaded info
+        :param music: The music metadata
+        :param info: The info from youtube download
+        :return: None
+        """
+        existing = [x.name for x in music.albums]
+        if self.args.album_name is not None:
+
+            if self.args.album_name in existing:
+                self.logger.warning(
+                    f"Album {self.args.album_name} already exists"
+                )
+                return
+
+            album = MusicAlbum(
+                music.directory_path,
+                music.ids,
+                {IdType.YOUTUBE_VIDEO: [x["id"] for x in info]},
+                self.args.album_name,
+                self.args.genre,
+                self.args.year
+            )
+            makedirs(album.path)
+            music.add_album(album)
+
+            order = self.prompt_song_order([x["name"] for x in info])
+            for entry in info:
+                index = str(order.index(entry["name"])).zfill(len(order))
+                for ext, path in entry["files"].items():
+                    shutil.move(path, os.path.join(
+                        album.path,
+                        f"{index} - {entry['name']}.{ext}"
+                    ))
+        else:
+            for entry in info:
+                album = MusicAlbum(
+                    music.directory_path,
+                    music.ids,
+                    {IdType.YOUTUBE_VIDEO: [entry["id"]]},
+                    entry["name"],
+                    self.args.genre,
+                    self.args.year
+                )
+                if album.name in existing:
+                    self.logger.warning(f"Album {album.name} already exists")
+                    continue
+                else:
+                    makedirs(album.path)
+                    music.add_album(album)
+                    for ext, path in entry["files"].items():
+                        print(path)
+                        shutil.move(
+                            path,
+                            os.path.join(album.path, f"{entry['name']}.{ext}")
+                        )
+
+        music.write()
+
+    @staticmethod
+    def prompt_song_order(names: List[str]) -> List[str]:
+        """
+        Prompts the user for the song order in an album
+        :param names: The names of the songs
+        :return: List of ordered song names
+        """
+        ordered = []
+        while len(names) > 1:
+            for i, song in enumerate(names):
+                print(f"{i + 1} - {song}")
+            index = prompt(
+                "Next song in order: ",
+                _type=int,
+                choices={str(x) for x in range(1, len(names) + 1)}
+            ) - 1
+            selected = names.pop(index)
+            ordered.append(selected)
+
+        assert len(names) == 1
+        ordered.append(names.pop(0))
+
+        return ordered

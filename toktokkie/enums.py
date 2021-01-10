@@ -35,6 +35,7 @@ class IdType(Enum):
     MUSICBRAINZ_ARTIST = "musicbrainz_artist"
     MUSICBRAINZ_RECORDING = "musicbrainz_recording"
     MUSICBRAINZ_RELEASE = "musicbrainz_release"
+    YOUTUBE_VIDEO = "youtube"
 
 
 class MediaType(Enum):
