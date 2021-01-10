@@ -30,6 +30,7 @@ class ImdbCache:
     episode_cache: Dict[str, Dict[int, Dict[int, Movie]]] = {}
     """
     The cache for episodes
+    Format: {imdb_id: {season: {episode: episode_info}}}
     """
 
     imdb_api = IMDb()
