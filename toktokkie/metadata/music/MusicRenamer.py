@@ -75,14 +75,32 @@ class MusicRenamer(Renamer, MusicExtras, ABC):
                 tracks = []
                 for song in album.songs:
                     track_number = str(song.tracknumber[0]).zfill(2)
-                    tracks.append((track_number, song))
+                    videos = [x for x in album.videos if x.title == song.title]
+                    video = None if len(videos) == 0 else videos[0]
+                    tracks.append((track_number, song, video))
 
                 tracks.sort(key=lambda x: x[0])  # Sort for better UX
 
-                for track_number, song in tracks:
-                    new_name = "{} - {}.{}".format(
-                        track_number, song.title, song.format
-                    )
-                    operations.append(RenameOperation(song.path, new_name))
+                if len(tracks) != 1:
+                    for track_number, song, video in tracks:
+                        operations.append(RenameOperation(
+                            song.path,
+                            f"{track_number} - {song.title}.{song.format}"
+                        ))
+                        if video is not None:
+                            operations.append(RenameOperation(
+                                video.path,
+                                f"{track_number} - {song.title}"
+                                f"-video.{video.format}"
+                            ))
+                else:
+                    _, song, video = tracks[0]
+                    operations.append(RenameOperation(
+                        song.path, f"{album.name}.{song.format}"
+                    ))
+                    if video is not None:
+                        operations.append(RenameOperation(
+                            video.path, f"{album.name}-video.{video.format}"
+                        ))
 
         return operations

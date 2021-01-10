@@ -188,7 +188,7 @@ class MusicSong:
         :return: The song's track number as a tuple consisting of the song's
                  track number and the total amount of tracks in the album
         """
-        tracks = listdir(self.album.path, no_dirs=True)
+        tracks = [x.path for x in self.album.songs]
         track_count = len(tracks)
         tracknumber = self._tags.get("tracknumber")
 
@@ -199,7 +199,7 @@ class MusicSong:
             else:
                 return int(split[0]), int(split[1])
         else:
-            for i, (_, track_path) in enumerate(tracks):
+            for i, track_path in enumerate(tracks):
                 if track_path == self.path:
                     return i + 1, track_count
             return 1, track_count

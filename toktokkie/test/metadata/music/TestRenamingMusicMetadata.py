@@ -19,7 +19,7 @@ LICENSE"""
 
 import os
 from typing import List, Tuple
-from puffotter.os import listdir
+from puffotter.os import listdir, touch
 from toktokkie.metadata.music.Music import Music
 from toktokkie.test.TestFramework import _TestFramework
 
@@ -92,3 +92,67 @@ class TestRenamingMusicMetadata(_TestFramework):
 
         for correct_file in correct_files:
             self.assertTrue(os.path.isfile(correct_file))
+
+    def test_renaming_single_song(self):
+        """
+        Tests renaming a single song
+        :return: None
+        """
+        amalee = Music(self.get("AmaLee"))
+        first = amalee.albums[0]
+        for _, path in listdir(first.path):
+            os.remove(path)
+        touch(os.path.join(first.path, "abc.mp3"))
+        amalee.rename(noconfirm=True)
+        self.assertTrue(os.path.isfile(
+            os.path.join(first.path, f"{first.name}.mp3")
+        ))
+
+    def test_renaming_single_song_with_video(self):
+        """
+        Tests renaming a single song that includes a video file
+        :return: None
+        """
+        amalee = Music(self.get("AmaLee"))
+        first = amalee.albums[0]
+        for _, path in listdir(first.path):
+            os.remove(path)
+        touch(os.path.join(first.path, "abc.mp3"))
+        touch(os.path.join(first.path, "abc.mp4"))
+        amalee.rename(noconfirm=True)
+        self.assertTrue(os.path.isfile(
+            os.path.join(first.path, f"{first.name}.mp3")
+        ))
+        self.assertTrue(os.path.isfile(
+            os.path.join(first.path, f"{first.name}-video.mp4")
+        ))
+
+    def test_renaming_with_videos(self):
+        """
+        Tests renaming a regular album with videos
+        :return: None
+        """
+        amalee = Music(self.get("AmaLee"))
+        first = amalee.albums[0]
+        pre_rename = []
+        post_rename = []
+        music_files = []
+        for song in first.songs:
+            wrong = os.path.join(first.path, f"{song.title}.mp4")
+            right = os.path.join(
+                first.path,
+                f"{str(song.tracknumber[0]).zfill(2)} - {song.title}-video.mp4"
+            )
+            touch(wrong)
+            pre_rename.append(wrong)
+            post_rename.append(right)
+            music_files.append(song.path)
+
+        amalee.rename(noconfirm=True)
+
+        for video_file in pre_rename:
+            self.assertFalse(os.path.isfile(video_file))
+        for video_file in post_rename:
+            self.assertTrue(os.path.isfile(video_file))
+        for music_file in music_files:
+            self.assertTrue(os.path.isfile(music_file))

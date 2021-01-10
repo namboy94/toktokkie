@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 import logging
 from typing import TYPE_CHECKING
 from puffotter.os import get_ext
@@ -40,3 +41,12 @@ class MusicVideo:
         self.album = album
         self.path = path
         self.format = get_ext(self.path)
+
+    @property
+    def title(self) -> str:
+        """
+        :return: The title of the song
+        """
+        return os.path.basename(self.path)\
+            .rsplit(f".{self.format}", 1)[0]\
+            .rsplit("-video")[0]
