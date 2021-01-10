@@ -42,7 +42,7 @@ class TestPrompter(_TestFramework):
             "100", "", "", "", "",  # second round IDs
             "", "", "", "", ""  # Season IDs
         ]):
-            test_dir = self.get("Tester")
+            test_dir = self.get("Naruto")
             os.makedirs(os.path.join(test_dir, "Season 1"))
             meta = Tv.prompt(test_dir)
             self.assertEqual(meta["ids"]["tvdb"], ["100"])

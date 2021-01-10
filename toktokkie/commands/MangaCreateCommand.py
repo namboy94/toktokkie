@@ -98,7 +98,7 @@ class MangaCreateCommand(Command):
             metadata = Comic(info["title"], {
                 "ids": title_ids,
                 "special_chapters": [],
-                "type": "manga"
+                "type": "comic"
             })
             metadata.write()
 

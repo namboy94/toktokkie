@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import tvdb_api
 import argparse
-from toktokkie.enums import IdType
+from typing import List, Dict
+from toktokkie.enums import MediaType, IdType
 from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
+from toktokkie.utils.IdFetcher import IdFetcher
+from toktokkie.metadata.tv.Tv import Tv
 
 
 class IdFetchCommand(Command):
@@ -57,32 +59,59 @@ class IdFetchCommand(Command):
         Executes the commands
         :return: None
         """
-        tvdb = tvdb_api.Tvdb()
-
         for directory in Directory.load_directories(self.args.directories):
             metadata = directory.metadata
+            fetcher = IdFetcher(metadata.name, metadata.media_type())
             ids = metadata.ids
 
             self.logger.info(f"Fetching IDs for {metadata.name}")
 
-            tvdb_ids = ids[IdType.TVDB]
-            imdb_ids = ids[IdType.IMDB]
+            if metadata.media_type() == MediaType.TV_SERIES:
+                self.fetch_season_ids(metadata, fetcher)
+            # TODO implement ID fetching for all components
+            # elif metadata.media_type() == MediaType.MUSIC_ARTIST:
+            #     self.fetch_theme_song_ids()
+            #     self.fetch_album_ids()
+            # elif metadata.media_type() == MediaType.BOOK_SERIES:
+            #     self.fetch_volume_ids()
 
-            if len(tvdb_ids) > 0 and len(imdb_ids) == 0:
-                for tvdb_id in tvdb_ids:
-                    self.logger.debug(f"Loading IMDB ID for {tvdb_id}")
-                    imdb_id = tvdb[int(tvdb_id)].data["imdbId"]
-                    if imdb_id:
-                        self.logger.info(f"Loaded imdb ID '{imdb_id}' "
-                                         f"for TVDB ID '{tvdb_id}'")
-                        imdb_ids.append(imdb_id)
-                    else:
-                        self.logger.warning(f"No IMDB ID for {tvdb_id}")
-
-            ids.update({
-                IdType.TVDB: tvdb_ids,
-                IdType.IMDB: imdb_ids
-            })
-
+            self.fill_ids(ids, metadata.valid_id_types(), fetcher)
             metadata.ids = ids
             metadata.write()
+
+    def fetch_season_ids(self, metadata: Tv, fetcher: IdFetcher):
+        """
+        Fetches season IDs for a Tv metadata
+        :param metadata: The Tv metadata
+        :param fetcher: The ID fetcher to use
+        :return: None
+        """
+        new_seasons = []
+        for season in metadata.seasons:
+            season_ids = season.ids
+            self.fill_ids(season_ids, metadata.valid_id_types(), fetcher)
+            season.ids = season_ids
+            new_seasons.append(season)
+        metadata.seasons = new_seasons
+        metadata.write()
+
+    def fill_ids(
+            self,
+            ids: Dict[IdType, List[str]],
+            valid_id_types: List[IdType],
+            fetcher: IdFetcher
+    ):
+        """
+        Fills IDs using an ID Fetcher
+        :param ids: The IDs to fill
+        :param valid_id_types: List of valid ID types
+        :param fetcher: The IdFetcher object to use
+        :return: None
+        """
+        for id_type in valid_id_types:
+            if len(ids[id_type]) == 0:
+                results = fetcher.fetch_ids(id_type, ids)
+                if results is not None:
+                    ids[id_type] = results
+                    self.logger.info(f"Found {id_type.value} ids: "
+                                     f"{results}")

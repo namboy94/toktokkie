@@ -55,6 +55,7 @@ class TvExtras(MetadataBase, ABC):
         """
         self.json["seasons"] = []
         for season in seasons:
+            print(season)
             self.json["seasons"].append(season.json)
 
     def get_season(self, season_name: str) -> TvSeason:
