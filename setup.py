@@ -54,7 +54,7 @@ if __name__ == "__main__":
             "IMDbPy",
             "qbittorrent",
             "youtube-dl",
-            "torrent-dl"
+            "torrent-download"
         ],
         test_suite='nose.collector',
         tests_require=['nose'],

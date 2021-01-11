@@ -19,10 +19,12 @@ LICENSE"""
 
 from typing import List, Dict, Set
 from toktokkie.utils.update.TvUpdater import TvUpdater, DownloadInstructions
-from torrent_dl.search import search_engines
-from torrent_dl.search.SearchEngine import SearchEngine
-from torrent_dl.entities.TorrentDownload import TorrentDownload
-from torrent_dl.download.QBittorrentDownloader import QBittorrentDownloader
+from torrent_download.exceptions import MissingConfig
+from torrent_download.search import search_engines
+from torrent_download.search.SearchEngine import SearchEngine
+from torrent_download.entities.TorrentDownload import TorrentDownload
+from torrent_download.download.QBittorrentDownloader import \
+    QBittorrentDownloader
 
 
 class TorrentUpdater(TvUpdater):
@@ -71,7 +73,12 @@ class TorrentUpdater(TvUpdater):
         :param download_instructions: The download instrcutions
         :return: None
         """
-        downloader = QBittorrentDownloader()
+        try:
+            downloader = QBittorrentDownloader.from_config()
+        except MissingConfig:
+            self.logger.warning("Missing torrent-download config."
+                                "Run tdl-config-gen.")
+            return
         torrents = [
             TorrentDownload(x.search_result, x.directory, x.filename)
             for x in download_instructions
