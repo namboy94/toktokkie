@@ -37,7 +37,7 @@ unittest:
   stage: test
   tags: [docker]
   script:
-    - apt install ffmpeg
+    - apt install ffmpeg -y
     - python-unittest
 
 gitstats:
