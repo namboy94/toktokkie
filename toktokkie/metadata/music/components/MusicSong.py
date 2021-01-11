@@ -23,7 +23,7 @@ from typing import Dict, Tuple, TYPE_CHECKING
 from mutagen.easyid3 import EasyID3
 # noinspection PyProtectedMember
 from mutagen.id3._util import ID3NoHeaderError
-from puffotter.os import get_ext, listdir
+from puffotter.os import get_ext
 if TYPE_CHECKING:  # pragma: no cover
     from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 
@@ -74,8 +74,6 @@ class MusicSong:
 
             for key in tags:
                 tag = tags[key]
-                print(tag)
-                print(key)
                 if isinstance(tag, list):
                     if len(tag) >= 1:
                         tags[key] = tag[0]
@@ -188,7 +186,7 @@ class MusicSong:
         :return: The song's track number as a tuple consisting of the song's
                  track number and the total amount of tracks in the album
         """
-        tracks = [x.path for x in self.album.songs]
+        tracks = [x.path for x in self.album.load_songs(False)]
         track_count = len(tracks)
         tracknumber = self._tags.get("tracknumber")
 

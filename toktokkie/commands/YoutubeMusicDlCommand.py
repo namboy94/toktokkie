@@ -94,6 +94,7 @@ class YoutubeMusicDlCommand(Command):
         downloaded = self.download_from_youtube(tmp_dir)
         self.create_albums(metadata, downloaded)
         metadata.rename(noconfirm=True)
+        metadata.apply_tags()
 
     def download_from_youtube(self, target_dir: str) \
             -> List[Dict[str, Union[str, Dict[str, str]]]]:
@@ -191,10 +192,15 @@ class YoutubeMusicDlCommand(Command):
                 )
                 return
 
+            ids: Dict[IdType, List[str]] = {IdType.YOUTUBE_VIDEO: []}
+            for entry in info:
+                assert isinstance(entry["id"], str)
+                ids[IdType.YOUTUBE_VIDEO].append(entry["id"])
+
             album = MusicAlbum(
                 music.directory_path,
                 music.ids,
-                {IdType.YOUTUBE_VIDEO: [x["id"] for x in info]},
+                ids,
                 self.args.album_name,
                 self.args.genre,
                 self.args.year
@@ -202,9 +208,16 @@ class YoutubeMusicDlCommand(Command):
             makedirs(album.path)
             music.add_album(album)
 
-            order = self.prompt_song_order([x["name"] for x in info])
+            names = []
             for entry in info:
-                index = str(order.index(entry["name"])).zfill(len(order))
+                assert isinstance(entry["name"], str)
+                names.append(entry["name"])
+
+            order = self.prompt_song_order(names)
+            for entry in info:
+                assert isinstance(entry["name"], str)
+                assert isinstance(entry["files"], dict)
+                index = str(order.index(entry["name"]) + 1).zfill(2)
                 for ext, path in entry["files"].items():
                     shutil.move(path, os.path.join(
                         album.path,
@@ -212,6 +225,9 @@ class YoutubeMusicDlCommand(Command):
                     ))
         else:
             for entry in info:
+                assert isinstance(entry["id"], str)
+                assert isinstance(entry["name"], str)
+                assert isinstance(entry["files"], dict)
                 album = MusicAlbum(
                     music.directory_path,
                     music.ids,
@@ -227,7 +243,6 @@ class YoutubeMusicDlCommand(Command):
                     makedirs(album.path)
                     music.add_album(album)
                     for ext, path in entry["files"].items():
-                        print(path)
                         shutil.move(
                             path,
                             os.path.join(album.path, f"{entry['name']}.{ext}")

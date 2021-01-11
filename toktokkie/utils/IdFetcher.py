@@ -229,7 +229,7 @@ class IdFetcher:
         for mangadex_id in mangadex_ids:
             _id = self.__load_mangadex_related_ids(mangadex_id)[0]
             anilist_ids.append(_id)
-        return anilist_ids
+        return [x for x in anilist_ids if x is not None]
 
     def __load_mal_ids_from_anilist(self, anilist_ids: List[str]) \
             -> List[str]:
@@ -271,7 +271,7 @@ class IdFetcher:
         for mangadex_id in mangadex_ids:
             _id = self.__load_mangadex_related_ids(mangadex_id)[1]
             mal_ids.append(_id)
-        return mal_ids
+        return [x for x in mal_ids if x is not None]
 
     def __load_musicbrainz_artist_ids_from_name(self) -> List[str]:
         """

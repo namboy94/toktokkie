@@ -111,13 +111,28 @@ class MusicAlbum(JsonComponent):
         except KeyError as e:
             raise InvalidMetadata(f"Attribute missing: {e}")
 
+    def load_songs(self, tracknumber_sort: bool = True) -> List["MusicSong"]:
+        """
+        Loads songs from this album
+        :param tracknumber_sort: Whether or not to sort the songs by
+                                 tracknumber
+                                 Needed to avoid infinite recursion
+                                 in MusicSong class
+        :return: All songs in this album
+        """
+        song_files = self.__get_files("audio")
+        songs = [MusicSong(x, self) for x in song_files]
+        songs.sort(key=lambda x: x.path)
+        if tracknumber_sort:
+            songs.sort(key=lambda x: x.tracknumber[0])
+        return songs
+
     @property
     def songs(self) -> List["MusicSong"]:
         """
         :return: All songs in this album
         """
-        song_files = self.__get_files("audio")
-        return list(map(lambda x: MusicSong(x, self), song_files))
+        return self.load_songs(True)
 
     @property
     def videos(self) -> List["MusicVideo"]:
@@ -125,7 +140,9 @@ class MusicAlbum(JsonComponent):
         :return: All music videos in this album
         """
         video_files = self.__get_files("video")
-        return list(map(lambda x: MusicVideo(x, self), video_files))
+        videos = [MusicVideo(x, self) for x in video_files]
+        videos.sort(key=lambda x: x.title)
+        return videos
 
     def __get_files(self, mimetype: str) -> List[str]:
         """

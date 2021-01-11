@@ -17,8 +17,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 from abc import ABC
 from typing import List
+# noinspection PyUnresolvedReferences,PyProtectedMember
+from mutagen.id3 import ID3, APIC
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.metadata.music.components.MusicThemeSong import \
     MusicThemeSong
@@ -90,3 +93,59 @@ class MusicExtras(MetadataBase, ABC):
                 self.json["theme_songs"] = []
 
             self.json["theme_songs"].append(theme_song.json)
+
+    def apply_tags(self, force_art_refresh: bool = False):
+        """
+        Applies MP3 tags
+        :param force_art_refresh: Forces refresh of cover art
+        :return: None
+        """
+        for album in self.albums:
+            for song in album.songs:
+
+                title = song.filename.rsplit(".", 1)[0]
+                if title.split(" - ", 1)[0].isnumeric():
+                    title = title.split(" - ", 1)[1]
+
+                song.title = title
+                song.artist_name = album.artist_name
+                song.album_artist_name = album.artist_name
+                song.album_name = album.name
+                song.year = album.year
+                song.genre = album.genre
+                song.tracknumber = song.tracknumber
+
+                song.save_tags()
+
+                cover_file = self.get_icon_file(album.name)
+                if cover_file is None:
+                    self.logger.warning("No specific cover file for {}"
+                                        .format(album.name))
+                    cover_file = self.get_icon_file("main")
+
+                if cover_file is not None and os.path.isfile(cover_file):
+
+                    if song.format != "mp3":
+                        continue
+
+                    id3 = ID3(song.path)
+
+                    for key in list(id3.keys()):
+                        if str(key).startswith("APIC") \
+                                and key != "APIC:Cover":
+                            id3.pop(key)
+
+                    if "APIC:Cover" not in id3.keys() or force_art_refresh:
+                        with open(cover_file, "rb") as f:
+                            img = f.read()
+
+                        apic = APIC(
+                            3,
+                            "image/jpeg",
+                            3,
+                            "Cover",
+                            img
+                        )
+                        id3.add(apic)
+
+                    id3.save()

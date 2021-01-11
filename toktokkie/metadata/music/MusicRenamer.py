@@ -61,14 +61,14 @@ class MusicRenamer(Renamer, MusicExtras, ABC):
                         )
                         operations.append(RenameOperation(song.path, new_name))
 
-                for video in album.videos:
+                for vid in album.videos:
                     new_name = "{} {} - {}-video.{}".format(
                         series_name,
                         theme_song.theme_type,
                         theme_song.name,
-                        video.format
+                        vid.format
                     )
-                    operations.append(RenameOperation(video.path, new_name))
+                    operations.append(RenameOperation(vid.path, new_name))
                     break
 
             else:

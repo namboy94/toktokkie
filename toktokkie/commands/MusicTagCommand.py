@@ -17,9 +17,7 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-import os
 import argparse
-import mutagen.id3
 from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
 from toktokkie.enums import MediaType
@@ -65,53 +63,4 @@ class MusicTagCommand(Command):
                 self.args.directories, restrictions=[MediaType.MUSIC_ARTIST]
         ):
             music_metadata = directory.metadata  # type: Music
-            for album in music_metadata.albums:
-                for song in album.songs:
-
-                    title = song.filename.rsplit(".", 1)[0]
-                    if title.split(" - ", 1)[0].isnumeric():
-                        title = title.split(" - ", 1)[1]
-
-                    song.title = title
-                    song.artist_name = album.artist_name
-                    song.album_artist_name = album.artist_name
-                    song.album_name = album.name
-                    song.year = album.year
-                    song.genre = album.genre
-
-                    song.save_tags()
-
-                    cover_file = os.path.join(
-                        directory.metadata.icon_directory,
-                        album.name + ".png"
-                    )
-                    if not os.path.isfile(cover_file):
-                        self.logger.warning("No specific cover file for {}"
-                                            .format(album.name))
-                        cover_file = os.path.join(
-                            directory.metadata.icon_directory, "main.png"
-                        )
-
-                    if os.path.isfile(cover_file):
-                        id3 = mutagen.id3.ID3(song.path)
-
-                        for key in list(id3.keys()):
-                            if str(key).startswith("APIC") \
-                                    and key != "APIC:Cover":
-                                id3.pop(key)
-
-                        if "APIC:Cover" not in id3.keys() or \
-                                self.args.force_album_art_refresh:
-                            with open(cover_file, "rb") as f:
-                                img = f.read()
-
-                            apic = mutagen.id3.APIC(
-                                3,
-                                "image/jpeg",
-                                3,
-                                "Cover",
-                                img
-                            )
-                            id3.add(apic)
-
-                        id3.save()
+            music_metadata.apply_tags(self.args.force_album_art_refresh)

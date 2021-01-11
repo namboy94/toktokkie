@@ -47,6 +47,9 @@ class MusicVideo:
         """
         :return: The title of the song
         """
-        return os.path.basename(self.path)\
+        filename = os.path.basename(self.path)
+        if filename.split(" - ")[0].isnumeric():
+            filename = filename.split(" - ", 1)[1]
+        return filename\
             .rsplit(f".{self.format}", 1)[0]\
             .rsplit("-video")[0]

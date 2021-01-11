@@ -65,16 +65,18 @@ class TestYoutubeDlCommand(_TestFramework):
         self.execute_command(
             [
                 "youtube-music-dl", path, "2020", "test",
-                self.empty_url, self.empty_2_url
+                self.empty_url, self.empty_2_url, self.empty_3_url
             ],
-            ["", "0", "TestVid", "OtherVid"]
+            ["", "0", "TestVid", "OtherVid", "Another"]
         )
         meta = Music(path)
         testvid = meta.albums[0]
         othervid = meta.albums[1]
+        another = meta.albums[2]
         self.assertEqual(testvid.name, "TestVid")
         self.assertEqual(othervid.name, "OtherVid")
-        for album in [testvid, othervid]:
+        self.assertEqual(another.name, "Another")
+        for album in [testvid, othervid, another]:
             self.assertTrue(os.path.isfile(os.path.join(
                 album.path, f"{album.name}-video.mp4"
             )))
@@ -83,6 +85,7 @@ class TestYoutubeDlCommand(_TestFramework):
             )))
         self.assertEqual(testvid.ids[IdType.YOUTUBE_VIDEO], ["YpfSq487XWM"])
         self.assertEqual(othervid.ids[IdType.YOUTUBE_VIDEO], ["ns3fB82nYl0"])
+        self.assertEqual(another.ids[IdType.YOUTUBE_VIDEO], ["3MtYLaRzBu8"])
 
     def test_downloading_playlist_album(self):
         """
@@ -107,7 +110,13 @@ class TestYoutubeDlCommand(_TestFramework):
             album.path, f"01 - First.mp3"
         )))
         self.assertTrue(os.path.isfile(os.path.join(
+            album.path, f"01 - First-video.mp4"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
             album.path, f"02 - Second.mp3"
+        )))
+        self.assertTrue(os.path.isfile(os.path.join(
+            album.path, f"02 - Second-video.mp4"
         )))
         self.assertEqual(
             album.ids[IdType.YOUTUBE_VIDEO], ["ns3fB82nYl0", "3MtYLaRzBu8"]

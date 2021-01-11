@@ -220,7 +220,6 @@ class TvRenamer(Renamer, TvExtras, ABC):
                     logger.warning("TheTVDB.com is down!")
                 elif str(e).startswith("apikey argument is now required"):
                     logger.warning("TheTVDB now requires an API key")
-                print(e)
                 return default
         else:
             return default

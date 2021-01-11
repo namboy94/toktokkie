@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
+import shutil
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.metadata.music.components.MusicThemeSong import \
     MusicThemeSong
@@ -123,3 +125,46 @@ class TestMusicExtras(_TestFramework):
         amalee.add_theme_song(theme_song_2)
         self.assertEqual(len(amalee.albums), 12)
         self.assertEqual(len(amalee.theme_songs), 2)
+
+    def test_tagging(self):
+        """
+        Tests MP3 tagging
+        :return: None
+        """
+        path = self.get("Aimer")
+        meta = Music(path)
+        os.remove(meta.albums[1].songs[2].path)
+        meta.rename(noconfirm=True)
+        meta.apply_tags()
+        meta.apply_tags()
+        album = meta.albums[1]
+        self.assertEqual("Sleepless Nights", album.name)
+        songs = album.songs
+
+        for i, song in enumerate(songs):
+            self.assertEqual(song.tracknumber[0], i + 1)
+            if i % 2 == 0:
+                os.remove(song.path)
+
+        for i, song in enumerate(songs):
+            if i % 2 == 1:
+                self.assertEqual(song.tracknumber[0], i + 1)
+
+    def test_tagging_album_art(self):
+        """
+        Tests tagging mp3 album art
+        :return: None
+        """
+        path = self.get("Aimer")
+        meta = Music(path)
+
+        meta.apply_tags()
+        shutil.copy(
+            meta.get_icon_file("main"),
+            os.path.join(meta.icon_directory, "Sleepless Nights.png")
+        )
+        meta.apply_tags()
+        meta.apply_tags(force_art_refresh=True)
+        os.remove(meta.get_icon_file("Sleepless Nights"))
+        os.remove(meta.get_icon_file("main"))
+        meta.apply_tags()

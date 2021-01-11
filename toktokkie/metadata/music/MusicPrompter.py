@@ -45,8 +45,6 @@ class MusicPrompter(Prompter, MusicExtras, ABC):
         theme_songs = []
 
         for album, album_path in listdir(directory_path, no_files=True):
-            print(album)
-
             valid_album_ids = cls.valid_id_types()
             valid_album_ids.remove(IdType.MUSICBRAINZ_ARTIST)
             valid_album_ids.append(IdType.MUSICBRAINZ_RELEASE)
