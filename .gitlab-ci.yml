@@ -37,7 +37,7 @@ unittest:
   stage: test
   tags: [docker]
   script:
-    - apt install ffmpeg -y
+    - apt update && apt install ffmpeg -y
     - python-unittest
 
 gitstats:
@@ -50,7 +50,6 @@ docgen:
   stage: stats
   tags: [docker]
   script:
-    - pip install PyQt5
     - sphinx-docgen
 
 release_upload:
