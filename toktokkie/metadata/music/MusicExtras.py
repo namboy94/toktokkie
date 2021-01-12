@@ -19,9 +19,10 @@ LICENSE"""
 
 import os
 from abc import ABC
-from typing import List
+from typing import List, Dict
 # noinspection PyUnresolvedReferences,PyProtectedMember
 from mutagen.id3 import ID3, APIC
+from toktokkie.enums import IdType
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.metadata.music.components.MusicThemeSong import \
     MusicThemeSong
@@ -149,3 +150,25 @@ class MusicExtras(MetadataBase, ABC):
                         id3.add(apic)
 
                     id3.save()
+
+    def generate_urls(self) -> Dict[IdType, List[str]]:
+        """
+        Generates URLs for the stored ID types of this metadata object
+        :return: The URLs mapped to their respective id types
+        """
+        urls = super().generate_urls()
+
+        for album in self.albums:
+            for id_type, ids in album.ids.items():
+                urls[id_type] += [
+                    self.generate_url_for_id(id_type, self.media_type(), x)
+                    for x in ids
+                ]
+        for theme_song in self.theme_songs:
+            for id_type, ids in theme_song.series_ids.items():
+                urls[id_type] += [
+                    self.generate_url_for_id(id_type, self.media_type(), x)
+                    for x in ids
+                ]
+
+        return urls

@@ -64,3 +64,26 @@ class TestBookSeriesExtras(_TestFramework):
             os.path.join(path, "Bluesteel Blasphemer - Volume 5.epub")
         ))
         self.assertEqual(len(meta.volumes), 5)
+
+    def test_urls(self):
+        """
+        Tests the Urls parameter
+        :return: None
+        """
+        meta = BookSeries(self.get("Bluesteel Blasphemer"))
+        urls = meta.urls
+        self.assertEqual(
+            urls[IdType.ISBN],
+            [
+                "https://isbnsearch.org/isbn/test",
+                "https://isbnsearch.org/isbn/test2"
+            ]
+        )
+        self.assertEqual(
+            urls[IdType.ANILIST],
+            ["https://anilist.co/manga/98530"]
+        )
+        self.assertEqual(
+            urls[IdType.MYANIMELIST],
+            ["https://myanimelist.net/manga/88682"]
+        )

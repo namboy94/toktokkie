@@ -29,10 +29,10 @@ from puffotter.os import makedirs, listdir
 from puffotter.requests import aggressive_request
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.metadata.music.components.MusicThemeSong import MusicThemeSong
-from toktokkie.commands.RenameCommand import RenameCommand
-from toktokkie.commands.PlaylistCreateCommand import PlaylistCreateCommand
-from toktokkie.commands.AlbumArtFetchCommand import AlbumArtFetchCommand
-from toktokkie.commands.MusicTagCommand import MusicTagCommand
+from toktokkie.commands.rename import RenameCommand
+from toktokkie.commands.playlist_create import PlaylistCreateCommand
+from toktokkie.commands.album_art_fetch import AlbumArtFetchCommand
+from toktokkie.commands.music_tag import MusicTagCommand
 from toktokkie.utils.anithemes.AniTheme import AniTheme
 
 

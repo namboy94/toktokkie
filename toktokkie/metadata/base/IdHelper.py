@@ -129,7 +129,8 @@ class IdHelper:
             IdType.MUSICBRAINZ_ARTIST: "https://musicbrainz.org/artist/{}",
             IdType.MUSICBRAINZ_RECORDING:
                 "https://musicbrainz.org/recording/{}",
-            IdType.MUSICBRAINZ_RELEASE: "https://musicbrainz.org/release/{}"
+            IdType.MUSICBRAINZ_RELEASE: "https://musicbrainz.org/release/{}",
+            IdType.YOUTUBE_VIDEO: "https://www.youtube.com/watch?v={}"
         }
         pattern = urlmap[id_type]
 

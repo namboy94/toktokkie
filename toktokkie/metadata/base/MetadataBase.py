@@ -21,6 +21,7 @@ import os
 import json
 import logging
 from abc import ABC
+from collections import OrderedDict
 from typing import Optional, Any, Dict, List
 from toktokkie.enums import MediaType, IdType
 from toktokkie.metadata.base.IdHelper import IdHelper
@@ -116,20 +117,12 @@ class MetadataBase(IdHelper, ABC):
     def urls(self) -> Dict[IdType, List[str]]:
         """
         Generates URLs for the stored ID types of this metadata object
+        URLS are unique and won't show up more than once
         :return: The URLs mapped to their respective id types
         """
-        ids = self.ids
-        urls: Dict[IdType, List[str]] = {x: [] for x in ids.keys()}
-
-        for id_type, values in ids.items():
-            for value in values:
-                url = self.generate_url_for_id(
-                    id_type,
-                    self.media_type(),
-                    value
-                )
-                urls[id_type].append(url)
-
+        urls = self.generate_urls()
+        for id_type in urls.keys():
+            urls[id_type] = list(OrderedDict.fromkeys(urls[id_type]))
         return urls
 
     @classmethod
@@ -235,3 +228,19 @@ class MetadataBase(IdHelper, ABC):
             return path
         else:
             return None
+
+    def generate_urls(self) -> Dict[IdType, List[str]]:
+        """
+        Generates URLs for the stored ID types of this metadata object
+        :return: The URLs mapped to their respective id types
+        """
+        ids = self.ids
+        urls: Dict[IdType, List[str]] = {x: [] for x in IdType}
+
+        for id_type, values in ids.items():
+            urls[id_type] = [
+                self.generate_url_for_id(id_type, self.media_type(), x)
+                for x in values
+            ]
+
+        return urls

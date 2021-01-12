@@ -207,3 +207,19 @@ class TvExtras(MetadataBase, ABC):
             self.json["season_start_overrides"][id_type] = {}
 
         self.json["season_start_overrides"][id_type][season] = episode
+
+    def generate_urls(self) -> Dict[IdType, List[str]]:
+        """
+        Generates URLs for the stored ID types of this metadata object
+        :return: The URLs mapped to their respective id types
+        """
+        urls = super().generate_urls()
+
+        for season in self.seasons:
+            for id_type, ids in season.ids.items():
+                urls[id_type] += [
+                    self.generate_url_for_id(id_type, self.media_type(), x)
+                    for x in ids
+                ]
+
+        return urls

@@ -131,3 +131,31 @@ class TestTvExtras(_TestFramework):
         self.assertEqual(len(multis[IdType.IMDB][1]), 2)
         self.assertEqual(meta.multi_episodes[IdType.IMDB][1][1], 2)
         self.assertEqual(meta.multi_episodes[IdType.IMDB][1][3], 4)
+
+    def test_urls(self):
+        """
+        Tests the Urls parameter
+        :return: None
+        """
+        meta = Tv(self.get("Fullmetal Alchemist"))
+        urls = meta.urls
+        self.assertEqual(
+            urls[IdType.TVDB],
+            ["https://www.thetvdb.com/?id=75579&tab=series"]
+        )
+        self.assertEqual(
+            urls[IdType.IMDB],
+            ["https://www.imdb.com/title/tt0421357"]
+        )
+        self.assertEqual(
+            urls[IdType.MYANIMELIST],
+            ["https://myanimelist.net/anime/121",
+             "https://myanimelist.net/anime/664",
+             "https://myanimelist.net/anime/430"]
+        )
+        self.assertEqual(
+            urls[IdType.ANILIST],
+            ["https://anilist.co/anime/121",
+             "https://anilist.co/anime/664",
+             "https://anilist.co/anime/430"]
+        )

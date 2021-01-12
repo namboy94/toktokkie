@@ -17,31 +17,11 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.enums import MediaType, IdType
-from toktokkie.metadata.base.IdHelper import IdHelper
 from toktokkie.test.TestFramework import _TestFramework
 
 
-class TestIdHelper(_TestFramework):
+class TestArchiveCommand(_TestFramework):
     """
-    Class that tests the IdHelper class
+    Class that tests the archive command
     """
 
-    def test_generating_manga_url(self):
-        """
-        Tests generating a manga URL
-        :return: None
-        """
-        anilist_url = IdHelper.generate_url_for_id(
-            IdType.ANILIST, MediaType.BOOK, "123"
-        )
-        self.assertEqual(anilist_url, "https://anilist.co/manga/123")
-
-    def test_generating_urls(self):
-        """
-        Tests generating urls for all id types
-        :return: None
-        """
-        for id_type in IdType:
-            url = IdHelper.generate_url_for_id(id_type, MediaType.BOOK, "300")
-            self.assertTrue("300" in url)

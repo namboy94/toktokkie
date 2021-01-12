@@ -17,25 +17,25 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
-from toktokkie.commands.UrlOpenCommand import UrlOpenCommand
-from toktokkie.commands.PrintCommand import PrintCommand
-from toktokkie.commands.IconizeCommand import IconizeCommand
-from toktokkie.commands.RenameCommand import RenameCommand
-from toktokkie.commands.ArchiveCommand import ArchiveCommand
-from toktokkie.commands.MangaCreateCommand import MangaCreateCommand
-from toktokkie.commands.MetadataGenCommand import MetadataGenCommand
-from toktokkie.commands.UpdateCommand import UpdateCommand
-from toktokkie.commands.MetadataAddCommand import MetadataAddCommand
-from toktokkie.commands.SetComicCoverCommand import SetComicCoverCommand
-from toktokkie.commands.SuperCutCommand import SuperCutCommand
-from toktokkie.commands.AnimeThemeDlCommand import AnimeThemeDlCommand
-from toktokkie.commands.AlbumArtFetchCommand import AlbumArtFetchCommand
-from toktokkie.commands.MusicTagCommand import MusicTagCommand
-from toktokkie.commands.PlaylistCreateCommand import PlaylistCreateCommand
-from toktokkie.commands.MusicMergeCommand import MusicMergeCommand
-from toktokkie.commands.IdFetchCommand import IdFetchCommand
-from toktokkie.commands.YoutubeMusicDlCommand import YoutubeMusicDlCommand
-from toktokkie.commands.MetadataValidateCommand import MetadataValidateCommand
+from toktokkie.commands.url_open import UrlOpenCommand
+from toktokkie.commands.print_cmd import PrintCommand
+from toktokkie.commands.iconize import IconizeCommand
+from toktokkie.commands.rename import RenameCommand
+from toktokkie.commands.archive import ArchiveCommand
+from toktokkie.commands.manga_create import MangaCreateCommand
+from toktokkie.commands.metadata_gen import MetadataGenCommand
+from toktokkie.commands.update import UpdateCommand
+from toktokkie.commands.metadata_add import MetadataAddCommand
+from toktokkie.commands.set_comic_cover import SetComicCoverCommand
+from toktokkie.commands.supercut import SuperCutCommand
+from toktokkie.commands.anime_theme_dl import AnimeThemeDlCommand
+from toktokkie.commands.album_art_fetch import AlbumArtFetchCommand
+from toktokkie.commands.music_tag import MusicTagCommand
+from toktokkie.commands.playlist_create import PlaylistCreateCommand
+from toktokkie.commands.music_merge import MusicMergeCommand
+from toktokkie.commands.id_fetch import IdFetchCommand
+from toktokkie.commands.youtube_music_dl import YoutubeMusicDlCommand
+from toktokkie.commands.metadata_validate import MetadataValidateCommand
 
 toktokkie_commands = [
     PrintCommand,

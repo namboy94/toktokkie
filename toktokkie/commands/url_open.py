@@ -18,10 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 import argparse
-from subprocess import Popen
+from subprocess import call
 from toktokkie.Directory import Directory
 from toktokkie.commands.Command import Command
-from toktokkie.enums import MediaType
 
 
 class UrlOpenCommand(Command):
@@ -34,7 +33,7 @@ class UrlOpenCommand(Command):
         """
         :return: The command name
         """
-        return "urlopen"
+        return "url-open"
 
     @classmethod
     def help(cls) -> str:
@@ -51,31 +50,18 @@ class UrlOpenCommand(Command):
         :return: None
         """
         cls.add_directories_arg(parser)
-        parser.add_argument("--browser", default="firefox",
-                            help="The browser to use for opening the URLs")
 
     def execute(self):
         """
         Executes the command
         :return: None
         """
-        # TODO re-implement
-        anilist_types = [
-            MediaType.COMIC,
-            MediaType.BOOK,
-            MediaType.BOOK_SERIES,
-            MediaType.TV_SERIES,
-            MediaType.MOVIE
-        ]
-        directories = Directory.load_directories(
-            self.args.directories, anilist_types
-        )
+        directories = Directory.load_directories(self.args.directories)
         for directory in directories:
-            urls = directory.metadata.get_anilist_urls()
-            if len(urls) is None:
-                self.logger.warning(
-                    "No URL for {}".format(directory.metadata.name)
-                )
-            else:
-                for url in urls:
-                    Popen([self.args.browser, url]).wait()
+            metadata = directory.metadata
+            all_urls = metadata.urls
+
+            for id_type in metadata.id_prompt_order:
+                for url in all_urls.get(id_type, []):
+                    print(url)
+                    call(["xdg-open", url])

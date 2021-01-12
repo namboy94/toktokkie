@@ -18,8 +18,9 @@ along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
 from abc import ABC
-from typing import Dict
+from typing import Dict, List
 from puffotter.os import listdir
+from toktokkie.enums import IdType
 from toktokkie.metadata.book_series.components.BookVolume import BookVolume
 from toktokkie.metadata.base.MetadataBase import MetadataBase
 
@@ -55,3 +56,19 @@ class BookSeriesExtras(MetadataBase, ABC):
         self.json["volumes"] = {}
         for i, volume in volumes.items():
             self.json["volumes"][str(i)] = volume.json
+
+    def generate_urls(self) -> Dict[IdType, List[str]]:
+        """
+        Generates URLs for the stored ID types of this metadata object
+        :return: The URLs mapped to their respective id types
+        """
+        urls = super().generate_urls()
+
+        for volume in self.volumes.values():
+            for id_type, ids in volume.ids.items():
+                urls[id_type] += [
+                    self.generate_url_for_id(id_type, self.media_type(), x)
+                    for x in ids
+                ]
+
+        return urls

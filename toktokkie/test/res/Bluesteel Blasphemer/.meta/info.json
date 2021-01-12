@@ -11,6 +11,9 @@
     "volumes": {
         "1": {
             "ids": {"isbn":  ["test"]}
+        },
+        "2": {
+            "ids": {"isbn":  ["test2"]}
         }
     }
 }

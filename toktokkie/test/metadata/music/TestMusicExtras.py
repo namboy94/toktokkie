@@ -19,6 +19,7 @@ LICENSE"""
 
 import os
 import shutil
+from toktokkie.enums import IdType
 from toktokkie.metadata.music.components.MusicAlbum import MusicAlbum
 from toktokkie.metadata.music.components.MusicThemeSong import \
     MusicThemeSong
@@ -168,3 +169,26 @@ class TestMusicExtras(_TestFramework):
         os.remove(meta.get_icon_file("Sleepless Nights"))
         os.remove(meta.get_icon_file("main"))
         meta.apply_tags()
+
+    def test_urls(self):
+        """
+        Tests the Urls parameter
+        :return: None
+        """
+        meta = Music(self.get("Aimer"))
+        urls = meta.urls
+        self.assertEqual(
+            urls[IdType.MUSICBRAINZ_ARTIST],
+            ["https://musicbrainz.org/artist/"
+             "9388cee2-7d57-4598-905f-106019b267d3"]
+        )
+        self.assertEqual(
+            urls[IdType.ANILIST],
+            ["https://anilist.co/anime/19603",
+             "https://anilist.co/anime/101348"]
+        )
+        self.assertEqual(
+            urls[IdType.MYANIMELIST],
+            ["https://myanimelist.net/anime/22297",
+             "https://myanimelist.net/anime/37521"]
+        )
