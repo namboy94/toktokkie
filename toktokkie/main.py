@@ -19,7 +19,52 @@ LICENSE"""
 
 import argparse
 from puffotter.init import argparse_add_verbosity
-from toktokkie.commands import toktokkie_commands
+from toktokkie.commands.url_open import UrlOpenCommand
+from toktokkie.commands.print_cmd import PrintCommand
+from toktokkie.commands.iconize import IconizeCommand
+from toktokkie.commands.rename import RenameCommand
+from toktokkie.commands.archive import ArchiveCommand
+from toktokkie.commands.manga_create import MangaCreateCommand
+from toktokkie.commands.metadata_gen import MetadataGenCommand
+from toktokkie.commands.update import UpdateCommand
+from toktokkie.commands.metadata_add import MetadataAddCommand
+from toktokkie.commands.set_comic_cover import SetComicCoverCommand
+from toktokkie.commands.supercut import SuperCutCommand
+from toktokkie.commands.anime_theme_dl import AnimeThemeDlCommand
+from toktokkie.commands.album_art_fetch import AlbumArtFetchCommand
+from toktokkie.commands.music_tag import MusicTagCommand
+from toktokkie.commands.playlist_create import PlaylistCreateCommand
+from toktokkie.commands.music_merge import MusicMergeCommand
+from toktokkie.commands.id_fetch import IdFetchCommand
+from toktokkie.commands.youtube_music_dl import YoutubeMusicDlCommand
+from toktokkie.commands.metadata_validate import MetadataValidateCommand
+from toktokkie.commands.edit import EditCommand
+
+toktokkie_commands = [
+    PrintCommand,
+    UrlOpenCommand,
+    IconizeCommand,
+    RenameCommand,
+    ArchiveCommand,
+    MangaCreateCommand,
+    MetadataGenCommand,
+    UpdateCommand,
+    MetadataAddCommand,
+    SetComicCoverCommand,
+    SuperCutCommand,
+    AnimeThemeDlCommand,
+    AlbumArtFetchCommand,
+    MusicTagCommand,
+    MusicMergeCommand,
+    PlaylistCreateCommand,
+    IdFetchCommand,
+    YoutubeMusicDlCommand,
+    MetadataValidateCommand,
+    EditCommand
+]
+"""
+A list of commands for the toktokkie script
+"""
 
 
 def main(args: argparse.Namespace):
