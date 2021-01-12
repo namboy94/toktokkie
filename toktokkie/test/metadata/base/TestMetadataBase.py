@@ -21,6 +21,7 @@ import os
 import shutil
 from unittest.mock import patch
 from toktokkie.metadata.tv.Tv import Tv
+from toktokkie.metadata.music.Music import Music
 from toktokkie.enums import IdType
 from toktokkie.test.TestFramework import _TestFramework
 
@@ -121,3 +122,30 @@ class TestMetadataBase(_TestFramework):
             os.path.join(tv.icon_directory, "Season 1.png")
         )
         self.assertEqual(tv.get_icon_file("Season 2"), None)
+
+    def test_archiving(self):
+        """
+        Tests archiving metadata
+        :return: None
+        """
+        path = self.get("Aimer")
+        meta = Music(path)
+        archive_dir = self.get("Aimer-backup")
+        meta.archive(archive_dir, True)  # Normal Archive with icons
+
+        self.assertTrue(os.path.isdir(archive_dir))
+        archive_meta = Music(archive_dir)
+        main_icon = archive_meta.get_icon_file("main")
+        self.assertTrue(os.path.isfile(main_icon))
+        self.assertEqual(730, os.path.getsize(main_icon))
+
+        meta.archive(archive_dir, False)  # Overwrite Archive without icons
+        self.assertEqual(0, os.path.getsize(main_icon))
+
+        self.assertEqual(len(os.listdir(path)), len(os.listdir(archive_dir)))
+        os.makedirs(os.path.join(path, ".wine"))
+        os.makedirs(os.path.join(path, "Hello"))  # Control Group ;)
+        meta.archive(archive_dir, False)  # Ignored directories
+        self.assertEqual(
+            len(os.listdir(path)), len(os.listdir(archive_dir)) + 1
+        )

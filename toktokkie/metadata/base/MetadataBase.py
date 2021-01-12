@@ -19,10 +19,12 @@ LICENSE"""
 
 import os
 import json
+import shutil
 import logging
 from abc import ABC
 from collections import OrderedDict
 from typing import Optional, Any, Dict, List
+from puffotter.os import makedirs, listdir, get_ext, touch
 from toktokkie.enums import MediaType, IdType
 from toktokkie.metadata.base.IdHelper import IdHelper
 
@@ -244,3 +246,43 @@ class MetadataBase(IdHelper, ABC):
             ]
 
         return urls
+
+    def archive(
+            self,
+            destination: str,
+            keep_icons: bool,
+            source: Optional[str] = None
+    ):
+        """
+        Creates a low-filesize archive of a metadata directory
+        into a new directory
+        :param destination: The archive destination
+        :param keep_icons: Whether or not to keep the original icon files
+        :param source: Subdirectory when calling recursively
+        :return: None
+        """
+        if source is None:
+            source = self.directory_path
+
+        # Ignored directories
+        if os.path.basename(source) in [".wine"]:
+            return
+
+        makedirs(destination, delete_before=True)
+
+        for child, child_path in listdir(source, no_dot=False):
+            child_dest_path = os.path.join(destination, child)
+            parent_dir = os.path.basename(os.path.dirname(child_path))
+
+            if os.path.isdir(child_path):
+                self.archive(child_dest_path, keep_icons, child_path)
+            elif os.path.isfile(child_path):
+                ext = get_ext(child)
+
+                is_icon = ext == "png" and parent_dir == "icons"
+                if ext == "json" or (is_icon and keep_icons):
+                    shutil.copyfile(child_path, child_dest_path)
+                else:
+                    touch(child_dest_path)
+            else:  # pragma: no cover
+                pass

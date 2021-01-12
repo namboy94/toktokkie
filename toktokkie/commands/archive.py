@@ -19,10 +19,9 @@ LICENSE"""
 
 import os
 import argparse
-import shutil
+from puffotter.prompt import yn_prompt
 from toktokkie.commands.Command import Command
 from toktokkie.Directory import Directory
-from puffotter.os import makedirs
 
 
 class ArchiveCommand(Command):
@@ -55,65 +54,27 @@ class ArchiveCommand(Command):
         parser.add_argument("--out", "-o", default=None,
                             help="Specifies an output directory for the "
                                  "archived directory/directories")
-        parser.add_argument("--remove-icons", action="store_true",
-                            help="Replaces icon files with empty files")
+        parser.add_argument("--keep-icons", action="store_true",
+                            help="Keeps original icon files")
 
     def execute(self):
         """
         Executes the commands
         :return: None
         """
-        output_path = self.args.out
+        directories = Directory.load_directories(self.args.directories)
+        for directory in directories:
+            metadata = directory.metadata
 
-        if output_path is not None:
-            makedirs(output_path)
-
-        for directory in Directory.load_directories(self.args.directories):
-            if output_path is None:
-                archive_path = directory.path + ".archive"
+            if self.args.out is None:
+                archive_path = os.path.basename(directory.path) + ".archive"
             else:
-                archive_path = os.path.join(
-                    output_path, directory.metadata.name
-                )
-            if not os.path.isdir(archive_path):
-                os.makedirs(archive_path)
-            self.archive(directory.path, archive_path)
+                if len(directories) == 1:
+                    archive_path = self.args.out
+                else:
+                    archive_path = os.path.join(self.args.out, metadata.name)
+            if os.path.exists(archive_path):
+                if not yn_prompt(f"{archive_path} already exists. Delete it?"):
+                    continue
 
-    def archive(self, source: str, dest: str):
-        """
-        Creates a low-filesize archive of a directory into a new directory
-        :param source: The source directory
-        :param dest: The destination directory
-        :return: None
-        """
-        self.logger.info("{} -> {}".format(source, dest))
-
-        if os.path.basename(source) == ".wine":  # Ignore .wine directories
-            return
-
-        try:
-            for child in os.listdir(source):
-                child_path = os.path.join(source, child)
-                dest_child_path = os.path.join(dest, child)
-
-                if os.path.isfile(child_path):
-
-                    if child_path.endswith(".json"):
-                        shutil.copyfile(child_path, dest_child_path)
-                    elif child_path.endswith(".png"):
-                        if self.args.remove_icons:
-                            with open(dest_child_path, "w") as f:
-                                f.write("")
-                        else:
-                            shutil.copyfile(child_path, dest_child_path)
-                    else:
-                        with open(dest_child_path, "w") as f:
-                            f.write("")
-
-                elif os.path.isdir(child_path):
-                    if not os.path.isdir(dest_child_path):
-                        os.makedirs(dest_child_path)
-
-                    self.archive(child_path, dest_child_path)
-        except PermissionError:
-            pass
+            metadata.archive(archive_path, self.args.keep_icons)
