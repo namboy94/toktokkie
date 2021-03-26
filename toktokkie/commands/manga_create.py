@@ -162,10 +162,10 @@ class MangaCreateCommand(Command):
         return anilist_info
 
     def load_mangadex_info(self, mangadex_id: str) -> Dict[str, str]:
-        url = "https://mangadex.org/api/manga/" + mangadex_id
-        data = json.loads(requests.get(url).text)
+        url = f"https://api.mangadex.org/v2/manga/{mangadex_id}"
+        data = json.loads(requests.get(url).text)["data"]
 
-        links = data["manga"].get("links")
+        links = data.get("links")
         if links is not None:
             anilist_id = links.get("al")
         else:
@@ -176,10 +176,10 @@ class MangaCreateCommand(Command):
             info["mangadex_id"] = mangadex_id
         else:
             info = {
-                "title": data["manga"]["title"],
-                "cover": "https://mangadex.org" + data["manga"]["cover_url"],
+                "title": data["title"],
+                "cover": data["mainCover"],
                 "mangadex_id": mangadex_id,
-                "anilist_id": "0"
+                "anilist_id": None
             }
 
         return info

@@ -20,8 +20,11 @@ LICENSE"""
 import os
 import shutil
 import argparse
+import random
+from collections import OrderedDict
 from typing import List, Dict, Union
 from youtube_dl.YoutubeDL import YoutubeDL
+from youtube_dl.utils import DownloadError
 from colorama import Fore, Style
 from puffotter.prompt import prompt
 from puffotter.os import makedirs, listdir, get_ext
@@ -88,13 +91,15 @@ class YoutubeMusicDlCommand(Command):
             self.logger.warning(f"Invalid music metadata for {directory}")
             return
 
-        tmp_dir = "/tmp/toktokkie-ytmusicdl"
+        tmp_dir = f"/tmp/toktokkie-ytmusicdl-" \
+                  f"{metadata.name}[{random.randint(1, 1000)}]"
         makedirs(tmp_dir, delete_before=True)
 
         downloaded = self.download_from_youtube(tmp_dir)
         self.create_albums(metadata, downloaded)
         metadata.rename(noconfirm=True)
         metadata.apply_tags()
+        shutil.rmtree(tmp_dir)
 
     def download_from_youtube(self, target_dir: str) \
             -> List[Dict[str, Union[str, Dict[str, str]]]]:
@@ -129,22 +134,36 @@ class YoutubeMusicDlCommand(Command):
             youtube_dl_args.append(mp4_args)
 
         video_ids = []
-        with YoutubeDL() as yt_info:
+        with YoutubeDL({"ignoreerrors": True}) as yt_info:
             for youtube_url in self.args.youtube_urls:
-                url_info = yt_info.extract_info(youtube_url, download=False)
-                if url_info.get("_type") == "playlist":
-                    for entry in url_info["entries"]:
-                        video_ids.append(entry["id"])
-                else:
-                    video_ids.append(url_info["id"])
+                try:
+                    url_info = yt_info.extract_info(
+                        youtube_url, download=False
+                    )
+                    if url_info is None:
+                        continue
+                    elif url_info.get("_type") == "playlist":
+                        for entry in url_info["entries"]:
+                            if entry is not None:
+                                video_ids.append(entry["id"])
+                    else:
+                        video_ids.append(url_info["id"])
+                except DownloadError:
+                    self.logger.warning(f"Failed to get info for "
+                                        f"{youtube_url}")
 
+        video_ids = list(OrderedDict.fromkeys(video_ids))
         directory_content = []
         downloaded = []
         for video_id in video_ids:
             video_url = f"https://www.youtube.com/watch?v={video_id}"
             for args in youtube_dl_args:
                 with YoutubeDL(args) as youtube_dl:
-                    youtube_dl.download([video_url])
+                    before_count = len(os.listdir(target_dir))
+                    while len(os.listdir(target_dir)) == before_count:
+                        youtube_dl.download([video_url])
+                        if len(os.listdir(target_dir)) == before_count:
+                            self.logger.warning("Failed download, retrying")
 
             new_content = sorted([
                 x[1] for x in listdir(target_dir)

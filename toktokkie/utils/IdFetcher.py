@@ -117,16 +117,21 @@ class IdFetcher:
         :param other_ids: Any additional IDs
         :return: The anilist IDs, or None if none could be found
         """
+        results: Optional[List[str]] = None
+
         if IdType.MYANIMELIST in other_ids:
-            return self.__load_anilist_ids_from_mal(
+            results = self.__load_anilist_ids_from_mal(
                 other_ids[IdType.MYANIMELIST]
             )
-        elif IdType.MANGADEX in other_ids:
-            return self.__load_anilist_ids_from_mangadex(
+            if len(results) == 0:
+                results = None
+
+        if IdType.MANGADEX in other_ids and results is None:
+            results = self.__load_anilist_ids_from_mangadex(
                 other_ids[IdType.MANGADEX]
             )
-        else:
-            return None
+
+        return results
 
     def __load_myanimelist_ids(self, other_ids: Dict[IdType, List[str]]) \
             -> Optional[List[str]]:
@@ -211,11 +216,9 @@ class IdFetcher:
         ids = []
         api = AnilistApi()
         for mal_id in mal_ids:
-            ids.append(str(
-                api.get_anilist_id_from_mal_id(
-                    list_type, int(mal_id)
-                )
-            ))
+            anilist_id = api.get_anilist_id_from_mal_id(list_type, int(mal_id))
+            if anilist_id is not None:
+                ids.append(str(anilist_id))
         return ids
 
     def __load_anilist_ids_from_mangadex(self, mangadex_ids: List[str]) \

@@ -22,6 +22,7 @@ from puffotter.prompt import prompt
 from xdcc_dl.xdcc import download_packs
 from xdcc_dl.pack_search.SearchEngine import SearchEngineType, SearchEngine
 from xdcc_dl.entities.XDCCPack import XDCCPack
+from xdcc_dl.xdcc.exceptions import DownloadIncomplete
 from toktokkie.metadata.base.Metadata import Metadata
 from toktokkie.utils.update.TvUpdater import TvUpdater, DownloadInstructions
 
@@ -123,8 +124,11 @@ class XDCCUpdater(TvUpdater):
             )  # Fixes filenames
             packs.append(pack)
 
-        download_packs(
-            packs,
-            timeout=self.args["timeout"],
-            throttle=self.args["throttle"]
-        )
+        try:
+            download_packs(
+                packs,
+                timeout=self.args["timeout"],
+                throttle=self.args["throttle"]
+            )
+        except DownloadIncomplete:
+            self.logger.error("Download Incomplete")

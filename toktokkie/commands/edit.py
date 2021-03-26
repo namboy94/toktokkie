@@ -62,5 +62,7 @@ class EditCommand(Command):
         if editor is None:
             self.logger.warning("$EDITOR variable not set")
         else:
-            for directory in Directory.load_directories(self.args.directories):
+            for directory in Directory.load_directories(
+                    self.args.directories, no_validation=True
+            ):
                 call([editor, directory.metadata.metadata_file])

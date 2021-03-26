@@ -17,8 +17,10 @@ You should have received a copy of the GNU General Public License
 along with toktokkie.  If not, see <http://www.gnu.org/licenses/>.
 LICENSE"""
 
+import os
 from abc import ABC
 from typing import Dict, Any
+from puffotter.os import listdir
 from toktokkie.exceptions import InvalidMetadata
 from toktokkie.enums import IdType
 from toktokkie.metadata.base.Validator import Validator
@@ -88,3 +90,13 @@ class MusicValidator(Validator, MusicExtras, ABC):
             name = theme_song["name"]
             if name not in album_names:
                 raise InvalidMetadata(f"Missing album data for {name}")
+
+        for album in self.albums:
+            if not os.path.isdir(album.path):
+                raise InvalidMetadata(
+                    f"Missing album directory for {album.name}"
+                )
+        album_names = [x.name for x in self.albums]
+        for name, _ in listdir(self.directory_path, no_files=True):
+            if name not in album_names:
+                raise InvalidMetadata(f"Missing album metadata: {name}")

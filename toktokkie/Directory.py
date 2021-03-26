@@ -107,13 +107,15 @@ class Directory:
     def load_directories(
             cls,
             paths: List[str],
-            restrictions: Optional[List[MediaType]] = None
+            restrictions: Optional[List[MediaType]] = None,
+            no_validation: bool = False
     ) -> List["Directory"]:
         """
         Loads the toktokkie Media Directory objects based on paths
         :param paths: The directories to turn into toktokkie Directory objs
         :param restrictions: Restricts the found media directories to media
                              directories with a specific media type
+        :param no_validation: Whether or not to validate metadata
         :return: The list of Media Directories
         """
         if restrictions is None:
@@ -125,7 +127,7 @@ class Directory:
         for path in paths:
             try:
                 logger.debug("Loading directory {}".format(path))
-                directory = Directory(path)
+                directory = Directory(path, no_validation=no_validation)
                 if directory.metadata.media_type() not in restrictions:
                     logger.info(
                         "Skipping directory {} with incorrect type {}"
@@ -146,13 +148,15 @@ class Directory:
     def load_child_directories(
             cls,
             parent_dir: str,
-            restrictions: Optional[List[MediaType]] = None
+            restrictions: Optional[List[MediaType]] = None,
+            no_validation: bool = False
     ) -> List["Directory"]:
         """
         Loads all media directories in a directory
         :param parent_dir: The directory to search for media directories
         :param restrictions: Restricts the found media directories to media
                              directories with a specific media type
+        :param no_validation: Whether or not to validate metadata
         :return: The list of Media Directories
         """
         paths = [x[1] for x in listdir(parent_dir)]
@@ -177,6 +181,8 @@ class Directory:
             raise InvalidMetadata(f"Missing/Invalid attribute: {e}")
         except FileNotFoundError:
             raise MissingMetadata()
+        except NotADirectoryError:
+            raise MissingMetadata("Not a directory")
 
     @staticmethod
     def create_metadata(directory: str, media_type: Union[str, MediaType]) \

@@ -37,9 +37,10 @@ class GnomeProcedure(Procedure):
         :param png_icon_path: The path to the png icon file
         :return: None
         """
+        print(f"{directory} -> {png_icon_path}")
         Popen([
             "gio", "set", "-t", "string", directory,
-            "metadata::custom-icon", "file://" + png_icon_path
+            "metadata::custom-icon", "file://" + os.path.abspath(png_icon_path)
         ]).wait()
 
     @classmethod
