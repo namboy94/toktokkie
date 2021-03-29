@@ -41,6 +41,9 @@ class ComicValidator(Validator, ComicExtras, ABC):
                 "items": {
                     "type": "string"
                 }
+            },
+            "chapter_offset": {
+                "type": "integer"
             }
         })
         return base

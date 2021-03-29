@@ -35,7 +35,7 @@ class TestComicExtras(_TestFramework):
         path = self.get("Taishou Otome Otogibanashi")
         meta = Comic(path)
         self.assertEqual(
-            meta.main_path,
+            meta.main_chapters_path,
             os.path.join(path, "Main")
         )
         self.assertEqual(

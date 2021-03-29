@@ -27,15 +27,22 @@ class ComicExtras(MetadataBase, ABC):
     """
     Additional methods and attributes for comic metadata objects
     """
-    # TODO volume or chapter based
 
     @property
-    def main_path(self) -> str:
+    def main_chapters_path(self) -> str:
         """
-        The path to the main manga directory
+        The path to the main manga directory containing chapters
         :return: The path
         """
-        return os.path.join(self.directory_path, "Main")
+        return os.path.join(self.directory_path, "Chapters")
+
+    @property
+    def main_volumes_path(self) -> str:
+        """
+        The path to the main manga directory containing volumes
+        :return: The path
+        """
+        return os.path.join(self.directory_path, "Volumes")
 
     @property
     def special_path(self) -> str:
@@ -63,3 +70,19 @@ class ComicExtras(MetadataBase, ABC):
             max_len = len(max(special_chapters, key=lambda x: len(x)))
             special_chapters.sort(key=lambda x: x.zfill(max_len))
         self.json["special_chapters"] = special_chapters
+
+    @property
+    def chapter_offset(self) -> int:
+        """
+        :return: The chapter offset if the chapters don't start at 1
+        """
+        return self.json.get("chapter_offset", 0)
+
+    @chapter_offset.setter
+    def chapter_offset(self, offset: int):
+        """
+        Sets the chapter offset
+        :param offset: The chapter offset
+        :return: None
+        """
+        self.json["chapter_offset"] = offset

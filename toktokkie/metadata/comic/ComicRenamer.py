@@ -37,24 +37,56 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
         Creates renaming operations for book series metadata
         :return: The renaming operations
         """
-        main_content = listdir(self.main_path, no_dirs=True)
+        operations: List[RenameOperation] = []
+        operations += self.__create_main_chapter_operations()
+        operations += self.__create_main_volume_operations()
+        operations += self.__create_special_chapter_operations()
+        return operations
+
+    def __create_main_chapter_operations(self) -> List[RenameOperation]:
+        if not os.path.isdir(self.main_chapters_path):
+            return []
+        main_content = listdir(self.main_chapters_path, no_dirs=True)
         max_chapter_length = len(str(len(main_content)))
 
         operations = []
+        offset = self.chapter_offset
 
         for i, (old_name, old_path) in enumerate(main_content):
             ext = old_name.rsplit(".", 1)[1]
             new_name = "{} - Chapter {}.{}".format(
                 self.name,
-                str(i + 1).zfill(max_chapter_length),
+                str(i + 1 + offset).zfill(max_chapter_length),
                 ext
             )
             operations.append(RenameOperation(old_path, new_name))
+        return operations
 
+    def __create_main_volume_operations(self) -> List[RenameOperation]:
+        if not os.path.isdir(self.main_volumes_path):
+            return []
+        main_content = listdir(self.main_volumes_path, no_dirs=True)
+        max_volume_length = len(str(len(main_content)))
+
+        operations = []
+
+        for i, (old_name, old_path) in enumerate(main_content):
+            ext = old_name.rsplit(".", 1)[1]
+            new_name = "{} - Volume {}.{}".format(
+                self.name,
+                str(i + 1).zfill(max_volume_length),
+                ext
+            )
+            operations.append(RenameOperation(old_path, new_name))
+        return operations
+
+    def __create_special_chapter_operations(self) -> List[RenameOperation]:
         if not os.path.isdir(self.special_path):
-            return operations
+            return []
 
         special_content = listdir(self.special_path, no_dirs=True)
+        if len(special_content) == 0:
+            return []
 
         if len(special_content) != len(self.special_chapters):
             self.logger.warning(
@@ -62,8 +94,9 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
                     len(special_content), len(self.special_chapters)
                 )
             )
-            return operations
+            return []
         else:
+            operations: List[RenameOperation] = []
             special_max_length = len(max(
                 self.special_chapters,
                 key=lambda x: len(x)
@@ -92,8 +125,7 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
                     ext
                 )
                 operations.append(RenameOperation(old_path, new_name))
-
-        return operations
+            return operations
 
     def resolve_title_name(self) -> str:
         """

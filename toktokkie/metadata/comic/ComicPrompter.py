@@ -21,7 +21,7 @@ import os
 from abc import ABC
 from typing import Dict, Any, List
 from puffotter.os import listdir, makedirs
-from puffotter.prompt import prompt_comma_list
+from puffotter.prompt import prompt_comma_list, prompt
 from toktokkie.metadata.base.Prompter import Prompter
 from toktokkie.metadata.comic.ComicExtras import ComicExtras
 
@@ -41,12 +41,16 @@ class ComicPrompter(Prompter, ComicExtras, ABC):
         """
         base = super().prompt(directory_path)
 
-        main_path = os.path.join(directory_path, "Main")
-        makedirs(main_path)
+        main_chapters_path = os.path.join(directory_path, "Chapters")
+        main_volumes_path = os.path.join(directory_path, "Volumes")
         special_path = os.path.join(directory_path, "Special")
+        makedirs(main_chapters_path)
+        makedirs(main_volumes_path)
+        makedirs(special_path)
         special_chapters: List[str] = []
+        chapter_offset = 0
 
-        if os.path.isdir(special_path):
+        if len(os.listdir(special_path)) > 0:
             print("Please enter identifiers for special chapters:")
 
             special_files = listdir(special_path, no_dirs=True)
@@ -56,8 +60,13 @@ class ComicPrompter(Prompter, ComicExtras, ABC):
             special_chapters = prompt_comma_list(
                 "Special Chapters", min_count=len(special_files)
             )
+        if len(os.listdir(main_chapters_path)) > 0 and len(os.listdir(main_volumes_path)) > 0:
+            chapter_offset = prompt(
+                "Please enter the chapter offset:", _type=int, default=0
+            )
 
         base.update({
-            "special_chapters": special_chapters
+            "special_chapters": special_chapters,
+            "chapter_offset": chapter_offset
         })
         return base

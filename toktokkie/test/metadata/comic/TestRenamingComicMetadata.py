@@ -39,7 +39,7 @@ class TestRenamingComicMetadata(_TestFramework):
         :return: A list of tuples, cojnsisting of the old and new path
         """
         renamed = []
-        for content_dir in [comic.main_path, comic.special_path]:
+        for content_dir in [comic.main_chapters_path, comic.special_path]:
             if not os.path.isdir(content_dir):
                 continue
             for item, item_path in listdir(content_dir, no_dirs=True):
@@ -81,7 +81,7 @@ class TestRenamingComicMetadata(_TestFramework):
         renamed = self.scramble_comic_chapters(meta)
 
         operations = meta.create_rename_operations()
-        self.assertEqual(len(operations), len(listdir(meta.main_path)))
+        self.assertEqual(len(operations), len(listdir(meta.main_chapters_path)))
         self.assertEqual(len(operations), len(renamed))
 
     def test_renaming_with_invalid_amount_of_special_chapters(self):
@@ -98,7 +98,7 @@ class TestRenamingComicMetadata(_TestFramework):
         renamed = self.scramble_comic_chapters(meta)
 
         operations = meta.create_rename_operations()
-        self.assertEqual(len(operations), len(listdir(meta.main_path)))
+        self.assertEqual(len(operations), len(listdir(meta.main_chapters_path)))
         self.assertNotEqual(len(operations), len(renamed))
 
     def test_renaming_special_chapter_without_inference(self):
@@ -144,13 +144,13 @@ class TestRenamingComicMetadata(_TestFramework):
                             correctly right now
             :return: None
             """
-            for i, _ in enumerate(listdir(meta.main_path)):
+            for i, _ in enumerate(listdir(meta.main_chapters_path)):
                 should = "{} - Chapter {}.cbz".format(
                     meta.name,
                     str(i + 1).zfill(2)
                 )
 
-                dest = os.path.join(meta.main_path, should)
+                dest = os.path.join(meta.main_chapters_path, should)
                 self.assertEqual(correct, os.path.isfile(dest))
             for chap in meta.special_chapters:
                 should = "{} - Chapter {}.cbz".format(
@@ -160,10 +160,10 @@ class TestRenamingComicMetadata(_TestFramework):
                 dest = os.path.join(meta.special_path, should)
                 self.assertEqual(correct, os.path.isfile(dest))
 
-        for chapter, path in listdir(meta.main_path):
+        for chapter, path in listdir(meta.main_chapters_path):
             os.rename(
                 path,
-                os.path.join(meta.main_path, "A" + chapter)
+                os.path.join(meta.main_chapters_path, "A" + chapter)
             )
         for chapter, path in listdir(meta.special_path):
             os.rename(

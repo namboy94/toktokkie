@@ -90,7 +90,6 @@ class MangadexUpdater(Updater):
         Loads chapter information from mangadex.org
         :return: Either a list of chapters or None if no mangadex ID was found
         """
-
         mangadex_ids = self.metadata.ids.get(IdType.MANGADEX)
         if mangadex_ids is None or len(mangadex_ids) == 0:
             pprint(
@@ -118,8 +117,8 @@ class MangadexUpdater(Updater):
         metadata = cast(Comic, self.metadata)
 
         main_chapters = list(filter(lambda x: not x.is_special, chapters))
-        current_files = listdir(metadata.main_path)
-        current_latest = len(current_files)
+        current_files = listdir(metadata.main_chapters_path)
+        current_latest = len(current_files) + metadata.chapter_offset
 
         if current_latest == 0:
             return
@@ -162,7 +161,7 @@ class MangadexUpdater(Updater):
         """
         metadata = cast(Comic, self.metadata)
 
-        current_latest = len(listdir(metadata.main_path))
+        current_latest = len(listdir(metadata.main_chapters_path))
 
         main_chapters = list(filter(
             lambda x: not x.is_special
@@ -193,7 +192,7 @@ class MangadexUpdater(Updater):
                 metadata.name,
                 c.chapter_number.zfill(len(str(total_chapters)))
             )
-            dest = os.path.join(metadata.main_path, name)
+            dest = os.path.join(metadata.main_chapters_path, name)
             if not self.args["dry_run"]:
                 print("Downloading Chapter {}".format(c))
                 c.download(dest)
