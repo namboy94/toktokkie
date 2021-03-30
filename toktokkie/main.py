@@ -39,6 +39,7 @@ from toktokkie.commands.id_fetch import IdFetchCommand
 from toktokkie.commands.youtube_music_dl import YoutubeMusicDlCommand
 from toktokkie.commands.metadata_validate import MetadataValidateCommand
 from toktokkie.commands.edit import EditCommand
+from toktokkie.commands.video_re_encode import VideoReEncodeCommand
 
 toktokkie_commands = [
     PrintCommand,
@@ -60,7 +61,8 @@ toktokkie_commands = [
     IdFetchCommand,
     YoutubeMusicDlCommand,
     MetadataValidateCommand,
-    EditCommand
+    EditCommand,
+    VideoReEncodeCommand
 ]
 """
 A list of commands for the toktokkie script

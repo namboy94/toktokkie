@@ -107,6 +107,13 @@ class TvSeason(JsonComponent):
         return self.parent_ids.get(IdType.TVDB) != self.ids.get(IdType.TVDB)
 
     @property
+    def episode_files(self) -> List[str]:
+        """
+        :return: A sorted list of episode file paths
+        """
+        return [x[1] for x in listdir(self.path, no_dirs=True)]
+
+    @property
     def episode_names(self) -> List[str]:
         """
         :return: A sorted list of episode names
