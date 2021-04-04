@@ -51,5 +51,6 @@ class BookSeries(
             IdType.ISBN,
             IdType.MYANIMELIST,
             IdType.ANILIST,
-            IdType.KITSU
+            IdType.KITSU,
+            IdType.NOVELUPDATES
         ]
