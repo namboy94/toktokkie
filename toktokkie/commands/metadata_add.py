@@ -90,6 +90,9 @@ class MetadataAddCommand(Command):
         season_parser.add_argument("season_name",
                                    help="The name of the season")
 
+        tag_parser = subparser.add_parser("tag", help="Add a tag")
+        tag_parser.add_argument("tags", help="The tags to add", nargs="+")
+
     def execute(self):
         """
         Executes the commands
@@ -108,6 +111,8 @@ class MetadataAddCommand(Command):
                 self.add_exclude()
             elif self.args.mode == "season":
                 self.add_season()
+            elif self.args.mode == "tag":
+                self.add_tags()
             else:  # pragma: no cover
                 self.logger.error("Invalid command")
         else:
@@ -172,4 +177,14 @@ class MetadataAddCommand(Command):
         seasons.append(season)
         meta.seasons = seasons
         makedirs(season_path)
+        meta.write()
+
+    def add_tags(self):
+        """
+        Adds tags to the metadata
+        :return: None
+        """
+        meta = Directory(self.args.directory).metadata
+        tags = list(set(meta.tags + self.args.tags))
+        meta.tags = tags
         meta.write()

@@ -20,7 +20,7 @@ LICENSE"""
 import os
 import argparse
 from typing import Union, List
-from subprocess import check_output, Popen, DEVNULL
+from subprocess import check_output, Popen
 from toktokkie.Directory import Directory
 from toktokkie.commands.Command import Command
 from toktokkie.enums import MediaType
@@ -32,34 +32,6 @@ from puffotter.os import get_ext
 class VideoReEncodeCommand(Command):
     """
     Class that encapsulates behaviour of the video-re-encode command
-    """
-
-    ENCODERS = {
-        "hevc": [
-            "ffmpeg",
-            # "-v", "error",-pix_fmt yuv420p10le
-            "-i", "INPUT",
-            "-c:v", "libx265",
-            "-crf", "20",  # lower = better quality, ffmpeg default is 28
-            "-c:a", "copy",  # Copy Audio
-            "-c:s", "copy",  # Copy Subtitles
-            "-map", "0",  # Keep subtitle fonts
-            "OUTPUT"
-        ],
-        "hevc_10": [
-            "ffmpeg",
-            "-i", "INPUT",
-            "-c:v", "libx265",
-            "-crf", "18",  # lower = better quality, ffmpeg default is 28
-            "-pix_fmt", "yuv420p10le",
-            "-c:a", "copy",  # Copy Audio
-            "-c:s", "copy",  # Copy Subtitles
-            "-map", "0",  # Keep subtitle fonts
-            "OUTPUT"
-        ]
-    }
-    """
-    The commands used to encode videos
     """
 
     @classmethod
@@ -84,9 +56,19 @@ class VideoReEncodeCommand(Command):
         :return: None
         """
         cls.add_directories_arg(parser)
-        parser.add_argument("target_encoding", help="The target encoding",
-                            choices=cls.ENCODERS.keys())
-        parser.add_argument("--anilist-reduce")
+        encoding_parser = parser.add_subparsers(
+            dest="codec", help="The target encoding", required=True
+        )
+
+        hevc_parser = encoding_parser.add_parser("hevc")
+        hevc_parser.add_argument("--pixel-format", default="yuv420p10le",
+                                 help="The pixel format. Defaults to 10 bit")
+        hevc_parser.add_argument("--nvidia", action="store_true",
+                                 help="Uses nvidia hardware encoding")
+        hevc_parser.add_argument("--quality", default=18, type=int,
+                                 help="The crf value (lower=better quality)")
+
+        # parser.add_argument("--anilist-reduce")
 
     def execute(self):
         """
@@ -97,9 +79,13 @@ class VideoReEncodeCommand(Command):
             self.args.directories,
             restrictions=[MediaType.TV_SERIES, MediaType.MOVIE]
         )
-        target_encoding = self.args.target_encoding
         for directory in directories:
             metadata = directory.metadata
+
+            if "no_re_encode" in metadata.tags:
+                self.logger.info(f"Skipping {metadata.name}")
+                continue
+
             video_files = self.gather_videos(metadata)
             for video_file in reversed(video_files):
                 # We go in reverse order to ensure that the newest files are
@@ -108,7 +94,7 @@ class VideoReEncodeCommand(Command):
                 # files are probably easier to recover.
                 # Also, newer files are probably bigger, increasing the
                 # value of re-encoding
-                self.re_encode(video_file, target_encoding)
+                self.re_encode(video_file)
 
     @staticmethod
     def gather_videos(metadata: Union[Tv, Movie]) -> List[str]:
@@ -141,12 +127,15 @@ class VideoReEncodeCommand(Command):
             path
         ]).decode("utf-8").strip()
 
-    def re_encode(self, video_file: str, encoding: str):
-
+    def re_encode(self, video_file: str):
+        """
+        Re-encodes a video file
+        :param video_file: The video file to re-encode
+        :return: None
+        """
         current_encoding = self.get_current_encoding(video_file)
-        if current_encoding == encoding.replace("_10", ""):
+        if current_encoding == self.args.codec:
             self.logger.info(f"Skipping {video_file}")
-            return
 
         out_file = os.path.join(
             os.path.dirname(video_file),
@@ -156,14 +145,36 @@ class VideoReEncodeCommand(Command):
         if os.path.isfile(out_file):
             os.remove(out_file)
 
-        encoder = self.ENCODERS[encoding]
-        encoder = [video_file if x == "INPUT" else x for x in encoder]
-        encoder = [out_file if x == "OUTPUT" else x for x in encoder]
+        encoder = self.generate_encoder(video_file, out_file)
         print(f"Re-Encoding {video_file} "
-              f"from {current_encoding} to {encoding}")
-        Popen(encoder, stderr=DEVNULL).wait()
+              f"from {current_encoding} to {self.args.codec}")
+        self.logger.info(" ".join(encoder))
+        Popen(encoder).wait()
         if os.path.isfile(out_file):
             os.remove(video_file)
             os.rename(out_file, video_file)
         else:
             self.logger.warning(f"Failed to re-encode {video_file}")
+
+    def generate_encoder(self, input_file: str, output_file: str) -> List[str]:
+        """
+        Creates the encoder command for the selected codec
+        :param input_file: The input file
+        :param output_file: The output file
+        :return: The encoder command
+        """
+        ffmpeg = ["ffmpeg", "-v", "quiet", "-stats", "-i", input_file]
+
+        if self.args.codec == "hevc":
+            ffmpeg += [
+                "-c:v", "libx265" if not self.args.nvidia else "hevc_nvenc",
+                "-crf", self.args.quality
+            ]
+
+        ffmpeg += [
+            "-c:a", "copy",
+            "-c:s", "copy",
+            "-map", "0",
+            output_file
+        ]
+        return ffmpeg
