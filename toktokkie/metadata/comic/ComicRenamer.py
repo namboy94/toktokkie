@@ -73,7 +73,7 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
             chapter_number = str(i + 1 + offset).zfill(max_chapter_length)
             chapter_title = chapter_titles.get(chapter_number)
             new_name = f"{self.name} - Chapter {chapter_number}"
-            if chapter_title is not None:
+            if chapter_title is not None and chapter_title != "":
                 new_name += f" - {chapter_title}"
             new_name += f".{ext}"
             operations.append(RenameOperation(old_path, new_name))
@@ -145,7 +145,7 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
                 chapter_nr_formatted = chapter_num.zfill(special_max_length)
                 title = chapter_titles.get(chapter_nr_formatted)
                 new_name = f"{self.name} - Chapter {chapter_nr_formatted}"
-                if title is not None:
+                if title is not None and title != "":
                     new_name += f" - {title}"
                 new_name += f".{ext}"
                 operations.append(RenameOperation(old_path, new_name))
