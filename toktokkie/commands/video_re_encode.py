@@ -58,8 +58,9 @@ class VideoReEncodeCommand(Command):
         """
         cls.add_directories_arg(parser)
         encoding_parser = parser.add_subparsers(
-            dest="codec", help="The target encoding", required=True
+            dest="codec", help="The target encoding"
         )
+        encoding_parser.required = True
 
         hevc_parser = encoding_parser.add_parser("hevc")
         hevc_parser.add_argument("--pixel-format", default="yuv420p10le",
