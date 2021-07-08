@@ -89,6 +89,7 @@ class AlbumArtFetchCommand(Command):
                     continue
 
                 musicbrainz_ids = album.ids[IdType.MUSICBRAINZ_RELEASE]
+                youtube_ids = album.ids[IdType.YOUTUBE_VIDEO]
 
                 if len(musicbrainz_ids) >= 1:
                     self.logger.debug("Using musicbrainz IDs")
@@ -104,6 +105,11 @@ class AlbumArtFetchCommand(Command):
                         continue
 
                     cover_urls = self.load_anilist_cover_url(anilist_ids[0])
+                elif len(youtube_ids) >= 1:
+                    self.logger.debug("Using musicbrainz IDs")
+                    cover_urls = self.load_youtube_cover_urls(
+                        youtube_ids
+                    )
                 else:
                     self.logger.warning("Couldn't find album art for {}"
                                         .format(album.name))
@@ -225,4 +231,10 @@ class AlbumArtFetchCommand(Command):
             cover_image.replace("medium", "large"),
             cover_image.replace("large", "medium"),
             cover_image.replace("large", "small").replace("medium", "small")
+        ]
+
+    def load_youtube_cover_urls(self, youtube_ids: List[str]) -> List[str]:
+        return [
+            f"https://i.ytimg.com/vi/{youtube_id}/maxresdefault.jpg"
+            for youtube_id in youtube_ids
         ]

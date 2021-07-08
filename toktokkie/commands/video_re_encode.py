@@ -27,6 +27,7 @@ from toktokkie.enums import MediaType
 from toktokkie.metadata.tv.Tv import Tv
 from toktokkie.metadata.movie.Movie import Movie
 from puffotter.os import get_ext
+from puffotter.init import argparse_add_verbosity
 
 
 class VideoReEncodeCommand(Command):
@@ -67,6 +68,7 @@ class VideoReEncodeCommand(Command):
                                  help="Uses nvidia hardware encoding")
         hevc_parser.add_argument("--quality", default=18, type=int,
                                  help="The crf value (lower=better quality)")
+        argparse_add_verbosity(hevc_parser)
 
         # parser.add_argument("--anilist-reduce")
 
@@ -136,6 +138,7 @@ class VideoReEncodeCommand(Command):
         current_encoding = self.get_current_encoding(video_file)
         if current_encoding == self.args.codec:
             self.logger.info(f"Skipping {video_file}")
+            return
 
         out_file = os.path.join(
             os.path.dirname(video_file),
@@ -168,7 +171,7 @@ class VideoReEncodeCommand(Command):
         if self.args.codec == "hevc":
             ffmpeg += [
                 "-c:v", "libx265" if not self.args.nvidia else "hevc_nvenc",
-                "-crf", self.args.quality
+                "-crf", str(self.args.quality)
             ]
 
         ffmpeg += [
