@@ -195,7 +195,9 @@ class MangadexUpdater(Updater):
             dest = os.path.join(metadata.main_chapters_path, name)
             if not self.args["dry_run"]:
                 print("Downloading Chapter {}".format(c))
-                c.download(dest)
+                path = c.download(dest)
+                if not os.path.isfile(path):
+                    break
             else:
                 pprint("Found chapter: {}".format(c), fg="lyellow")
 
@@ -249,11 +251,15 @@ class MangadexUpdater(Updater):
                     metadata.write()
                     makedirs(metadata.special_path)
                     print("Downloading special chapter {}".format(c))
-                    c.download(path)
+                    path = c.download(path)
+                    if not os.path.isfile(path):
+                        break
             else:
                 if not self.args["dry_run"]:
                     makedirs(metadata.special_path)
                     print("Downloading special chapter {}".format(c))
-                    c.download(path)
+                    path = c.download(path)
+                    if not os.path.isfile(path):
+                        break
                 else:
                     pprint("Found chapter: {}".format(c), fg="lyellow")
