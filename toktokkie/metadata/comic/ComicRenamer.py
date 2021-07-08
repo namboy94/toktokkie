@@ -22,6 +22,8 @@ from abc import ABC
 from typing import List
 from puffotter.os import listdir
 from toktokkie.enums import IdType
+from manga_dl.entities.Chapter import Chapter
+from manga_dl.scrapers.mangadex import MangaDexScraper
 from toktokkie.metadata.base.components.RenameOperation import RenameOperation
 from toktokkie.metadata.base.Renamer import Renamer
 from toktokkie.metadata.comic.ComicExtras import ComicExtras
@@ -37,28 +39,43 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
         Creates renaming operations for book series metadata
         :return: The renaming operations
         """
+        mangadex_chapters = []
+        mangadex_ids = self.ids[IdType.MANGADEX]
+        if len(mangadex_ids) >= 1:
+            mangadex_id = mangadex_ids[0]
+            mangadex_chapters = \
+                MangaDexScraper().load_chapters(None, mangadex_id)
+
         operations: List[RenameOperation] = []
-        operations += self.__create_main_chapter_operations()
+        operations += self.__create_main_chapter_operations(mangadex_chapters)
         operations += self.__create_main_volume_operations()
-        operations += self.__create_special_chapter_operations()
+        operations += self.__create_special_chapter_operations(
+            mangadex_chapters
+        )
         return operations
 
-    def __create_main_chapter_operations(self) -> List[RenameOperation]:
+    def __create_main_chapter_operations(self, mangadex_chapters: List[Chapter]) -> List[RenameOperation]:
         if not os.path.isdir(self.main_chapters_path):
             return []
         main_content = listdir(self.main_chapters_path, no_dirs=True)
         max_chapter_length = len(str(len(main_content)))
+
+        chapter_titles = {}
+        for chapter in mangadex_chapters:
+            chapter_nr = chapter.chapter_number.zfill(max_chapter_length)
+            chapter_titles[chapter_nr] = chapter.title
 
         operations = []
         offset = self.chapter_offset
 
         for i, (old_name, old_path) in enumerate(main_content):
             ext = old_name.rsplit(".", 1)[1]
-            new_name = "{} - Chapter {}.{}".format(
-                self.name,
-                str(i + 1 + offset).zfill(max_chapter_length),
-                ext
-            )
+            chapter_number = str(i + 1 + offset).zfill(max_chapter_length)
+            chapter_title = chapter_titles.get(chapter_number)
+            new_name = f"{self.name} - Chapter {chapter_number}"
+            if chapter_title is not None:
+                new_name += f" - {chapter_title}"
+            new_name += f".{ext}"
             operations.append(RenameOperation(old_path, new_name))
         return operations
 
@@ -80,7 +97,7 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
             operations.append(RenameOperation(old_path, new_name))
         return operations
 
-    def __create_special_chapter_operations(self) -> List[RenameOperation]:
+    def __create_special_chapter_operations(self, mangadex_chapters: List[Chapter]) -> List[RenameOperation]:
         if not os.path.isdir(self.special_path):
             return []
 
@@ -101,6 +118,12 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
                 self.special_chapters,
                 key=lambda x: len(x)
             ))
+
+            chapter_titles = {}
+            for chapter in mangadex_chapters:
+                chapter_nr = chapter.chapter_number.zfill(special_max_length)
+                chapter_titles[chapter_nr] = chapter.title
+
             for i, (old_name, old_path) in enumerate(special_content):
                 chap_guess, ext = old_name.rsplit(".", 1)
 
@@ -119,11 +142,12 @@ class ComicRenamer(Renamer, ComicExtras, ABC):
                 except IndexError:
                     pass
 
-                new_name = "{} - Chapter {}.{}".format(
-                    self.name,
-                    chapter_num.zfill(special_max_length),
-                    ext
-                )
+                chapter_nr_formatted = chapter_num.zfill(special_max_length)
+                title = chapter_titles.get(chapter_nr_formatted)
+                new_name = f"{self.name} - Chapter {chapter_nr_formatted}"
+                if title is not None:
+                    new_name += f" - {title}"
+                new_name += f".{ext}"
                 operations.append(RenameOperation(old_path, new_name))
             return operations
 
