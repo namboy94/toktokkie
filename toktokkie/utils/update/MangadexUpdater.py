@@ -219,18 +219,21 @@ class MangadexUpdater(Updater):
         except ValueError:
             special_fill = 0
 
+        existing = [
+            x.split("Chapter ", 1)[1].rsplit(".cbz", 1)[0].split(" ")[0]
+            for x in os.listdir(metadata.special_path)
+        ]
         for c in special_chapters:
 
             name = "{} - Chapter {}.cbz".format(
                 metadata.name,
                 c.chapter_number.zfill(special_fill)
             )
-
             path = os.path.join(
                 metadata.special_path, replace_illegal_ntfs_chars(name)
             )
 
-            if os.path.exists(path):
+            if c.chapter_number.zfill(special_fill) in existing:
                 continue
             elif c.chapter_number not in metadata.special_chapters:
 
