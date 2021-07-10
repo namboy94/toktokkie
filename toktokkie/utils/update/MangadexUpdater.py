@@ -160,8 +160,8 @@ class MangadexUpdater(Updater):
         :return: None
         """
         metadata = cast(Comic, self.metadata)
-
-        current_latest = len(listdir(metadata.main_chapters_path))
+        current_latest = \
+            len(listdir(metadata.main_chapters_path)) + metadata.chapter_offset
 
         main_chapters = list(filter(
             lambda x: not x.is_special
